@@ -9,10 +9,11 @@ local wezterm = require 'wezterm'
 
 return {
   color_scheme = "Molokai",
+  window_decorations = "RESIZE",
   hide_tab_bar_if_only_one_tab = true,
   enable_tab_bar = false,
-  font_size = 16.0,
-  font = wezterm.font { family = 'Calibri', weight = "Bold" },
+  font_size = 15.0,
+  font = wezterm.font { family = 'JetBrains Mono', weight = "Medium" },
   window_background_opacity = 9.0,
   window_padding = {
     left = 2,
