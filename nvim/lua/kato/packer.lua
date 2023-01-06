@@ -29,7 +29,7 @@ return require('packer').startup(function(use)
 
   use('preservim/vim-markdown')
 
-  use('TaDaa/vimade')
+  -- use('TaDaa/vimade')
 
   use('tpope/vim-surround')
   
@@ -40,6 +40,8 @@ return require('packer').startup(function(use)
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
       require("toggleterm").setup()
   end}
+
+	use{'christoomey/vim-tmux-navigator'}
 
   use{'vimwiki/vimwiki', tag = 'v2022.12.02'}
 
