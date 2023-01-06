@@ -12,6 +12,9 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.cmd("set shiftwidth=0")
+vim.cmd("set tabstop=2")
+
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
 -- add the colorscheme that I have defined in .config/nvim/colors
