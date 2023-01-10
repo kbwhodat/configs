@@ -1,4 +1,5 @@
 local wezterm = require 'wezterm'
+local act = wezterm.action
 
 -- function scheme_for_appearance(appearance)
 --   if appearance:find 'Dark' then
@@ -8,6 +9,12 @@ local wezterm = require 'wezterm'
 -- end
 
 return {
+  keys = {
+    -- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word
+    { key = 'LeftArrow', mods = 'OPT', action = act.SendString '\x1bb' },
+    -- Make Option-Right equivalent to Alt-f; forward-word
+    { key = 'RightArrow', mods = 'OPT', action = act.SendString '\x1bf' },
+  },
   color_scheme = "Molokai",
   window_decorations = "RESIZE",
   hide_tab_bar_if_only_one_tab = true,
