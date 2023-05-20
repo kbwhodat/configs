@@ -1,6 +1,7 @@
 
 require("kato")
 
+
 -- /usr/local/Cellar/neovim/0.8.1/lib/nvim is where the parser directory is located
 local opts = { noremap = true, silent = true }
 
@@ -12,8 +13,12 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.cmd("set shiftwidth=0")
-vim.cmd("set tabstop=2")
+vim.cmd('set cursorline')
+
+-- vim.cmd("set shiftwidth=0")
+-- vim.cmd("set tabstop=2")
+
+-- vim.opts.termguicolors = true
 
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
@@ -41,4 +46,15 @@ vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdow
 
 -- keymap("n", "<leader>t", ":FloatermNew<CR>", opts)
 -- keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
+
+
+-- will stay on the last line number you were on
+vim.api.nvim_create_autocmd("BufReadPost", {
+    pattern = {"*"},
+    callback = function()
+        if vim.fn.line("'\"") > 1 and vim.fn.line("'\"") <= vim.fn.line("$") then
+            vim.api.nvim_exec("normal! g'\"",false)
+        end
+    end
+})
 

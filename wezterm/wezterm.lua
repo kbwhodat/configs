@@ -9,6 +9,8 @@ local act = wezterm.action
 -- end
 
 return {
+  cursor_blink_ease_in = 'Linear',
+  cursor_blink_ease_out = 'Linear',
   keys = {
     -- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word
     { key = 'LeftArrow', mods = 'OPT', action = act.SendString '\x1bb' },
@@ -21,7 +23,7 @@ return {
   enable_tab_bar = false,
   font_size = 15.0,
   font = wezterm.font { family = 'Roboto Mono', weight = "Medium" },
-  window_background_opacity = 9.0,
+  window_background_opacity = 3.0,
   window_padding = {
     left = 2,
     right = 2,
@@ -32,7 +34,7 @@ return {
     foreground = 'white',
     background = 'black',
     cursor_fg = 'black',
-    curser_bg = 'black',
+    cursor_bg = 'white',
     compose_cursor = 'orange',
     tab_bar = {
       -- The color of the strip that goes along the top of the window

@@ -1,3 +1,3 @@
 require("kato.set")
-require("kato.packer")
-
+require("kato.lazy")
+-- require("kato.packer")
