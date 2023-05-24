@@ -1,6 +1,7 @@
 
 require("kato")
 
+local vim = vim
 
 -- /usr/local/Cellar/neovim/0.8.1/lib/nvim is where the parser directory is located
 local opts = { noremap = true, silent = true }
@@ -31,6 +32,11 @@ vim.cmd('highlight LineNr ctermfg=white')
 
 -- nvim-tree
 keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
+
+-- Buffers
+keymap("n", "<leader>;", ":BufferLineCyclePrev<CR>", opts)
+keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts)
+keymap("n", "<leader>d", ":bw<CR>", opts)
 
 -- vim_wiki
 vim.g.vimwiki_list = {{path= '~/documents/wiki_notes/', path_html= '~/documents/wiki_notes_html/', syntax= 'markdown', ext= '.md' }}

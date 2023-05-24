@@ -1,3 +1,5 @@
+local vim = vim
+
 vim.opt.guicursor = "a:block"
 
 

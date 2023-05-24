@@ -10,7 +10,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 nvimtree.setup({
-    open_on_setup_file = false,
+    -- open_on_setup_file = false,
     actions = {
         open_file = {
             quit_on_open = true
