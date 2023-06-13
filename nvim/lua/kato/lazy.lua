@@ -165,6 +165,7 @@ local plugins = {
   'sheerun/vim-polyglot',
   "mbbill/undotree",
   "tomasiser/vim-code-dark",
+  "tpope/vim-obsession",
   {
     "lukas-reineke/indent-blankline.nvim",
     event = { "BufReadPost", "BufNewFile" },
