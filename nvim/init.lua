@@ -14,13 +14,17 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.cmd('set cursorline')
+-- vim.cmd('set cursorline')
 
 -- vim.cmd("set shiftwidth=0")
 -- vim.cmd("set tabstop=2")
 
 -- vim.opts.termguicolors = true
 
+-- Setting Underline
+vim.api.nvim_command('set cursorline | hi clear cursorline | hi CursorLine gui=underline cterm=underline')
+-- Set highlight cursor line vertically
+vim.cmd('set cursorcolumn')
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
 -- add the colorscheme that I have defined in .config/nvim/colors
