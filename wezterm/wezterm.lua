@@ -22,7 +22,7 @@ return {
   hide_tab_bar_if_only_one_tab = true,
   enable_tab_bar = false,
   font_size = 15.0,
-  font = wezterm.font { family = 'Roboto Mono' },
+  font = wezterm.font { family = 'Roboto Mono', weight = 'Medium' },
 	-- font_rules = {
 	-- 	{
 	-- 		intensity = "Bold",
