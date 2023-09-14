@@ -81,8 +81,23 @@ local plugins = {
       },
     },
   },
+	{
+		"fabius/molokai.nvim",
+		dependencies = "rktjmp/lush.nvim",
+		lazy = false,
+		priority = 1000,
+	},
+	"rebelot/kanagawa.nvim",
+	"loctvl842/monokai-pro.nvim",
   {
-    'nvim-treesitter/nvim-treesitter', build = ":TSUpdate"
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    opts = {
+      highlight = { enable = true },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
   },
 
   {
@@ -121,6 +136,49 @@ local plugins = {
   },
 
   { "MunifTanjim/nui.nvim", lazy = true },
+
+  {
+    "nvim-neorg/neorg",
+    build = ":Neorg sync-parsers",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("neorg").setup {
+        load = {
+          ["core.defaults"] = {}, -- Loads default behaviour
+          ["core.concealer"] = {
+						config = {
+							icon_preset = "varied"
+						},
+					}, -- Adds pretty icons to your documents
+          ["core.qol.todo_items"] = {}, -- For enhanced to-do list functionalities.
+          ["core.esupports.hop"] = {}, -- For enhanced to-do list functionalities.
+          ["core.esupports.indent"] = {}, -- For enhanced to-do list functionalities.
+          ["core.esupports.metagen"] = {}, -- For enhanced to-do list functionalities.
+          ["core.journal"] = {
+            config = {
+              workspace = "home"
+            }
+          }, -- For enhanced to-do list functionalities.
+          ["core.ui"] = {}, -- For a calendar view within Neovim.
+          ["core.integrations.truezen"] = {}, -- For executing code blocks within Neorg files.
+          ["core.neorgcmd.commands.return"] = {}, -- For executing code blocks within Neorg files.
+          ["core.dirman"] = { -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                work = "~/notes/work",
+                home = "~/notes/home",
+                notes = "~/notes/notes",
+								aiazing = "~/notes/aiazing"
+              },
+              default_workspace = "notes"
+            },
+          },
+        },
+      }
+      vim.wo.foldlevel = 99
+      vim.wo.conceallevel = 3
+    end,
+  },
 
   {
     "echasnovski/mini.indentscope",
@@ -162,7 +220,7 @@ local plugins = {
       "MunifTanjim/nui.nvim"
     }
   },
-  'sheerun/vim-polyglot',
+  -- 'sheerun/vim-polyglot',
   "mbbill/undotree",
   "tomasiser/vim-code-dark",
   "tpope/vim-obsession",
@@ -176,14 +234,20 @@ local plugins = {
       show_current_context = false,
     },
   },
+	{
+		'stevearc/oil.nvim',
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
   'wakatime/vim-wakatime',
   'alvan/vim-closetag',
   'tpope/vim-commentary',
   'preservim/vim-markdown',
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons', opt = true }
-  },
+  -- {
+  --   'nvim-lualine/lualine.nvim',
+  --   dependencies = { 'nvim-tree/nvim-web-devicons', opt = true }
+  -- },
   'tpope/vim-surround',
   'windwp/nvim-autopairs' ,
   'lewis6991/impatient.nvim',
@@ -191,10 +255,10 @@ local plugins = {
   'christoomey/vim-tmux-navigator',
   {'vimwiki/vimwiki', tag = 'v2022.12.02'},
   'DanilaMihailov/beacon.nvim',
-  {                                              -- filesystem navigation
-    'kyazdani42/nvim-tree.lua',
-    dependencies = 'nvim-tree/nvim-web-devicons'        -- filesystem icons
-  },
+  -- {                                              -- filesystem navigation
+  --   'kyazdani42/nvim-tree.lua',
+  --   dependencies = 'nvim-tree/nvim-web-devicons'        -- filesystem icons
+  -- },
   {
     'VonHeikemen/lsp-zero.nvim',
     dependencies = {

@@ -29,17 +29,28 @@ vim.cmd('set cursorcolumn')
 vim.cmd('set clipboard+=unnamedplus')
 -- add the colorscheme that I have defined in .config/nvim/colors
 vim.cmd('colorscheme molokai-dark')
+-- vim.cmd('colorscheme kanagawa')
+-- vim.cmd[[colorscheme molokai]]
+-- vim.cmd[[colorscheme monokai-pro]]
+vim.cmd[[hi Normal guibg=#000000]]
+vim.cmd[[hi NormalNC guibg=#000000]]
 -- vim.cmd('hi Normal ctermbg=none guibg=none')
 
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=white')
 
 -- nvim-tree
-keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
+-- keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
+-- Oil
+keymap("n", "<leader>e", ":Oil<CR>", opts)
 
 -- Buffers
 keymap("n", "<leader>;", ":BufferLineCyclePrev<CR>", opts)
 keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts)
+keymap("n", "<leader>no", ":Neorg index<CR>", opts)
+keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts)
+keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
+keymap("n", "<leader>noa", ":Neorg workspace aiazing<CR>", opts)
 keymap("n", "<leader>d", ":bw<CR>", opts)
 
 -- vim_wiki

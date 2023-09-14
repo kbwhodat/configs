@@ -153,6 +153,13 @@ endif
 " Syntastic
 hi SyntasticErrorSign   guifg=#F92672 guibg=#232526               ctermfg=197  ctermbg=235
 hi SyntasticWarningSign guifg=#FFDF5F guibg=#232526               ctermfg=221  ctermbg=235
+
+hi StatusLine ctermfg=231 ctermbg=241 cterm=bold guifg=#f8f8f2 guibg=#64645e gui=bold
+hi DiffAdd ctermfg=231 ctermbg=64 cterm=bold guifg=#f8f8f2 guibg=#46830c gui=bold
+hi DiffText ctermfg=231 ctermbg=24 cterm=bold guifg=#f8f8f2 guibg=#204a87 gui=bold
+hi Title ctermfg=231 ctermbg=NONE cterm=bold guifg=#f8f8f2 guibg=NONE gui=bold
+hi Todo ctermfg=95 ctermbg=NONE cterm=inverse,bold guifg=#75715e guibg=NONE gui=inverse,bold
+
 "NOTE: The following links are added by Syntastic:
 "hi link SyntasticError SpellBad
 "hi link SyntasticWarning SpellCap
