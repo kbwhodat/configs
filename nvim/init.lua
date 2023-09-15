@@ -67,6 +67,32 @@ vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdow
 
 -- keymap("n", "<leader>t", ":FloatermNew<CR>", opts)
 -- keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
+--
+-- Define the function to add and commit
+function git_auto_commit()
+    local current_file = vim.fn.expand("%:t")
+
+    -- Generate a dynamic commit message
+    local commit_message = string.format("Edited %s", current_file)
+
+    local target_dir = "/Users/katob/notes/"
+    local current_dir = vim.fn.getcwd()
+
+    vim.cmd("cd " .. target_dir)
+
+		local action = string.format("git add . && git commit -m 'Added notes for %s'", current_file)
+
+    local output = vim.fn.system(action)
+
+    vim.cmd("cd " .. current_dir)
+end
+
+-- Register the Lua function as a Vim command
+vim.cmd("command! GitAutoCommit lua git_auto_commit()")
+
+-- Set up the autocommand to run GitAutoCommit after saving any buffer
+vim.cmd("autocmd BufWritePost *.norg GitAutoCommit")
+
 
 
 -- will stay on the last line number you were on

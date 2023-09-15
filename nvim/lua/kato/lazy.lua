@@ -81,14 +81,6 @@ local plugins = {
       },
     },
   },
-	{
-		"fabius/molokai.nvim",
-		dependencies = "rktjmp/lush.nvim",
-		lazy = false,
-		priority = 1000,
-	},
-	"rebelot/kanagawa.nvim",
-	"loctvl842/monokai-pro.nvim",
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -99,7 +91,6 @@ local plugins = {
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
-
   {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
@@ -211,18 +202,20 @@ local plugins = {
   },
 
   'nvim-treesitter/nvim-treesitter-context',
-  'ThePrimeagen/harpoon',
+  -- 'ThePrimeagen/harpoon',
   {
     "SmiteshP/nvim-navbuddy",
     dependencies = {
-      "neovim/nvim-lspconfig",
-      "SmiteshP/nvim-navic",
-      "MunifTanjim/nui.nvim"
-    }
+			"neovim/nvim-lspconfig",
+			"SmiteshP/nvim-navic",
+			"MunifTanjim/nui.nvim",
+			"numToStr/Comment.nvim",        -- Optional
+			"nvim-telescope/telescope.nvim" -- Optional
+    },
+		opts = { lsp = { auto_attach = true } }
   },
   -- 'sheerun/vim-polyglot',
   "mbbill/undotree",
-  "tomasiser/vim-code-dark",
   "tpope/vim-obsession",
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -252,8 +245,9 @@ local plugins = {
   'windwp/nvim-autopairs' ,
   'lewis6991/impatient.nvim',
   "akinsho/toggleterm.nvim",
+	"lewis6991/gitsigns.nvim",
   'christoomey/vim-tmux-navigator',
-  {'vimwiki/vimwiki', tag = 'v2022.12.02'},
+  -- {'vimwiki/vimwiki', tag = 'v2022.12.02'},
   'DanilaMihailov/beacon.nvim',
   -- {                                              -- filesystem navigation
   --   'kyazdani42/nvim-tree.lua',
