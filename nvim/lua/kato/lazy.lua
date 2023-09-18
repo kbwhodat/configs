@@ -247,6 +247,7 @@ local plugins = {
   "akinsho/toggleterm.nvim",
 	"lewis6991/gitsigns.nvim",
   'christoomey/vim-tmux-navigator',
+	{"airblade/vim-gitgutter"},
   -- {'vimwiki/vimwiki', tag = 'v2022.12.02'},
   'DanilaMihailov/beacon.nvim',
   -- {                                              -- filesystem navigation
