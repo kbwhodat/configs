@@ -38,11 +38,13 @@ yabai -m rule --add app="^Cisco Webex Start$" manage=off
 yabai -m rule --add app="^Private Internet Access$" manage=off
 yabai -m rule --add app="^kitty$" manage=off
 yabai -m rule --add app="^WezTerm$" manage=off
+yabai -m rule --add app="^Anki$" manage=off
 yabai -m rule --add app="^choose$" manage=off
 yabai -m rule --add app="^Stickies$" manage=off
+yabai -m rule --add app="^Ghidra$" manage=off
 yabai -m rule --add app="^TextMate$" manage=off
 yabai -m rule --add app="^Sublime Text$" manage=off
-
+yabai -m rule --add app="^VMware Fusion$" manage=off
 
 #find ~/Library/Parallels/Applications\ Menus/ -maxdepth 3 -type f | awk -F'/' '{ print $NF; }' | awk '{$1=$1};1' | sort | uniq | tr "\n" "\0" | xargs -0 -I{} yabai -m rule --add app="^{}\$" title=".*" manage=on
 
@@ -60,14 +62,14 @@ yabai -m config active_window_opacity 1.0
 #yabai -m config window_border                on | off
 
 ## WITH SIP ENABLED (Installed Limelight seperately, Don't need this)
-#yabai -m config window_border off
+yabai -m config window_border off
 
 ## WTIH SIP DISABLED (Limelight build into Yabai, enable it here)
-yabai -m config window_border on
-yabai -m config window_border_width 3
-yabai -m config active_window_border_color 0xFF40FF00
-yabai -m config normal_window_border_color 0x00FFFFFF
-yabai -m config insert_feedback_color        0xffd75f5f
+#yabai -m config window_border on
+#yabai -m config window_border_width 3
+#yabai -m config active_window_border_color 0xFF40FF00
+#yabai -m config normal_window_border_color 0x00FFFFFF
+#yabai -m config insert_feedback_color        0xffd75f5f
 
 ## some other settings
 yabai -m config auto_balance off

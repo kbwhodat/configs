@@ -1,5 +1,6 @@
 
 require("kato")
+require("kato.neorg_functions")
 
 local vim = vim
 
@@ -28,16 +29,13 @@ vim.cmd('set cursorcolumn')
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
 -- add the colorscheme that I have defined in .config/nvim/colors
-vim.cmd('colorscheme molokai-dark')
--- vim.cmd('colorscheme kanagawa')
--- vim.cmd[[colorscheme molokai]]
--- vim.cmd[[colorscheme monokai-pro]]
+-- vim.cmd('colorscheme molokai-dark')
+vim.cmd('colorscheme kanagawa')
 vim.cmd[[hi Normal guibg=#000000]]
 vim.cmd[[hi NormalNC guibg=#000000]]
 -- vim.cmd('hi Normal ctermbg=none guibg=none')
-
 vim.cmd('highlight LineNr guifg=white')
-vim.cmd('highlight LineNr ctermfg=white')
+vim.cmd('highlight LineNr ctermfg=black')
 
 -- nvim-tree
 -- keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
@@ -54,7 +52,7 @@ keymap("n", "<leader>noa", ":Neorg workspace aiazing<CR>", opts)
 keymap("n", "<leader>d", ":bw<CR>", opts)
 
 -- vim_wiki
-vim.g.vimwiki_list = {{path= '~/documents/wiki_notes/', path_html= '~/documents/wiki_notes_html/', syntax= 'markdown', ext= '.md' }}
+vim.g.vimwiki_list = {{path= '~/Documents/wiki_notes/', path_html= '~/Documents/wiki_notes_html/', syntax= 'markdown', ext= '.md' }}
 vim.g.vimwiki_hl_headers = 1
 vim.g.vimwiki_hl_cb_checked = 1
 vim.g.vimwiki_listing_hl = 1
@@ -65,35 +63,24 @@ vim.g.vimwiki_global_ext = 0
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
 
 
--- keymap("n", "<leader>t", ":FloatermNew<CR>", opts)
--- keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
---
--- Define the function to add and commit
-function git_auto_commit()
-    local current_file = vim.fn.expand("%:t")
+keymap("n", "<leader>t", ":FloatermNew<CR>", opts)
+keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 
-    -- Generate a dynamic commit message
-    local commit_message = string.format("Edited %s", current_file)
-
-    local target_dir = "/Users/katob/notes/"
-    local current_dir = vim.fn.getcwd()
-
-    vim.cmd("cd " .. target_dir)
-
-		local action = string.format("git add . && git commit -m 'Added notes for %s'", current_file)
-
-    local output = vim.fn.system(action)
-
-    vim.cmd("cd " .. current_dir)
-end
-
--- Register the Lua function as a Vim command
-vim.cmd("command! GitAutoCommit lua git_auto_commit()")
-
--- Set up the autocommand to run GitAutoCommit after saving any buffer
-vim.cmd("autocmd BufWritePost *.norg GitAutoCommit")
+-- Bind this function to convenient keymaps or commands
+vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>na', [[<Cmd>lua neorg_decrypt_and_open("aiazing", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 
 
+-- Dynamic Autocommands
+vim.cmd([[
+  augroup neorg_dynamic
+    autocmd!
+		autocmd VimLeavePre *.norg :lua encrypt_all_buffers()
+		autocmd BufRead *.norg.gpg :lua decrypt_and_open()
+		autocmd BufRead *.norg :lua neorg_decrypt_and_open(nil, vim.fn.expand('<afile>:t'), vim.fn.expand('<afile>:p'))
+  augroup END
+]])
 
 -- will stay on the last line number you were on
 vim.api.nvim_create_autocmd("BufReadPost", {
