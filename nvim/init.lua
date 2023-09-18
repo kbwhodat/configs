@@ -82,9 +82,6 @@ vim.cmd([[
   augroup END
 ]])
 
--- -- Encrypt file when writing
--- vim.cmd("autocmd BufWritePre,FileWritePre *.norg :%!gpg --encrypt --recipient 'wbtankeye@gmail.com' 2>/dev/null")
-
 -- will stay on the last line number you were on
 vim.api.nvim_create_autocmd("BufReadPost", {
     pattern = {"*"},
