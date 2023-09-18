@@ -136,6 +136,13 @@ local plugins = {
       require("neorg").setup {
         load = {
           ["core.defaults"] = {}, -- Loads default behaviour
+					["core.integrations.treesitter"] = {},
+					["core.export.markdown"] = {},
+					["core.syntax"] = {},
+					["core.highlights"] = {},
+					["core.mode"] = {},
+					["core.neorgcmd"] = {},
+					["core.autocommands"] = {},
           ["core.concealer"] = {
 						config = {
 							icon_preset = "varied"
@@ -237,6 +244,7 @@ local plugins = {
   'alvan/vim-closetag',
   'tpope/vim-commentary',
   'preservim/vim-markdown',
+	"rebelot/kanagawa.nvim",
   -- {
   --   'nvim-lualine/lualine.nvim',
   --   dependencies = { 'nvim-tree/nvim-web-devicons', opt = true }
