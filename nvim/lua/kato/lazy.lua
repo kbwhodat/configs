@@ -147,7 +147,7 @@ local plugins = {
           ["core.esupports.metagen"] = {}, -- For enhanced to-do list functionalities.
           ["core.journal"] = {
             config = {
-              workspace = "home"
+              workspace = "incidents"
             }
           }, -- For enhanced to-do list functionalities.
           ["core.ui"] = {}, -- For a calendar view within Neovim.
@@ -157,6 +157,7 @@ local plugins = {
             config = {
               workspaces = {
                 work = "~/notes/work",
+                incidents = "~/notes/work/Incidents",
                 home = "~/notes/home",
                 notes = "~/notes/notes",
 								aiazing = "~/notes/aiazing"
