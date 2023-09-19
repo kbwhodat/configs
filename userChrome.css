@@ -85,12 +85,23 @@ hbox.tab-content::before {
 
 :root:not([customizing]) #nav-bar
 {
-	min-height : 2.5em       !important;
-	height     : 2.5em       !important;
-	margin     : 0 0 -2.5em  !important;
-	z-index    : -1000       !important;
-	opacity    : 0           !important;
+	min-height : 2.0em       !important;
+	height     : 2.0em       !important;
 }
+
+#personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:11px !important}
+#personal-bookmarks .bookmark-item > .toolbarbutton-icon { height:12px !important; width:12px !important; }
+/* Fix for bug 725413 - Separators cause higher bookmark bar in Fx11 on OS X */
+#personal-bookmarks toolbarseparator {
+min-height: 5px !important;
+}
+#PersonalToolbar {
+		height: 10px !important;
+	}
+#PlacesToolbarItems > .bookmark-item {
+		padding: 2px 4px !important;
+		font-size: 12px !important;
+	}
 
 :root:not([customizing]) #nav-bar:focus-within
 {
