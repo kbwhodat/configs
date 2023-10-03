@@ -167,7 +167,8 @@ local plugins = {
                 incidents = "~/notes/work/Incidents",
                 home = "~/notes/home",
                 notes = "~/notes/notes",
-								aiazing = "~/notes/aiazing"
+								aiazing = "~/notes/aiazing",
+								learning = "~/notes/learning"
               },
               default_workspace = "notes"
             },
@@ -227,12 +228,9 @@ local plugins = {
   "tpope/vim-obsession",
   {
     "lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
-      char = "│",
-      filetype_exclude = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy" },
-      show_trailing_blankline_indent = false,
-      show_current_context = false,
     },
   },
 	{
@@ -257,7 +255,7 @@ local plugins = {
 	"lewis6991/gitsigns.nvim",
   'christoomey/vim-tmux-navigator',
 	{"airblade/vim-gitgutter"},
-  -- {'vimwiki/vimwiki', tag = 'v2022.12.02'},
+  -- {'vimwiki/vimwiki'},
   'DanilaMihailov/beacon.nvim',
   -- {                                              -- filesystem navigation
   --   'kyazdani42/nvim-tree.lua',

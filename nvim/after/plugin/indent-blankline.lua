@@ -1,7 +1,40 @@
-vim.opt.list = true
-vim.opt.listchars:append "space:⋅"
 
-require("indent_blankline").setup {
-    show_end_of_line = true,
-    space_char_blankline = " ",
-}
+require("ibl").setup({
+	enabled = true,
+	debounce = 200,
+	indent = {
+		char = "|",
+		tab_char = "│",
+		smart_indent_cap = true,
+		priority = 2,
+	},
+	exclude = {
+		filetypes = {
+			"", -- for all buffers without a file type
+			"alpha",
+			"oil",
+			"big_file_disabled_ft",
+			"dashboard",
+			"dotooagenda",
+			"flutterToolsOutline",
+			"fugitive",
+			"git",
+			"gitcommit",
+			"help",
+			"json",
+			"log",
+			"markdown",
+			"NvimTree",
+			"Outline",
+			"peekaboo",
+			"startify",
+			"TelescopePrompt",
+			"todoist",
+			"txt",
+			"undotree",
+			"vimwiki",
+			"vista",
+		},
+		buftypes = { "terminal", "nofile", "quickfix", "prompt" },
+	},
+})

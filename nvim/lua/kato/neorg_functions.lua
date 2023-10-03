@@ -79,18 +79,6 @@ end
 function neorg_decrypt_and_open(workspace, filename_gpg, full_path)
 	local full_path_decrypted, full_path_gpg
 
-	-- print("full path: ", full_path)
-	-- if full_path then
-	-- 	-- print("In the full path condition")
-	-- 	workspace = get_workspace_from_path(full_path)
-	-- 	local remaining_path = get_remaining_path_after_workspace(full_path, workspace)
-	-- 	local full_base_path = vim.fn.expand("~/notes/") .. workspace .. remaining_path
-	-- 	full_path_decrypted = get_base_path(full_base_path) .. "/" .. string.match(filename_gpg, "(.+)%..+")
-	-- 	full_path_gpg = full_base_path
-	-- else
-		-- print("In the else condition")
-	-- end
-
 	if workspace then
 		local base_path = vim.fn.expand("~/notes/") .. workspace
 		full_path_decrypted = base_path .. "/" .. string.match(filename_gpg, "(.+)%..+")

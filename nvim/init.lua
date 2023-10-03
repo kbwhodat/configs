@@ -43,21 +43,24 @@ vim.cmd('highlight LineNr ctermfg=black')
 keymap("n", "<leader>e", ":Oil<CR>", opts)
 
 -- Buffers
-keymap("n", "<leader>;", ":BufferLineCyclePrev<CR>", opts)
-keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts)
-keymap("n", "<leader>no", ":Neorg index<CR>", opts)
-keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts)
+keymap("n", "<leader>;", ":BufferLineCyclePrev<CR>", opts) -- This will move to the left buffer
+keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts) -- This will move to the right buffer 
+keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
+
+-- Neorg stuff
+keymap("n", "<leader>no", ":Neorg index<CR>", opts) -- Will go the root index
+keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts) -- Will go to the home workspace
 keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
 keymap("n", "<leader>noa", ":Neorg workspace aiazing<CR>", opts)
-keymap("n", "<leader>d", ":bw<CR>", opts)
+keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
 
 -- vim_wiki
-vim.g.vimwiki_list = {{path= '~/Documents/wiki_notes/', path_html= '~/Documents/wiki_notes_html/', syntax= 'markdown', ext= '.md' }}
-vim.g.vimwiki_hl_headers = 1
-vim.g.vimwiki_hl_cb_checked = 1
-vim.g.vimwiki_listing_hl = 1
-vim.g.vimwiki_listing_hl = 1
-vim.g.vimwiki_global_ext = 0
+-- vim.g.vimwiki_list = {{path= '~/wiki/', path_html= '~/wiki_html/', syntax= 'markdown', ext= '.md' }}
+-- vim.g.vimwiki_hl_headers = 1
+-- vim.g.vimwiki_hl_cb_checked = 1
+-- vim.g.vimwiki_listing_hl = 1
+-- vim.g.vimwiki_listing_hl = 1
+-- vim.g.vimwiki_global_ext = 0
 
 -- Adding syntax highlighting for markdown files with .md extensions
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
@@ -70,6 +73,7 @@ keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>na', [[<Cmd>lua neorg_decrypt_and_open("aiazing", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>nl', [[<Cmd>lua neorg_decrypt_and_open("learning", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 
 
 -- Dynamic Autocommands
