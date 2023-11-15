@@ -42,6 +42,7 @@
 }
 /* Tab numbering */
 hbox.tab-content::before {
+		margin-top: -5px !important; /* Moves the icon higher */
     content: counter(tab) ": ";
     counter-increment: tab;
     color: white;
@@ -88,15 +89,30 @@ hbox.tab-content::before {
 	min-height : 2.0em       !important;
 	height     : 2.0em       !important;
 }
+.tab-background {
+		padding: 10px !important;
+		border-radius: 0 !important;
+    margin-block: 1px 0 !important;
+    outline: none !important;   
+}
+	.tab-icon-image {
+		margin-top: -5px !important; /* Moves the icon higher */
+	}
+	.tab-label {
+		margin-top: -5px !important; /* Adjust this value to move the text higher */
+	}
 
-#personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:11px !important}
-#personal-bookmarks .bookmark-item > .toolbarbutton-icon { height:12px !important; width:12px !important; }
+#personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:12px !important}
+#personal-bookmarks .bookmark-item > .toolbarbutton-icon { height:20px !important; width:10px !important; }
+#tabbrowser-tabs {
+    --user-tab-rounding: 15px;
+}
 /* Fix for bug 725413 - Separators cause higher bookmark bar in Fx11 on OS X */
 #personal-bookmarks toolbarseparator {
 min-height: 5px !important;
 }
 #PersonalToolbar {
-		height: 10px !important;
+		height: 15px !important;
 	}
 #PlacesToolbarItems > .bookmark-item {
 		padding: 2px 4px !important;

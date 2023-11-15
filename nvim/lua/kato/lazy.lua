@@ -167,7 +167,7 @@ local plugins = {
                 incidents = "~/notes/work/Incidents",
                 home = "~/notes/home",
                 notes = "~/notes/notes",
-								aiazing = "~/notes/aiazing",
+								dj = "~/notes/dj",
 								learning = "~/notes/learning"
               },
               default_workspace = "notes"

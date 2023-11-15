@@ -51,7 +51,7 @@ keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
 keymap("n", "<leader>no", ":Neorg index<CR>", opts) -- Will go the root index
 keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts) -- Will go to the home workspace
 keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
-keymap("n", "<leader>noa", ":Neorg workspace aiazing<CR>", opts)
+keymap("n", "<leader>nod", ":Neorg workspace dj<CR>", opts)
 keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
 
 -- vim_wiki
@@ -72,8 +72,9 @@ keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 -- Bind this function to convenient keymaps or commands
 vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>na', [[<Cmd>lua neorg_decrypt_and_open("aiazing", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>nd', [[<Cmd>lua neorg_decrypt_and_open("dj", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>nl', [[<Cmd>lua neorg_decrypt_and_open("learning", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>nq', [[<Cmd>lua neorg_decrypt_and_open("notes", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 
 
 -- Dynamic Autocommands
@@ -81,8 +82,10 @@ vim.cmd([[
   augroup neorg_dynamic
     autocmd!
 		autocmd VimLeavePre *.norg :lua encrypt_all_buffers()
+		autocmd BufNewFile *.norg.gpg lua decrypt_and_open()
 		autocmd BufRead *.norg.gpg :lua decrypt_and_open()
 		autocmd BufRead *.norg :lua neorg_decrypt_and_open(nil, vim.fn.expand('<afile>:t'), vim.fn.expand('<afile>:p'))
+		autocmd BufDelete *.norg :lua neorg_encrypt_a_file(vim.fn.expand('<afile>:p'), true)
   augroup END
 ]])
 
