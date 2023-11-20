@@ -145,6 +145,13 @@ function decrypt_and_open()
 			else
 				print("Decryption failed, not switching to the file.")
 			end
+		elseif not file_exists(decrypted_filepath) then
+			-- This will obtain the non gpg file that already exsists and delete the gpg from the buffer
+			os.execute("rm " .. full_path)
+			wipe_gpg_buffer(full_path:match("([^/]+)$"))
+			vim.cmd('edit ' .. decrypted_filepath)
+			vim.cmd("set filetype=norg")
+
 		elseif file_exists(decrypted_filepath) then
 			-- This will obtain the non gpg file that already exsists and delete the gpg from the buffer
 			os.execute("rm " .. full_path)
