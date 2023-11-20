@@ -26,41 +26,42 @@ end
 
 function neorg_encrypt_a_file(full_path, isBuffer)
 	-- print("neorg_encrypt_a_file: ", full_path)
-  local directory = full_path:match("(.+)/")
-	local workspace = get_workspace_from_path(full_path)
-	local filename = full_path:match(".+/([^/]+)$")
-	local remaining_path = get_remaining_path_after_workspace(full_path, workspace)
+	if not full_path:match("neorg%.norg$") then
+		local directory = full_path:match("(.+)/")
+		local workspace = get_workspace_from_path(full_path)
+		local filename = full_path:match(".+/([^/]+)$")
+		local remaining_path = get_remaining_path_after_workspace(full_path, workspace)
 
-	-- print("Full Path: " .. (full_path or "nil"))
-	-- print("Directory: " .. (directory or "nil"))
-	-- print("Workspace: " .. (workspace or "nil"))
-	-- print("Filename: " .. (filename or "nil"))
-	-- print("remaining_path: " .. (remaining_path or "nil"))
+		-- print("Full Path: " .. (full_path or "nil"))
+		-- print("Directory: " .. (directory or "nil"))
+		-- print("Workspace: " .. (workspace or "nil"))
+		-- print("Filename: " .. (filename or "nil"))
+		-- print("remaining_path: " .. (remaining_path or "nil"))
 
-  local filepath = vim.fn.expand("~/notes/") .. workspace .. remaining_path
-  local gpg_filepath = filepath .. ".gpg"
+		local filepath = vim.fn.expand("~/notes/") .. workspace .. remaining_path
+		local gpg_filepath = filepath .. ".gpg"
 
-	-- print("Filepath: " .. (filepath or "nil"))
-	-- print("gpg_Filepath: " .. (gpg_filepath or "nil"))
+		-- print("Filepath: " .. (filepath or "nil"))
+		-- print("gpg_Filepath: " .. (gpg_filepath or "nil"))
 
-  -- Encryption command
-  local encrypt_cmd = string.format("pass show my_passphrase | gpg -r kiyingi --trust-model always --no-tty --batch --yes --passphrase-fd 0 --output %s --encrypt %s >/dev/null 2>&1", gpg_filepath, filepath)
+		-- Encryption command
+		local encrypt_cmd = string.format("pass show my_passphrase | gpg -r kiyingi --trust-model always --no-tty --batch --yes --passphrase-fd 0 --output %s --encrypt %s >/dev/null 2>&1", gpg_filepath, filepath)
 
+		-- Run the command and capture the exit status
+		local exit_status = os.execute(encrypt_cmd)
 
-  -- Run the command and capture the exit status
-  local exit_status = os.execute(encrypt_cmd)
-
-  -- If the exit status is 0, the command was successful
-  if exit_status == 0 then
-		if isBuffer == false then
+		-- If the exit status is 0, the command was successful
+		if exit_status == 0 then
+			if isBuffer == false then
+				vim.cmd("silent !rm " .. filepath)
+				git_auto_commit()
+			end
 			vim.cmd("silent !rm " .. filepath)
-			git_auto_commit()
-		end
-		vim.cmd("silent !rm " .. filepath)
 
-  else
-    print("Encryption failed, not removing the file.")
-  end
+		else
+			print("Encryption failed, not removing the file.")
+		end
+	end
 end
 
 function wipe_gpg_buffer(gpg_filename)
@@ -151,6 +152,22 @@ function decrypt_and_open()
 			wipe_gpg_buffer(full_path:match("([^/]+)$"))
 			vim.cmd('edit ' .. decrypted_filepath)
 			vim.cmd("set filetype=norg")
+		end
+	-- This wil essentially do that opposite. If the file is a norg file it will look to see if the gpg file is there and if it is it will decrypt the file and open as a norg file
+	elseif full_path:match("%.norg$") then
+		local encrypted_filepath = full_path:gsub("%.norg$", ".norg.gpg")
+
+		if file_exists(encrypted_filepath) then
+			-- Decryption command
+			local decrypt_cmd = string.format("pass show my_passphrase | gpg -r kiyingi --trust-model always --no-tty --batch --yes --passphrase-fd 0 --output %s --decrypt %s 2>/dev/null", full_path, encrypted_filepath)
+			-- Run the command and capture the exit status
+			local exit_status = os.execute(decrypt_cmd)
+			if exit_status == 0 then
+				os.execute("rm " .. encrypted_filepath)
+				wipe_gpg_buffer(encrypted_filepath:match("([^/]+)$"))
+				vim.cmd("silent e " .. full_path)
+				vim.cmd("set filetype=norg")
+			end
 		end
 	end
 end

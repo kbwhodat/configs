@@ -66,7 +66,7 @@ keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
 
 
-keymap("n", "<leader>t", ":FloatermNew<CR>", opts)
+keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
 keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 
 -- Bind this function to convenient keymaps or commands
@@ -84,6 +84,9 @@ vim.cmd([[
 		autocmd VimLeavePre *.norg :lua encrypt_all_buffers()
 		autocmd BufNewFile *.norg.gpg lua decrypt_and_open()
 		autocmd BufRead *.norg.gpg :lua decrypt_and_open()
+
+		autocmd BufNewFile *.norg lua decrypt_and_open()
+
 		autocmd BufRead *.norg :lua neorg_decrypt_and_open(nil, vim.fn.expand('<afile>:t'), vim.fn.expand('<afile>:p'))
 		autocmd BufDelete *.norg :lua neorg_encrypt_a_file(vim.fn.expand('<afile>:p'), true)
   augroup END

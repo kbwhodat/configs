@@ -1,8 +1,12 @@
 require("toggleterm").setup{
     -- size can be a number or function which is passed the current terminal
-    size = 20,
+    size = 15,
+		direction = 'float',
     open_mapping = [[<c-t>]],
-    autochdir = false, -- when neovim changes it current directory the terminal will change it's own when next it's opened
+		float_opts = {
+		border = 'double'
+	},
+    autochdir = true, -- when neovim changes it current directory the terminal will change it's own when next it's opened
     shade_terminals = true, -- NOTE: this option takes priority over highlights specified so if you specify Normal highlights you should set this to false
     start_in_insert = true,
     insert_mappings = true, -- whether or not the open mapping applies in insert mode

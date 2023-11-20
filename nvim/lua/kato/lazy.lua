@@ -14,10 +14,15 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
   -- Packer can manage itself
   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.0',
+    'nvim-telescope/telescope.nvim', tag = '0.1.4',
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
-
+	{
+		'neoclide/coc.nvim'
+	},
+	{
+		"tpope/vim-dadbod"
+	},
   {
     "RRethy/vim-illuminate",
     event = { "BufReadPost", "BufNewFile" },
@@ -187,11 +192,11 @@ local plugins = {
     opts = {
       -- symbol = "▏",
       symbol = "│",
-      options = { try_as_border = true },
+      options = { try_as_border = false },
     },
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy", "mason" },
+        pattern = { "toggleterm", "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy", "mason" },
         callback = function()
           vim.b.miniindentscope_disable = true
         end,
