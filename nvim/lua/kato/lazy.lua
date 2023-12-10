@@ -156,7 +156,14 @@ local plugins = {
 					["core.autocommands"] = {},
           ["core.concealer"] = {
 						config = {
-							icon_preset = "varied"
+
+							icons = {
+								heading = {
+									icons = {"◉"}
+								}
+							},
+							folds = true,
+							init_open_folds = "never"
 						},
 					}, -- Adds pretty icons to your documents
           ["core.qol.todo_items"] = {}, -- For enhanced to-do list functionalities.
