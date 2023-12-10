@@ -37,6 +37,10 @@ vim.cmd[[hi NormalNC guibg=#000000]]
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
 
+
+
+
+
 -- nvim-tree
 -- keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
 -- Oil
@@ -72,7 +76,8 @@ keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 -- Bind this function to convenient keymaps or commands
 vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>nd', [[<Cmd>lua neorg_decrypt_and_open("dj", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>nj', [[<Cmd>lua neorg_decrypt_and_open("dj", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>nd', [[<Cmd>lua neorg_decrypt_and_open("development", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>nl', [[<Cmd>lua neorg_decrypt_and_open("learning", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>nq', [[<Cmd>lua neorg_decrypt_and_open("notes", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 

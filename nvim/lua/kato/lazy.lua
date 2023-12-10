@@ -21,7 +21,13 @@ local plugins = {
 		'neoclide/coc.nvim'
 	},
 	{
+		"3rd/image.nvim",
+	},
+	{
 		"tpope/vim-dadbod"
+	},
+	{
+		"kristijanhusak/vim-dadbod-ui"
 	},
   {
     "RRethy/vim-illuminate",
@@ -173,6 +179,7 @@ local plugins = {
                 home = "~/notes/home",
                 notes = "~/notes/notes",
 								dj = "~/notes/dj",
+								development = "~/notes/development",
 								learning = "~/notes/learning"
               },
               default_workspace = "notes"
@@ -284,7 +291,6 @@ local plugins = {
       {'hrsh7th/cmp-nvim-lua'},
 
       -- Snippets
-      {'L3MON4D3/LuaSnip'},
       {'rafamadriz/friendly-snippets'},
     }
   }
