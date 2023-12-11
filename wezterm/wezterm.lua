@@ -9,6 +9,7 @@ local act = wezterm.action
 -- end
 
 return {
+	enable_kitty_graphics = false,
   cursor_blink_ease_in = 'Linear',
   cursor_blink_ease_out = 'Linear',
   keys = {
