@@ -22,7 +22,13 @@ local plugins = {
 			branch = 'release'
 	},
 	{
+		"3rd/image.nvim",
+	},
+	{
 		"tpope/vim-dadbod"
+	},
+	{
+		"kristijanhusak/vim-dadbod-ui"
 	},
   {
     "RRethy/vim-illuminate",
@@ -151,7 +157,14 @@ local plugins = {
 					["core.autocommands"] = {},
           ["core.concealer"] = {
 						config = {
-							icon_preset = "varied"
+
+							icons = {
+								heading = {
+									icons = {"◉"}
+								}
+							},
+							folds = true,
+							init_open_folds = "never"
 						},
 					}, -- Adds pretty icons to your documents
           ["core.qol.todo_items"] = {}, -- For enhanced to-do list functionalities.
@@ -174,6 +187,7 @@ local plugins = {
                 home = "~/notes/home",
                 notes = "~/notes/notes",
 								dj = "~/notes/dj",
+								development = "~/notes/development",
 								learning = "~/notes/learning"
               },
               default_workspace = "notes"
@@ -285,7 +299,6 @@ local plugins = {
       {'hrsh7th/cmp-nvim-lua'},
 
       -- Snippets
-      {'L3MON4D3/LuaSnip'},
       {'rafamadriz/friendly-snippets'},
     }
   }
