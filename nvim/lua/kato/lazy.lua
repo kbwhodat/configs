@@ -18,7 +18,8 @@ local plugins = {
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
 	{
-		'neoclide/coc.nvim'
+		'neoclide/coc.nvim',
+			branch = 'release'
 	},
 	{
 		"tpope/vim-dadbod"
