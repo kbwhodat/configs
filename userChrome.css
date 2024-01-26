@@ -40,14 +40,6 @@
 	border-radius: 0 !important;
 	font-family: var(--tab-font-family) !important;
 }
-/* Tab numbering */
-hbox.tab-content::before {
-		margin-top: -5px !important; /* Moves the icon higher */
-    content: counter(tab) ": ";
-    counter-increment: tab;
-    color: white;
-    margin-right: 9px;
-}
 .tabbrowser-tab {
 	height: var(--tab-height);
 	font-size: var(--tab-font-size) !important;
@@ -89,17 +81,40 @@ hbox.tab-content::before {
 	min-height : 2.0em       !important;
 	height     : 2.0em       !important;
 }
+/* Tab numbering */
+hbox.tab-content::before {
+		margin-top: -10px !important; /* Moves the icon higher */
+    content: counter(tab) ": ";
+    counter-increment: tab;
+    color: white;
+    margin-right: 9px;
+}
+.tab-icon-overlay[soundplaying] {
+	margin-top: -10px !important; /* Moves the icon higher */
+}
+.tab-throbber[busy] {
+	margin-top: -10px !important; /* Moves the icon higher */
+}
 .tab-background {
 		padding: 10px !important;
 		border-radius: 0 !important;
     margin-block: 1px 0 !important;
     outline: none !important;   
 }
-	.tab-icon-image {
-		margin-top: -5px !important; /* Moves the icon higher */
+.tab-icon-overlay:not([crashed]){
+top: -5.5px;
+inset-inline-end: -6px;
+z-index: 1;
+padding: 2px;
+opacity: 1 !important;
+stroke: var(--tab-icon-overlay-stroke, black) !important;
+}
+	.tab-icon-image,.tab-throbber {
+	  opacity: 1 !important;
+		margin-top: -10px !important; /* Moves the icon higher */
 	}
 	.tab-label {
-		margin-top: -5px !important; /* Adjust this value to move the text higher */
+		margin-top: -10px !important; /* Adjust this value to move the text higher */
 	}
 
 #personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:12px !important}

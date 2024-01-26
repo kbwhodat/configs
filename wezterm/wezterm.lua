@@ -9,7 +9,7 @@ local act = wezterm.action
 -- end
 
 return {
-	enable_kitty_graphics = false,
+	enable_kitty_graphics = true,
   cursor_blink_ease_in = 'Linear',
   cursor_blink_ease_out = 'Linear',
   keys = {
@@ -22,8 +22,9 @@ return {
   window_decorations = "RESIZE",
   hide_tab_bar_if_only_one_tab = true,
   enable_tab_bar = false,
-  font_size = 15.0,
-  font = wezterm.font { family = 'Roboto Mono', weight = 'Medium' },
+  font_size = 13.5,
+  -- font = wezterm.font("JetBrainsMono Nerd Font Mono", {weight="Regular", stretch="Normal", style="Normal"}),
+  font = wezterm.font("Roboto Mono", {weight="Regular", stretch="Normal", style="Normal"}),
 	-- font_rules = {
 	-- 	{
 	-- 		intensity = "Bold",
@@ -38,8 +39,8 @@ return {
 	-- },
   window_background_opacity = 3.0,
   window_padding = {
-    left = 2,
-    right = 2,
+    left = 0,
+    right = 0,
     top = 0,
     bottom = 0,
   },

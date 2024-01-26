@@ -199,7 +199,7 @@ function git_auto_commit()
     -- Generate a dynamic commit message
     local commit_message = string.format("Edited %s", current_file)
 
-    local target_dir = "/Users/katob/notes/"
+    local target_dir = "/home/kman/notes/"
     local current_dir = vim.fn.getcwd()
 
     vim.cmd("cd " .. target_dir)
