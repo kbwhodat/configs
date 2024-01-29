@@ -19,10 +19,40 @@ local plugins = {
   },
 	-- {
 	-- 	'neoclide/coc.nvim',
-	-- 		branch = 'release'
+	-- 	branch = 'release'
 	-- },
 	{
 		"3rd/image.nvim"
+	},
+	{
+		"jellydn/hurl.nvim",
+		dependencies = { "MunifTanjim/nui.nvim" },
+		ft = "hurl",
+		opts = {
+			-- Show debugging info
+			debug = false,
+			-- Show response in popup or split
+			mode = "split",
+			-- Default formatter
+			formatters = {
+				json = { 'jq' }, -- Make sure you have install jq in your system, e.g: brew install jq
+				html = {
+					'prettier', -- Make sure you have install prettier in your system, e.g: npm install -g prettier
+					'--parser',
+					'html',
+				},
+			},
+		},
+		keys = {
+			-- Run API request
+			{ "<leader>A", "<cmd>HurlRunner<CR>", desc = "Run All requests" },
+			{ "<leader>a", "<cmd>HurlRunnerAt<CR>", desc = "Run Api request" },
+			{ "<leader>te", "<cmd>HurlRunnerToEntry<CR>", desc = "Run Api request to entry" },
+			{ "<leader>tm", "<cmd>HurlToggleMode<CR>", desc = "Hurl Toggle Mode" },
+			{ "<leader>tv", "<cmd>HurlVerbose<CR>", desc = "Run Api in verbose mode" },
+			-- Run Hurl request in visual mode
+			{ "<leader>h", ":HurlRunner<CR>", desc = "Hurl Runner", mode = "v" },
+		},
 	},
 	{
 		"tpope/vim-dadbod"
@@ -137,85 +167,6 @@ local plugins = {
       { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
     },
   },
-
-  -- { "MunifTanjim/nui.nvim", lazy = true },
-
-  -- {
-  --   "nvim-neorg/neorg",
-  --   build = ":Neorg sync-parsers",
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   config = function()
-  --     require("neorg").setup {
-  --       load = {
-  --         ["core.defaults"] = {}, -- Loads default behaviour
-					-- ["core.integrations.treesitter"] = {},
-					-- ["core.export.markdown"] = {},
-					-- ["core.syntax"] = {},
-					-- ["core.highlights"] = {},
-					-- ["core.mode"] = {},
-					-- ["core.neorgcmd"] = {},
-					-- ["core.fs"] = {},
-					-- ["core.autocommands"] = {},
-  --         ["core.concealer"] = {
-						-- config = {
-							-- icons = {
-								-- heading = {
-									-- enabled = true,
-									-- level_1 = {
-										-- enabled = true,
-										-- icon = "◉",
-									-- },
-									-- level_2 = {
-										-- enabled = true,
-										-- icon = " ○",
-									-- },
-									-- level_3 = {
-										-- enabled = true,
-										-- icon = "  ●",
-									-- },
-									-- level_4 = {
-										-- enabled = true,
-										-- icon = "   ○",
-									-- },
-								-- },
-							-- },
-							-- folds = true,
-							-- init_open_folds = "always"
-						-- },
-					-- }, -- Adds pretty icons to your documents
-  --         ["core.qol.todo_items"] = {}, -- For enhanced to-do list functionalities.
-  --         ["core.esupports.hop"] = {}, -- For enhanced to-do list functionalities.
-  --         ["core.esupports.indent"] = {}, -- For enhanced to-do list functionalities.
-  --         ["core.esupports.metagen"] = {}, -- For enhanced to-do list functionalities.
-  --         ["core.journal"] = {
-  --           config = {
-  --             workspace = "incidents"
-  --           }
-  --         }, -- For enhanced to-do list functionalities.
-  --         ["core.ui"] = {}, -- For a calendar view within Neovim.
-  --         ["core.integrations.truezen"] = {}, -- For executing code blocks within Neorg files.
-  --         ["core.neorgcmd.commands.return"] = {}, -- For executing code blocks within Neorg files.
-  --         ["core.dirman"] = { -- Manages Neorg workspaces
-  --           config = {
-  --             workspaces = {
-  --               work = "~/notes/work",
-  --               incidents = "~/notes/work/Incidents",
-  --               home = "~/notes/home",
-  --               notes = "~/notes/notes",
-								-- dj = "~/notes/dj",
-								-- development = "~/notes/development",
-								-- learning = "~/notes/learning"
-  --             },
-  --             default_workspace = "notes"
-  --           },
-  --         },
-  --       },
-  --     }
-  --     vim.wo.foldlevel = 99
-  --     vim.wo.conceallevel = 3
-  --   end,
-  -- },
-
   {
     "echasnovski/mini.indentscope",
     version = false, -- wait till new 0.7.0 release to put it back on semver
@@ -247,19 +198,6 @@ local plugins = {
   },
 
   'nvim-treesitter/nvim-treesitter-context',
-  -- 'ThePrimeagen/harpoon',
-  -- {
-  --   "SmiteshP/nvim-navbuddy",
-  --   dependencies = {
-			-- "neovim/nvim-lspconfig",
-			-- "SmiteshP/nvim-navic",
-			-- "MunifTanjim/nui.nvim",
-			-- "numToStr/Comment.nvim",        -- Optional
-			-- "nvim-telescope/telescope.nvim" -- Optional
-  --   },
-		-- opts = { lsp = { auto_attach = true } }
-  -- },
-  -- 'sheerun/vim-polyglot',
   "mbbill/undotree",
   "tpope/vim-obsession",
   {
@@ -285,8 +223,6 @@ local plugins = {
 	"rebelot/kanagawa.nvim",
   'tpope/vim-surround',
   'windwp/nvim-autopairs' ,
-	'catppuccin/nvim',
-	"folke/tokyonight.nvim",
 	'dkarter/bullets.vim',
   'lewis6991/impatient.nvim',
   "akinsho/toggleterm.nvim",
@@ -301,27 +237,6 @@ local plugins = {
 	},
   'christoomey/vim-tmux-navigator',
 	{"airblade/vim-gitgutter"},
-	-- {
-	-- 	"vimwiki/vimwiki",
-	-- 	branch = "dev",
-	-- 	init = function()
-	-- 		print("Setting up vimwiki!")
-	-- 		vim.g.vimwiki_list = {
-	-- 			{
-	-- 				syntax = "markdown",
-	-- 				ext = ".md",
-	-- 				path = "~/wiki/work", -- does not work?=!?!?
-	-- 			},
-	-- 			{
-	-- 				syntax = "markdown",
-	-- 				ext = ".md",
-	-- 				path = "~/wiki/school", -- does not work?=!?!?
-
-	-- 			}
-	-- 		}
-	-- 	end,
-	-- 	ft = {"vimwiki", "md"}
-	-- },
   'DanilaMihailov/beacon.nvim',
   {
     'VonHeikemen/lsp-zero.nvim',
