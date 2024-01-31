@@ -1,22 +1,22 @@
 
 
-package.path = package.path .. ";"  .. "/Users/katob/.luarocks/share/lua/5.1/?/init.lua;"
-package.path = package.path .. ";" ..  "/Users/katob/.luarocks/share/lua/5.1/?.lua;"
+package.path = package.path .. ";"  .. "/home/kman/.luarocks/share/lua/5.1/?/init.lua;"
+package.path = package.path .. ";" ..  "/home/kman/.luarocks/share/lua/5.1/?.lua;"
 
 -- default config
 require("image").setup({
-  backend = "kitty",
+  backend = "ueberzug",
   integrations = {
     markdown = {
       enabled = true,
-      clear_in_insert_mode = false,
+      clear_in_insert_mode = true,
       download_remote_images = true,
-      only_render_image_at_cursor = false,
+      only_render_image_at_cursor = true,
       filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
     },
     neorg = {
       enabled = true,
-      clear_in_insert_mode = false,
+      clear_in_insert_mode = true,
       download_remote_images = true,
       only_render_image_at_cursor = false,
       filetypes = { "norg" },

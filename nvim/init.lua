@@ -1,6 +1,8 @@
 
 require("kato")
 require("kato.neorg_functions")
+require("kato.obsidian")
+require("kato.obsidian_functions")
 
 local vim = vim
 
@@ -21,6 +23,11 @@ vim.g.maplocalleader = " "
 -- vim.cmd("set tabstop=2")
 
 -- vim.opts.termguicolors = true
+--
+vim.opt.list = true
+-- vim.opt.listchars = {
+-- 	eol = ""
+-- }
 
 -- Setting Underline
 vim.api.nvim_command('set cursorline | hi clear cursorline | hi CursorLine gui=underline cterm=underline')
@@ -29,16 +36,25 @@ vim.cmd('set cursorcolumn')
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
 -- add the colorscheme that I have defined in .config/nvim/colors
--- vim.cmd('colorscheme molokai-dark')
+vim.cmd('set termguicolors')
+-- vim.cmd('colorscheme catppuccin-mocha')
+-- vim.cmd('colorscheme tokyonight-night')
 vim.cmd('colorscheme kanagawa')
+
+-- setting coneal for markdown stuff
+vim.cmd('set conceallevel=2')
+vim.cmd('set autochdir')
+
 vim.cmd[[hi Normal guibg=#000000]]
+vim.cmd('set background=dark')
 vim.cmd[[hi NormalNC guibg=#000000]]
 -- vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
 
-
-
+-- Spell checking
+vim.cmd('set spelllang=en_us')
+vim.cmd('set spell')
 
 
 -- nvim-tree
@@ -60,11 +76,9 @@ keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
 
 -- vim_wiki
 -- vim.g.vimwiki_list = {{path= '~/wiki/', path_html= '~/wiki_html/', syntax= 'markdown', ext= '.md' }}
--- vim.g.vimwiki_hl_headers = 1
--- vim.g.vimwiki_hl_cb_checked = 1
--- vim.g.vimwiki_listing_hl = 1
--- vim.g.vimwiki_listing_hl = 1
--- vim.g.vimwiki_global_ext = 0
+-- vim.cmd("let g:vimwiki_global_ext = 0")
+-- vim.cmd("let g:vimwiki_ext2syntax = {}")
+
 
 -- Adding syntax highlighting for markdown files with .md extensions
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
@@ -74,15 +88,35 @@ keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
 keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 
 -- Bind this function to convenient keymaps or commands
-vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>nj', [[<Cmd>lua neorg_decrypt_and_open("dj", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>nd', [[<Cmd>lua neorg_decrypt_and_open("development", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>nl', [[<Cmd>lua neorg_decrypt_and_open("learning", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>nq', [[<Cmd>lua neorg_decrypt_and_open("notes", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<Leader>nj', [[<Cmd>lua neorg_decrypt_and_open("dj", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<Leader>nd', [[<Cmd>lua neorg_decrypt_and_open("development", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<Leader>nl', [[<Cmd>lua neorg_decrypt_and_open("learning", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<Leader>nq', [[<Cmd>lua neorg_decrypt_and_open("notes", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
+
+
+-- Obsidian key bindings
+vim.api.nvim_set_keymap('n', '<leader>gp', ':lua Obsidian_auto_commit()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>os', ':ObsidianSearch<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>on', ':lua create_obsidian_note()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>od', ':ObsidianToday<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>oq', ':ObsidianQuickSwitch<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ob', ':ObsidianBacklinks<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ot', ':ObsidianTemplate<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>of', ':ObsidianFollowLink<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
 
 
 -- Dynamic Autocommands
+-- vim.cmd([[
+--   augroup obsidian_functions
+--     autocmd!
+-- 		autocmd VimLeavePre *.md :lua Obsidian_auto_commit()
+--   augroup END
+-- ]])
+
 vim.cmd([[
   augroup neorg_dynamic
     autocmd!
@@ -106,4 +140,5 @@ vim.api.nvim_create_autocmd("BufReadPost", {
         end
     end
 })
+
 
