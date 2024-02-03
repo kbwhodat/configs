@@ -18,7 +18,7 @@ function Obsidian_auto_commit()
     -- Generate a dynamic commit message
     local commit_message = string.format("vault backup: %s", GetFormattedTimestamp())
 
-    local target_dir = "/home/kman/vault/"
+    local target_dir = "~/vault/"
     local current_dir = vim.fn.getcwd()
 
     vim.cmd("cd " .. target_dir)

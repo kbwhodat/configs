@@ -1,11 +1,23 @@
 
 
-package.path = package.path .. ";"  .. "/home/kman/.luarocks/share/lua/5.1/?/init.lua;"
-package.path = package.path .. ";" ..  "/home/kman/.luarocks/share/lua/5.1/?.lua;"
+local os_type = io.popen('uname'):read("*l")
+local backend = "ueberzug"
+
+if os_type == 'Darwin' then
+
+	backend = "kitty"
+	package.path = package.path .. ";"  .. "/Users/katob/.luarocks/share/lua/5.1/?/init.lua;"
+	package.path = package.path .. ";" ..  "/Users/katob/.luarocks/share/lua/5.1/?.lua;"
+elseif os_type == 'Linux' then
+	package.path = package.path .. ";"  .. "/home/kman/.luarocks/share/lua/5.1/?/init.lua;"
+	package.path = package.path .. ";" ..  "/home/kman/.luarocks/share/lua/5.1/?.lua;"
+end
+
+
 
 -- default config
 require("image").setup({
-  backend = "ueberzug",
+  backend = backend,
   integrations = {
     markdown = {
       enabled = true,
