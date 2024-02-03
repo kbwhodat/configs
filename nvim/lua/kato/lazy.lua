@@ -189,14 +189,6 @@ local plugins = {
     end,
   },
 
-  {
-    "dstein64/vim-startuptime",
-    cmd = "StartupTime",
-    config = function()
-      vim.g.startuptime_tries = 10
-    end,
-  },
-
   'nvim-treesitter/nvim-treesitter-context',
   "mbbill/undotree",
   "tpope/vim-obsession",
@@ -237,7 +229,12 @@ local plugins = {
 	},
   'christoomey/vim-tmux-navigator',
 	{"airblade/vim-gitgutter"},
-  'DanilaMihailov/beacon.nvim',
+	{
+		"karb94/neoscroll.nvim",
+		config = function ()
+			require('neoscroll').setup {}
+		end
+	},
   {
     'VonHeikemen/lsp-zero.nvim',
     dependencies = {

@@ -1,4 +1,7 @@
 
+
+vim.cmd('set conceallevel=2')
+
 require('obsidian').setup({
 	workspaces = {
 		{

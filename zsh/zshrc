@@ -177,7 +177,7 @@ source $ZSH/oh-my-zsh.sh
 
 #export GOPATH=`echo $HOME/go`
 #export PATH="$GOPATH:$PATH"
-export PATH="/home/kman/.local/share/nvim/mason/bin:/usr/local/lib:/usr/local/opt/binutils/bin:/usr/local/opt/inetutils/libexec/gnubin:/usr/local/opt/openssl@3/bin:/usr/local/opt/bzip2/bin:$PATH"
+export PATH="/home/kman/.cargo/bin:/home/kman/.local/share/nvim/mason/bin:/usr/local/lib:/usr/local/opt/binutils/bin:/usr/local/opt/inetutils/libexec/gnubin:/usr/local/opt/openssl@3/bin:/usr/local/opt/bzip2/bin:$PATH"
 export DYLD_LIBRARY_PATH=/usr/local/lib/
 
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig:/opt/X11/lib/pkgconfig:/usr/local/opt/libffi/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
