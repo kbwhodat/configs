@@ -18,8 +18,15 @@ setopt promptsubst         # enable command substitution in prompt
 
 alias bukuadd='buku -a'
 alias ls='ls --color'
-alias vim="/sbin/nvim"
-alias vi="/sbin/nvim"
+
+if [[ $(uname) -eq "Darwin" ]] then
+	alias vim="/usr/local/bin/nvim"
+	alias vi="/usr/local/bin/nvim"
+else
+	alias vim="/sbin/nvim"
+	alias vi="/sbin/nvim"
+fi
+
 
 export SHELL=$(which zsh)
 export BROWSER='firefox'
@@ -170,10 +177,16 @@ export PKG_CONFIG_PATH="/usr/local/opt/openssl@3/lib/pkgconfig:/usr/local/opt/zl
 
 export CONFIGURE_OPTS="CPPFLAGS=-I/usr/local/opt/zlib/include,-I/usr/local/opt/openssl@3/include,-I/usr/local/opt/bzip2/include,-I/usr/local/opt/readline/include LDFLAGS=-L/usr/local/opt/zlib/lib,-L/usr/local/opt/openssl@3/lib,-L/usr/local/opt/bzip2/lib,-L/usr/local/opt/readline/lib"
 
-export ZSH="/usr/share/oh-my-zsh"
-plugins=(git tmux)
-source $ZSH/oh-my-zsh.sh
 
+if [[ $(uname) == "Darwin" ]] then
+	export ZSH="/Users/katob/.oh-my-zsh"
+	plugins=(git tmux)
+	source $ZSH/oh-my-zsh.sh
+else
+	export ZSH="/usr/share/oh-my-zsh"
+	plugins=(git tmux)
+	source $ZSH/oh-my-zsh.sh
+fi
 
 #export GOPATH=`echo $HOME/go`
 #export PATH="$GOPATH:$PATH"
