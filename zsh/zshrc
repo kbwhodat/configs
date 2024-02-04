@@ -2,7 +2,19 @@
 # see /usr/share/doc/zsh/examples/zshrc for examples
 
 ZSH_TMUX_AUTOSTART=true
+ZSH_TMUX_DEFAULT_SESSION_NAME=genesis
 WEZTERM_CONFIG_FILE=~/.config/wezterm/wezterm.lua
+
+# tmux_sessionizer_script() {
+# 	if [[ $(uname) == "Darwin" ]] then
+# 		"/Users/katob/.config/tmux/tmux-sessionizer.sh"
+# 	elif [[ $(uname) == "Linux" ]] then
+# 		"/home/kman/.config/tmux/tmux-sessionizer.sh"
+# 	fi
+# }
+# zle -N tmux_sessionizer_script
+# bindkey '^o' tmux_sessionizer_script
+bindkey -r '^o'
 
 setopt autocd              # change directory just by typing its name
 setopt correct            # auto correct mistakes
@@ -19,10 +31,10 @@ setopt promptsubst         # enable command substitution in prompt
 alias bukuadd='buku -a'
 alias ls='ls --color'
 
-if [[ $(uname) -eq "Darwin" ]] then
+if [[ $(uname) == "Darwin" ]] then
 	alias vim="/usr/local/bin/nvim"
 	alias vi="/usr/local/bin/nvim"
-else
+elif [[ $(uname) == "Linux" ]] then
 	alias vim="/sbin/nvim"
 	alias vi="/sbin/nvim"
 fi
@@ -182,7 +194,7 @@ if [[ $(uname) == "Darwin" ]] then
 	export ZSH="/Users/katob/.oh-my-zsh"
 	plugins=(git tmux)
 	source $ZSH/oh-my-zsh.sh
-else
+elif [[ $(uname) == "Linux" ]] then
 	export ZSH="/usr/share/oh-my-zsh"
 	plugins=(git tmux)
 	source $ZSH/oh-my-zsh.sh
