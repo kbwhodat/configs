@@ -1,0 +1,21 @@
+#!/bin/bash
+
+current_file=~/.pomodoro/current
+
+# Check if current_file exists and is not empty
+if [ ! -s "$current_file" ]; then
+    echo "The current file is empty or does not exist."
+    exit 1
+fi
+
+# Extract the duration value from the file
+duration=$(grep -oP 'duration=\K\d+' "$current_file")
+
+# Check if duration was successfully extracted and is a valid number
+if ! [[ "$duration" =~ ^[0-9]+$ ]]; then
+    echo "Failed to extract a valid duration from the file."
+    exit 2
+fi
+
+# Schedule the notification using 'at' command
+echo "notify-send '🍅 Pomodoro' 'Session finished'" | at now + ${duration} minutes

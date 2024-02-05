@@ -5,16 +5,23 @@ ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_DEFAULT_SESSION_NAME=genesis
 WEZTERM_CONFIG_FILE=~/.config/wezterm/wezterm.lua
 
-# tmux_sessionizer_script() {
+# change_directory_script() {
 # 	if [[ $(uname) == "Darwin" ]] then
-# 		"/Users/katob/.config/tmux/tmux-sessionizer.sh"
+# 		"/Users/katob/.config/tmux/change-directory.sh"
 # 	elif [[ $(uname) == "Linux" ]] then
-# 		"/home/kman/.config/tmux/tmux-sessionizer.sh"
+# 		"/home/kman/.config/tmux/change-directory.sh"
 # 	fi
 # }
-# zle -N tmux_sessionizer_script
-# bindkey '^o' tmux_sessionizer_script
-bindkey -r '^o'
+# zle -N change_directory_script
+# bindkey '^o' change_directory_script
+fcd() {
+    local dir
+    dir=$(fd . ~ ~/Documents ~/.config --type d ${1:-} 2> /dev/null | fzf --height 35% --preview 'tree -C {} | head -n 10') && cd "$dir"
+}
+
+zle -N fcd
+bindkey '^o' fcd
+# bindkey -r '^o'
 
 setopt autocd              # change directory just by typing its name
 setopt correct            # auto correct mistakes

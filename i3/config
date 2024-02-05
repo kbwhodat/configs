@@ -16,6 +16,9 @@ set $mod Mod1
 #To open kitty
 bindsym Control+space exec --no-startup-id /home/kman/Documents/scripts/toggle_kitty.sh
 
+#Used for displaying notifications
+exec_always --no-startup-id dunst
+
 # Will hide the titlebar
 for_window [class="^.*"] border pixel 1
 

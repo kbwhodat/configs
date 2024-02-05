@@ -58,8 +58,6 @@ require('kanagawa').setup({
 		return {
 			LineNr = { fg = "#C0A36E", bg = "NONE"},
 			CursorLineNr = { fg = colors.palette.orange, bg = "NONE"},
-			MarkdownH1 = { fg = colors.palette.waveBlue1 }, -- Change H1 color
-			MarkdownH2 = { fg = colors.palette.autumnGreen }, -- Change H2 color
 			-- update kanagawa to handle new treesitter highlight captures
 			["@string.regexp"] = { link = "@string.regex" },
 			["@variable.parameter"] = { link = "@parameter" },
@@ -82,7 +80,7 @@ require('kanagawa').setup({
 			["@diff.minus"] = { link = "@text.diff.delete" },
 		}
 	end,
-	theme = "dragon",              -- Load "wave" theme when 'background' option is not set
+	theme = "wave",              -- Load "wave" theme when 'background' option is not set
 	background = {               -- map the value of 'background' option to a theme
 		dark = "wave",           -- try "dragon" !
 		light = "lotus"
