@@ -1,0 +1,22 @@
+display_full_path = true
+search_submodules = false
+
+[[search_dirs]]
+path = '/home/kman/.config/nvim'
+depth = 10
+
+[[search_dirs]]
+path = '/home/kman/.config/tmux'
+depth = 10
+
+[[search_dirs]]
+path = '/home/kman/.config/i3'
+depth = 10
+
+[[search_dirs]]
+path = '/home/kman/vault'
+depth = 10
+
+[[search_dirs]]
+path = '/home/kman/notes'
+depth = 10

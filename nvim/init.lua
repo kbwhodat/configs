@@ -35,11 +35,9 @@ vim.api.nvim_command('set cursorline | hi clear cursorline | hi CursorLine gui=u
 vim.cmd('set cursorcolumn')
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
--- add the colorscheme that I have defined in .config/nvim/colors
 vim.cmd('set termguicolors')
--- vim.cmd('colorscheme catppuccin-mocha')
--- vim.cmd('colorscheme tokyonight-night')
-vim.cmd('colorscheme kanagawa')
+-- vim.cmd('colorscheme molokai-dark')
+vim.cmd('colorscheme kanagawa-wave')
 
 -- setting coneal for markdown stuff
 vim.cmd('set conceallevel=2')
@@ -73,11 +71,6 @@ keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts) -- Will go to the 
 keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
 keymap("n", "<leader>nod", ":Neorg workspace dj<CR>", opts)
 keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
-
--- vim_wiki
--- vim.g.vimwiki_list = {{path= '~/wiki/', path_html= '~/wiki_html/', syntax= 'markdown', ext= '.md' }}
--- vim.cmd("let g:vimwiki_global_ext = 0")
--- vim.cmd("let g:vimwiki_ext2syntax = {}")
 
 
 -- Adding syntax highlighting for markdown files with .md extensions

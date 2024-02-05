@@ -1,0 +1,7 @@
+
+[global]
+    font = Noto Emoji 10, FuraCode Nerd Font 10
+
+[play_sound]
+	summary = "*"
+	script = "/home/kman/.config/dunst/play_sounds.sh"
