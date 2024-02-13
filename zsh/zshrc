@@ -5,6 +5,8 @@ ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_DEFAULT_SESSION_NAME=genesis
 WEZTERM_CONFIG_FILE=~/.config/wezterm/wezterm.lua
 
+EDITOR=nvim
+
 # change_directory_script() {
 # 	if [[ $(uname) == "Darwin" ]] then
 # 		"/Users/katob/.config/tmux/change-directory.sh"
@@ -14,9 +16,24 @@ WEZTERM_CONFIG_FILE=~/.config/wezterm/wezterm.lua
 # }
 # zle -N change_directory_script
 # bindkey '^o' change_directory_script
+
+nba() {
+    # Save the current directory
+    local prev_dir="$PWD"
+    
+    # Go to the nbacli directory and run the Go program
+    cd /home/kman/Documents/github-projects/nbacli && go run /home/kman/Documents/github-projects/nbacli/main.go "$@"
+    
+    # Return to the previous directory
+    cd "$prev_dir"
+}
+
 fcd() {
-    local dir
-    dir=$(fd . ~ ~/Documents ~/.config --type d ${1:-} 2> /dev/null | fzf --height 35% --preview 'tree -C {} | head -n 10') && cd "$dir"
+    local dir=$(fd . ~ ~/Documents ~/.config --type d 2> /dev/null | fzf --height 35% --preview 'tree -C {} | head -n 10')
+
+    if [ -n "$dir" ]; then
+        cd "$dir" && zle reset-prompt 2> /dev/null
+    fi
 }
 
 zle -N fcd

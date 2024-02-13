@@ -1,12 +1,37 @@
 
 
-vim.cmd('set conceallevel=2')
+vim.cmd('set conceallevel=3')
+
 
 require('obsidian').setup({
 	workspaces = {
 		{
 			name = "Zettelkasten",
-			path = "~/vault/Zettelkasten"
+			path = "~/vault/Zettelkasten",
+			overrides = {
+				notes_subdir = "Zettelkasten",
+			},
+		},
+		{
+			name = "Work",
+			path = "~/vault/Work",
+			overrides = {
+				notes_subdir = "Work",
+			},
+		},
+		{
+			name = "Finance",
+			path = "~/vault/Finance",
+			overrides = {
+				notes_subdir = "Finance",
+			},
+		},
+		{
+			name = "Travel",
+			path = "~/vault/Travel",
+			overrides = {
+				notes_subdir = "Travel",
+			},
 		},
 	},
 
@@ -14,12 +39,8 @@ require('obsidian').setup({
   -- 'workspaces'. For example:
   -- dir = "~/vaults/work",
 
-  -- Optional, set to true to use the current directory as a vault; otherwise
-  -- the first workspace is opened by default.
-  detect_cwd = false,
-
   -- Optional, if you keep notes in a specific subdirectory of your vault.
-  notes_subdir = "Zettelkasten",
+  -- notes_subdir = "Zettelkasten",
 
   -- Optional, set the log level for obsidian.nvim. This is an integer corresponding to one of the log
   -- levels defined by "vim.log.levels.*".

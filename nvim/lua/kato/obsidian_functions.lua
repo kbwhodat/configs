@@ -5,9 +5,6 @@ end
 
 function PerformVaultBackup()
     local timestamp = getFormattedTimestamp()
-    -- Insert your code here to perform the backup
-    -- For example, it might involve copying files to a backup directory
-    -- and naming the backup with the timestamp
 		return timestamp
 end
 
