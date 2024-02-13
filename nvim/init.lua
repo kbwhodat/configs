@@ -47,7 +47,7 @@ vim.cmd('set autochdir')
 vim.cmd[[hi Normal guibg=#000000]]
 vim.cmd('set background=dark')
 vim.cmd[[hi NormalNC guibg=#000000]]
--- vim.cmd('hi Normal ctermbg=none guibg=none')
+vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
 

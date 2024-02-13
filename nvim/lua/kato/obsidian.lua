@@ -39,10 +39,6 @@ require('obsidian').setup({
   -- 'workspaces'. For example:
   -- dir = "~/vaults/work",
 
-  -- Optional, set to true to use the current directory as a vault; otherwise
-  -- the first workspace is opened by default.
-  detect_cwd = false,
-
   -- Optional, if you keep notes in a specific subdirectory of your vault.
   -- notes_subdir = "Zettelkasten",
 
