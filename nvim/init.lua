@@ -4,6 +4,7 @@ require("kato.neorg_functions")
 require("kato.obsidian")
 require("kato.obsidian_functions")
 
+
 local vim = vim
 
 -- /usr/local/Cellar/neovim/0.8.1/lib/nvim is where the parser directory is located
@@ -36,11 +37,11 @@ vim.cmd('set cursorcolumn')
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
 vim.cmd('set termguicolors')
--- vim.cmd('colorscheme molokai-dark')
-vim.cmd('colorscheme kanagawa-wave')
+-- vim.cmd('colorscheme monokai')
+vim.cmd('colorscheme kanagawa')
 
 -- setting coneal for markdown stuff
-vim.cmd('set conceallevel=2')
+vim.cmd('set conceallevel=3')
 vim.cmd('set autochdir')
 
 vim.cmd[[hi Normal guibg=#000000]]
@@ -49,6 +50,13 @@ vim.cmd[[hi NormalNC guibg=#000000]]
 -- vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
+
+-- git gutter colors
+vim.cmd('highlight clear SignColumn')
+vim.cmd('highlight GitGutterAdd guifg=green')
+vim.cmd('highlight GitGutterChange guifg=orange')
+vim.cmd('highlight GitGutterDelete guifg=red')
+vim.cmd('highlight GitGutterChangeDelete guifg=red')
 
 -- Spell checking
 vim.cmd('set spelllang=en_us')
@@ -96,10 +104,13 @@ vim.api.nvim_set_keymap('n', '<leader>on', ':lua create_obsidian_note()<CR>', { 
 vim.api.nvim_set_keymap('n', '<leader>od', ':ObsidianToday<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>oq', ':ObsidianQuickSwitch<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ob', ':ObsidianBacklinks<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>ot', ':ObsidianTemplate<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>of', ':ObsidianFollowLink<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>oz', ':ObsidianWorkspace Zettalkasten<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ow', ':ObsidianWorkspace Work<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ot', ':ObsidianWorkspace Travel<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>oF', ':ObsidianWorkspace Finance<CR>', { noremap = true, silent = true })
 
 
 -- Dynamic Autocommands

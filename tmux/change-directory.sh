@@ -5,7 +5,7 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     # Run the selection process in a subshell as one combined command
-    selected=$( (fd . ~/Documents ~/.config ~/vault --type d --min-depth 1 | fzf --height 35% --preview="tree -C {} | head -n 10") )
+    selected=$( fd . ~/Documents ~/.config ~/vault --type d --min-depth 1 2> /dev/null | fzf --height 35% --preview="tree -C {} | head -n 10" )
 fi
 
 if [[ -z $selected ]]; then

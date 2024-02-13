@@ -8,3 +8,5 @@ profiler
 kubernetes
 interoperability
 scalability
+RabbitMQ
+AMQP

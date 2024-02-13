@@ -195,7 +195,9 @@ local plugins = {
 	'dkarter/bullets.vim',
   'lewis6991/impatient.nvim',
   "akinsho/toggleterm.nvim",
-	"lewis6991/gitsigns.nvim",
+	{
+		"lewis6991/gitsigns.nvim",
+	},
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,
