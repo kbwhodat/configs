@@ -12,7 +12,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-  -- Packer can manage itself
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.4',
     dependencies = { {'nvim-lua/plenary.nvim'} }
@@ -30,6 +29,38 @@ local plugins = {
 	},
 	{
 		"3rd/image.nvim"
+	},
+	{
+		"kbwhodat/ollama.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+
+		-- All the user commands added by the plugin
+		cmd = { "Ollama", "OllamaModel", "OllamaServe", "OllamaServeStop" },
+
+		keys = {
+			-- Sample keybind for prompt menu. Note that the <c-u> is important for selections to work properly.
+			{
+				"<leader>oo",
+				":<c-u>lua require('ollama').prompt()<cr>",
+				desc = "ollama prompt",
+				mode = { "n", "v" },
+			},
+
+			-- Sample keybind for direct prompting. Note that the <c-u> is important for selections to work properly.
+			{
+				"<leader>oG",
+				":<c-u>lua require('ollama').prompt('Generate_Code')<cr>",
+				desc = "ollama Generate Code",
+				mode = { "n", "v" },
+			},
+		},
+
+		opts = {
+			-- model = "dolphin-mixtral:8x7b-v2.5-q2_K"
+			model = "codellama"
+		}
 	},
 	{
 		"jellydn/hurl.nvim",
@@ -136,8 +167,9 @@ local plugins = {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-    opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" } },
-    -- stylua: ignore
+    opts = {
+			options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" },
+		},
     keys = {
       { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
       { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
@@ -168,14 +200,6 @@ local plugins = {
 
   'nvim-treesitter/nvim-treesitter-context',
   "mbbill/undotree",
-  "tpope/vim-obsession",
-  {
-    "lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-    },
-  },
 	{
 		'stevearc/oil.nvim',
 		opts = {},
@@ -185,19 +209,14 @@ local plugins = {
   'wakatime/vim-wakatime',
   'alvan/vim-closetag',
   'tpope/vim-commentary',
-  -- 'preservim/vim-markdown',
-	-- 'artempyanykh/marksman',
-	-- 'jghauser/follow-md-links.nvim',
-	-- "jakewvincent/mkdnflow.nvim",
 	"rebelot/kanagawa.nvim",
   'tpope/vim-surround',
+	"tpope/vim-fugitive",
+	"airblade/vim-gitgutter",
   'windwp/nvim-autopairs' ,
 	'dkarter/bullets.vim',
-  'lewis6991/impatient.nvim',
-  "akinsho/toggleterm.nvim",
-	{
-		"lewis6991/gitsigns.nvim",
-	},
+	"akinsho/toggleterm.nvim",
+	"lewis6991/gitsigns.nvim",
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,
@@ -207,13 +226,6 @@ local plugins = {
 		},
 	},
   'christoomey/vim-tmux-navigator',
-	{"airblade/vim-gitgutter"},
-	{
-		"karb94/neoscroll.nvim",
-		config = function ()
-			require('neoscroll').setup {}
-		end
-	},
   {
     'VonHeikemen/lsp-zero.nvim',
     dependencies = {
