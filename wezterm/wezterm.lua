@@ -9,6 +9,8 @@ local act = wezterm.action
 -- end
 
 return {
+	front_end = "OpenGL",
+	enable_wayland = false,
 	enable_kitty_graphics = true,
   cursor_blink_ease_in = 'Linear',
   cursor_blink_ease_out = 'Linear',
@@ -19,7 +21,7 @@ return {
     { key = 'RightArrow', mods = 'OPT', action = act.SendString '\x1bf' },
   },
   color_scheme = "Molokai",
-  window_decorations = "RESIZE",
+  window_decorations = "NONE",
   hide_tab_bar_if_only_one_tab = true,
   enable_tab_bar = false,
   font_size = 13.5,

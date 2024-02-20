@@ -10,3 +10,6 @@ interoperability
 scalability
 RabbitMQ
 AMQP
+multicast
+fanout
+Rabbitmq

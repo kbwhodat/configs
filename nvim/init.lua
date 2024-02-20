@@ -3,6 +3,7 @@ require("kato")
 require("kato.neorg_functions")
 require("kato.obsidian")
 require("kato.obsidian_functions")
+require("kato.image_preview")
 
 
 local vim = vim
@@ -18,6 +19,7 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+
 -- vim.cmd('set cursorline')
 
 -- vim.cmd("set shiftwidth=0")
@@ -25,7 +27,7 @@ vim.g.maplocalleader = " "
 
 -- vim.opts.termguicolors = true
 --
-vim.opt.list = true
+vim.opt.list = false
 -- vim.opt.listchars = {
 -- 	eol = ""
 -- }
@@ -37,11 +39,12 @@ vim.cmd('set cursorcolumn')
 -- add to clipboard
 vim.cmd('set clipboard+=unnamedplus')
 vim.cmd('set termguicolors')
+vim.cmd('set nolist')
 -- vim.cmd('colorscheme monokai')
 vim.cmd('colorscheme kanagawa')
 
 -- setting coneal for markdown stuff
-vim.cmd('set conceallevel=3')
+vim.cmd('set conceallevel=2')
 vim.cmd('set autochdir')
 
 vim.cmd[[hi Normal guibg=#000000]]
@@ -107,10 +110,17 @@ vim.api.nvim_set_keymap('n', '<leader>ob', ':ObsidianBacklinks<CR>', { noremap =
 vim.api.nvim_set_keymap('n', '<leader>of', ':ObsidianFollowLink<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oz', ':ObsidianWorkspace Zettalkasten<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>oz', ':ObsidianWorkspace Zettelkasten<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ow', ':ObsidianWorkspace Work<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ot', ':ObsidianWorkspace Travel<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>oF', ':ObsidianWorkspace Finance<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>oc', ':ObsidianWorkspace School<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>od', ':ObsidianWorkspace Dump<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>op', ':ObsidianWorkspace Personal<CR>', { noremap = true, silent = true })
+
+
+vim.api.nvim_set_keymap('n', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', { noremap = true, silent = true })
 
 
 -- Dynamic Autocommands

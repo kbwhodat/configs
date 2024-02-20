@@ -7,6 +7,8 @@ WEZTERM_CONFIG_FILE=~/.config/wezterm/wezterm.lua
 
 EDITOR=nvim
 
+export QSG_RENDER_LOOP=basic
+
 # change_directory_script() {
 # 	if [[ $(uname) == "Darwin" ]] then
 # 		"/Users/katob/.config/tmux/change-directory.sh"
@@ -52,6 +54,8 @@ setopt promptsubst         # enable command substitution in prompt
 # eval "$(pyenv init --path)"
 # eval "$(pyenv init -)"
 
+alias hp_printer='HP-HP-OfficeJet-Pro-9020-series'
+alias pomodoro="i3-gnome-pomodoro"
 alias bukuadd='buku -a'
 alias ls='ls --color'
 

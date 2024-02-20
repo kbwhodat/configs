@@ -1,6 +1,6 @@
 
 
-vim.cmd('set conceallevel=3')
+vim.cmd('set conceallevel=2')
 
 
 require('obsidian').setup({
@@ -24,6 +24,27 @@ require('obsidian').setup({
 			path = "~/vault/Finance",
 			overrides = {
 				notes_subdir = "Finance",
+			},
+		},
+		{
+			name = "Dump",
+			path = "~/vault/Dump",
+			overrides = {
+				notes_subdir = "Dump",
+			},
+		},
+		{
+			name = "School",
+			path = "~/vault/School",
+			overrides = {
+				notes_subdir = "School",
+			},
+		},
+		{
+			name = "Personal",
+			path = "~/vault/Personal",
+			overrides = {
+				notes_subdir = "Personal",
 			},
 		},
 		{
@@ -68,7 +89,7 @@ require('obsidian').setup({
     -- Where to put new notes created from completion. Valid options are
     --  * "current_dir" - put new notes in same directory as the current buffer.
     --  * "notes_subdir" - put new notes in the default notes subdirectory.
-    new_notes_location = "current_dir",
+    new_notes_location = "notes_subdir",
 
     -- Control how wiki links are completed with these (mutually exclusive) options:
     --
