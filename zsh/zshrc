@@ -30,8 +30,19 @@ nba() {
     cd "$prev_dir"
 }
 
+onf() {
+    local dir=$(fd . ~ ~/Documents ~/.config --type f 2> /dev/null | fzf --height 35% --preview 'bat --style=numbers --color=always {}')
+
+    if [ -n "$dir" ]; then
+        nvim "$dir" && zle reset-prompt 2> /dev/null
+    fi
+}
+
+zle -N onf
+bindkey '^n' onf
+
 fcd() {
-    local dir=$(fd . ~ ~/Documents ~/.config --type d 2> /dev/null | fzf --height 35% --preview 'tree -C {} | head -n 10')
+    local dir=$(fd . ~ ~/Documents ~/.config --type d 2> /dev/null | fzf --reverse --height 35% --preview 'tree -C {} | head -n 10')
 
     if [ -n "$dir" ]; then
         cd "$dir" && zle reset-prompt 2> /dev/null
@@ -230,7 +241,7 @@ fi
 
 #export GOPATH=`echo $HOME/go`
 #export PATH="$GOPATH:$PATH"
-export PATH="/home/kman/.cargo/bin:/home/kman/.local/share/nvim/mason/bin:/usr/local/lib:/usr/local/opt/binutils/bin:/usr/local/opt/inetutils/libexec/gnubin:/usr/local/opt/openssl@3/bin:/usr/local/opt/bzip2/bin:$PATH"
+export PATH="/usr/local/bin:/home/kman/go/bin:/home/kman/.cargo/bin:/home/kman/.local/share/nvim/mason/bin:/usr/local/lib:/usr/local/opt/binutils/bin:/usr/local/opt/inetutils/libexec/gnubin:/usr/local/opt/openssl@3/bin:/usr/local/opt/bzip2/bin:$PATH"
 export DYLD_LIBRARY_PATH=/usr/local/lib/
 
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig:/opt/X11/lib/pkgconfig:/usr/local/opt/libffi/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"

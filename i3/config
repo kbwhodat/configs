@@ -37,7 +37,7 @@ bindsym --release Control+$mod+4 exec --no-startup-id /home/kman/Documents/scrip
 bindsym $mod+Shift+F exec --no-startup-id firefox
 
 #to lock screen
-exec --no-startup-id xidlehook --not-when-audio --timer 600 "systemctl suspend" "" &
+exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
 
 #make sure to detect display
 bindsym --release Control+x exec --no-startup-id /home/kman/.xprofile
