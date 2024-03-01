@@ -15,6 +15,7 @@ return {
   cursor_blink_ease_in = 'Linear',
   cursor_blink_ease_out = 'Linear',
   keys = {
+		-- {key="p", mods="SUPER|CTRL|ALT|SHIFT", action=wezterm.action{SendString="\x1b[99~"}},
     -- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word
     { key = 'LeftArrow', mods = 'OPT', action = act.SendString '\x1bb' },
     -- Make Option-Right equivalent to Alt-f; forward-word
