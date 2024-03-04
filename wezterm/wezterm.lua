@@ -1,5 +1,6 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
+local mux = wezterm.mux
 
 -- function scheme_for_appearance(appearance)
 --   if appearance:find 'Dark' then
@@ -7,6 +8,10 @@ local act = wezterm.action
 --   end
   
 -- end
+wezterm.on('gui-startup', function(cmd)
+  local tab, pane, window = mux.spawn_window(cmd or {})
+  window:gui_window():maximize()
+end)
 
 return {
 	front_end = "OpenGL",
