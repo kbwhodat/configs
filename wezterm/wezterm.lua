@@ -9,7 +9,7 @@ local act = wezterm.action
 -- end
 
 return {
-	front_end = "OpenGL",
+	-- front_end = "OpenGL",
 	enable_wayland = false,
 	enable_kitty_graphics = true,
   cursor_blink_ease_in = 'Linear',

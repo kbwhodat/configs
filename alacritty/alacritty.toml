@@ -1,0 +1,9 @@
+[colors]
+primary.background = '0x000000'
+primary.foreground = '0xdcdcdc'
+# Define other colors as needed
+
+[font]
+normal = { family = "Roboto Mono", style = "Normal" }
+bold = { family = "Roboto Mono", style = "Medium" }
+size = 13.5
