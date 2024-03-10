@@ -23,7 +23,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
         -- virtual_text = {spacing = 4},
         -- Use a function to dynamically turn signs off
         -- and on, using buffer local variables
-        signs = true,
+        signs = false,
         update_in_insert = false
     })
 lsp.setup()

@@ -77,11 +77,11 @@ keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts) -- This will move to 
 keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
 
 -- Neorg stuff
-keymap("n", "<leader>no", ":Neorg index<CR>", opts) -- Will go the root index
-keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts) -- Will go to the home workspace
-keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
-keymap("n", "<leader>nod", ":Neorg workspace dj<CR>", opts)
-keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
+-- keymap("n", "<leader>no", ":Neorg index<CR>", opts) -- Will go the root index
+-- keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts) -- Will go to the home workspace
+-- keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
+-- keymap("n", "<leader>nod", ":Neorg workspace dj<CR>", opts)
+-- keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
 
 
 -- Adding syntax highlighting for markdown files with .md extensions
@@ -131,19 +131,19 @@ vim.api.nvim_set_keymap('i', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>
 --   augroup END
 -- ]])
 
-vim.cmd([[
-  augroup neorg_dynamic
-    autocmd!
-		autocmd VimLeavePre *.norg :lua encrypt_all_buffers()
-		autocmd BufNewFile *.norg.gpg lua decrypt_and_open()
-		autocmd BufRead *.norg.gpg :lua decrypt_and_open()
+-- vim.cmd([[
+--   augroup neorg_dynamic
+--     autocmd!
+-- 		autocmd VimLeavePre *.norg :lua encrypt_all_buffers()
+-- 		autocmd BufNewFile *.norg.gpg lua decrypt_and_open()
+-- 		autocmd BufRead *.norg.gpg :lua decrypt_and_open()
 
-		autocmd BufNewFile *.norg lua decrypt_and_open()
+-- 		autocmd BufNewFile *.norg lua decrypt_and_open()
 
-		autocmd BufRead *.norg :lua neorg_decrypt_and_open(nil, vim.fn.expand('<afile>:t'), vim.fn.expand('<afile>:p'))
-		autocmd BufDelete *.norg :lua neorg_encrypt_a_file(vim.fn.expand('<afile>:p'), true)
-  augroup END
-]])
+-- 		autocmd BufRead *.norg :lua neorg_decrypt_and_open(nil, vim.fn.expand('<afile>:t'), vim.fn.expand('<afile>:p'))
+-- 		autocmd BufDelete *.norg :lua neorg_encrypt_a_file(vim.fn.expand('<afile>:p'), true)
+--   augroup END
+-- ]])
 
 -- will stay on the last line number you were on
 vim.api.nvim_create_autocmd("BufReadPost", {

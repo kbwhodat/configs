@@ -3,21 +3,10 @@
 
 ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_DEFAULT_SESSION_NAME=genesis
-WEZTERM_CONFIG_FILE=~/.config/wezterm/wezterm.lua
 
 EDITOR=nvim
 
 export QSG_RENDER_LOOP=basic
-
-# change_directory_script() {
-# 	if [[ $(uname) == "Darwin" ]] then
-# 		"/Users/katob/.config/tmux/change-directory.sh"
-# 	elif [[ $(uname) == "Linux" ]] then
-# 		"/home/kman/.config/tmux/change-directory.sh"
-# 	fi
-# }
-# zle -N change_directory_script
-# bindkey '^o' change_directory_script
 
 nba() {
     # Save the current directory
@@ -31,7 +20,7 @@ nba() {
 }
 
 onf() {
-    local dir=$(fd . ~ ~/Documents ~/.config --type f 2> /dev/null | fzf --height 35% --preview 'bat --style=numbers --color=always {}')
+    local dir=$(find ~ ~/Documents ~/.config -type f 2> /dev/null | fzf --reverse --height 35% --preview 'bat --style=numbers --color=always {}')
 
     if [ -n "$dir" ]; then
         nvim "$dir" && zle reset-prompt 2> /dev/null
@@ -42,7 +31,7 @@ zle -N onf
 bindkey '^n' onf
 
 fcd() {
-    local dir=$(fd . ~ ~/Documents ~/.config --type d 2> /dev/null | fzf --reverse --height 35% --preview 'tree -C {} | head -n 10')
+    local dir=$(find ~ ~/Documents ~/.config -type d 2> /dev/null | fzf --reverse --height 35% --preview 'tree -C {} | head -n 10')
 
     if [ -n "$dir" ]; then
         cd "$dir" && zle reset-prompt 2> /dev/null
@@ -65,6 +54,7 @@ setopt promptsubst         # enable command substitution in prompt
 # eval "$(pyenv init --path)"
 # eval "$(pyenv init -)"
 
+alias cat='bat --style plain'
 alias hp_printer='HP-HP-OfficeJet-Pro-9020-series'
 alias pomodoro="i3-gnome-pomodoro"
 alias bukuadd='buku -a'
@@ -248,7 +238,7 @@ export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgc
 
 
 export CLICOLOR=1
-export LSCOLORS=Eafxcxdxbxegedabagacad
+# export LSCOLORS=Eafxcxdxbxegedabagacad
 
 
 
@@ -257,3 +247,5 @@ export LSCOLORS=Eafxcxdxbxegedabagacad
 #         export JAVA_HOME=$(/usr/libexec/java_home -v"$version");
 #         java -version
 #  }
+
+

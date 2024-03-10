@@ -14,6 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.4',
+		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
 	{
@@ -28,7 +29,9 @@ local plugins = {
 		end,
 	},
 	{
-		"3rd/image.nvim"
+		"3rd/image.nvim",
+		lazy = true,
+		event = "BufReadPre *.md",
 	},
 	{
 		"kbwhodat/ollama.nvim",
@@ -62,75 +65,76 @@ local plugins = {
 			model = "codellama"
 		}
 	},
-	{
-		"jellydn/hurl.nvim",
-		dependencies = { "MunifTanjim/nui.nvim" },
-		ft = "hurl",
-		opts = {
-			-- Show debugging info
-			debug = false,
-			-- Show response in popup or split
-			mode = "split",
-			-- Default formatter
-			formatters = {
-				json = { 'jq' }, -- Make sure you have install jq in your system, e.g: brew install jq
-				html = {
-					'prettier', -- Make sure you have install prettier in your system, e.g: npm install -g prettier
-					'--parser',
-					'html',
-				},
-			},
-		},
-		keys = {
-			-- Run API request
-			{ "<leader>A", "<cmd>HurlRunner<CR>", desc = "Run All requests" },
-			{ "<leader>a", "<cmd>HurlRunnerAt<CR>", desc = "Run Api request" },
-			{ "<leader>te", "<cmd>HurlRunnerToEntry<CR>", desc = "Run Api request to entry" },
-			{ "<leader>tm", "<cmd>HurlToggleMode<CR>", desc = "Hurl Toggle Mode" },
-			{ "<leader>tv", "<cmd>HurlVerbose<CR>", desc = "Run Api in verbose mode" },
-			-- Run Hurl request in visual mode
-			{ "<leader>h", ":HurlRunner<CR>", desc = "Hurl Runner", mode = "v" },
-		},
-	},
-	{
-		"tpope/vim-dadbod"
-	},
-	{
-		"kristijanhusak/vim-dadbod-ui"
-	},
-  {
-    "folke/trouble.nvim",
-    cmd = { "TroubleToggle", "Trouble" },
-    opts = { use_diagnostic_signs = true },
-    keys = {
-      { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
-      { "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
-      { "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
-      { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
-      {
-        "[q",
-        function()
-          if require("trouble").is_open() then
-            require("trouble").previous({ skip_groups = true, jump = true })
-          else
-            vim.cmd.cprev()
-          end
-        end,
-        desc = "Previous trouble/quickfix item",
-      },
-      {
-        "]q",
-        function()
-          if require("trouble").is_open() then
-            require("trouble").next({ skip_groups = true, jump = true })
-          else
-            vim.cmd.cnext()
-          end
-        end,
-        desc = "Next trouble/quickfix item",
-      },
-    },
-  },
+	-- {
+	-- 	"jellydn/hurl.nvim",
+	-- 	dependencies = { "MunifTanjim/nui.nvim" },
+	-- 	ft = "hurl",
+	-- 	opts = {
+	-- 		-- Show debugging info
+	-- 		debug = false,
+	-- 		-- Show response in popup or split
+	-- 		mode = "split",
+	-- 		-- Default formatter
+	-- 		formatters = {
+	-- 			json = { 'jq' }, -- Make sure you have install jq in your system, e.g: brew install jq
+	-- 			html = {
+	-- 				'prettier', -- Make sure you have install prettier in your system, e.g: npm install -g prettier
+	-- 				'--parser',
+	-- 				'html',
+	-- 			},
+	-- 		},
+	-- 	},
+	-- 	keys = {
+	-- 		-- Run API request
+	-- 		{ "<leader>A", "<cmd>HurlRunner<CR>", desc = "Run All requests" },
+	-- 		{ "<leader>a", "<cmd>HurlRunnerAt<CR>", desc = "Run Api request" },
+	-- 		{ "<leader>te", "<cmd>HurlRunnerToEntry<CR>", desc = "Run Api request to entry" },
+	-- 		{ "<leader>tm", "<cmd>HurlToggleMode<CR>", desc = "Hurl Toggle Mode" },
+	-- 		{ "<leader>tv", "<cmd>HurlVerbose<CR>", desc = "Run Api in verbose mode" },
+	-- 		-- Run Hurl request in visual mode
+	-- 		{ "<leader>h", ":HurlRunner<CR>", desc = "Hurl Runner", mode = "v" },
+	-- 	},
+	-- },
+	-- {
+	-- 	"tpope/vim-dadbod"
+	-- },
+	-- {
+	-- 	"kristijanhusak/vim-dadbod-ui"
+	-- },
+  -- {
+  --   "folke/trouble.nvim",
+  --   cmd = { "TroubleToggle", "Trouble" },
+  --   opts = { use_diagnostic_signs = true },
+  --   keys = {
+  --     { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
+  --     { "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
+  --     { "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
+  --     { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
+  --     {
+  --       "[q",
+  --       function()
+  --         if require("trouble").is_open() then
+  --           require("trouble").previous({ skip_groups = true, jump = true })
+  --         else
+  --           vim.cmd.cprev()
+  --         end
+  --       end,
+  --       desc = "Previous trouble/quickfix item",
+  --     },
+  --     {
+  --       "]q",
+  --       function()
+  --         if require("trouble").is_open() then
+  --           require("trouble").next({ skip_groups = true, jump = true })
+  --         else
+  --           vim.cmd.cnext()
+  --         end
+  --       end,
+  --       desc = "Next trouble/quickfix item",
+  --     },
+  --   },
+  -- },
+
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -167,6 +171,7 @@ local plugins = {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
+		delay = 2000,
     opts = {
 			options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" },
 		},
@@ -178,11 +183,13 @@ local plugins = {
   },
   {
     "echasnovski/mini.indentscope",
+		lazy = true,
+		delay = 2000,
     version = false, -- wait till new 0.7.0 release to put it back on semver
     event = { "BufReadPre", "BufNewFile" },
     opts = {
       -- symbol = "▏",
-      symbol = "│",
+      symbol = "│ ",
       options = { try_as_border = false },
     },
     init = function()
@@ -206,21 +213,32 @@ local plugins = {
 		-- Optional dependencies
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
-  'wakatime/vim-wakatime',
   'alvan/vim-closetag',
   'tpope/vim-commentary',
 	"rebelot/kanagawa.nvim",
   'tpope/vim-surround',
-	"tpope/vim-fugitive",
-	"airblade/vim-gitgutter",
+	{
+		"tpope/vim-fugitive",
+		delay = 5000,
+	},
+	-- {
+	-- 	"airblade/vim-gitgutter",
+	-- 	delay = 2000,
+	-- },
   'windwp/nvim-autopairs' ,
 	'dkarter/bullets.vim',
+	{
+		'dkarter/bullets.vim',
+		lazy = true,
+		event = "BufReadPre *.md",
+	},
 	"akinsho/toggleterm.nvim",
 	"lewis6991/gitsigns.nvim",
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,
-		ft = 'markdown',
+		event = "BufReadPre *.md",
+		ft = "markdown",
 		dependencies = {
 			"nvim-lua/plenary.nvim"
 		},
