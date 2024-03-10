@@ -24,9 +24,12 @@
   white = '0xffffff'
 
 [font]
-normal = { family = "Roboto Mono", style = "Normal" }
+normal = { family = "Roboto Mono", style = "Regular" }
 bold = { family = "Roboto Mono", style = "Medium" }
 size = 13.5
+
+[window]
+decorations = "None"
 
 [env]
 TERM = "xterm-256color"
