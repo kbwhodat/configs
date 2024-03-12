@@ -40,7 +40,7 @@ bindsym $mod+Shift+F exec --no-startup-id firefox
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
 
 #make sure to detect display
-bindsym --release Control+x exec --no-startup-id /home/kman/.xprofile
+bindsym --release Control+x exec --no-startup-id /home/kman/Documents/scripts/pickup-monitors.sh
 
 # exec --no-startup-id xidlehook --not-when-audio --timer 120 "betterlockscreen -l dim" "" &
 
