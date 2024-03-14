@@ -123,6 +123,13 @@ vim.api.nvim_set_keymap('n', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>
 vim.api.nvim_set_keymap('i', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', { noremap = true, silent = true })
 
 
+-- vim.api.nvim_set_keymap('n', '<Leader>tt', '<cmd>lua ToggleTaskState()<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<Leader>tc', '<cmd>lua ToggleTaskStateComplete()<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<Leader>tp', '<cmd>lua ToggleTaskStatePending()<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<Leader>tt', '<cmd>lua ToggleTaskStateTodo()<CR>', {noremap = true, silent = true})
+
+
+
 -- Dynamic Autocommands
 -- vim.cmd([[
 --   augroup obsidian_functions

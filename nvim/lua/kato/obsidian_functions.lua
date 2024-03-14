@@ -67,3 +67,68 @@ function create_note_from_float(buf, win)
     -- Close the floating window
     vim.api.nvim_win_close(win, true)
 end
+
+
+function ToggleTaskStateComplete()
+    local line = vim.api.nvim_get_current_line()
+    local newLine
+
+    if line:match("%[ %]") then
+        -- Toggle from to-do to complete
+        newLine = line:gsub("%[ %]", "[x]", 1)
+    elseif line:match("%[~%]") then
+        -- Toggle from pending back to to-do
+        newLine = line:gsub("%[~%]", "[x]", 1)
+    else
+        -- If the line doesn't match any task state, do nothing or print a message
+        print("No task state found on line")
+        return
+    end
+
+    -- Set the modified line back
+    local lnum = vim.api.nvim_win_get_cursor(0)[1] -- get the current line number
+    vim.api.nvim_buf_set_lines(0, lnum-1, lnum, false, {newLine})
+end
+
+function ToggleTaskStateTodo()
+    local line = vim.api.nvim_get_current_line()
+    local newLine
+
+    if line:match("%[~%]") then
+        -- Toggle from to-do to complete
+        newLine = line:gsub("%[~%]", "[ ]", 1)
+    elseif line:match("%[x%]") then
+        -- Toggle from pending back to to-do
+        newLine = line:gsub("%[x%]", "[ ]", 1)
+    else
+        -- If the line doesn't match any task state, do nothing or print a message
+        print("No task state found on line")
+        return
+    end
+
+    -- Set the modified line back
+    local lnum = vim.api.nvim_win_get_cursor(0)[1] -- get the current line number
+    vim.api.nvim_buf_set_lines(0, lnum-1, lnum, false, {newLine})
+end
+
+function ToggleTaskStatePending()
+    local line = vim.api.nvim_get_current_line()
+    local newLine
+
+    if line:match("%[ %]") then
+        -- Toggle from to-do to complete
+        newLine = line:gsub("%[ %]", "[~]", 1)
+    elseif line:match("%[x%]") then
+        -- Toggle from pending back to to-do
+        newLine = line:gsub("%[x%]", "[~]", 1)
+    else
+        -- If the line doesn't match any task state, do nothing or print a message
+        print("No task state found on line")
+        return
+    end
+
+    -- Set the modified line back
+    local lnum = vim.api.nvim_win_get_cursor(0)[1] -- get the current line number
+    vim.api.nvim_buf_set_lines(0, lnum-1, lnum, false, {newLine})
+end
+
