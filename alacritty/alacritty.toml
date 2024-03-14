@@ -41,4 +41,12 @@ TERM = "xterm-256color"
 [cursor]
 style = { shape = "Block", blinking = "On" }
 
+[keyboard]
+bindings = [
+	{ key = "Right", mods= "Alt", chars= "\u001BF"},
+	{ key= "Left", mods= "Alt", chars= "\u001BB"},
+	{ key= "Right", mods= "Control", chars= "\u001BF"},
+	{ key= "Left", mods= "Control", chars= "\u001BB"},
+]
+
 ## Alacrity config
