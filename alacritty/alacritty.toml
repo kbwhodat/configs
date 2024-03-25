@@ -28,18 +28,21 @@
 	text = "CellBackground"
 
 [font]
-normal = { family = "Roboto Mono", style = "Regular" }
-bold = { family = "Roboto Mono", style = "Medium" }
+normal = { family = "FiraCode Nerd Font", style = "Regular" }
+bold = { family = "FiraCode Nerd Font", style = "Bold" }
 size = 13.5
 
 [window]
 decorations = "None"
 
 [env]
-TERM = "xterm-256color"
+TERM = "tmux-256color"
 
 [cursor]
 style = { shape = "Block", blinking = "On" }
+
+[shell]
+program = "zsh"
 
 [keyboard]
 bindings = [
