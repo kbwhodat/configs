@@ -51,8 +51,8 @@ setopt notify              # report the status of background jobs immediately
 setopt numericglobsort     # sort filenames numerically when it makes sense
 setopt promptsubst         # enable command substitution in prompt
 
-# eval "$(pyenv init --path)"
-# eval "$(pyenv init -)"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
 
 alias cat='bat --style plain'
 alias hp_printer='HP-HP-OfficeJet-Pro-9020-series'
