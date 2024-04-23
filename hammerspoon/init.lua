@@ -4,7 +4,7 @@ smallorbig = "small"
 local window = hs.window.focusedWindow()
 
 hs.hotkey.bind({"ctrl"}, "space", function()
-  local app = hs.application.get("Alacritty")
+  local app = hs.application.get("kitty")
   -- local window = app:mainWindow()
   -- if window then
   --     window:setTitlebarAppearance(false)
@@ -21,17 +21,17 @@ hs.hotkey.bind({"ctrl"}, "space", function()
 		  app:hide()
 		else
 		  app:activate()
-		  hs.application.launchOrFocus("Alacritty")
+		  hs.application.launchOrFocus("kitty")
 			  
 		end
 	      else
 
 		if app:isHidden() and appscreen ~= mousescreen then 
-		    hs.application.launchOrFocus("Alacritty")
+		    hs.application.launchOrFocus("kitty")
 		    win:moveToScreen(mousescreen)
 		elseif appscreen ~= mousescreen and app:isFrontmost() == false then
 		  app:activate()
-		  hs.application.launchOrFocus("Alacritty")
+		  hs.application.launchOrFocus("kitty")
 		elseif app:isFrontmost() then
 		    app:hide()
 		end
@@ -57,17 +57,17 @@ end)
 
 hs.hotkey.bind({"ctrl"}, "\\", function()
 	
-	local app = hs.application.get("Alacritty")
+	local app = hs.application.get("kitty")
 	local fwindow = app:mainWindow()
 	
 	
 	if fwindow:isVisible() then
 		if smallorbig == "small" then
 			app:mainWindow():moveToUnit'[100,50,0,100]'
-			hs.application.launchOrFocus("Alacritty")
+			hs.application.launchOrFocus("kitty")
 			smallorbig = "big"
 		else
-			hs.application.launchOrFocus("Alacritty")
+			hs.application.launchOrFocus("kitty")
 			local apps = app:mainWindow()
 			fwindow:maximize()
 			smallorbig = "small"

@@ -1,4 +1,3 @@
-
 #SKHD STUFF
 
 # if you're having troubles finding key codes for a key just type skhd --observe in a terminal and type a key. Pretty cool! Or just check the wiki.
@@ -6,6 +5,9 @@
 ## HYPER == SHIFT + CMD + ALT + OPTION
 
 ## Quickly restart the yabai launch agent
+# hyper + rshift - r : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
+
+# hyper + rshift - p : open -a finder
 hyper + rshift - r : launchctl kickstart -k "gui/${UID}/com.koekeishiya.yabai"
 
 ## Close active application
@@ -69,6 +71,9 @@ ctrl + alt + cmd + lshift - 3 : /Users/katob/Documents/skhd-scripts/switchAndFoc
 
 ## toggle window fullscreen zoom
 hyper - f : yabai -m window --toggle zoom-fullscreen
+
+## Quake dropdown window
+alt - space : yabai window --toggle zoom-parent
 
 # cycle through windows
 # cycle backwards
@@ -162,5 +167,4 @@ cmd - 0 : yabai -m space --focus 10
 #ctrl + alt - 1  : yabai -m display --focus 1
 #ctrl + alt - 2  : yabai -m display --focus 2
 #ctrl + alt - 3  : yabai -m display --focus 3
-
 
