@@ -252,7 +252,11 @@ export CLICOLOR=1
 
 
 
-[[ -s "/home/kman/.gvm/scripts/gvm" ]] && source "/home/kman/.gvm/scripts/gvm"
+if [[ $(uname) == "Darwin" ]] then
+	[[ -s "/Users/katob/.gvm/scripts/gvm" ]] && source "/Users/katob/.gvm/scripts/gvm"
+elif [[ $(uname) == "Linux" ]] then
+	[[ -s "/home/kman/.gvm/scripts/gvm" ]] && source "/home/kman/.gvm/scripts/gvm"
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -268,4 +272,3 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
