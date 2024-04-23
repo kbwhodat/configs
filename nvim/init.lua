@@ -119,8 +119,10 @@ vim.api.nvim_set_keymap('n', '<leader>od', ':ObsidianWorkspace Dump<CR>', { nore
 vim.api.nvim_set_keymap('n', '<leader>op', ':ObsidianWorkspace Personal<CR>', { noremap = true, silent = true })
 
 
-vim.api.nvim_set_keymap('n', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<C-S>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-S>', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-S>', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-A>', '<cmd>lua vim.diagnostic.open_float(nil, {focus=false})<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-A>', '<cmd>lua vim.diagnostic.open_float(nil, {focus=false})<CR>', { noremap = true, silent = true })
 
 
 -- vim.api.nvim_set_keymap('n', '<Leader>tt', '<cmd>lua ToggleTaskState()<CR>', {noremap = true, silent = true})
