@@ -13,6 +13,14 @@ autoload -Uz is-at-least
 # (order should follow README)
 # (in some cases force the alisas order to match README, like for example gke and gk)
 #
+function ggp() {
+  if [[ "$#" != 0 ]] && [[ "$#" != 1 ]]; then
+    git push origin "${*}"
+  else
+    [[ "$#" == 0 ]] && local b="$(git_current_branch)"
+    git push origin "${b:=$1}"
+  fi
+}
 
 alias grt='cd "$(git rev-parse --show-toplevel || echo .)"'
 
