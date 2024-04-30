@@ -21,6 +21,7 @@ function ggp() {
     git push origin "${b:=$1}"
   fi
 }
+compdef _git ggp=git-checkout
 
 alias grt='cd "$(git rev-parse --show-toplevel || echo .)"'
 
