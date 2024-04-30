@@ -2,11 +2,51 @@
 autoload -Uz is-at-least
 git_version="${${(As: :)$(git version 2>/dev/null)}[3]}"
 
-#
-# Functions Current
-# (sorted alphabetically by function name)
-# (order should follow README)
-#
+function git_current_branch() {
+  local ref
+  ref=$(__git_prompt_git symbolic-ref --quiet HEAD 2> /dev/null)
+  local ret=$?
+  if [[ $ret != 0 ]]; then
+    [[ $ret == 128 ]] && return  # no git repo.
+    ref=$(__git_prompt_git rev-parse --short HEAD 2> /dev/null) || return
+  fi
+  echo ${ref#refs/heads/}
+}
+
+
+# Gets the number of commits ahead from remote
+function git_commits_ahead() {
+  if __git_prompt_git rev-parse --git-dir &>/dev/null; then
+    local commits="$(__git_prompt_git rev-list --count @{upstream}..HEAD 2>/dev/null)"
+    if [[ -n "$commits" && "$commits" != 0 ]]; then
+      echo "$ZSH_THEME_GIT_COMMITS_AHEAD_PREFIX$commits$ZSH_THEME_GIT_COMMITS_AHEAD_SUFFIX"
+    fi
+  fi
+}
+
+# Gets the number of commits behind remote
+function git_commits_behind() {
+  if __git_prompt_git rev-parse --git-dir &>/dev/null; then
+    local commits="$(__git_prompt_git rev-list --count HEAD..@{upstream} 2>/dev/null)"
+    if [[ -n "$commits" && "$commits" != 0 ]]; then
+      echo "$ZSH_THEME_GIT_COMMITS_BEHIND_PREFIX$commits$ZSH_THEME_GIT_COMMITS_BEHIND_SUFFIX"
+    fi
+  fi
+}
+
+# Outputs if current branch is ahead of remote
+function git_prompt_ahead() {
+  if [[ -n "$(__git_prompt_git rev-list origin/$(git_current_branch)..HEAD 2> /dev/null)" ]]; then
+    echo "$ZSH_THEME_GIT_PROMPT_AHEAD"
+  fi
+}
+
+# Outputs if current branch is behind remote
+function git_prompt_behind() {
+  if [[ -n "$(__git_prompt_git rev-list HEAD..origin/$(git_current_branch) 2> /dev/null)" ]]; then
+    echo "$ZSH_THEME_GIT_PROMPT_BEHIND"
+  fi
+}
 
 # The name of the current branch
 # Back-compatibility wrapper for when this function was defined here in
