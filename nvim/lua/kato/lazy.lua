@@ -34,17 +34,6 @@ local plugins = {
 		event = "BufReadPre *.md",
 	},
 	{
-		"toppair/peek.nvim",
-		event = { "VeryLazy" },
-		build = "deno task --quiet build:fast",
-		config = function()
-			require("peek").setup()
-			-- refer to `configuration to change defaults`
-			vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-			vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
-		end,
-	},
-	{
 		"kbwhodat/ollama.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -76,42 +65,12 @@ local plugins = {
 			model = "codellama"
 		}
 	},
-	-- {
-	-- 	"jellydn/hurl.nvim",
-	-- 	dependencies = { "MunifTanjim/nui.nvim" },
-	-- 	ft = "hurl",
-	-- 	opts = {
-	-- 		-- Show debugging info
-	-- 		debug = false,
-	-- 		-- Show response in popup or split
-	-- 		mode = "split",
-	-- 		-- Default formatter
-	-- 		formatters = {
-	-- 			json = { 'jq' }, -- Make sure you have install jq in your system, e.g: brew install jq
-	-- 			html = {
-	-- 				'prettier', -- Make sure you have install prettier in your system, e.g: npm install -g prettier
-	-- 				'--parser',
-	-- 				'html',
-	-- 			},
-	-- 		},
-	-- 	},
-	-- 	keys = {
-	-- 		-- Run API request
-	-- 		{ "<leader>A", "<cmd>HurlRunner<CR>", desc = "Run All requests" },
-	-- 		{ "<leader>a", "<cmd>HurlRunnerAt<CR>", desc = "Run Api request" },
-	-- 		{ "<leader>te", "<cmd>HurlRunnerToEntry<CR>", desc = "Run Api request to entry" },
-	-- 		{ "<leader>tm", "<cmd>HurlToggleMode<CR>", desc = "Hurl Toggle Mode" },
-	-- 		{ "<leader>tv", "<cmd>HurlVerbose<CR>", desc = "Run Api in verbose mode" },
-	-- 		-- Run Hurl request in visual mode
-	-- 		{ "<leader>h", ":HurlRunner<CR>", desc = "Hurl Runner", mode = "v" },
-	-- 	},
-	-- },
-	-- {
-	-- 	"tpope/vim-dadbod"
-	-- },
-	-- {
-	-- 	"kristijanhusak/vim-dadbod-ui"
-	-- },
+	{
+		"tpope/vim-dadbod"
+	},
+	{
+		"kristijanhusak/vim-dadbod-ui"
+	},
   -- {
   --   "folke/trouble.nvim",
   --   cmd = { "TroubleToggle", "Trouble" },
@@ -158,6 +117,7 @@ local plugins = {
   },
   {
     "akinsho/bufferline.nvim",
+		tag = "v4.5.3",
     event = "VeryLazy",
     keys = {
       { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle pin" },
@@ -236,8 +196,12 @@ local plugins = {
 	-- 	"airblade/vim-gitgutter",
 	-- 	delay = 2000,
 	-- },
-  'windwp/nvim-autopairs' ,
-	'dkarter/bullets.vim',
+  {
+		'windwp/nvim-autopairs',
+		event = "InsertEnter",
+		config = false
+	},
+	-- 'dkarter/bullets.vim',
 	{
 		'dkarter/bullets.vim',
 		lazy = true,
