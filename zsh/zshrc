@@ -1,59 +1,69 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+# 	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
-ZSH_TMUX_AUTOSTART=true
-ZSH_TMUX_DEFAULT_SESSION_NAME=genesis
+# Start tmux on shell login
+if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
+	TMUX_SESSION="genesis"
+	if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
+		tmux attach-session -t $TMUX_SESSION
+	else
+		tmux new-session -s $TMUX_SESSION
+	fi
+fi
 
 EDITOR=nvim
 
-source /usr/local/share/powerlevel10k/powerlevel10k.zsh-theme
+
+autoload -Uz compinit
+compinit
+
+source ~/.config/git-alias/git-aliases.zsh
+source ~/.config/git-alias/lib/git.zsh
+
 
 nba() {
-    # Save the current directory
-    local prev_dir="$PWD"
-    
-    # Go to the nbacli directory and run the Go program
-    cd /home/kman/Documents/github-projects/nbacli && go run /home/kman/Documents/github-projects/nbacli/main.go "$@"
-    
-    # Return to the previous directory
-    cd "$prev_dir"
-}
+	# Save the current directory
+	local prev_dir="$PWD"
 
-onf() {
-    local dir=$(find ~ ~/Documents ~/.config -type f 2> /dev/null | fzf --reverse --height 35% --preview 'bat --style=numbers --color=always {}')
+		# Go to the nbacli directory and run the Go program
+		cd /home/kman/Documents/github-projects/nbacli && go run /home/kman/Documents/github-projects/nbacli/main.go "$@"
 
-    if [ -n "$dir" ]; then
-        nvim "$dir" && zle reset-prompt 2> /dev/null
-    fi
-}
+		# Return to the previous directory
+		cd "$prev_dir"
+	}
 
-zle -N onf
-bindkey '^n' onf
+	onf() {
+		local dir=$(find ~ ~/Documents ~/.config -type f 2> /dev/null | fzf --reverse --height 35% --preview 'bat --style=numbers --color=always {}')
 
-fcd() {
-    local dir=$(find ~ ~/Documents ~/.config -type d 2> /dev/null | fzf --reverse --height 35% --preview 'tree -C {} | head -n 10')
+		if [ -n "$dir" ]; then
+			nvim "$dir" && zle reset-prompt 2> /dev/null
+		fi
+	}
 
-    if [ -n "$dir" ]; then
-        cd "$dir" && zle reset-prompt 2> /dev/null
-    fi
-}
+	zle -N onf
+	bindkey '^n' onf
 
-zle -N fcd
-bindkey '^o' fcd
-# bindkey -r '^o'
+	fcd() {
+		local dir=$(find ~ ~/Documents ~/.config -type d 2> /dev/null | fzf --reverse --height 35% --preview 'tree -C {} | head -n 10')
 
-setopt autocd              # change directory just by typing its name
-setopt correct            # auto correct mistakes
-setopt interactivecomments # allow comments in interactive mode
-setopt magicequalsubst     # enable filename expansion for arguments of the form ‘anything=expression’
-setopt nonomatch           # hide error message if there is no match for the pattern
-setopt notify              # report the status of background jobs immediately
-setopt numericglobsort     # sort filenames numerically when it makes sense
-setopt promptsubst         # enable command substitution in prompt
+		if [ -n "$dir" ]; then
+			cd "$dir" && zle reset-prompt 2> /dev/null
+		fi
+	}
+
+	zle -N fcd
+	bindkey '^o' fcd
+	# bindkey -r '^o'
+
+	setopt autocd              # change directory just by typing its name
+	setopt correct            # auto correct mistakes
+	setopt interactivecomments # allow comments in interactive mode
+	setopt magicequalsubst     # enable filename expansion for arguments of the form ‘anything=expression’
+	setopt nonomatch           # hide error message if there is no match for the pattern
+	setopt notify              # report the status of background jobs immediately
+	setopt numericglobsort     # sort filenames numerically when it makes sense
+	setopt promptsubst         # enable command substitution in prompt
 
 # eval "$(pyenv init --path)"
 # eval "$(pyenv init -)"
@@ -66,7 +76,6 @@ alias ls='ls --color'
 
 alias vim=$(which nvim)
 
-
 export SHELL=$(which zsh)
 export BROWSER='firefox'
 
@@ -74,7 +83,7 @@ export BROWSER='firefox'
 # function pyenv (){
 # 	local command
 # 	command="${1:-}"
-	
+
 # 	if [ $command == "install" ];then
 
 #     	curl_output=(curl -sSL https://github.com/python/cpython/commit/8ea6353.patch\?full_index\=1)
@@ -84,6 +93,71 @@ export BROWSER='firefox'
 #         /usr/local/bin/pyenv $@
 #     fi
 # }
+#
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
+    else
+        color_prompt=
+    fi
+fi
+
+# Autoload zsh add-zsh-hook and vcs_info functions (-U autoload w/o substition, -z use zsh style)
+autoload -Uz add-zsh-hook vcs_info
+# Enable substitution in the prompt.
+setopt prompt_subst
+# Run vcs_info just before a prompt is displayed (precmd)
+add-zsh-hook precmd vcs_info
+# add ${vcs_info_msg_0} to the prompt
+# e.g. here we add the Git information in red  
+PROMPT='%1~ %F{red}${vcs_info_msg_0_}%f %# '
+
+# Enable checking for (un)staged changes, enabling use of %u and %c
+zstyle ':vcs_info:*' check-for-changes true
+# Set custom strings for an unstaged vcs repo changes (*) and staged changes (+)
+zstyle ':vcs_info:*' unstagedstr ' *'
+zstyle ':vcs_info:*' stagedstr ' +'
+# Set the format of the Git information for vcs_info
+zstyle ':vcs_info:git:*' formats       '(%b%u%c)'
+zstyle ':vcs_info:git:*' actionformats '(%b|%a%u%c)'
+
+configure_prompt() {
+    prompt_symbol=㉿
+    [ "$EUID" -eq 0 ] && prompt_symbol=💀
+    case "$PROMPT_ALTERNATIVE" in
+        twoline)
+            PROMPT=$'\n%B%F{%(#.red.grey)}${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}%B%F{%(#.red.grey)}[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%B%F{%(#.red.grey)}] ${vcs_info_msg_0_}\n%B%(#.%B%F{blue}#.%F{grey} #)%b%F{reset} '
+            RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
+            ;;
+        oneline)
+                PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
+                RPROMPT=
+                ;;
+        backtrack)
+                PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b%F{reset}%(#.#.$) '
+                RPROMPT=
+                ;;
+        esac
+    }
+
+# The following block is surrounded by two delimiters.
+# These delimiters must not be modified. Thanks.
+# START KALI CONFIG VARIABLES
+PROMPT_ALTERNATIVE=twoline
+NEWLINE_BEFORE_PROMPT=yes
+# STOP KALI CONFIG VARIABLES
+
+if [ "$color_prompt" = yes ]; then
+    # override default virtualenv indicator in prompt
+    VIRTUAL_ENV_DISABLE_PROMPT=1
+    configure_prompt
+fi
+
 
 
 WORDCHARS=${WORDCHARS//\/} # Don't consider certain characters part of the word
@@ -107,103 +181,15 @@ bindkey '^[[Z' undo                               # shift + tab undo last action
 
 # History configurations
 HISTFILE=~/.zsh_history
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=5000
+SAVEHIST=5000
 setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
 setopt hist_ignore_dups       # ignore duplicated commands history list
 setopt hist_ignore_space      # ignore commands that start with space
 setopt hist_verify            # show command with history expansion to user before running it
-#setopt share_history         # share command history data
 
 # force zsh to show the complete history
 alias history="history 0"
-
-# configure `time` format
-TIMEFMT=$'\nreal\t%E\nuser\t%U\nsys\t%S\ncpu\t%P'
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-# force_color_prompt=yes
-
-# if [ -n "$force_color_prompt" ]; then
-#     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-#         # We have color support; assume it's compliant with Ecma-48
-#         # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-#         # a case would tend to support setf rather than setaf.)
-#         color_prompt=yes
-#     else
-#         color_prompt=
-#     fi
-# fi
-
-# # Autoload zsh add-zsh-hook and vcs_info functions (-U autoload w/o substition, -z use zsh style)
-# autoload -Uz add-zsh-hook vcs_info
-# # Enable substitution in the prompt.
-# setopt prompt_subst
-# # Run vcs_info just before a prompt is displayed (precmd)
-# add-zsh-hook precmd vcs_info
-# # add ${vcs_info_msg_0} to the prompt
-# # e.g. here we add the Git information in red  
-# PROMPT='%1~ %F{red}${vcs_info_msg_0_}%f %# '
-
-# # Enable checking for (un)staged changes, enabling use of %u and %c
-# zstyle ':vcs_info:*' check-for-changes true
-# # Set custom strings for an unstaged vcs repo changes (*) and staged changes (+)
-# zstyle ':vcs_info:*' unstagedstr ' *'
-# zstyle ':vcs_info:*' stagedstr ' +'
-# # Set the format of the Git information for vcs_info
-# zstyle ':vcs_info:git:*' formats       '(%b%u%c)'
-# zstyle ':vcs_info:git:*' actionformats '(%b|%a%u%c)'
-
-# configure_prompt() {
-#     prompt_symbol=㉿
-#     [ "$EUID" -eq 0 ] && prompt_symbol=💀
-#     case "$PROMPT_ALTERNATIVE" in
-#         twoline)
-#             PROMPT=$'\n%B%F{%(#.red.grey)}${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}%B%F{%(#.red.grey)}[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%B%F{%(#.red.grey)}] ${vcs_info_msg_0_}\n%B%(#.%B%F{blue}#.%F{grey} #)%b%F{reset} '
-#             RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
-#             ;;
-#         oneline)
-#             PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
-#             RPROMPT=
-#             ;;
-#         backtrack)
-#             PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b%F{reset}%(#.#.$) '
-#             RPROMPT=
-#             ;;
-#     esac
-# }
-
-# # The following block is surrounded by two delimiters.
-# # These delimiters must not be modified. Thanks.
-# # START KALI CONFIG VARIABLES
-# PROMPT_ALTERNATIVE=twoline
-# NEWLINE_BEFORE_PROMPT=yes
-# # STOP KALI CONFIG VARIABLES
-
-# if [ "$color_prompt" = yes ]; then
-#     # override default virtualenv indicator in prompt
-#     VIRTUAL_ENV_DISABLE_PROMPT=1
-#     configure_prompt
-# fi
-
-# some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-
-# enable auto-suggestions based on the history
-# if [ -f /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-#     . /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-#     # change suggestion color
-#     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
-# fi
-
-# enable command-not-found if installed
-#if [ -f /etc/zsh_command_not_found ]; then
-#    . /etc/zsh_command_not_found
-#fi
 
 export FREERDP2_CFLAGS='-I/usr/local/include'
 export FREERDP2_LIBS='-I/usr/local/lib/freerdp'
@@ -217,28 +203,18 @@ export PKG_CONFIG_PATH="/usr/local/opt/openssl@3/lib/pkgconfig:/usr/local/opt/zl
 export CONFIGURE_OPTS="CPPFLAGS=-I/usr/local/opt/zlib/include,-I/usr/local/opt/openssl@3/include,-I/usr/local/opt/bzip2/include,-I/usr/local/opt/readline/include LDFLAGS=-L/usr/local/opt/zlib/lib,-L/usr/local/opt/openssl@3/lib,-L/usr/local/opt/bzip2/lib,-L/usr/local/opt/readline/lib"
 
 
- # if [[ $(uname) == "Darwin" ]] then
- # 	export ZSH="/Users/katob/.oh-my-zsh"
- # 	plugins=(tmux)
- # 	source $ZSH/oh-my-zsh.sh
- # elif [[ $(uname) == "Linux" ]] then
- # 	export ZSH="/usr/share/oh-my-zsh"
- # 	plugins=(git tmux)
- # 	source $ZSH/oh-my-zsh.sh
- # fi
+export GOPATH=`echo $HOME/go`
+export PATH="$GOPATH:$PATH"
+export PATH="/usr/local/bin:/home/kman/go/bin:/home/kman/.cargo/bin:/home/kman/.local/share/nvim/mason/bin:/usr/local/lib:/usr/local/opt/binutils/bin:/usr/local/opt/inetutils/libexec/gnubin:/usr/local/opt/openssl@3/bin:/usr/local/opt/bzip2/bin:$PATH"
+export DYLD_LIBRARY_PATH="/usr/local/lib/"
 
- export GOPATH=`echo $HOME/go`
- export PATH="$GOPATH:$PATH"
- export PATH="/usr/local/bin:/home/kman/go/bin:/home/kman/.cargo/bin:/home/kman/.local/share/nvim/mason/bin:/usr/local/lib:/usr/local/opt/binutils/bin:/usr/local/opt/inetutils/libexec/gnubin:/usr/local/opt/openssl@3/bin:/usr/local/opt/bzip2/bin:$PATH"
- export DYLD_LIBRARY_PATH=/usr/local/lib/
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig:/opt/X11/lib/pkgconfig:/usr/local/opt/libffi/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 
- export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig:/opt/X11/lib/pkgconfig:/usr/local/opt/libffi/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PATH=/opt/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH
 
- export PATH=/opt/cuda/bin:$PATH
- export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH
-
- export CLICOLOR=1
- export LSCOLORS=Eafxcxdxbxegedabagacad
+# export CLICOLOR=1
+# export LSCOLORS=Eafxcxdxbxegedabagacad
 
 
 
@@ -247,7 +223,6 @@ export CONFIGURE_OPTS="CPPFLAGS=-I/usr/local/opt/zlib/include,-I/usr/local/opt/o
 # #         export JAVA_HOME=$(/usr/libexec/java_home -v"$version");
 # #         java -version
 # #  }
-
 
 
 if [[ $(uname) == "Darwin" ]] then
@@ -260,13 +235,13 @@ fi
 if [[ $(uname) == "Linux" ]] then
 	__conda_setup="$('/home/kman/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 	if [ $? -eq 0 ]; then
-			eval "$__conda_setup"
+		eval "$__conda_setup"
 	else
-			if [ -f "/home/kman/miniconda3/etc/profile.d/conda.sh" ]; then
-					. "/home/kman/miniconda3/etc/profile.d/conda.sh"
-			else
-					export PATH="/home/kman/miniconda3/bin:$PATH"
-			fi
+		if [ -f "/home/kman/miniconda3/etc/profile.d/conda.sh" ]; then
+			. "/home/kman/miniconda3/etc/profile.d/conda.sh"
+		else
+			export PATH="/home/kman/miniconda3/bin:$PATH"
+		fi
 	fi
 	unset __conda_setup
 fi
@@ -274,4 +249,4 @@ fi
 # zprof
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
