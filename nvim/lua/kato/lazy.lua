@@ -66,7 +66,8 @@ local plugins = {
 		}
 	},
 	{
-		"tpope/vim-dadbod"
+		"touchmarine/vim-dadbod",
+		branch = "feat/duckdb-adapter"
 	},
 	{
 		"kristijanhusak/vim-dadbod-ui"

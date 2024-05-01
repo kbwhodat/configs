@@ -253,7 +253,7 @@ zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' list-colors 'bg=green,fg=white,bold'
 zstyle ':completion:*' menu select=2
-eval "$(compaudit | xargs chmod g-w,o-w)"
+# eval "$(compaudit | xargs chmod g-w,o-w)"
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:options' description 'yes'
