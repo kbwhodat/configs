@@ -19,12 +19,13 @@ use_symbol_for_status = false
 [directory]
 format = '[\[$path\]]($style) '
 truncation_length = 0
-style = 'bold white'
+style = 'white'
 truncate_to_repo = false
 disabled = false
 
 [git_branch]
-format = '(\($branch) '
+format = '[(\($branch)]($style) '
+style = 'white'
 
 [git_status]
 format = '([$modified\)]($style) )'
