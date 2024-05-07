@@ -133,7 +133,8 @@
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
 
-					home-manager.users.katob = import ./darwin/home;
+					home-manager.users.katob.imports = [ ./darwin/home ];
+					home-manager.backupFileExtension = "bak";
 				}
 			];
 		};
