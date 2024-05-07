@@ -24,6 +24,7 @@
   # environment.
   home.packages = with pkgs; [
 		nmap
+		dash
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
