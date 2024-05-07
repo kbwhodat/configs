@@ -6,6 +6,7 @@
   # nix configuration
   # reference: https://daiderd.com/nix-darwin/manual/index.html#sec-options
 
+
   services.nix-daemon.enable = true; # auto upgrade nix package and daemon service
 
   system = {
