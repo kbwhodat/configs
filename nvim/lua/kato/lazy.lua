@@ -118,7 +118,6 @@ local plugins = {
   },
   {
     "akinsho/bufferline.nvim",
-		tag = "v4.5.3",
     event = "VeryLazy",
     keys = {
       { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle pin" },

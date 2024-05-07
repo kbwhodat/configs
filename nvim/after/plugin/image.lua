@@ -1,7 +1,7 @@
 
 
 local os_type = io.popen('uname'):read("*l")
-local backend = "ueberzug"
+local backend = "kitty"
 
 if os_type == 'Darwin' then
 
@@ -9,8 +9,8 @@ if os_type == 'Darwin' then
 	package.path = package.path .. ";"  .. "/Users/katob/.luarocks/share/lua/5.1/?/init.lua;"
 	package.path = package.path .. ";" ..  "/Users/katob/.luarocks/share/lua/5.1/?.lua;"
 elseif os_type == 'Linux' then
-	package.path = package.path .. ";"  .. "/home/kman/.luarocks/share/lua/5.1/?/init.lua;"
-	package.path = package.path .. ";" ..  "/home/kman/.luarocks/share/lua/5.1/?.lua;"
+	package.path = package.path .. ";"  .. "/home/katob/.luarocks/share/lua/5.1/?/init.lua;"
+	package.path = package.path .. ";" ..  "/home/katob/.luarocks/share/lua/5.1/?.lua;"
 end
 
 
