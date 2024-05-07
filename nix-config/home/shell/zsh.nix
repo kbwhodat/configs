@@ -6,8 +6,8 @@ in
 {
 	programs.zsh = {
 		enable = true;
-		extraConfig = zshConf;
-		plguins = [
+		dotDir = ".config/zsh";
+		plugins = [
 		{
 			name = "vi-mode";
 			src = pkgs.zsh-vi-mode;
