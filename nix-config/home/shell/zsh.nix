@@ -1,7 +1,7 @@
 { pkgs, config, lib, ... }:
 
 let 
-	zshConf = builtins.readFile "${config.home.homeDirectory}/.config/zsh/zshrc";
+	zshConf = builtins.readFile ./zshrc;
 in
 {
 	programs.zsh = {
