@@ -72,40 +72,6 @@ local plugins = {
 	{
 		"kristijanhusak/vim-dadbod-ui"
 	},
-  -- {
-  --   "folke/trouble.nvim",
-  --   cmd = { "TroubleToggle", "Trouble" },
-  --   opts = { use_diagnostic_signs = true },
-  --   keys = {
-  --     { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
-  --     { "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
-  --     { "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
-  --     { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
-  --     {
-  --       "[q",
-  --       function()
-  --         if require("trouble").is_open() then
-  --           require("trouble").previous({ skip_groups = true, jump = true })
-  --         else
-  --           vim.cmd.cprev()
-  --         end
-  --       end,
-  --       desc = "Previous trouble/quickfix item",
-  --     },
-  --     {
-  --       "]q",
-  --       function()
-  --         if require("trouble").is_open() then
-  --           require("trouble").next({ skip_groups = true, jump = true })
-  --         else
-  --           vim.cmd.cnext()
-  --         end
-  --       end,
-  --       desc = "Next trouble/quickfix item",
-  --     },
-  --   },
-  -- },
-
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -138,7 +104,6 @@ local plugins = {
       },
     },
   },
-
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
@@ -152,30 +117,6 @@ local plugins = {
       { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
     },
   },
-  {
-    "echasnovski/mini.indentscope",
-		lazy = true,
-		delay = 2000,
-    version = false, -- wait till new 0.7.0 release to put it back on semver
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      -- symbol = "▏",
-      symbol = "│ ",
-      options = { try_as_border = false },
-    },
-    init = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "toggleterm", "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy", "mason" },
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
-      })
-    end,
-    config = function(_, opts)
-      require("mini.indentscope").setup(opts)
-    end,
-  },
-
   'nvim-treesitter/nvim-treesitter-context',
   "mbbill/undotree",
 	{
@@ -192,16 +133,11 @@ local plugins = {
 		"tpope/vim-fugitive",
 		delay = 5000,
 	},
-	-- {
-	-- 	"airblade/vim-gitgutter",
-	-- 	delay = 2000,
-	-- },
   {
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
 		config = false
 	},
-	-- 'dkarter/bullets.vim',
 	{
 		'dkarter/bullets.vim',
 		lazy = true,
