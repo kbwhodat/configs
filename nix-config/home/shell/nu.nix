@@ -2,7 +2,7 @@
 {
 
   programs.nushell = {
-    enable = false;
+    enable = true;
     inherit (config.home) shellAliases; # Our shell aliases are pretty simple
   };
 }
