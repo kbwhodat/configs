@@ -13,10 +13,12 @@
   # A flake in some absolute path
   # inputs.otherDir.url = "path:/home/alice/src/patchelf";
 
-  inputs = {
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  };
+	inputs.home-manager.url = "github:nix-community/home-manager";
+	inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+	inputs.darwin.url = "github:lnl7/nix-darwin";
+	inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
+	inputs.nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpks-23.11-darwin";
 
 	inputs.helix.url = "github:helix-editor/helix/master";
 
@@ -102,7 +104,7 @@
   inputs.nix-bundle.url = "github:NixOS/bundlers";
 
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, ... }: {
 
     nixosConfigurations.my-nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -115,14 +117,25 @@
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
 
-					home-manager.users.katob = import ./home;
+					home-manager.users.katob = import ./nixos/home;
 				}
       ]; 
     };
 
-		darwinConfigurations.my-mac = nixpkgs.lib.darwinSystem {
+		darwinConfigurations.my-mac = darwin.lib.darwinSystem {
 			system = "x86_64-darwin";
-			modules = [ ./darwin/configuration.nix ];
+			specialArgs = { inherit inputs; };
+			modules = [ 
+				./darwin/configuration.nix 
+
+				home-manager.nixosModules.home-manager
+				{
+					home-manager.useGlobalPkgs = true;
+					home-manager.useUserPackages = true;
+
+					home-manager.users.katob = import ./darwin/home;
+				}
+			];
 		};
   };
 }
