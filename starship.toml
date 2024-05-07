@@ -1,0 +1,54 @@
+add_newline = true
+
+format = """\
+  $directory\
+  $git_branch\
+	$git_status\
+  $line_break\
+  $character\
+  """
+
+
+[character]
+# symbol = "#"
+format = "$symbol"
+success_symbol = " [#](bold white) "
+error_symbol = " [#](bold red) "
+use_symbol_for_status = false
+
+[directory]
+format = '[\[$path\]]($style) '
+truncation_length = 0
+style = 'white'
+truncate_to_repo = false
+disabled = false
+
+[git_branch]
+format = '[(\($branch)]($style) '
+style = 'white'
+
+[git_status]
+format = '([$modified\)]($style) )'
+style = 'white'
+modified = '*'
+
+[hostname]
+ssh_only = false
+format = "[$hostname]($style) in "
+trim_at = "."
+disabled = false
+
+[line_break]
+disabled = false
+
+[python]
+pyenv_version_name = false
+pyenv_prefix = "pyenv"
+style = "bold white"
+disabled = false
+
+[username]
+style_root = "bold red"
+style_user = "bold yellow"
+show_always = false
+disabled = true
