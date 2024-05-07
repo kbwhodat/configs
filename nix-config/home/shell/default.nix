@@ -9,7 +9,7 @@
 		./neovim.nix
 	];
 
-	home.sessionVariable = {
+	home.sessionVariables = {
 
 		EDITOR = "nvim";
 		BROWSER = "firefox";
