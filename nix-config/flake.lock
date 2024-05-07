@@ -442,6 +442,22 @@
         "type": "indirect"
       }
     },
+    "nixpkgs-darwin": {
+      "locked": {
+        "lastModified": 1715038196,
+        "narHash": "sha256-2dzpswiPExTUGQOA+PItfAt0rGKh7PMFhHfP9xhUpWY=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "478fb785fbbb9282ab562ede277b30bb780a8275",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-23.11-darwin",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-regression": {
       "locked": {
         "lastModified": 1643052045,
@@ -791,6 +807,7 @@
           "nixops",
           "nixpkgs"
         ],
+        "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgsGitHub": "nixpkgsGitHub",
         "nixpkgsGitHubBranch": "nixpkgsGitHubBranch",
         "nixpkgsGitHubDir": "nixpkgsGitHubDir",

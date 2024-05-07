@@ -18,7 +18,7 @@
 
 	inputs.darwin.url = "github:lnl7/nix-darwin";
 	inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
-	inputs.nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpks-23.11-darwin";
+	inputs.nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
 
 	inputs.helix.url = "github:helix-editor/helix/master";
 

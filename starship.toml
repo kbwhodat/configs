@@ -3,7 +3,7 @@ add_newline = true
 format = """\
   $directory\
   $git_branch\
-	$git_status\
+  $git_status\
   $line_break\
   $character\
   """
@@ -14,7 +14,7 @@ format = """\
 format = "$symbol"
 success_symbol = " [#](bold white) "
 error_symbol = " [#](bold red) "
-use_symbol_for_status = false
+#use_symbol_for_status = false
 
 [directory]
 format = '[\[$path\]]($style) '
