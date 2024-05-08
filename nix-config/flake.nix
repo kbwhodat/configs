@@ -120,6 +120,7 @@
 					home-manager.users.katob = import ./nixos/home;
 				}
       ]; 
+
     };
 
 		darwinConfigurations.my-mac = darwin.lib.darwinSystem {

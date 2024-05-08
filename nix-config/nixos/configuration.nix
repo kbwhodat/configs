@@ -119,6 +119,7 @@
     isNormalUser = true;
     description = "kato";
     extraGroups = [ "networkmanager" "wheel" ];
+		shell = pkgs.zsh;
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -139,11 +140,9 @@
     pciutils
     curl
     #neovim
-    kitty
     xclip
     xsel
     tmux
-    zsh
     git
     xdotool
 		inputs.helix.packages."${pkgs.system}".helix
