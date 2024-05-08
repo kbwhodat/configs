@@ -13,12 +13,16 @@
   # A flake in some absolute path
   # inputs.otherDir.url = "path:/home/alice/src/patchelf";
 
-	inputs.home-manager.url = "github:nix-community/home-manager";
+	inputs.home-manager.url = "github:nix-community/home-manager/release-23.11";
 	inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
+	inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+	# inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
 	inputs.darwin.url = "github:lnl7/nix-darwin";
 	inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
-	inputs.nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
+	inputs.nix-darwin.url = "github:lnl7/nix-darwin";
+	inputs.nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+	inputs.nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-20.09";
 
 	inputs.helix.url = "github:helix-editor/helix/master";
 
@@ -53,26 +57,6 @@
   inputs.tarFlake.url = "https://github.com/NixOS/patchelf/archive/master.tar.gz";
 
   # A GitHub repository.
-  inputs.import-cargo = {
-    type = "github";
-    owner = "edolstra";
-    repo = "import-cargo";
-  };
-
-  # Inputs as attrsets.
-  # An indirection through the flake registry.
-  inputs.nixpkgsIndirect = {
-    type = "indirect";
-    id = "nixpkgs";
-  };
-
-  # Non-flake inputs. These provide a variable of type path.
-  inputs.grcov = {
-    type = "github";
-    owner = "mozilla";
-    repo = "grcov";
-    flake = false;
-  };
 
   # Transitive inputs can be overridden from a flake.nix file. For example, the following overrides the nixpkgs input of the nixops input:
   inputs.nixops.inputs.nixpkgs = {
@@ -81,11 +65,6 @@
     repo = "nixpkgs";
   };
 
-  # It is also possible to "inherit" an input from another input. This is useful to minimize
-  # flake dependencies. For example, the following sets the nixpkgs input of the top-level flake
-  # to be equal to the nixpkgs input of the nixops input of the top-level flake:
-  inputs.nixpkgs.url = "nixpkgs";
-  inputs.nixpkgs.follows = "nixops/nixpkgs";
 
   # The value of the follows attribute is a sequence of input names denoting the path
   # of inputs to be followed from the root flake. Overrides and follows can be combined, e.g.
@@ -104,7 +83,7 @@
   inputs.nix-bundle.url = "github:NixOS/bundlers";
 
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, ... }: {
 
     nixosConfigurations.my-nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -120,21 +99,21 @@
 					home-manager.users.katob = import ./nixos/home;
 				}
       ]; 
-
     };
 
-		darwinConfigurations.my-mac = darwin.lib.darwinSystem {
+		darwinConfigurations.my-mac = nix-darwin.lib.darwinSystem {
 			system = "x86_64-darwin";
 			specialArgs = { inherit inputs; };
 			modules = [ 
 				./darwin/configuration.nix 
 
-				home-manager.nixosModules.home-manager
+				home-manager.darwinModules.home-manager
 				{
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
 
 					home-manager.users.katob = import ./darwin/home;
+					users.users.katob.home = "/Users/katob";
 				}
 			];
 		};

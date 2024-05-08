@@ -105,6 +105,12 @@ hi WarningMsg           guifg=#FFDF5F guibg=bg      gui=bold      ctermfg=221  c
 hi Question             guifg=#66D9EF                             ctermfg=81
 hi Title                guifg=#FD971F                             ctermfg=208
 
+" Status Line for the active window
+hi StatusLine guifg=#FFFFFF guibg=#000000 gui=bold ctermfg=white ctermbg=black cterm=bold
+
+" Status Line for the inactive windows
+hi StatusLineNC guifg=#808080 guibg=#000000 gui=NONE ctermfg=gray ctermbg=black cterm=NONE
+
 
 " Special cases
 

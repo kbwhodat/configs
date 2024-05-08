@@ -1,9 +1,7 @@
 
 require("kato")
-require("kato.neorg_functions")
 require("kato.obsidian")
 require("kato.obsidian_functions")
-require("kato.image_preview")
 
 
 local vim = vim
@@ -40,8 +38,8 @@ vim.cmd('set cursorcolumn')
 vim.cmd('set clipboard+=unnamedplus')
 vim.cmd('set termguicolors')
 vim.cmd('set nolist')
--- vim.cmd('colorscheme monokai')
-vim.cmd('colorscheme kanagawa')
+vim.cmd('colorscheme molokai-dark')
+-- vim.cmd('colorscheme kanagawa')
 
 -- setting coneal for markdown stuff
 vim.cmd('set conceallevel=2')
@@ -54,12 +52,31 @@ vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
 
--- git gutter colors
-vim.cmd('highlight clear SignColumn')
-vim.cmd('highlight GitGutterAdd guifg=green')
-vim.cmd('highlight GitGutterChange guifg=orange')
-vim.cmd('highlight GitGutterDelete guifg=red')
-vim.cmd('highlight GitGutterChangeDelete guifg=red')
+-- Set the status line for the active window
+vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#FFFFFF', bg = '#000000', bold = true })
+
+-- Set the status line for the inactive windows
+vim.api.nvim_set_hl(0, 'StatusLineNC', { fg = '#808080', bg = '#000000' })
+
+-- Set the line number foreground and background colors
+vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray numbers on a dark gray background
+
+-- Optional: Set the cursor line number to have a distinct look
+vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bg = '#000000' })  -- White numbers on a slightly lighter gray background
+
+vim.cmd('highlight @markup.heading.1.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.1.markdown guifg=#0096FF')
+vim.cmd('highlight @markup.heading.2.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.2.markdown guifg=#0096FF')
+vim.cmd('highlight @markup.heading.3.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.3.markdown guifg=#0096FF')
+vim.cmd('highlight @markup.heading.4.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.4.markdown guifg=#0096FF')
+vim.cmd('highlight @markup.heading.5.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.5.markdown guifg=#0096FF')
+vim.cmd('highlight @markup.heading.6.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.6.markdown guifg=#0096FF')
+
 
 -- Spell checking
 vim.cmd('set spelllang=en_us')
@@ -88,8 +105,8 @@ keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
 
 
-keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
-keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
+-- keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
+-- keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 
 -- Bind this function to convenient keymaps or commands
 -- vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })

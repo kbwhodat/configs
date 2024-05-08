@@ -9,6 +9,16 @@
   # manage.
   home.username = "katob";
   home.homeDirectory = "/Users/katob";
+	manual.html.enable = false;
+	manual.manpages.enable = false;
+	manual.json.enable = false;
+
+	# home.manual = {
+	# 	html.enable = false;
+	# 	manpages.enable = false;
+	# 	json.enable = false;
+	# };
+
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release

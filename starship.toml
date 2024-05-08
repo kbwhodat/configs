@@ -23,20 +23,30 @@ style = 'white'
 truncate_to_repo = false
 disabled = false
 
+[git_commit]
+disabled = true
+
+[git_state]
+disabled = true
+
+[git_metrics]
+disabled = true
+
 [git_branch]
 format = '[(\($branch)]($style) '
 style = 'white'
 
 [git_status]
-format = '([$modified\)]($style) )'
+format = '([$modified$staged\)]($style) )'
 style = 'white'
 modified = '*'
+staged = '+'
 
 [hostname]
 ssh_only = false
 format = "[$hostname]($style) in "
 trim_at = "."
-disabled = false
+disabled = true
 
 [line_break]
 disabled = false
@@ -45,7 +55,7 @@ disabled = false
 pyenv_version_name = false
 pyenv_prefix = "pyenv"
 style = "bold white"
-disabled = false
+disabled = true
 
 [username]
 style_root = "bold red"

@@ -9,20 +9,19 @@
 		plugins = with pkgs;
 		[
 			tmuxPlugins.better-mouse-mode
-			tmuxPlugins.urlview
+			# tmuxPlugins.urlview
 			tmuxPlugins.yank
 		];
 
 		extraConfig = ''
 
-# Enable clipboard and vi mode for copy-paste operations
 				set -g set-clipboard on
 				setw -g mode-keys vi
 				set -sg escape-time 0
 
-				set -g default-shell /etc/profiles/per-user/katob/bin/zsh
+				set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
+				set-option -g default-shell "/etc/profiles/per-user/katob/bin/zsh"
 
-# Basic settings
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
 				set -g cursor-color white
@@ -31,23 +30,21 @@
 				bind C-a send-prefix
 				bind R source-file ~/.tmux.conf \; display "Config Reloaded!"
 
-# Status Bar - simplified
 				set-option -g status-style bg=default
 				set -g status-left "#S "
 				set -g status-right ""
 				set -g window-status-current-format ""
 				set -g window-status-format ""
 
-# Used for image.nvim. To be able to show images.
+				set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
+
 				set -gq allow-passthrough on
 				set -g visual-activity off
 
-# Pane navigation bindings using Ctrl+h/j/k
 				bind-key -n C-h select-pane -L
 				bind-key -n C-j select-pane -D
 				bind-key -n C-k select-pane -U
 
-# Enhanced pane navigation in copy-mode
 				bind-key -T copy-mode-vi 'C-h' select-pane -L
 				bind-key -T copy-mode-vi 'C-j' select-pane -D
 				bind-key -T copy-mode-vi 'C-k' select-pane -U

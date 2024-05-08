@@ -16,4 +16,20 @@
 	};
 
 	security.pam.enableSudoTouchIdAuth = true;
+
+  # environment.systemPackages =
+  #   [ 
+			# pkgs.vim
+  #   ];
+
+	
+	# manual = {
+	# 	html.enable = false;
+	# 	manpages.enable = false;
+	# 	json.enable = false;
+	# };
+
+	nix.settings.allowed-users = ["root" "katob"];
+	nix.settings.trusted-users = ["root" "katob"];
+  system.stateVersion = 4;
 }

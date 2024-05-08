@@ -205,22 +205,6 @@
         "url": "https://github.com/NixOS/patchelf"
       }
     },
-    "grcov": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1698610461,
-        "narHash": "sha256-NwVqqzIST03rbgzAY322FaPosNM7vpQS5CmjfMTSdK0=",
-        "owner": "mozilla",
-        "repo": "grcov",
-        "rev": "cc77ce34164fc3ea80ac579d1c15f36c9734133c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mozilla",
-        "repo": "grcov",
-        "type": "github"
-      }
-    },
     "helix": {
       "inputs": {
         "crane": "crane",
@@ -250,35 +234,21 @@
         ]
       },
       "locked": {
-        "lastModified": 1714981474,
-        "narHash": "sha256-b3/U21CJjCjJKmA9WqUbZGZgCvospO3ArOUTgJugkOY=",
+        "lastModified": 1714043624,
+        "narHash": "sha256-Xn2r0Jv95TswvPlvamCC46wwNo8ALjRCMBJbGykdhcM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6ebe7be2e67be7b9b54d61ce5704f6fb466c536f",
+        "rev": "86853e31dc1b62c6eeed11c667e8cdd0285d4411",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "release-23.11",
         "repo": "home-manager",
         "type": "github"
       }
     },
     "import-cargo": {
-      "locked": {
-        "lastModified": 1594305518,
-        "narHash": "sha256-frtArgN42rSaEcEOYWg8sVPMUK+Zgch3c+wejcpX3DY=",
-        "owner": "edolstra",
-        "repo": "import-cargo",
-        "rev": "25d40be4a73d40a2572e0cc233b83253554f06c5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "import-cargo",
-        "type": "github"
-      }
-    },
-    "import-cargo_2": {
       "locked": {
         "lastModified": 1594305518,
         "narHash": "sha256-frtArgN42rSaEcEOYWg8sVPMUK+Zgch3c+wejcpX3DY=",
@@ -367,6 +337,26 @@
         "type": "github"
       }
     },
+    "nix-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1713946171,
+        "narHash": "sha256-lc75rgRQLdp4Dzogv5cfqOg6qYc5Rp83oedF2t0kDp8=",
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "rev": "230a197063de9287128e2c68a7a4b0cd7d0b50a7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
@@ -444,16 +434,16 @@
     },
     "nixpkgs-darwin": {
       "locked": {
-        "lastModified": 1715038196,
-        "narHash": "sha256-2dzpswiPExTUGQOA+PItfAt0rGKh7PMFhHfP9xhUpWY=",
-        "owner": "nixos",
+        "lastModified": 1635350005,
+        "narHash": "sha256-tAMJnUwfaDEB2aa31jGcu7R7bzGELM9noc91L2PbVjg=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "478fb785fbbb9282ab562ede277b30bb780a8275",
+        "rev": "1c1f5649bb9c1b0d98637c8c365228f57126f361",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixpkgs-23.11-darwin",
+        "owner": "NixOS",
+        "ref": "nixos-20.09",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -507,7 +497,7 @@
     },
     "nixpkgsGitHubDir": {
       "inputs": {
-        "nixpkgs": "nixpkgs_11"
+        "nixpkgs": "nixpkgs_12"
       },
       "locked": {
         "dir": "blender",
@@ -541,20 +531,6 @@
         "type": "github"
       }
     },
-    "nixpkgsIndirect": {
-      "locked": {
-        "lastModified": 1715037484,
-        "narHash": "sha256-OUt8xQFmBU96Hmm4T9tOWTu4oCswCzoVl+pxSq/kiFc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "ad7efee13e0d216bf29992311536fce1d3eefbef",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
     "nixpkgsRegistry": {
       "locked": {
         "lastModified": 1715037484,
@@ -586,11 +562,11 @@
     },
     "nixpkgs_10": {
       "locked": {
-        "lastModified": 1715144290,
-        "narHash": "sha256-DH9KMzL7P7m4HMx21zgmaVKUJZRyr8zRDPxOOeNmBco=",
+        "lastModified": 1715184436,
+        "narHash": "sha256-GySDOHwaApTZWH9NId9cy3Dq+1mVzMOaE8qWMVwP+J4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e5332191028d534302bdad7c138f81005cdb1bff",
+        "rev": "4f554f0ff09c4cd34ca201c759c29008d1010eac",
         "type": "github"
       },
       "original": {
@@ -600,6 +576,22 @@
       }
     },
     "nixpkgs_11": {
+      "locked": {
+        "lastModified": 1714971268,
+        "narHash": "sha256-IKwMSwHj9+ec660l+I4tki/1NRoeGpyA2GdtdYpAgEw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "27c13997bf450a01219899f5a83bd6ffbfc70d3c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-23.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_12": {
       "locked": {
         "lastModified": 1711668574,
         "narHash": "sha256-u1dfs0ASQIEr1icTVrsKwg2xToIpn7ZXxW3RHfHxshg=",
@@ -614,7 +606,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_12": {
+    "nixpkgs_13": {
       "locked": {
         "lastModified": 1659914493,
         "narHash": "sha256-lkA5X3VNMKirvA+SUzvEhfA7XquWLci+CGi505YFAIs=",
@@ -629,7 +621,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_13": {
+    "nixpkgs_14": {
       "locked": {
         "lastModified": 1672057183,
         "narHash": "sha256-GN7/10DNNvs1FPj9tlZA2qgNdFuYKKuS3qlHTqAxasQ=",
@@ -797,22 +789,17 @@
         "gitRepo": "gitRepo",
         "gitRepoBranch": "gitRepoBranch",
         "gitRepoRev": "gitRepoRev",
-        "grcov": "grcov",
         "helix": "helix",
         "home-manager": "home-manager",
-        "import-cargo": "import-cargo",
         "nix-bundle": "nix-bundle",
+        "nix-darwin": "nix-darwin",
         "nixops": "nixops",
-        "nixpkgs": [
-          "nixops",
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs_11",
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgsGitHub": "nixpkgsGitHub",
         "nixpkgsGitHubBranch": "nixpkgsGitHubBranch",
         "nixpkgsGitHubDir": "nixpkgsGitHubDir",
         "nixpkgsGitHubRevision": "nixpkgsGitHubRevision",
-        "nixpkgsIndirect": "nixpkgsIndirect",
         "nixpkgsRegistry": "nixpkgsRegistry",
         "nixpkgsRegistryOverride": "nixpkgsRegistryOverride",
         "rust-web-server": "rust-web-server",
@@ -846,8 +833,8 @@
     },
     "rust-web-server": {
       "inputs": {
-        "import-cargo": "import-cargo_2",
-        "nixpkgs": "nixpkgs_12"
+        "import-cargo": "import-cargo",
+        "nixpkgs": "nixpkgs_13"
       },
       "locked": {
         "dir": "rust-web-server",
@@ -926,7 +913,7 @@
     },
     "tarFlake": {
       "inputs": {
-        "nixpkgs": "nixpkgs_13"
+        "nixpkgs": "nixpkgs_14"
       },
       "locked": {
         "lastModified": 1705312282,

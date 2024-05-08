@@ -28,11 +28,14 @@ local plugins = {
 			vim.cmd("TSInstall! pkl")
 		end,
 	},
-	{
-		"3rd/image.nvim",
-		lazy = true,
-		event = "BufReadPre *.md",
-	},
+	-- {
+	-- 	'3rd/image.nvim',
+	-- 	lazy = true,
+	-- 	event = 'VimEnter',  -- Broad event for testing
+	-- 	config = function()
+	-- 		require('image').setup()
+	-- 	end
+	-- },
 	{
 		"kbwhodat/ollama.nvim",
 		dependencies = {
@@ -144,7 +147,11 @@ local plugins = {
 		event = "BufReadPre *.md",
 	},
 	"akinsho/toggleterm.nvim",
-	"lewis6991/gitsigns.nvim",
+	{
+		'lewis6991/gitsigns.nvim',
+		requires = { 'nvim-lua/plenary.nvim' },
+		event = { 'BufRead', 'BufNewFile' },
+	},
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,

@@ -57,6 +57,11 @@ in
 		'';
 
 		initExtra = ''
+
+		alias ls='ls --color'
+		alias cat='bat --style plain'
+		alias vim="$(which nvim)"
+
 		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 			TMUX_SESSION="genesis"
 			if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
@@ -85,6 +90,10 @@ in
 		bindkey '^[[H' beginning-of-line                  # home
 		bindkey '^[[F' end-of-line                        # end
 		bindkey '^[[Z' undo                               # shift + tab undo last action
+
+		export PATH=$PATH:"/run/current-system/sw/bin"
+
+		stty -ixon
 
 		'';
 	};
