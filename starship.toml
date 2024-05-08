@@ -37,10 +37,11 @@ format = '[(\($branch)]($style) '
 style = 'white'
 
 [git_status]
-format = '([$modified$staged \) ]($style) )'
-style = 'white'
-modified = '*'
-staged = '+'
+format = '([$modified$staged$up_to_date\)]($style) )'
+style = "white"
+modified = "*"
+staged = "+"
+up_to_date = "✓"
 
 [hostname]
 ssh_only = false
