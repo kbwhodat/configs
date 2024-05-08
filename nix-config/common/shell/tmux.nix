@@ -5,6 +5,7 @@
 	programs.tmux = {
 		enable = true;
 		terminal = "tmux-256color";
+		defaultShell = pkgs.zsh;
 		historyLimit = 100000;
 		plugins = with pkgs;
 		[
