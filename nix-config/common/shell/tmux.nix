@@ -18,8 +18,8 @@
 # Enable clipboard and vi mode for copy-paste operations
 				set -g set-clipboard on
 				setw -g mode-keys vi
+				set -sg escape-time 500
 
-				set -sg escape-time 0
 # Basic settings
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
