@@ -4,7 +4,7 @@
 	imports = [
 		# ./dash.nix
 		# ./nu.nix
-		./starship.nix
+		# ./starship.nix
 		./zsh.nix
 		./kitty.nix
 		./tmux.nix
