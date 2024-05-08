@@ -37,7 +37,7 @@ format = '[(\($branch)]($style) '
 style = 'white'
 
 [git_status]
-format = '([\[$all_status$ahead_behind\]]($style) )'
+format = '([${modified}${staged}${up_to_date}\)]($style) )'
 style = "white"
 modified = "*"
 staged = "+"
