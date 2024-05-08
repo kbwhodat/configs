@@ -18,9 +18,9 @@
 # Enable clipboard and vi mode for copy-paste operations
 				set -g set-clipboard on
 				setw -g mode-keys vi
-				set -sg escape-time 500
+				set -sg escape-time 0
 
-				set -g default-shell ${pkgs.zsh}
+				set -g default-shell /etc/profiles/per-user/katob/bin/zsh
 
 # Basic settings
 				set-option -g mouse on
