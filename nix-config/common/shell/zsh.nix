@@ -20,10 +20,10 @@ in
 		history = {
 			expireDuplicatesFirst = true;
 			ignoreDups = true;
-			ignorespace = true;
+			ignoreSpace = true;
 		};
 
-		sessionVariable = {
+		sessionVariables = {
 			EDITOR = "nvim";
 			TERM = "xterm-256color";
 			COLORTERM = "truecolor";
@@ -57,14 +57,14 @@ in
 		'';
 
 		initExtra = ''
-		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
-			TMUX_SESSION="genesis"
-			if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-				tmux attach-session -t $TMUX_SESSION
-			else
-				tmux new-session -s $TMUX_SESSION
-			fi
-		fi
+		# if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
+		# 	TMUX_SESSION="genesis"
+		# 	if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
+		# 		tmux attach-session -t $TMUX_SESSION
+		# 	else
+		# 		tmux new-session -s $TMUX_SESSION
+		# 	fi
+		# fi
 
 		autoload -Uz compinit
 		compinit

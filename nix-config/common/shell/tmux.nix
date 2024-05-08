@@ -19,6 +19,7 @@
 				set -g set-clipboard on
 				setw -g mode-keys vi
 
+				set -sg escape-time 0
 # Basic settings
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
@@ -27,7 +28,6 @@
 				unbind C-b
 				bind C-a send-prefix
 				bind R source-file ~/.tmux.conf \; display "Config Reloaded!"
-				set-option -g history-limit 50000
 
 # Status Bar - simplified
 				set-option -g status-style bg=default
@@ -35,9 +35,6 @@
 				set -g status-right ""
 				set -g window-status-current-format ""
 				set -g window-status-format ""
-
-# Default terminal mode
-				set -gs default-terminal "xterm-256color"
 
 # Used for image.nvim. To be able to show images.
 				set -gq allow-passthrough on
