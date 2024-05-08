@@ -19,17 +19,6 @@ source ~/.config/git-alias/git-aliases.zsh
 source ~/.config/git-alias/lib/git.zsh
 
 
-nba() {
-	# Save the current directory
-	local prev_dir="$PWD"
-
-		# Go to the nbacli directory and run the Go program
-		cd /home/katob/Documents/github-projects/nbacli && go run /home/katob/Documents/github-projects/nbacli/main.go "$@"
-
-		# Return to the previous directory
-		cd "$prev_dir"
-	}
-
 	onf() {
 		local dir=$(find ~ ~/Documents ~/.config -type f 2> /dev/null | fzf --reverse --height 35% --preview 'bat --style=numbers --color=always {}')
 

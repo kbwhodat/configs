@@ -4,8 +4,7 @@
 # Add dash to the Home Manager environment
 	home.packages = with pkgs; [
 		dash
-		tsch
-		csh
+		tcsh
 		ksh
 	];
 
