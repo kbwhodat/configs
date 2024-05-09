@@ -295,7 +295,7 @@
         "type": "github"
       }
     },
-    "nixpkgsRegistry": {
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1715037484,
         "narHash": "sha256-OUt8xQFmBU96Hmm4T9tOWTu4oCswCzoVl+pxSq/kiFc=",
