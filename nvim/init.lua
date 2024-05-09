@@ -17,18 +17,11 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.cmd('set autoindent expandtab tabstop=2 shiftwidth=2')
+vim.cmd('nnoremap <tab> %')
+vim.cmd('vnoremap <tab> %')			
 
--- vim.cmd('set cursorline')
-
--- vim.cmd("set shiftwidth=0")
--- vim.cmd("set tabstop=2")
-
--- vim.opts.termguicolors = true
---
 vim.opt.list = false
--- vim.opt.listchars = {
--- 	eol = ""
--- }
 
 -- Setting Underline
 vim.api.nvim_command('set cursorline | hi clear cursorline | hi CursorLine gui=underline cterm=underline')
@@ -93,28 +86,16 @@ keymap("n", "<leader>;", ":BufferLineCyclePrev<CR>", opts) -- This will move to 
 keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts) -- This will move to the right buffer 
 keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
 
--- Neorg stuff
--- keymap("n", "<leader>no", ":Neorg index<CR>", opts) -- Will go the root index
--- keymap("n", "<leader>noh", ":Neorg workspace home<CR>", opts) -- Will go to the home workspace
--- keymap("n", "<leader>now", ":Neorg workspace work<CR>", opts)
--- keymap("n", "<leader>nod", ":Neorg workspace dj<CR>", opts)
--- keymap("n", "<leader>nol", ":Neorg workspace learning<CR>", opts)
 
 
 -- Adding syntax highlighting for markdown files with .md extensions
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
+vim.api.nvim_command('autocmd FileType markdown setlocal nowrap')
 
 
 -- keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
 -- keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 
--- Bind this function to convenient keymaps or commands
--- vim.api.nvim_set_keymap('n', '<Leader>nh', [[<Cmd>lua neorg_decrypt_and_open("home", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>nw', [[<Cmd>lua neorg_decrypt_and_open("work", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>nj', [[<Cmd>lua neorg_decrypt_and_open("dj", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>nd', [[<Cmd>lua neorg_decrypt_and_open("development", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>nl', [[<Cmd>lua neorg_decrypt_and_open("learning", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>nq', [[<Cmd>lua neorg_decrypt_and_open("notes", "index.norg.gpg")<CR>]], { noremap = true, silent = true })
 
 
 -- Obsidian key bindings
@@ -163,28 +144,15 @@ vim.api.nvim_set_keymap('n', '<Leader>L', ':DBUILastQueryInfo<CR>', {noremap = t
 --   augroup END
 -- ]])
 
--- vim.cmd([[
---   augroup neorg_dynamic
---     autocmd!
--- 		autocmd VimLeavePre *.norg :lua encrypt_all_buffers()
--- 		autocmd BufNewFile *.norg.gpg lua decrypt_and_open()
--- 		autocmd BufRead *.norg.gpg :lua decrypt_and_open()
-
--- 		autocmd BufNewFile *.norg lua decrypt_and_open()
-
--- 		autocmd BufRead *.norg :lua neorg_decrypt_and_open(nil, vim.fn.expand('<afile>:t'), vim.fn.expand('<afile>:p'))
--- 		autocmd BufDelete *.norg :lua neorg_encrypt_a_file(vim.fn.expand('<afile>:p'), true)
---   augroup END
--- ]])
 
 -- will stay on the last line number you were on
 vim.api.nvim_create_autocmd("BufReadPost", {
-    pattern = {"*"},
-    callback = function()
-        if vim.fn.line("'\"") > 1 and vim.fn.line("'\"") <= vim.fn.line("$") then
-            vim.api.nvim_exec("normal! g'\"",false)
-        end
+  pattern = {"*"},
+  callback = function()
+    if vim.fn.line("'\"") > 1 and vim.fn.line("'\"") <= vim.fn.line("$") then
+      vim.api.nvim_exec("normal! g'\"",false)
     end
+  end
 })
 
 
