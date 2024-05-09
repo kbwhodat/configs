@@ -24,7 +24,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
         -- Use a function to dynamically turn signs off
         -- and on, using buffer local variables
         signs = false,
-        update_in_insert = false
+        update_in_insert = true
     })
 lsp.setup()
 

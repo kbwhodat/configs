@@ -12,7 +12,7 @@
 	manual.html.enable = false;
 	manual.manpages.enable = false;
 	manual.json.enable = false;
-
+  home.enableNixpkgsReleaseCheck = false;
 	# home.manual = {
 	# 	html.enable = false;
 	# 	manpages.enable = false;

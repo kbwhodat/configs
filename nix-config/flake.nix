@@ -5,7 +5,7 @@
 
 	inputs.home-manager.url = "github:nix-community/home-manager/release-23.11";
 	inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-	inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+	inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 	# inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
 	inputs.darwin.url = "github:lnl7/nix-darwin";
@@ -16,12 +16,6 @@
 
 	inputs.helix.url = "github:helix-editor/helix/master";
 
-  # The nixpkgs entry in the flake registry.
-  inputs.nixpkgsRegistry.url = "nixpkgs";
-
-  # The nixpkgs entry in the flake registry, overriding it to use a specific Git revision.
-  inputs.nixpkgsRegistryOverride.url = "nixpkgs/a3a3dda3bacf61e8a39258a0ed9c924eeca8e293";
-
   # The master branch of the NixOS/nixpkgs repository on GitHub.
   inputs.nixpkgsGitHub.url = "github:NixOS/nixpkgs";
 
@@ -30,9 +24,6 @@
 
   # A specific revision of the NixOS/nixpkgs repository on GitHub.
   inputs.nixpkgsGitHubRevision.url = "github:NixOS/nixpkgs/a3a3dda3bacf61e8a39258a0ed9c924eeca8e293";
-
-  # A flake in a subdirectory of a GitHub repository.
-  inputs.nixpkgsGitHubDir.url = "github:edolstra/nix-warez?dir=blender";
 
   # A git repository.
   inputs.gitRepo.url = "git+https://github.com/NixOS/patchelf";
@@ -45,32 +36,6 @@
 
   # A tarball flake
   inputs.tarFlake.url = "https://github.com/NixOS/patchelf/archive/master.tar.gz";
-
-  # A GitHub repository.
-
-  # Transitive inputs can be overridden from a flake.nix file. For example, the following overrides the nixpkgs input of the nixops input:
-  inputs.nixops.inputs.nixpkgs = {
-    type = "github";
-    owner = "NixOS";
-    repo = "nixpkgs";
-  };
-
-
-  # The value of the follows attribute is a sequence of input names denoting the path
-  # of inputs to be followed from the root flake. Overrides and follows can be combined, e.g.
-  inputs.nixops.url = "nixops";
-  inputs.dwarffs.url = "dwarffs";
-  inputs.dwarffs.inputs.nixpkgs.follows = "nixpkgs";
-
-  # For more information about well-known outputs checked by `nix flake check`:
-  # https://nixos.org/manual/nix/unstable/command-ref/new-cli/nix3-flake-check.html#evaluation-checks
-
-  # These examples all use "x86_64-linux" as the system.
-  # Please see the c-hello template for an example of how to handle multiple systems.
-
-  inputs.c-hello.url = "github:NixOS/templates?dir=c-hello";
-  inputs.rust-web-server.url = "github:NixOS/templates?dir=rust-web-server";
-  inputs.nix-bundle.url = "github:NixOS/bundlers";
 
 
   outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, ... }: {

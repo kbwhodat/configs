@@ -1,35 +1,68 @@
 {
-  pkgs,
-  inputs,
-  ...
+    pkgs,
+    inputs,
+    ...
 }: {
-  # nix configuration
-  # reference: https://daiderd.com/nix-darwin/manual/index.html#sec-options
+# nix configuration
+# reference: https://daiderd.com/nix-darwin/manual/index.html#sec-options
 
 
-  services.nix-daemon.enable = true; # auto upgrade nix package and daemon service
+    services.nix-daemon.enable = true; # auto upgrade nix package and daemon service
 
-  system = {
-		defaults = {
-			menuExtraClock.Show24Hour = true;
-		};
+	system = {
+	    defaults = {
+		menuExtraClock.Show24Hour = true;
+	    };
 	};
 
-	security.pam.enableSudoTouchIdAuth = true;
+    security.pam.enableSudoTouchIdAuth = true;
 
-  # environment.systemPackages =
-  #   [ 
-			# pkgs.vim
-  #   ];
+    environment.systemPackages = with pkgs; [ 
+      tree-sitter
+      inputs.nil.packages."${pkgs.system}".nil
+      wget
+      curl
+      tmux
+      git
+      bat
+      pass
+      imagemagick
+      imagemagick.dev
+      luajit
+      tree
+      luarocks
+      clang
+      fzf
+      fd
+      ripgrep
+      fira-code
+      unzip
+      gzip
+      go
+      python3
+      perl
+      cargo
+      nodejs_22
+      yarn
+      php83Packages.composer
+      python311Packages.pip
+      nodePackages.neovim
+      ruby
+      php
+      tree-sitter
+      pinentry_mac
+    ];
 
-	
-	# manual = {
-	# 	html.enable = false;
-	# 	manpages.enable = false;
-	# 	json.enable = false;
-	# };
+    homebrew = {
+      enable = true;
+      onActivation.cleanup = "uninstall";
 
-	nix.settings.allowed-users = ["root" "katob"];
-	nix.settings.trusted-users = ["root" "katob"];
-  system.stateVersion = 4;
+      taps = [];
+      brews = [];
+      casks = [ "firefox" ];
+    };
+
+    nix.settings.allowed-users = ["root" "katob"];
+    nix.settings.trusted-users = ["root" "katob"];
+    system.stateVersion = 4;
 }
