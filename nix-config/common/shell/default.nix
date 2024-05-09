@@ -11,7 +11,7 @@
 		./neovim.nix
     ./node.nix
     # ./python.nix
-    ./scripts
+    # ./scripts
 	];
 
 	home.sessionVariables = {

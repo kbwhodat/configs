@@ -147,6 +147,7 @@
     git
     xdotool
 		inputs.helix.packages."${pkgs.system}".helix
+		inputs.nil.packages."${pkgs.system}".nil
     bat
     pass
     imagemagick

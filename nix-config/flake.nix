@@ -1,17 +1,7 @@
 {
   description = "A template that shows all standard flake outputs";
 
-  # Inputs
-  # https://nixos.org/manual/nix/unstable/command-ref/new-cli/nix3-flake.html#flake-inputs
-
-  # The flake in the current directory.
-  # inputs.currentDir.url = ".";
-
-  # A flake in some other directory.
-  # inputs.otherDir.url = "/home/alice/src/patchelf";
-
-  # A flake in some absolute path
-  # inputs.otherDir.url = "path:/home/alice/src/patchelf";
+  inputs.nil.url = "github:oxalica/nil";
 
 	inputs.home-manager.url = "github:nix-community/home-manager/release-23.11";
 	inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -83,7 +73,7 @@
   inputs.nix-bundle.url = "github:NixOS/bundlers";
 
 
-  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, ... }: {
 
     nixosConfigurations.my-nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
