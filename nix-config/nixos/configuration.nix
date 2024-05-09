@@ -166,12 +166,15 @@
     unzip
     gzip
     go
-    python3
+    # python3
     perl
     cargo
     nodejs_21
     yarn
-    composer
+    php83Packages.composer
+    # python311Packages.pip
+    ruby
+    php
     tree-sitter
   ];
 

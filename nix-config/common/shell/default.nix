@@ -10,6 +10,7 @@
 		./tmux.nix
 		./neovim.nix
     ./node.nix
+    ./python.nix
 	];
 
 	home.sessionVariables = {
