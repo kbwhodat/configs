@@ -2,7 +2,6 @@
 require("kato")
 require("kato.obsidian")
 require("kato.obsidian_functions")
-require("kato.nil-ls")
 
 
 local vim = vim
