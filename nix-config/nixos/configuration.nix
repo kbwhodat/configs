@@ -71,12 +71,14 @@
   services.xserver = {
 
     desktopManager = {
-      xterm.enable = false;
+      plasma5.enable = true;
     };
 
-    displayManager = {
-      defaultSession = "none+i3";
-    };
+    # displayManager = {
+    #   defaultSession = "none+i3";
+    # };
+
+    windowManager.default = "i3";
 
     windowManager.i3 = {
       enable = true;
