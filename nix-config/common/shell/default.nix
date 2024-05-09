@@ -9,6 +9,7 @@
 		./kitty.nix
 		./tmux.nix
 		./neovim.nix
+    ./node.nix
 	];
 
 	home.sessionVariables = {
