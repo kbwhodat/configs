@@ -1,5 +1,8 @@
 { config, utils, lib, pkgs, ...}:
 
 {
-	imports = [ ./shell ];
+	imports = [
+    ./shell
+    ./js
+  ];
 }

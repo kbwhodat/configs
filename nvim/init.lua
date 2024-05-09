@@ -90,7 +90,7 @@ keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
 
 -- Adding syntax highlighting for markdown files with .md extensions
 vim.api.nvim_command('au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown')
-vim.api.nvim_command('autocmd FileType markdown setlocal nowrap')
+vim.api.nvim_command('autocmd FileType markdown setlocal wrap')
 
 
 -- keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
