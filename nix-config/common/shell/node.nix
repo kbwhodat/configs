@@ -1,7 +1,8 @@
-{ pkgs, config, ...}: 
+{ config, pkgs, ... }:
 
 {
-  environment.systemPackages = [
-    pkgs.nodejs_21;
+  home.packages = [
+    pkgs.nodejs_21
   ];
 }
+

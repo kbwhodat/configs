@@ -141,7 +141,6 @@
     wget
     pciutils
     curl
-    #neovim
     xclip
     xsel
     tmux
@@ -164,6 +163,16 @@
     ripgrep
     autorandr
     fira-code
+    unzip
+    gzip
+    go
+    python3
+    perl
+    cargo
+    nodejs_21
+    yarn
+    composer
+    tree-sitter
   ];
 
   fonts.fonts = with pkgs; [

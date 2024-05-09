@@ -37,6 +37,7 @@
 				set -g window-status-format ""
 
 				set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
+        set-option -a terminal-features 'XXX:RGB'
 
 				set -gq allow-passthrough on
 				set -g visual-activity off
