@@ -91,6 +91,8 @@ in
 		bindkey '^[[F' end-of-line                        # end
 		bindkey '^[[Z' undo                               # shift + tab undo last action
 
+    zvm_after_init_commands+=("bindkey '^[[1;5C' forward-word" "bindkey '^[[1;5D' backward-word")
+
 		export PATH=$PATH:"/run/current-system/sw/bin"
 
 		stty -ixon

@@ -13,7 +13,7 @@ require'lspconfig'.nil_ls.setup{
                 maxMemoryMB = 2560,
                 flake = {
                     autoArchive = true,
-                    autoEvalInputs = true,
+                    autoEvalInputs = false,
                     nixpkgsInputName = "nixpkgs"
                 }
             }

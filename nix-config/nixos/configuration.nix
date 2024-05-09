@@ -170,7 +170,8 @@
     python3
     perl
     cargo
-    nodejs_21
+    nodejs_22
+    redis
     yarn
     php83Packages.composer
     python311Packages.pip
