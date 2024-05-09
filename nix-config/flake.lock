@@ -600,7 +600,6 @@
     },
     "nixpkgs_10": {
       "locked": {
-<<<<<<< HEAD
         "lastModified": 1634782485,
         "narHash": "sha256-psfh4OQSokGXG0lpq3zKFbhOo3QfoeudRcaUnwMRkQo=",
         "path": "/nix/store/p53cz6rh27q40g9i0q98k3vfrz6lm12w-source",
