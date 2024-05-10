@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [          
-    # inputs.nil.packages.${pkgs.system}.nil
+    inputs.nil.packages.${pkgs.system}.nil
     mongosh
     wget
     htop

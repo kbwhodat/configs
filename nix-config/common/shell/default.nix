@@ -9,7 +9,6 @@
 		./kitty.nix
 		./tmux.nix
 		./neovim.nix
-    ./mypackages.nix
     # ./node.nix
     # ./python.nix
     # ./scripts

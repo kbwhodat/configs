@@ -1,6 +1,5 @@
 {
     pkgs,
-    inputs,
     ...
 }: {
 # nix configuration
@@ -32,5 +31,5 @@
 
   nix.settings.allowed-users = ["root" "katob"];
   nix.settings.trusted-users = ["root" "katob"];
-  system.stateVersion = 4;
+  # system.stateVersion = 4;
 }
