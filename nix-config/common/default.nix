@@ -3,6 +3,6 @@
 {
 	imports = [
     ./shell
-    ./packages
+    # ./packages
   ];
 }

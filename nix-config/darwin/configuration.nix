@@ -22,7 +22,7 @@
   ];
 
   homebrew = {
-    enable = true;
+    enable = false;
     # onActivation.cleanup = "uninstall";
 
     taps = [];
