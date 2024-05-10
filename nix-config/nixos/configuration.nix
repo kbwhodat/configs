@@ -136,51 +136,16 @@
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    vim
-    wget
     pciutils
-    curl
     xclip
     xsel
-    tmux
-    git
     xdotool
     # inputs.helix.packages."${pkgs.system}".helix
-    inputs.nil.packages."${pkgs.system}".nil
-    bat
-    pass
-    imagemagick
-    imagemagick.dev
-    luajit
-    tree
-    luarocks
-    clang
     ueberzug
-    fzf
     pulseaudio
-    fd
     libgcc
-    ripgrep
     autorandr
-    fira-code
-    unzip
-    gzip
-    go
-    python3
-    perl
-    cargo
-    nodejs_22
-    redis
-    yarn
-    php83Packages.composer
-    python311Packages.pip
-    nodePackages.neovim
-    ruby
-    php
-    tree-sitter
   ];
 
   fonts.fonts = with pkgs; [

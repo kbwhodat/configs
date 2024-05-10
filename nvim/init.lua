@@ -76,6 +76,12 @@ vim.cmd('highlight @markup.heading.6.markdown guifg=#0096FF')
 vim.cmd('set spelllang=en_us')
 vim.cmd('set spell')
 
+-- Split windows
+keymap('n', '<Leader>v', ':vsplit<CR>', opts)
+-- Move to the left and right windows
+keymap('n', '<Leader>h', '<C-w>h', opts)
+keymap('n', '<Leader>l', '<C-w>l', opts)
+
 
 -- nvim-tree
 -- keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
