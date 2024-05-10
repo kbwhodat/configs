@@ -81,6 +81,9 @@ keymap('n', '<Leader>v', ':vsplit<CR>', opts)
 -- Move to the left and right windows
 keymap('n', '<Leader>h', '<C-w>h', opts)
 keymap('n', '<Leader>l', '<C-w>l', opts)
+-- Move to the top and bottom windows
+keymap('n', '<Leader>j', '<C-w>j', opts)
+keymap('n', '<Leader>k', '<C-w>k', opts)
 
 
 -- nvim-tree

@@ -1,8 +1,8 @@
-{ inputs, pkgs, config, ... }:
+{ libs, pkgs, config, inputs, ... }:
 
 {
-  home.packages = [          
-    inputs.nil.packages."${pkgs.system}".nil
+  home.packages = with pkgs; [          
+    inputs.nil.packages.${pkgs.system}.nil
     pkgs.wget
     pkgs.curl
     pkgs.tmux
@@ -34,6 +34,5 @@
     pkgs.php
     pkgs.tree-sitter
     pkgs.redis
-
-  ];
+    ];
 }

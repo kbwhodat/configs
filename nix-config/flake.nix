@@ -67,6 +67,7 @@
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
 
+          home-manager.extraSpecialArgs = { inherit inputs; };
 					home-manager.users.katob = import ./darwin/home;
 					users.users.katob.home = "/Users/katob";
 				}
