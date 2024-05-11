@@ -19,6 +19,7 @@
   # The master branch of the NixOS/nixpkgs repository on GitHub.
   inputs.nixpkgsGitHub.url = "github:NixOS/nixpkgs";
 
+
   # The nixos-20.09 branch of the NixOS/nixpkgs repository on GitHub.
   inputs.nixpkgsGitHubBranch.url = "github:NixOS/nixpkgs/nixos-20.09";
 

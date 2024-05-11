@@ -2,7 +2,7 @@
 
 # if you're having troubles finding key codes for a key just type skhd --observe in a terminal and type a key. Pretty cool! Or just check the wiki.
 
-## HYPER == SHIFT + CMD + ALT + OPTION
+# HYPER == SHIFT + CMD + ALT + OPTION
 
 ## Quickly restart the yabai launch agent
 # hyper + rshift - r : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"

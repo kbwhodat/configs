@@ -37,5 +37,13 @@
     tree-sitter
     redis
     tridactyl-native
+    google-cloud-sdk
+    browserpass
+    ansible
+    sqlite
+    terraform
+    duckdb
+    jq
+    yq
     ];
 }

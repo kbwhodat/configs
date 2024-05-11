@@ -39,7 +39,7 @@ yabai -m rule --add app="^CiscoSparkHelper$" manage=off
 yabai -m rule --add app="^Logi Options$" manage=off
 yabai -m rule --add app="^Cisco Webex Start$" manage=off
 yabai -m rule --add app="^Private Internet Access$" manage=off
-yabai -m rule --add app="^kitty$" manage=off
+yabai -m rule --add app="kitty" manage=off  
 yabai -m rule --add app="^WezTerm$" manage=off
 yabai -m rule --add app="^Alacritty$" manage=off
 yabai -m rule --add app="^Contour$" manage=off
@@ -49,7 +49,6 @@ yabai -m rule --add app="^Stickies$" manage=off
 yabai -m rule --add app="^Ghidra$" manage=off
 yabai -m rule --add app="^TextMate$" manage=off
 yabai -m rule --add app="^Sublime Text$" manage=off
-yabai -m rule --add app="^VMware Fusion$" manage=off
 
 #find ~/Library/Parallels/Applications\ Menus/ -maxdepth 3 -type f | awk -F'/' '{ print $NF; }' | awk '{$1=$1};1' | sort | uniq | tr "\n" "\0" | xargs -0 -I{} yabai -m rule --add app="^{}\$" title=".*" manage=on
 
@@ -125,6 +124,9 @@ yabai -m signal --add event=application_terminated action="terminal-notifier -me
 ## If I close the active window, focus on any other visible window.
 yabai -m signal --add event=window_destroyed action="bash /Users/katob/Documents/skhd-scripts/window-focus-on-destroy.sh"
 # yabai -m signal --add event=space_changed action="export CUR_ACTIVE_APP=\"iTerm2\""
+#
+SPACEBAR_HEIGHT=$(spacebar -m config height)
+yabai -m config external_bar all:0:$SPACEBAR_HEIGHT
 
 echo "yabai configuration loaded.."
 
