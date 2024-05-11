@@ -13,7 +13,9 @@ in
 # This populates a dummy package to satsify the requirement
       pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
     else
-      pkgs.firefox;
+      pkgs.firefox.override {
+        cfg = { enableTridactylNative = true; };
+      };
 
   programs.firefox.profiles =
     let
@@ -21,10 +23,17 @@ in
 
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     browserpass
-      betterttv
-      consent-o-matic
-      ublock-origin
-      tridactyl
+    consent-o-matic
+    sponsorblock
+    leechblock-ng
+    df-youtube
+    kagi-search
+    darkreader
+    auto-tab-discard
+    browserpass
+    privacy-badger
+    ublock-origin
+    tridactyl
   ];
 
   settings = {
@@ -32,14 +41,24 @@ in
     "browser.startup.homepage" = "about:blank";
 #"browser.startup.homepage" = "https://lobste.rs";
     "browser.search.region" = "US";
+    "ui.systemUsesDarkTheme" = 1;
+    "network.http.http3.enabled" = true;
+    "dom.image-lazy-loading.enabled" = true;
+    "network.prefetch-next" = false;
+    "general.smoothScroll" = true;
+    "media.autoplay.default" = 1;
+    "browser.cache.disk.enable" = false;
+    "broswer.cache.memory.enable" = true;
+    "broswer.sessionstore.resume_from_crash" = false;
     "browser.search.countryCode" = "US";
     "browser.search.isUS" = true;
     "browser.ctrlTab.recentlyUsedOrder" = false;
-    "browser.newtabpage.enabled" = true;
+    "browser.newtabpage.enabled" = false;
     "browser.bookmarks.showMobileBookmarks" = true;
     "browser.uidensity" = 1;
-    "browser.urlbar.placeholderName" = "Kagi";
+    "browser.urlbar.placeholderName" = "search for something";
     "browser.urlbar.update1" = true;
+    "extensions.pocket.enable" = false;
     "distribution.searchplugins.defaultLocale" = "en-US";
     "general.useragent.locale" = "en-US";
     "identity.fxaccounts.account.device.name" = config.home.username;

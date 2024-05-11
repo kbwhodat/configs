@@ -145,6 +145,10 @@
     pulseaudio
     libgcc
     autorandr
+    nvidia-docker
+    ungoogled-chromium
+    mpv
+    vlc
   ];
 
   fonts.fonts = with pkgs; [

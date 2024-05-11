@@ -14,7 +14,7 @@
 	inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 	inputs.nix-darwin.url = "github:lnl7/nix-darwin";
 	inputs.nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-	inputs.nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-20.09";
+	inputs.nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-23.11";
 
 	inputs.helix.url = "github:helix-editor/helix/master";
 
@@ -30,6 +30,10 @@
 
 				home-manager.nixosModules.home-manager
 				{
+          nixpkgs.overlays = [
+            nur.overlay
+          ];
+
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
 

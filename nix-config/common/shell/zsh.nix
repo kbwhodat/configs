@@ -58,7 +58,7 @@ in
 
 		initExtra = ''
 
-		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin"
+		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
 
 		alias ls='ls --color'
 		alias cat='bat --style plain'
