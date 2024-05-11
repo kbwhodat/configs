@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs,  ... }:
 
 let
 inherit (pkgs.stdenv) isDarwin;
@@ -18,6 +18,7 @@ in
   programs.firefox.profiles =
     let
     userChrome = builtins.readFile ../../../userChrome.css;
+
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     browserpass
       betterttv
@@ -41,7 +42,7 @@ in
     "browser.urlbar.update1" = true;
     "distribution.searchplugins.defaultLocale" = "en-US";
     "general.useragent.locale" = "en-US";
-    "identity.fxaccounts.account.device.name" = config.networking.hostName;
+    "identity.fxaccounts.account.device.name" = config.home.username;
     "privacy.trackingprotection.enabled" = true;
     "privacy.trackingprotection.socialtracking.enabled" = true;
     "privacy.trackingprotection.socialtracking.annotate.enabled" = true;

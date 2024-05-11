@@ -67,6 +67,7 @@
   services.skhd.enable =  true;
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnsupportedSystem = true; 
 
   homebrew = {
     enable = true;
@@ -74,7 +75,7 @@
 
     taps = ["benjiwolff/neovim-nightly" "koekeishiya/formulae"];
     brews = ["koekeishiya/formulae/yabai" "koekeishiya/formulae/skhd" ];
-    casks = [ "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    casks = [ "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
