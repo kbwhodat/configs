@@ -1,7 +1,9 @@
-{ config, utils, lib, pkgs, ...}:
+{ inputs, config, utils, lib, pkgs, ...}:
 
 {
 	imports = [
     ./shell
+    ./packages
+    ./browsers
   ];
 }

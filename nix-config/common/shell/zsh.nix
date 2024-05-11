@@ -58,6 +58,8 @@ in
 
 		initExtra = ''
 
+		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin"
+
 		alias ls='ls --color'
 		alias cat='bat --style plain'
 		alias vim="$(which nvim)"
@@ -93,8 +95,6 @@ in
 
     zvm_after_init_commands+=("bindkey '^[[1;5C' forward-word")
     zvm_after_init_commands+=("bindkey '^[[1;5D' backward-word")
-
-		export PATH=$PATH:"/run/current-system/sw/bin"
 
 		stty -ixon
 
