@@ -19,7 +19,7 @@ in
 
   programs.firefox.profiles =
     let
-    userChrome = builtins.readFile ../../../userChrome.css;
+    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     browserpass

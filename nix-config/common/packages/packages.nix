@@ -10,7 +10,7 @@
     tmux
     git
     bat
-    pass
+    # pass
     imagemagick
     imagemagick.dev
     luajit
@@ -36,7 +36,8 @@
     php
     tree-sitter
     redis
-    tridactyl-native
+    # gnupg
+    # pinentry-gtk2
     google-cloud-sdk
     browserpass
     ansible
