@@ -38,6 +38,7 @@
     redis
     # gnupg
     pinentry-gtk2
+    # bash
     # gcr
     # pinentry-curses
     google-cloud-sdk
