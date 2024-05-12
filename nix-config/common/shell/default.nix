@@ -5,10 +5,12 @@
 		# ./dash.nix
 		# ./nu.nix
 		# ./starship.nix
-		./zsh.nix
+		./bash.nix
 		./kitty.nix
 		./tmux.nix
 		./neovim.nix
+    ./password-store.nix
+    ./gpg.nix
     # ./node.nix
     # ./python.nix
     # ./scripts

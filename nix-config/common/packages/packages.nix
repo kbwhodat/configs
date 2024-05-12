@@ -37,7 +37,9 @@
     tree-sitter
     redis
     # gnupg
-    # pinentry-gtk2
+    pinentry-gtk2
+    # gcr
+    # pinentry-curses
     google-cloud-sdk
     browserpass
     ansible
