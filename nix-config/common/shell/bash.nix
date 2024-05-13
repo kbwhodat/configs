@@ -30,26 +30,26 @@
 
 		initExtra = ''
 
-		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
 
-		alias ls='ls --color'
-		alias cat='bat --style plain'
-		alias vim="$(which nvim)"
+alias ls='ls --color'
+alias cat='bat --style plain'
+alias vim="$(which nvim)"
 
-		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
-			TMUX_SESSION="genesis"
-			if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-				tmux attach-session -t $TMUX_SESSION
-			else
-				tmux new-session -s $TMUX_SESSION
-			fi
-		fi
+if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
+  TMUX_SESSION="genesis"
+  if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
+    tmux attach-session -t $TMUX_SESSION
+  else
+    tmux new-session -s $TMUX_SESSION
+  fi
+fi
 
-		source "${config.home.homeDirectory}"/.config/git-alias/git-aliases.sh
+source "${config.home.homeDirectory}"/.config/git-alias/git-aliases.sh
 
-    set -o vi
+set -o vi
 
-		stty -ixon
+stty -ixon
 
 PROMPT_COMMAND='
   current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null);
@@ -79,6 +79,8 @@ PROMPT_COMMAND='
   fi;
   PS1="\n[\w] $current_branch\n # "
 '
+
+source "${pkgs.blesh}"/share/blesh/ble.sh
 
 		'';
 	};
