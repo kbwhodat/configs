@@ -15,7 +15,7 @@
 			enableZshIntegration = false;
 		};
 		extraConfig = ''
-			shell zsh
+			shell bash
 			editor nvim
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→

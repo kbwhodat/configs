@@ -19,8 +19,8 @@
 				setw -g mode-keys vi
 				set -sg escape-time 0
 
-				set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
-				set-option -g default-shell "/etc/profiles/per-user/katob/bin/zsh"
+				set -g default-command "/run/current-system/sw/bin/bash"
+				set-option -g default-shell "/run/current-system/sw/bin/bash"
 
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
@@ -36,8 +36,8 @@
 				set -g window-status-current-format ""
 				set -g window-status-format ""
 
-				set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
-        set-option -a terminal-features 'XXX:RGB'
+				# set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
+        # set-option -a terminal-features 'XXX:RGB'
 
 				set -gq allow-passthrough on
 				set -g visual-activity off
