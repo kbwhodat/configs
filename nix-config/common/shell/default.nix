@@ -7,6 +7,7 @@
 		# ./starship.nix
 		./bash.nix
     ./zsh.nix
+    ./blesh.nix
 		./kitty.nix
 		./tmux.nix
 		./neovim.nix

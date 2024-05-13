@@ -10,7 +10,7 @@
     };
 		shellIntegration = {
 			mode = "no-rc";
-			enableBashIntegration = true;
+			enableBashIntegration = false;
 			enableFishIntegration = false;
 			enableZshIntegration = false;
 		};

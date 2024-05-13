@@ -77,7 +77,7 @@ PROMPT_COMMAND='
     fi
     current_branch="($current_branch $git_indicator)";
   fi;
-  PS1="\n[\w] $current_branch\n# "
+  PS1="\n[\w] $current_branch\n # "
 '
 
 		'';
