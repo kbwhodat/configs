@@ -26,11 +26,15 @@
     shopt -s extglob
     shopt -s globstar
 
+
 		'';
 
 		initExtra = ''
 
 export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+
+# source "${pkgs.blesh}"/share/blesh/ble.sh
+# source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
 
 alias ls='ls --color'
 alias cat='bat --style plain'
@@ -80,7 +84,16 @@ PROMPT_COMMAND='
   PS1="\n[\w] $current_branch\n # "
 '
 
-source "${pkgs.blesh}"/share/blesh/ble.sh
+# bleopt highlight_syntax=
+# bleopt highlight_filename=
+# bleopt highlight_variable=
+# bleopt complete_auto_complete=
+# bleopt complete_auto_history=
+# bleopt complete_ambiguous=
+# bleopt complete_menu_filter=
+# bleopt prompt_vi_mode_indicator=
+# bleopt edit_abell=
+# bleopt edit_vbell=
 
 		'';
 	};
