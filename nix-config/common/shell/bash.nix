@@ -9,6 +9,7 @@
 
 		sessionVariables = {
 			EDITOR = "nvim";
+      VISUAL= "vim";
 			TERM = "xterm-256color";
 			COLORTERM = "truecolor";
 		};
@@ -32,9 +33,17 @@
 		initExtra = ''
 
 export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+export EDITOR="nvim"
+export VISUAL="vim"
 
 # source "${pkgs.blesh}"/share/blesh/ble.sh
 # source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
+
+bind -f "${config.home.homeDirectory}/.config/scripts/inputrc-surround"
+bind -m vi-insert "\C-a: beginning-of-line"
+bind -m vi-insert "\C-e: end-of-line"
+bind -m vi-command "\C-a: beginning-of-line"
+bind -m vi-command "\C-e: end-of-line"
 
 alias ls='ls --color'
 alias cat='bat --style plain'
