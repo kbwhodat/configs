@@ -1,5 +1,9 @@
 { config, pkgs, ... }:
 
+let
+inherit (pkgs.stdenv) isDarwin;
+
+in
 {
 
   programs.gpg = {
@@ -31,7 +35,12 @@
   };
 
   services.gpg-agent = {
-    enable = true;
+    enable = 
+      if !isDarwin then
+        true
+      else
+        false;
+
     # enableSshSupport = true;
     # sshKeys = [ "BE5719EC9B943BC43E91FF24B6CFCBFF9D438A21" ];
     extraConfig = ''

@@ -20,6 +20,11 @@
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
 
+      hide_window_decorations yes
+      macos_show_window_title_in none
+      cursor_shape block
+      draw_minimal_borders yes
+
 			disable_ligatures always
 		'';
 	};

@@ -6,7 +6,12 @@ fullName = "dns issue";
 
 in
 {
-  programs.firefox.enable = true;
+  programs.firefox.enable = 
+    if isDarwin then
+      false
+    else
+      true;
+
   programs.firefox.package =
     if isDarwin then
 # Handled by the Homebrew module
