@@ -20,6 +20,9 @@ in
     else
       pkgs.firefox.override {
         cfg = { enableTridactylNative = true; };
+        # nativeMessagingHosts = [
+        #   pkgs.browserpass
+        # ];
       };
 
   programs.firefox.profiles =

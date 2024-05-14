@@ -3,6 +3,7 @@
 {
 	imports = [
 		./i3
+    ./rofi
 		../../common
 	];
 

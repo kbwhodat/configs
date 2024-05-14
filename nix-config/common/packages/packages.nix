@@ -42,7 +42,7 @@
     # gcr
     # pinentry-curses
     google-cloud-sdk
-    browserpass
+    # browserpass
     ansible
     sqlite
     terraform
