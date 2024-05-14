@@ -4,6 +4,7 @@
 	imports = [
 		./i3
     ./rofi
+    ./okular
 		../../common
 	];
 
