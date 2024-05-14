@@ -21,7 +21,7 @@
 
   outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, ... }: {
 
-    nixosConfigurations.my-nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
 			specialArgs = { inherit inputs; };
       modules = [
@@ -43,7 +43,7 @@
       ]; 
     };
 
-		darwinConfigurations.my-mac = nix-darwin.lib.darwinSystem {
+		darwinConfigurations.mac = nix-darwin.lib.darwinSystem {
 			system = "x86_64-darwin";
 			specialArgs = { inherit inputs; };
 			modules = [ 
