@@ -61,10 +61,12 @@
     skhd
     iina
     spacebar
+    ollama
   ];
 
+
   services.yabai.enable = true;
-  services.skhd.enable =  true;
+  services.skhd.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnsupportedSystem = true; 
