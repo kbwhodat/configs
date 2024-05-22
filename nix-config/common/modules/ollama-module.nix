@@ -8,8 +8,9 @@
 
   cfg = config.services.ollama;
   ollamaPackage = cfg.package.override {
-    inherit (cfg) acceleration;
+  inherit (cfg) acceleration;
   };
+  inherit (pkgs.stdenv) isDarwin;
 in {
   options = {
     services.ollama = {
@@ -34,25 +35,29 @@ in {
           - `cuda`: supported by modern NVIDIA GPUs
         '';
       };
+
+      logFile = lib.mkOption {
+        type = types.path;
+        default = null;
+        example = "/var/tmp/ollama.log";
+        description = lib.mdDoc "The Log file to use for ollama.";
+      };
+
       package = lib.mkPackageOption pkgs "ollama" {};
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    systemd.user.services.ollama = {
-      Unit = {
-        Description = "Server for local large language models";
-        After = ["network.target"];
-      };
-
-      Service = {
-        ExecStart = "${lib.getExe ollamaPackage} serve";
-        Environment = ["OLLAMA_HOST=${cfg.listenAddress}"];
-      };
-
-      Install = {WantedBy = ["default.target"];};
+  config = 
+    lib.mkIf cfg.enable {
+          launchd.user.agents.ollama = {
+          command = "${cfg.package}/bin/ollama serve";
+          serviceConfig = {
+            KeepAlive = true;
+            RunAtLoad = true;
+            StandardOutPath = cfg.logFile;
+            StandardErrorPath = cfg.logFile;
+          };
+        };
     };
 
-    home.packages = [ollamaPackage];
-  };
 }

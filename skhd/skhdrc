@@ -168,3 +168,13 @@ cmd - 0 : yabai -m space --focus 10
 #ctrl + alt - 2  : yabai -m display --focus 2
 #ctrl + alt - 3  : yabai -m display --focus 3
 
+cmd + shift - h : yabai -m window --swap west  || $(yabai -m window --display west; yabai -m display --focus west)
+cmd + shift - j : yabai -m window --swap south || $(yabai -m window --display south; yabai -m display --focus south)
+cmd + shift - k : yabai -m window --swap north || $(yabai -m window --display north; yabai -m display --focus north)
+cmd + shift - l : yabai -m window --swap east  || $(yabai -m window --display east; yabai -m display --focus east)
+
+cmd - h : yabai -m window --focus west || yabai -m display --focus west
+cmd - j : yabai -m window --focus south || yabai -m display --focus south
+cmd - k : yabai -m window --focus north || yabai -m display --focus north
+cmd - l : yabai -m window --focus east || yabai -m display --focus east
+
