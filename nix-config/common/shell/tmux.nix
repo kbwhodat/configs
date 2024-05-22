@@ -4,7 +4,7 @@
 
 	programs.tmux = {
 		enable = true;
-		terminal = "tmux-256color";
+		terminal = "screen-256color";
 		historyLimit = 100000;
 		plugins = with pkgs;
 		[

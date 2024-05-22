@@ -10,6 +10,7 @@
     ./blesh.nix
 		./kitty.nix
 		./tmux.nix
+    # ./ollama.nix
 		./neovim.nix
     ./password-store.nix
     ./gpg.nix

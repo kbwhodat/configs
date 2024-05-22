@@ -45,6 +45,10 @@
     # browserpass
     ansible
     sqlite
+    gh
+    gnused
+    gnutar
+    coreutils
     terraform
     duckdb
     jq

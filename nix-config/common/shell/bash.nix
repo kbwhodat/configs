@@ -3,14 +3,14 @@
 {
 	programs.bash = {
 		enable = true;
-		enableCompletion = true;
+		enableCompletion = false;
     historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
     historyIgnore = [ "ls" "cd" "exit" ];
 
 		sessionVariables = {
 			EDITOR = "nvim";
       VISUAL= "vim";
-			TERM = "xterm-256color";
+			TERM = "screen-256color";
 			COLORTERM = "truecolor";
 		};
 
