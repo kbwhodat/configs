@@ -2,8 +2,8 @@
 
 {
 	imports = [
-		./i3
-    ./rofi
+		../../common/linux/rofi
+		../../common/linux/i3
 		../../common
 	];
 
