@@ -21,6 +21,17 @@
 
   outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, ... }: {
 
+
+    homeConfigurations.linux = home-manager.lib.homeManagerConfiguration {
+      pkgs = pkgs;
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
+      extraSpecialArgs = { inherit inputs; };
+
+      modules = [ ./linux/home.nix ];
+
+    };
+
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
 			specialArgs = { inherit inputs; };
