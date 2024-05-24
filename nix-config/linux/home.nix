@@ -2,8 +2,8 @@
 
 {
 	imports = [
-		../nixos/home
-    ./nixos/rofi
+		../common/linux/rofi
+		../common/linux/i3
 		../common
 	];
   # Home Manager needs a bit of information about you and the paths it should
@@ -22,7 +22,7 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
+  home.packages = with pkgs; [
     nmap
   ];
 
