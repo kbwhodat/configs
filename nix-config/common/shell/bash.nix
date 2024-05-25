@@ -16,6 +16,8 @@
 
 		profileExtra = ''
 
+      export  LIBGL_ALWAYS_SOFTWARE=true
+
       HISTSIZE=5000
       HISTFILESIZE=10000
       HISTFILE="${config.home.homeDirectory}/.bash_history"
@@ -31,7 +33,6 @@ export VISUAL="vim"
 
 # source "${pkgs.blesh}"/share/blesh/ble.sh
 # source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
-
     shopt -s histappend
     shopt -s cmdhist
     shopt -s lithist
