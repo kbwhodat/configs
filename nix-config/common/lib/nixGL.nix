@@ -11,7 +11,7 @@
 
     nixgl = lib.mkOption {
       type = lib.types.functionTo lib.types.package;
-      default = import ./nixgl-wrapper.nix { inherit pkgs config; };
+      default = import ../lib/nixgl-wrapper.nix { inherit pkgs config; };
       readOnly = true;
     };
   };

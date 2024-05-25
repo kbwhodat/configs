@@ -2,7 +2,7 @@
 {
 
   imports = [
-    ./lib/nixgl.nix
+    ../lib/nixgl.nix
   ];
 
 	home.sessionVariables.KITTY_CONFIG_DIRECTORY = "${config.home.homeDirectory}/.config/kitty";

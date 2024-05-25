@@ -40,7 +40,7 @@
     homeConfigurations = {
       linux = home-manager.lib.homeManagerConfiguration {
         pkgs = pkgs;
-        extraSpecialArgs = { inherit inputs nixgl; };
+        extraSpecialArgs = { inherit inputs; };
         modules = [ 
           ./linux/home.nix 
         ];
