@@ -10,13 +10,11 @@
 		sessionVariables = {
 			EDITOR = "nvim";
       VISUAL= "vim";
-			TERM = "screen-256color";
+			#TERM = "screen-256color";
 			COLORTERM = "truecolor";
 		};
 
 		profileExtra = ''
-
-      export  LIBGL_ALWAYS_SOFTWARE=true
 
       HISTSIZE=5000
       HISTFILESIZE=10000
@@ -27,7 +25,7 @@
 
 		initExtra = ''
 
-export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+export PATH=$PATH:"/home/katob/.nix-profile/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
 export EDITOR="nvim"
 export VISUAL="vim"
 

@@ -18,7 +18,6 @@
   inputs.helix.url = "github:helix-editor/helix/master";
 
   inputs.nixgl.url = "github:guibou/nixGL";
-  inputs.nixgl.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, nixgl, ... }:
 
@@ -45,8 +44,43 @@
           ./linux/home.nix 
         ];
       };
-      inherit nixgl;
     };
 
+    nixosConfigurations = {
+      nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./nixos/configuration.nix
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.katob = import ./nixos/home;
+            nixpkgs.overlays = overlays;
+          }
+        ];
+      };
+    };
+
+    darwinConfigurations = {
+      mac = nix-darwin.lib.darwinSystem {
+        system = "x86_64-darwin";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./darwin/configuration.nix
+          home-manager.darwinModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.katob = import ./darwin/home;
+            nixpkgs.overlays = overlays;
+
+            users.users."katob".name = "katob";
+            users.users."katob".home = "/Users/katob";
+          }
+        ];
+      };
+    };
   };
 }
