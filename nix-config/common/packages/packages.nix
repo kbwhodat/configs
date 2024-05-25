@@ -49,7 +49,7 @@
     gnused
     gnutar
     coreutils
-    terraform
+#    terraform
     duckdb
     jq
     yq

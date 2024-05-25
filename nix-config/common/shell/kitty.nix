@@ -1,9 +1,15 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }: 
+{
+
+  imports = [
+    ./lib/nixgl.nix
+  ];
 
 	home.sessionVariables.KITTY_CONFIG_DIRECTORY = "${config.home.homeDirectory}/.config/kitty";
 
 	programs.kitty = {
 		enable = true;
+    package = (config.nixgl pkgs.kitty);
     font = {
       name = "FiraCode Nerd Font";
       size = 13;

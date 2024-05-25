@@ -1,3 +1,6 @@
+# https://github.com/nix-community/nixGL/issues/114#issuecomment-1585323281
+# https://github.com/Smona/nixpkgs/blob/main/applications/nixGL.nix
+
 # Wraps every binary from a nixpkg with nixGL, as long as a nixGL
 # prefix is set. This provides access to drivers so hardware acceleration
 # works on non-NixOS systems.
@@ -41,9 +44,10 @@ else
 
       rm -rf $out/bin/*
       shopt -s nullglob # Prevent loop from running if no files
+      nixglprefix=( ${config.nixGLPrefix} )
       for file in ${pkg.out}/bin/*; do
         echo "#!${pkgs.bash}/bin/bash" > "$out/bin/$(basename $file)"
-        echo "exec -a \"\$0\" ${config.nixGLPrefix} $file \"\$@\"" >> "$out/bin/$(basename $file)"
+        echo "exec -a \"\$0\" ''${nixglprefix[0]} $file \"\$@\"" >> "$out/bin/$(basename $file)"
         chmod +x "$out/bin/$(basename $file)"
       done
       shopt -u nullglob # Revert nullglob back to its normal default state
