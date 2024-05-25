@@ -1,5 +1,8 @@
 { inputs, config, pkgs, ... }:
 
+let
+  nixgl = inputs.nixgl;
+in
 {
 	imports = [
 		../common/linux/rofi
@@ -24,6 +27,7 @@
   # environment.
   home.packages = with pkgs; [
     nmap
+    nixgl
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
