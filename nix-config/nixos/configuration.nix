@@ -18,7 +18,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos-main"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -115,7 +115,7 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-	programs.zsh.enable = true;
+	programs.zsh.enable = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.katob = {
@@ -129,26 +129,14 @@
   };
 
   # Install firefox.
-  programs.firefox.enable = true;
+  programs.firefox.enable = false;
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = false;
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    pciutils
-    xclip
-    xsel
-    xdotool
-    # inputs.helix.packages."${pkgs.system}".helix
-    ueberzug
-    pulseaudio
-    libgcc
-    autorandr
     nvidia-docker
-    ungoogled-chromium
-    mpv
-    vlc
   ];
 
   fonts.fonts = with pkgs; [

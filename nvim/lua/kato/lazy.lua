@@ -131,6 +131,7 @@ local plugins = {
   'alvan/vim-closetag',
   'tpope/vim-commentary',
 	"rebelot/kanagawa.nvim",
+  "towolf/vim-helm",
   'tpope/vim-surround',
 	{
 		"tpope/vim-fugitive",

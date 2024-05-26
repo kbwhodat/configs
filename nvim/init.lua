@@ -32,8 +32,8 @@ vim.cmd('set cursorcolumn')
 vim.cmd('set clipboard+=unnamedplus')
 vim.cmd('set termguicolors')
 vim.cmd('set nolist')
-vim.cmd('colorscheme molokai-dark')
--- vim.cmd('colorscheme kanagawa')
+-- vim.cmd('colorscheme molokai-dark')
+vim.cmd('colorscheme kanagawa')
 
 -- setting coneal for markdown stuff
 vim.cmd('set conceallevel=2')
@@ -58,19 +58,24 @@ vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray nu
 -- Optional: Set the cursor line number to have a distinct look
 vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bg = '#000000' })  -- White numbers on a slightly lighter gray background
 
-vim.cmd('highlight @markup.heading.1.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.1.markdown guifg=#0096FF')
-vim.cmd('highlight @markup.heading.2.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.2.markdown guifg=#0096FF')
-vim.cmd('highlight @markup.heading.3.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.3.markdown guifg=#0096FF')
-vim.cmd('highlight @markup.heading.4.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.4.markdown guifg=#0096FF')
-vim.cmd('highlight @markup.heading.5.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.5.markdown guifg=#0096FF')
-vim.cmd('highlight @markup.heading.6.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.6.markdown guifg=#0096FF')
+-- vim.cmd('highlight @spell.markdown guifg=#ffffff')
 
+vim.cmd('highlight @markup.heading.1.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.1.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.heading.2.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.2.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.heading.3.marker.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.heading.3.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.heading.4.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.4.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.heading.5.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.5.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.heading.6.marker.markdown guifg=#565F89')
+vim.cmd('highlight @markup.heading.6.markdown guifg=#7fb4ca')
+vim.cmd('highlight @markup.list.markdown guifg=#c8856b')
+vim.cmd('highlight @markup.raw.markdown_inline guifg=#b3b7e0')
+-- vim.cmd('highlight @markup.link.label.markdown_inline guifg=#0096FF')
+-- vim.cmd('highlight @_label.markdown_inline guifg=#0096FF')
 
 -- Spell checking
 vim.cmd('set spelllang=en_us')

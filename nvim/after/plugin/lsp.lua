@@ -13,6 +13,13 @@ cmp.setup({
   }
 })
 
+-- if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
+--       vim.diagnostic.disable(bufnr)
+--       vim.defer_fn(function()
+--         vim.diagnostic.reset(nil, bufnr)
+--       end, 1000)
+--     end
+
 -- diagnostics
 vim.lsp.handlers["textDocument/publishDiagnostics"] =
     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {

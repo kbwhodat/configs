@@ -3,14 +3,14 @@
 {
 	programs.bash = {
 		enable = true;
-		enableCompletion = true;
+		enableCompletion = false;
     historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
     historyIgnore = [ "ls" "cd" "exit" ];
 
 		sessionVariables = {
 			EDITOR = "nvim";
       VISUAL= "vim";
-			TERM = "xterm-256color";
+			TERM = "screen-256color";
 			COLORTERM = "truecolor";
 		};
 
@@ -25,13 +25,12 @@
 
 		initExtra = ''
 
-export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+export PATH=$PATH:"/home/katob/.nix-profile/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
 export EDITOR="nvim"
 export VISUAL="vim"
 
 # source "${pkgs.blesh}"/share/blesh/ble.sh
 # source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
-
     shopt -s histappend
     shopt -s cmdhist
     shopt -s lithist
