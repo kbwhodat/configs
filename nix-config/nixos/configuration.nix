@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./ollama/ollama.nix
     ];
 
   environment.pathsToLink = [ "/libexec" ];
@@ -122,17 +123,17 @@
     isNormalUser = true;
     description = "kato";
     extraGroups = [ "networkmanager" "wheel" ];
-		shell = pkgs.zsh;
+		shell = pkgs.bash;
     packages = with pkgs; [
     #  thunderbird
     ];
   };
 
   # Install firefox.
-  programs.firefox.enable = false;
+  programs.firefox.enable = true;
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = false;
+  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [

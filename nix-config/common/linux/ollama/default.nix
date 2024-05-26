@@ -1,8 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  services.ollama = {
-    enable = true;
-    acceleration = "cuda";
-  };
+  home.packages = with pkgs; [
+    (ollama.override {
+     acceleration = "cuda";
+     })
+  ];
+
 }
