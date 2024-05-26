@@ -42,7 +42,7 @@ TERM = "tmux-256color"
 style = { shape = "Block", blinking = "On" }
 
 [shell]
-program = "zsh"
+program = "bash"
 
 [keyboard]
 bindings = [
