@@ -2,9 +2,9 @@
 
 {
 	imports = [
-		./i3
-    ./rofi
-    ./okular
+		../../common/linux/rofi
+		../../common/linux/okular
+		../../common/linux/i3
 		../../common
 	];
 
@@ -27,6 +27,18 @@
   # environment.
   home.packages = with pkgs; [
 		nmap
+    pciutils
+    xclip
+    xsel
+    xdotool
+    ueberzug
+    pulseaudio
+    libgcc
+    autorandr
+    ungoogled-chromium
+    mpv
+    vlc
+
   ];
 
   home.enableNixpkgsReleaseCheck = false;
