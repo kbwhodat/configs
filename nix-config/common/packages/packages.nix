@@ -10,7 +10,6 @@
     tmux
     git
     bat
-    # pass
     imagemagick
     imagemagick.dev
     luajit
@@ -36,13 +35,9 @@
     php
     tree-sitter
     redis
-    # gnupg
     pinentry-gtk2
-    # bash
-    # gcr
-    # pinentry-curses
+    calibre
     google-cloud-sdk
-    # browserpass
     ansible
     sqlite
     terraform
