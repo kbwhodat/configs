@@ -49,6 +49,7 @@
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        pkgs = pkgs;
         specialArgs = { inherit inputs; };
         modules = [
           ./nixos/configuration.nix

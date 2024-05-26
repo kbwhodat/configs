@@ -8,7 +8,7 @@
 
   cfg = config.services.ollama;
   ollamaPackage = cfg.package.override {
-  inherit (cfg) acceleration;
+    inherit (cfg) acceleration;
   };
   inherit (pkgs.stdenv) isDarwin;
 in {
@@ -47,17 +47,31 @@ in {
     };
   };
 
-  config = 
-    lib.mkIf cfg.enable {
-          launchd.user.agents.ollama = {
-          command = "${cfg.package}/bin/ollama serve";
-          serviceConfig = {
-            KeepAlive = true;
-            RunAtLoad = true;
-            StandardOutPath = cfg.logFile;
-            StandardErrorPath = cfg.logFile;
-          };
+  config = lib.mkIf cfg.enable (lib.mkMerge [
+    # NixOS specific configuration
+    (lib.mkIf (!isDarwin) {
+      systemd.services.ollama = {
+        description = "Ollama Service";
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          ExecStart = "${cfg.package}/bin/ollama serve";
+          Restart = "always";
+          StandardOutput = "append:${cfg.logFile}";
+          StandardError = "append:${cfg.logFile}";
+          User = "ollama";
+          Group = "ollama";
         };
-    };
+      };
 
+      # Ensure the user and group exist
+      users.users.ollama = {
+        isSystemUser = true;
+        home = "/var/lib/ollama";
+        description = "Ollama User";
+      };
+
+      users.groups.ollama = {};
+    })
+  ]);
 }
