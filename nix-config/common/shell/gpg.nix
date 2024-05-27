@@ -1,7 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
 inherit (pkgs.stdenv) isDarwin;
+myrepo = builtins.fetchGit {
+  url = "git@github.com:kbwhodat/pass-keys.git";
+  ref = "main";
+  rev = "0e74003dbfb97ba8b7697ba4b49427495734da0b";
+};
 
 in
 {
@@ -51,5 +56,12 @@ in
     maxCacheTtl = 86400; 
   };
 
-  # services.dbus.packages = [ pkgs.gcr ];
+  home.activation.gpgRepoSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  rm -rf ${config.home.homeDirectory}/.secrets
+  ln -sfnT ${myrepo}/ ${config.home.homeDirectory}/.secrets
+  '';
+
+  home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
+      ${pkgs.gnupg}/bin/gpg --import ${config.home.homeDirectory}/.secrets/subkey
+      '');
 }
