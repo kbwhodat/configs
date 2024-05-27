@@ -28,10 +28,12 @@
 				set -g prefix C-a
 				unbind C-b
 				bind C-a send-prefix
-				bind R source-file ~/.tmux.conf \; display "Config Reloaded!"
+				bind R source-file ~/.config/tmux/tmux.conf \; display "Config Reloaded!"
 
 				set-option -g status-style bg=default
 				set -g status-left "#S "
+        set-option -g status-left-length 50
+        set -g status-right-length 10
 				set -g status-right ""
 				set -g window-status-current-format ""
 				set -g window-status-format ""

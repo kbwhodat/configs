@@ -2,25 +2,30 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, callPackage, inputs,  ... }:
+{ config, pkgs, callPackage, inputs,  lib, ... }:
 
+let
+  # Detect if an NVIDIA GPU is present
+  nvidiaDetected = builtins.pathExists "/proc/driver/nvidia" || builtins.pathExists "/sys/module/nvidia";
+
+  # Conditionally import the NVIDIA configuration
+  nvidiaConfig = if nvidiaDetected then [ ./ollama/ollama.nix ./cuda/cuda.nix ] else [];
+in
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-     ./ollama/ollama.nix
-     ./cuda/cuda.nix
-    ];
+    ] ++ nvidiaConfig;
 
   environment.pathsToLink = [ "/libexec" ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader.
- boot.loader.systemd-boot.enable = true;
- boot.loader.efi.canTouchEfiVariables = true;
-  # boot.loader.grub.enable = true;
-  # boot.loader.grub.device = "/dev/nvme0n1";
+  boot.loader.systemd-boot.enable = lib.mkIf (builtins.pathExists "/boot") true;
+  boot.loader.efi.canTouchEfiVariables = lib.mkIf (builtins.pathExists "/boot") true;
+  boot.loader.grub.enable = lib.mkIf (!builtins.pathExists "/boot") true;
+  boot.loader.grub.device = lib.mkIf (!builtins.pathExists "/boot") "/dev/nvme0n1";
 
 
   #networking.hostName = "nixos-utility"; # Define your hostname.
