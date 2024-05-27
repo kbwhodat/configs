@@ -8,8 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-#      ./ollama/ollama.nix
-#      ./cuda/cuda.nix
+     ./ollama/ollama.nix
+     ./cuda/cuda.nix
     ];
 
   environment.pathsToLink = [ "/libexec" ];
@@ -17,10 +17,10 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader.
-#  boot.loader.systemd-boot.enable = true;
-#  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/nvme0n1";
+ boot.loader.systemd-boot.enable = true;
+ boot.loader.efi.canTouchEfiVariables = true;
+  # boot.loader.grub.enable = true;
+  # boot.loader.grub.device = "/dev/nvme0n1";
 
 
   #networking.hostName = "nixos-utility"; # Define your hostname.
