@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../programs/ssh/ssh.nix
     ];
 
 
@@ -22,7 +23,7 @@
   boot.loader.grub.device = "/dev/nvme0n1";
 
 
-  #networking.hostName = "nixos-utility"; # Define your hostname.
+  networking.hostName = "nixos-util"; # Define your hostname.
   networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp3s0" "wlan0" ];
   networking.wireless.iwd.enable = true;
@@ -131,7 +132,6 @@
     extraGroups = [ "networkmanager" "wheel" ];
 		shell = pkgs.bash;
     openssh.authorizedKeys.keys = [ 
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
     ];
   };
@@ -179,11 +179,6 @@
   # };
 
   # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-  services.openssh.settings.PasswordAuthentication = false;
-  services.openssh.settings.PermitRootLogin = "no";
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
