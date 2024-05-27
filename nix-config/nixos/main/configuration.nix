@@ -8,8 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./ollama/ollama.nix 
-      ./cuda/cuda.nix
+      ../ollama/ollama.nix 
+      ../cuda/cuda.nix
     ];
 
 

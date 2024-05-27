@@ -47,11 +47,26 @@
     };
 
     nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
+      util = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./nixos/configuration.nix
+          ./nixos/util/configuration.nix
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.katob = import ./nixos/home;
+            nixpkgs.overlays = overlays;
+          }
+        ];
+      };
+
+      main = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./nixos/main/configuration.nix
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
