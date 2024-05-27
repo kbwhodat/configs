@@ -72,7 +72,7 @@ if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
   
   TMUX_SESSION=`hostname -f`
   if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-    tmux ~/.config/tmux/tmux.conf attach-session -t $TMUX_SESSION
+    tmux -f ~/.config/tmux/tmux.conf attach-session -t $TMUX_SESSION
   else
     tmux -f ~/.config/tmux/tmux.conf new-session -s $TMUX_SESSION 
   fi
