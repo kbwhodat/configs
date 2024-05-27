@@ -156,19 +156,19 @@
 
   services.logind.lidSwitchExternalPower = "ignore";
 
-  services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.autorandr}/bin/autorandr --change
-  '';
+  # services.xserver.displayManager.sessionCommands = ''
+  #   ${pkgs.autorandr}/bin/autorandr --change
+  # '';
 
-  systemd.services.xrandr-setup = {
-    description = "Configure displays using xrandr";
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "/home/katob/.config/scripts/displays.sh";
-      User = "katob";
-      Environment = "DISPLAY=:0";
-    };
-  };
+  # systemd.services.xrandr-setup = {
+  #   description = "Configure displays using xrandr";
+  #   wantedBy = [ "graphical-session.target" ];
+  #   serviceConfig = {
+  #     ExecStart = "/home/katob/.config/scripts/displays.sh";
+  #     User = "katob";
+  #     Environment = "DISPLAY=:0";
+  #   };
+  # };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -181,9 +181,9 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = false;
+  services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = false;
-  services.openssh.settings.PermitRootLogin = false;
+  services.openssh.settings.PermitRootLogin = "no";
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
