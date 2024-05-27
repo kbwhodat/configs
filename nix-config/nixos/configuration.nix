@@ -8,8 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./ollama/ollama.nix
-      ./cuda/cuda.nix
+#      ./ollama/ollama.nix
+#      ./cuda/cuda.nix
     ];
 
   environment.pathsToLink = [ "/libexec" ];
@@ -17,18 +17,29 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+#  boot.loader.systemd-boot.enable = true;
+#  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/nvme0n1";
 
-  networking.hostName = "nixos-main"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  #networking.hostName = "nixos-utility"; # Define your hostname.
+  networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.interfaces = [ "wlp3s0" "wlan0" ];
+  networking.wireless.iwd.enable = true;
+  networking.wireless.iwd.settings = {
+    Settings = {
+      AutoConnect = true;
+    };
+  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = false;
+  # networking.networkmanager.unmanaged = [ "wlp3s0" "wlan0"];
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -120,8 +131,8 @@
     description = "kato";
     extraGroups = [ "networkmanager" "wheel" ];
 		shell = pkgs.bash;
-    packages = with pkgs; [
-    #  thunderbird
+    openssh.authorizedKeys.keys = [ 
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
     ];
   };
 
@@ -170,7 +181,9 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = false;
+  services.openssh.settings.PasswordAuthentication = false;
+  services.openssh.settings.PermitRootLogin = false;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
