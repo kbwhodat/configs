@@ -3,8 +3,7 @@
 {
 
   programs.ssh = {
-    enable = true;
+    enable = false;
     controlPersist = "60m";
-    forwardX11 = true;
   };
 }
