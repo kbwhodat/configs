@@ -28,10 +28,12 @@
 export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin"
 export EDITOR="nvim"
 export VISUAL="vim"
+export TMUX_CONF="~/.config/tmux/tmux.conf"
+
+
 
 # source "${pkgs.blesh}"/share/blesh/ble.sh
 # source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
-
     shopt -s histappend
     shopt -s cmdhist
     shopt -s lithist
@@ -67,11 +69,12 @@ alias cat='bat --style plain'
 alias vim="$(which nvim)"
 
 if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
-  TMUX_SESSION="genesis"
+  
+  TMUX_SESSION=`hostname -f`
   if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-    tmux attach-session -t $TMUX_SESSION
+    tmux -f ~/.config/tmux/tmux.conf attach-session -t $TMUX_SESSION
   else
-    tmux new-session -s $TMUX_SESSION
+    tmux -f ~/.config/tmux/tmux.conf new-session -s $TMUX_SESSION 
   fi
 fi
 

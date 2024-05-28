@@ -2,13 +2,17 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, callPackage, inputs,  ... }:
+{ config, pkgs, callPackage, inputs,  lib, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../programs/ollama/ollama.nix 
+      ../programs/cuda/cuda.nix
+      ../programs/ssh/ssh.nix
     ];
+
 
   environment.pathsToLink = [ "/libexec" ];
 
@@ -17,16 +21,27 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  # boot.loader.grub.enable = lib.mkIf (!builtins.pathExists "/boot/loader") false;
+  # boot.loader.grub.device = lib.mkIf (!builtins.pathExists "/boot/loader") "/dev/nvme0n1";
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  networking.hostName = "nixos-main"; # Define your hostname.
+  networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.interfaces = [ "wlp3s0" "wlan0" ];
+  networking.wireless.iwd.enable = true;
+  networking.wireless.iwd.settings = {
+    Settings = {
+      AutoConnect = true;
+    };
+  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = false;
+  # networking.networkmanager.unmanaged = [ "wlp3s0" "wlan0"];
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -48,15 +63,10 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl.enable = true;
-  hardware.nvidia.modesetting.enable = true;
 
-  hardware.nvidia.prime = {
-    offload.enable = true;
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
-  };
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport = true;
+  hardware.opengl.driSupport32Bit = true;
 
   # Enable the GNOME Desktop Environment.
   #services.xserver.displayManager.gdm.enable = true;
@@ -122,9 +132,9 @@
     isNormalUser = true;
     description = "kato";
     extraGroups = [ "networkmanager" "wheel" ];
-		shell = pkgs.zsh;
-    packages = with pkgs; [
-    #  thunderbird
+		shell = pkgs.bash;
+    openssh.authorizedKeys.keys = [ 
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
     ];
   };
 
@@ -136,19 +146,6 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    pciutils
-    xclip
-    xsel
-    xdotool
-    # inputs.helix.packages."${pkgs.system}".helix
-    ueberzug
-    pulseaudio
-    libgcc
-    autorandr
-    nvidia-docker
-    ungoogled-chromium
-    mpv
-    vlc
   ];
 
   fonts.fonts = with pkgs; [
@@ -161,19 +158,19 @@
 
   services.logind.lidSwitchExternalPower = "ignore";
 
-  services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.autorandr}/bin/autorandr --change
-  '';
+  # services.xserver.displayManager.sessionCommands = ''
+  #   ${pkgs.autorandr}/bin/autorandr --change
+  # '';
 
-  systemd.services.xrandr-setup = {
-    description = "Configure displays using xrandr";
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "/home/katob/.config/scripts/displays.sh";
-      User = "katob";
-      Environment = "DISPLAY=:0";
-    };
-  };
+  # systemd.services.xrandr-setup = {
+  #   description = "Configure displays using xrandr";
+  #   wantedBy = [ "graphical-session.target" ];
+  #   serviceConfig = {
+  #     ExecStart = "/home/katob/.config/scripts/displays.sh";
+  #     User = "katob";
+  #     Environment = "DISPLAY=:0";
+  #   };
+  # };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -183,10 +180,6 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

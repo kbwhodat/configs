@@ -4,7 +4,7 @@
 
 	programs.tmux = {
 		enable = true;
-		terminal = "screen-256color";
+		#terminal = "screen-256color";
 		historyLimit = 100000;
 		plugins = with pkgs;
 		[
@@ -28,10 +28,12 @@
 				set -g prefix C-a
 				unbind C-b
 				bind C-a send-prefix
-				bind R source-file ~/.tmux.conf \; display "Config Reloaded!"
+				bind R source-file ~/.config/tmux/tmux.conf \; display "Config Reloaded!"
 
 				set-option -g status-style bg=default
 				set -g status-left "#S "
+        set-option -g status-left-length 50
+        set -g status-right-length 10
 				set -g status-right ""
 				set -g window-status-current-format ""
 				set -g window-status-format ""
@@ -53,6 +55,7 @@
 				bind-key -T copy-mode-vi 'C-k' select-pane -U
 				bind-key -T copy-mode-vi 'C-l' select-pane -R
 				bind-key -T copy-mode-vi v send-keys -X begin-selection
+        bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
 
 		'';
 	};

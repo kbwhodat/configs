@@ -2,8 +2,10 @@
 
 {
 	imports = [
-		./i3
-    ./rofi
+		../../common/linux/rofi
+		# ../../common/linux/ollama
+		../../common/linux/okular
+		../../common/linux/i3
 		../../common
 	];
 
@@ -11,6 +13,7 @@
   # manage.
   home.username = "katob";
   home.homeDirectory = "/home/katob";
+
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -26,6 +29,18 @@
   # environment.
   home.packages = with pkgs; [
 		nmap
+    pciutils
+    xclip
+    xsel
+    xdotool
+    ueberzug
+    pulseaudio
+    libgcc
+    autorandr
+    ungoogled-chromium
+    mpv
+    vlc
+
   ];
 
   home.enableNixpkgsReleaseCheck = false;

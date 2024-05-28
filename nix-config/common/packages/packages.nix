@@ -24,6 +24,7 @@
     gzip
     go
     python3
+    alacritty
     perl
     cargo
     nodejs_22
@@ -35,11 +36,10 @@
     php
     tree-sitter
     redis
-    # gnupg
     pinentry-gtk2
-    google-cloud-sdk
-    # browserpass
     zlib
+    calibre
+    google-cloud-sdk
     ansible
     sqlite
     gh
