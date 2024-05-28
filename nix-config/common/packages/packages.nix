@@ -38,7 +38,6 @@
     redis
     pinentry-gtk2
     zlib
-    calibre
     google-cloud-sdk
     ansible
     sqlite
