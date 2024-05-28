@@ -109,4 +109,12 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 		'';
 	};
+
+
+  home.file."input".target = "${config.home.homeDirectory}/.inputrc";
+  home.file."input".source = builtins.toFile "inputrc" ''
+    set editing-mode vi
+    #set keymap vi-command
+    set keymap vi-insert
+  '';
 }
