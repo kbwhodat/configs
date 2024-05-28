@@ -12,11 +12,9 @@
 
 	inputs.darwin.url = "github:lnl7/nix-darwin";
 	inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
+
 	inputs.nix-darwin.url = "github:lnl7/nix-darwin";
 	inputs.nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-	inputs.nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-23.11";
-
-	inputs.helix.url = "github:helix-editor/helix/master";
 
 
   outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, ... }: {
