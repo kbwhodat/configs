@@ -10,7 +10,6 @@
     tmux
     git
     bat
-    # pass
     imagemagick
     imagemagick.dev
     luajit
@@ -38,11 +37,9 @@
     redis
     # gnupg
     pinentry-gtk2
-    # bash
-    # gcr
-    # pinentry-curses
     google-cloud-sdk
     # browserpass
+    zlib
     ansible
     sqlite
     gh
@@ -50,6 +47,7 @@
     gnutar
     coreutils
     terraform
+    pyenv
     duckdb
     jq
     yq

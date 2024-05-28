@@ -45,10 +45,13 @@
 				bind-key -n C-h select-pane -L
 				bind-key -n C-j select-pane -D
 				bind-key -n C-k select-pane -U
+        bind-key -n C-l select-pane -R
+
 
 				bind-key -T copy-mode-vi 'C-h' select-pane -L
 				bind-key -T copy-mode-vi 'C-j' select-pane -D
 				bind-key -T copy-mode-vi 'C-k' select-pane -U
+				bind-key -T copy-mode-vi 'C-l' select-pane -R
 				bind-key -T copy-mode-vi v send-keys -X begin-selection
 
 		'';

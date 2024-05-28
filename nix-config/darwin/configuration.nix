@@ -17,17 +17,21 @@
 
   environment.systemPackages = with pkgs; [ 
     pinentry_mac
-#    yabai
+    yabai
     docker-client
     skhd
     iina
+    colima
+    lima-bin
     ollama
   ];
 
   launchd.user.agents.docker = {
-    serviceConfig.ProgramArguments = [ "/usr/local/bin/colima" "start" ];
+    serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/darwin/scripts/start_colima.sh" ];
     serviceConfig.RunAtLoad = true;
-    serviceConfig.KeepAlive = true;
+    serviceConfig.KeepAlive = false;
+    serviceConfig.StandardOutPath = "/tmp/colima.out";
+    serviceConfig.StandardErrorPath = "/tmp/colima.err";
   };
 
   launchd.user.agents.ollama = {
@@ -36,7 +40,7 @@
     serviceConfig.RunAtLoad = true;
   };
 
-#  services.yabai.enable = true;
+  services.yabai.enable = true;
   services.skhd.enable = true;
 
   nixpkgs.config.allowUnfree = true;
@@ -47,8 +51,8 @@
     onActivation.cleanup = "uninstall";
 
     taps = ["benjiwolff/neovim-nightly" "koekeishiya/formulae"];
-    brews = [ "colima" "helm" "koekeishiya/formulae/yabai" "koekeishiya/formulae/skhd" ];
-    casks = [ "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    brews = [ "helm" ];
+    casks = [ "zed" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
