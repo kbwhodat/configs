@@ -1,10 +1,9 @@
-{ config, ... }:
+{ inputs, pkgs, config, ... }:
 
 {
 	imports = [
-		# ./dash.nix
-		# ./nu.nix
 		# ./starship.nix
+    ./git-sync.nix
 		./bash.nix
     ./zsh.nix
     ./blesh.nix
@@ -14,9 +13,6 @@
 		./neovim.nix
     ./password-store.nix
     ./gpg.nix
-    # ./node.nix
-    # ./python.nix
-    # ./scripts
 	];
 
 	home.sessionVariables = {
