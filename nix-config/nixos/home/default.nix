@@ -3,7 +3,7 @@
 {
 	imports = [
 		../../common/linux/rofi
-		# ../../common/linux/ollama
+		../../common/linux/calibre
 		../../common/linux/okular
 		../../common/linux/i3
 		../../common

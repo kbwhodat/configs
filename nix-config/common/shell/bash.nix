@@ -3,7 +3,7 @@
 {
 	programs.bash = {
 		enable = true;
-		enableCompletion = false;
+		enableCompletion = true;
     historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
     historyIgnore = [ "ls" "cd" "exit" ];
 
@@ -25,7 +25,7 @@
 
 		initExtra = ''
 
-export PATH=$PATH:"/home/katob/.nix-profile/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin"
 export EDITOR="nvim"
 export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"
