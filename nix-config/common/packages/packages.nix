@@ -37,7 +37,7 @@
     tree-sitter
     redis
     pinentry-gtk2
-    calibre
+    zlib
     google-cloud-sdk
     ansible
     sqlite
@@ -46,6 +46,7 @@
     gnutar
     coreutils
     terraform
+    pyenv
     duckdb
     jq
     yq
