@@ -91,15 +91,13 @@ keymap('n', '<Leader>j', '<C-w>j', opts)
 keymap('n', '<Leader>k', '<C-w>k', opts)
 
 
--- nvim-tree
--- keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
--- Oil
-keymap("n", "<leader>e", ":Oil<CR>", opts)
+-- -- Oil
+-- keymap("n", "<leader>e", ":Oil<CR>", opts)
 
 -- Buffers
-keymap("n", "<leader>;", ":BufferLineCyclePrev<CR>", opts) -- This will move to the left buffer
-keymap("n", "<leader>'", ":BufferLineCycleNext<CR>", opts) -- This will move to the right buffer 
-keymap("n", "<leader>d", ":bw<CR>", opts) -- This will delete the current buffer
+keymap("n", "<leader>;", ":bp<CR>", opts) -- This will move to the left buffer
+keymap("n", "<leader>'", ":bn<CR>", opts) -- This will move to the right buffer 
+keymap("n", "<leader>d", ":bd<CR>", opts) -- This will delete the current buffer
 
 
 

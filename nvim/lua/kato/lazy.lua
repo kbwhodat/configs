@@ -86,28 +86,6 @@ local plugins = {
     end,
   },
   {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle pin" },
-      { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete non-pinned buffers" },
-    },
-    opts = {
-      options = {
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
-        offsets = {
-          {
-            filetype = "oil",
-            text = "oil",
-            highlight = "Directory",
-            text_align = "left",
-          },
-        },
-      },
-    },
-  },
-  {
     "folke/persistence.nvim",
     event = "BufReadPre",
 		delay = 2000,
@@ -122,12 +100,12 @@ local plugins = {
   },
   'nvim-treesitter/nvim-treesitter-context',
   "mbbill/undotree",
-	{
-		'stevearc/oil.nvim',
-		opts = {},
-		-- Optional dependencies
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-	},
+--	{
+--		'stevearc/oil.nvim',
+--		opts = {},
+--		-- Optional dependencies
+--		dependencies = { "nvim-tree/nvim-web-devicons" },
+--	},
   'alvan/vim-closetag',
   'tpope/vim-commentary',
 	"rebelot/kanagawa.nvim",
@@ -148,11 +126,6 @@ local plugins = {
 		event = "BufReadPre *.md",
 	},
 	"akinsho/toggleterm.nvim",
-	{
-		'lewis6991/gitsigns.nvim',
-		requires = { 'nvim-lua/plenary.nvim' },
-		event = { 'BufRead', 'BufNewFile' },
-	},
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,
