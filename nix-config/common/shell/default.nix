@@ -3,7 +3,7 @@
 {
 	imports = [
 		# ./starship.nix
-    ./git-sync.nix
+    ./repos.nix
 		./bash.nix
     ./zsh.nix
     ./blesh.nix
