@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
+    # neovim
     mongosh
     wget
     htop
