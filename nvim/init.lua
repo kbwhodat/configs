@@ -60,19 +60,14 @@ vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bg = '#000000' })  -- W
 
 -- vim.cmd('highlight @spell.markdown guifg=#ffffff')
 
-vim.cmd('highlight @markup.heading.1.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.1.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.heading.2.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.2.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.heading.3.marker.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.heading.3.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.heading.4.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.4.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.heading.5.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.5.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.heading.6.marker.markdown guifg=#565F89')
-vim.cmd('highlight @markup.heading.6.markdown guifg=#7fb4ca')
-vim.cmd('highlight @markup.list.markdown guifg=#c8856b')
+vim.cmd('highlight @markup.heading.1.markdown guifg=#FF7900')
+vim.cmd('highlight @markup.heading.2.markdown guifg=#FF7900')
+vim.cmd('highlight @markup.heading.3.markdown guifg=#FF7900')
+vim.cmd('highlight @markup.heading.4.markdown guifg=#FF7900')
+vim.cmd('highlight @markup.heading.5.markdown guifg=#FF7900')
+vim.cmd('highlight @markup.heading.6.markdown guifg=#FF7900')
+vim.cmd('highlight @markup.list.markdown guifg=#FFFFFF')
+-- vim.cmd('highlight @keyword.directive.markdown guifg=#0F4C81 ')
 vim.cmd('highlight @markup.raw.markdown_inline guifg=#b3b7e0')
 -- vim.cmd('highlight @markup.link.label.markdown_inline guifg=#0096FF')
 -- vim.cmd('highlight @_label.markdown_inline guifg=#0096FF')
@@ -98,6 +93,8 @@ keymap('n', '<Leader>k', '<C-w>k', opts)
 keymap("n", "<leader>;", ":bp<CR>", opts) -- This will move to the left buffer
 keymap("n", "<leader>'", ":bn<CR>", opts) -- This will move to the right buffer 
 keymap("n", "<leader>d", ":bd<CR>", opts) -- This will delete the current buffer
+keymap("n", "<leader>bm", ":bm<CR>", opts) -- This will navigate to any buffers that is modified
+keymap("n", "<leader>bl", ":ls<CR>", opts) -- This will list the current buffers
 
 
 

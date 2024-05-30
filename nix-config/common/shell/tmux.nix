@@ -19,8 +19,8 @@
 				setw -g mode-keys vi
 				set -sg escape-time 0
 
-				set -g default-command "${pkgs.bash}/bin/bash"
-				set-option -g default-shell "${pkgs.bash}/bin/bash"
+				set -g default-command "/run/current-system/sw/bin/bash"
+				set-option -g default-shell "/run/current-system/sw/bin/bash"
 
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
