@@ -3,7 +3,10 @@
 {
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
-    # neovim
+    contour
+    libsixel
+    timg
+    lsix
     mongosh
     wget
     htop

@@ -10,7 +10,7 @@
 		sessionVariables = {
 			EDITOR = "nvim";
       VISUAL= "vim";
-			TERM = "screen-256color";
+			TERM = "xterm-256color";
 			COLORTERM = "truecolor";
 		};
 
