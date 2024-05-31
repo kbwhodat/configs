@@ -451,7 +451,7 @@ profiles:
             # - rectangle     just the outline of a block
             # - underscore    a line under the text
             # - bar:          the well known i-Beam
-            shape: "rectangle"
+            shape: "block"
             # Determines whether or not the cursor will be blinking over time.
             blinking: true
             # Blinking interval (in milliseconds) to use when cursor is blinking.
@@ -470,7 +470,7 @@ profiles:
         visual_mode:
             cursor:
                 shape: block
-                blinking: false
+                blinking: true
                 blinking_interval: 500
 
         # Time duration in milliseconds for which yank highlight is shown.
@@ -571,7 +571,7 @@ color_schemes:
             # Specifies the color to be used for the actual cursor shape.
             #
             # Default: CellForeground
-            default: 'white'
+            default: '#FFFFFF'
             # Specifies the color to be used for the characters that would
             # be covered otherwise.
             #
