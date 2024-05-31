@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
-    contour
     libsixel
     timg
     lsix
@@ -45,6 +44,8 @@
     google-cloud-sdk
     ansible
     sqlite
+    sshuttle
+    openconnect
     gh
     gnused
     gnutar
