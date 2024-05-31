@@ -23,6 +23,7 @@
     iina
     colima
     lima-bin
+    libiconv-darwin
     ollama
   ];
 

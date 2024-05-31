@@ -21,7 +21,7 @@
     system = "x86_64-linux";
     overlays = [
       nur.overlay
-      nixgl.overlay
+      # nixgl.overlay
     ];
 
     pkgs = import nixpkgs {
