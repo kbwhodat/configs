@@ -12,7 +12,7 @@
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';
     font = {
-      name = "FiraCode Nerd Font";
+      name = "FiraCode Nerd Font Medium";
       size = 13;
     };
 		shellIntegration = {
