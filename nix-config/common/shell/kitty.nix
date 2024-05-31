@@ -1,16 +1,16 @@
 { config, pkgs, inputs, ... }: 
-let
-  nixgl = pkgs.nixgl;
-in
+# let
+#   nixgl = pkgs.nixgl;
+# in
 {
 
 	home.sessionVariables.KITTY_CONFIG_DIRECTORY = "${config.home.homeDirectory}/.config/kitty";
 
 	programs.kitty = {
 		enable = true;
-    package = pkgs.writeShellScriptBin "kitty" ''
-      exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
-    '';
+    # package = pkgs.writeShellScriptBin "kitty" ''
+    #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
+    # '';
     font = {
       name = "FiraCode Nerd Font";
       size = 13;

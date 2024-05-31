@@ -31,6 +31,9 @@ export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"
 
 
+if [[ ''${uname} -eq "Darwin" ]]; then
+  export LIBRARY_PATH="${pkgs.libiconv-darwin}/lib"
+fi
 
 # source "${pkgs.blesh}"/share/blesh/ble.sh
 # source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
