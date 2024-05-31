@@ -243,7 +243,7 @@ profiles:
 
         # Environment variables to be passed to the shell.
         environment:
-            TERM: screen-256color
+            TERM: xterm-256color
             COLORTERM: truecolor
 
         # Determines the terminal type that is being advertised.
