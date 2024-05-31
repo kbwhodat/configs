@@ -4,6 +4,9 @@
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
     contour
+    libsixel
+    timg
+    lsix
     mongosh
     wget
     htop
