@@ -1,5 +1,8 @@
 { pkgs, config, lib, ... }:
 
+let
+  inherit (pkgs.stdenv) isDarwin;
+in
 {
 	programs.bash = {
 		enable = true;
@@ -32,7 +35,7 @@ export TMUX_CONF="~/.config/tmux/tmux.conf"
 
 
 if [[ ''${uname} -eq "Darwin" ]]; then
-  export LIBRARY_PATH="${pkgs.libiconv-darwin}/lib"
+  export LIBRARY_PATH="${if isDarwin then pkgs.libiconv-darwin else pkgs.libiconv}/lib"
 fi
 
 # source "${pkgs.blesh}"/share/blesh/ble.sh
