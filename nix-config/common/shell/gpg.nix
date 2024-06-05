@@ -3,7 +3,7 @@
 let
 inherit (pkgs.stdenv) isDarwin;
 myrepo = builtins.fetchGit {
-  url = "git@github.com:kbwhodat/pass-keys.git";
+  url = "https://github.com/kbwhodat/pass-keys.git";
   ref = "main";
   rev = "0e74003dbfb97ba8b7697ba4b49427495734da0b";
 };
