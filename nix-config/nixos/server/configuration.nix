@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../programs/ollama/ollama.nix 
-      ../programs/cuda/cuda.nix
+      #../programs/cuda/cuda.nix
       ../programs/ssh/ssh.nix
     ];
 
@@ -24,16 +24,22 @@
   #boot.loader.grub.enable = true;
   #boot.loader.grub.device = "/dev/nvme0n1";
 
+  nix.settings.trusted-users = [
+		"root"
+		"katob"
+		"nixos"
+		"@wheel"
+	];
 
   networking.hostName = "nixos-server"; # Define your hostname.
   networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.wireless.interfaces = [ "wlp3s0" "wlan0" ];
+  networking.wireless.interfaces = [ "wlo1" ];
+	networking.wireless.networks = {
+		"results will vary" = {
+			psk = "wasswa123";
+		};
+	};
   networking.wireless.iwd.enable = false;
-  networking.wireless.iwd.settings = {
-    Settings = {
-      AutoConnect = true;
-    };
-  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -131,7 +137,7 @@
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "nix-users" "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
     openssh.authorizedKeys.keys = [ 
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
