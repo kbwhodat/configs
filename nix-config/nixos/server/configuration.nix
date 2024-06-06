@@ -26,9 +26,9 @@
 
 
   networking.hostName = "nixos-server"; # Define your hostname.
-  networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp3s0" "wlan0" ];
-  networking.wireless.iwd.enable = true;
+  networking.wireless.iwd.enable = false;
   networking.wireless.iwd.settings = {
     Settings = {
       AutoConnect = true;
