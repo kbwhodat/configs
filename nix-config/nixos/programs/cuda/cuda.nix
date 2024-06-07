@@ -38,7 +38,10 @@
   # Set environment variables for CUDA
   environment.variables = {
     CUDA_PATH = "${pkgs.cudatoolkit}";
-    LD_LIBRARY_PATH = lib.mkForce "${pkgs.cudatoolkit.lib}/lib:${pkgs.linuxPackages.nvidia_x11}/lib";
+    # LD_LIBRARY_PATH = lib.mkForce (lib.optionalString (builtins.getEnv "LD_LIBRARY_PATH" != "") (builtins.getEnv "LD_LIBRARY_PATH" + ":") + lib.makeLibraryPath [
+    #     "${pkgs.cudatoolkit.lib}"
+    #     "${pkgs.linuxPackages.nvidia_x11}"
+    # ]);
     EXTRA_LDFLAGS = "-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib";
     EXTRA_CCFLAGS = "-I/usr/include";
   };
