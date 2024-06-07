@@ -37,9 +37,9 @@ in
     settings = {
       use-agent = 
         if !isDarwin then
-          true
+          false
         else
-          false;
+          true;
     };
   };
 
