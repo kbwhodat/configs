@@ -47,12 +47,12 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./nixos/util/configuration.nix
+          ./os/nixos/hosts/util/configuration.nix
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.katob = import ./nixos/home;
+            home-manager.users.katob = import ./os/nixos/home;
             nixpkgs.overlays = overlays;
           }
         ];
@@ -62,12 +62,12 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./nixos/server/configuration.nix
+          ./os/nixos/hosts/server/configuration.nix
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.katob = import ./nixos/home;
+            home-manager.users.katob = import ./os/nixos/home;
             nixpkgs.overlays = overlays;
           }
         ];
@@ -77,12 +77,12 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./nixos/main/configuration.nix
+          ./os/nixos/hosts/main/configuration.nix
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.katob = import ./nixos/home;
+            home-manager.users.katob = import ./os/nixos/home;
             nixpkgs.overlays = overlays;
           }
         ];
@@ -90,16 +90,35 @@
     };
 
     darwinConfigurations = {
-      mac = nix-darwin.lib.darwinSystem {
+
+      mac-work = nix-darwin.lib.darwinSystem {
         system = "x86_64-darwin";
         specialArgs = { inherit inputs; };
         modules = [
-          ./darwin/configuration.nix
+          ./os/darwin/hosts/work/configuration.nix
           home-manager.darwinModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.katob = import ./darwin/home;
+            home-manager.users.katob = import ./os/darwin/hosts/work/home;
+            nixpkgs.overlays = overlays;
+
+            users.users."katob".name = "katob";
+            users.users."katob".home = "/Users/katob";
+          }
+        ];
+      };
+
+      mac-personal = nix-darwin.lib.darwinSystem {
+        system = "x86_64-darwin";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./os/darwin/hosts/personal/configuration.nix
+          home-manager.darwinModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.katob = import ./os/darwin/hosts/personal/home;
             nixpkgs.overlays = overlays;
 
             users.users."katob".name = "katob";

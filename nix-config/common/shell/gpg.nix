@@ -35,7 +35,11 @@ in
     }
     ];
     settings = {
-      use-agent = true;
+      use-agent = 
+        if !isDarwin then
+          true
+        else
+          false;
     };
   };
 
@@ -46,8 +50,6 @@ in
       else
         false;
 
-    # enableSshSupport = true;
-    # sshKeys = [ "BE5719EC9B943BC43E91FF24B6CFCBFF9D438A21" ];
     extraConfig = ''
       pinentry-program ${pkgs.pinentry-gtk2}/bin/pinentry
     '';
@@ -57,9 +59,9 @@ in
   };
 
   home.activation.gpgRepoSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-  rm -rf ${config.home.homeDirectory}/.secrets
-  ln -sfnT ${myrepo}/ ${config.home.homeDirectory}/.secrets
-  '';
+    rm -rf ${config.home.homeDirectory}/.secrets
+    ln -sfnT ${myrepo}/ ${config.home.homeDirectory}/.secrets
+    '';
 
   home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
       ${pkgs.gnupg}/bin/gpg --import ${config.home.homeDirectory}/.secrets/subkey
