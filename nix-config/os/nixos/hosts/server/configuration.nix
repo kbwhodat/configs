@@ -11,6 +11,7 @@
       ../../../../common/nvidia/ollama/ollama.nix
       ../../../../common/nvidia/cuda/cuda.nix
       ../../../../common/ssh/ssh.nix
+      ../../../../common/nixos-config
     ];
 
 
@@ -21,11 +22,6 @@
   networking.hostName = "nixos-server"; # Define your hostname.
   networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlo1" ];
-	networking.wireless.networks = {
-		"results will vary" = {
-			psk = "wasswa123";
-		};
-	};
 
 	programs.zsh.enable = true;
 

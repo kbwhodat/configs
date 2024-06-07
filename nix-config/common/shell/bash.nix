@@ -34,6 +34,7 @@ export EDITOR="nvim"
 export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"
 
+alias clear="clear -x"
 
 if [[ ''${uname} -eq "Darwin" ]]; then
   export LIBRARY_PATH="${if isDarwin then pkgs.libiconv-darwin else pkgs.libiconv}/lib"

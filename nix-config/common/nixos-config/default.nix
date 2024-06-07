@@ -15,6 +15,15 @@
 		"@wheel"
 	];
 
+	networking.wireless.networks = {
+		"results will vary" = {
+      extraConfig = ''
+            key_mgmt=WPA-PSK
+            psk=54047fa690627b6ef2e1176f21df83b09ce25d2c6a2dcc4eac5f8bac228f7c9a
+      '';
+		};
+  };
+
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
