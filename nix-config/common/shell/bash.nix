@@ -29,6 +29,7 @@ in
 		initExtra = ''
 
 export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin"
+
 export EDITOR="nvim"
 export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"

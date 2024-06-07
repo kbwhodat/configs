@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../programs/ollama/ollama.nix 
-      #../programs/cuda/cuda.nix
+      ../programs/cuda/cuda.nix
       ../programs/ssh/ssh.nix
     ];
 
@@ -87,7 +87,7 @@
   services.xserver = {
 
     desktopManager = {
-      plasma5.enable = true;
+      plasma5.enable = false;
     };
 
     displayManager = {
@@ -137,7 +137,7 @@
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
-    extraGroups = [ "nix-users" "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
     openssh.authorizedKeys.keys = [ 
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
@@ -152,14 +152,17 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
+    gcc-unwrapped
+    zlib
+    libglvnd
+    glib
   ];
 
   fonts.fonts = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
-
   # Setting up env variables for image.nvim
-  environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
+  # environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
   environment.variables.PKG_CONFIG_PATH = [ "${pkgs.imagemagick.dev}/lib/pkgconfig" ];
 
   services.logind.lidSwitchExternalPower = "ignore";
@@ -167,16 +170,6 @@
   # services.xserver.displayManager.sessionCommands = ''
   #   ${pkgs.autorandr}/bin/autorandr --change
   # '';
-
-  # systemd.services.xrandr-setup = {
-  #   description = "Configure displays using xrandr";
-  #   wantedBy = [ "graphical-session.target" ];
-  #   serviceConfig = {
-  #     ExecStart = "/home/katob/.config/scripts/displays.sh";
-  #     User = "katob";
-  #     Environment = "DISPLAY=:0";
-  #   };
-  # };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -199,6 +192,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "unstable"; # Did you read the comment?
 
 }

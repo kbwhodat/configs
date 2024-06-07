@@ -1,5 +1,11 @@
-{ config, pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  # Define the library path here
+  ldLibraryPath = lib.makeLibraryPath [
+    pkgs.gcc-unwrapped.lib
+    pkgs.linuxPackages.nvidia_x11
+  ];
+in
 {
 	imports = [
 		../../common/linux/rofi
@@ -73,6 +79,7 @@
   #
   home.sessionVariables = {
     EDITOR = "nvim";
+    LD_LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LD_LIBRARY_PATH" != "") (builtins.getEnv "LD_LIBRARY_PATH" + ":")}${ldLibraryPath}";
   };
 
   # Let Home Manager install and manage itself.
