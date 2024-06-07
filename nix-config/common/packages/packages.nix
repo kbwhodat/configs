@@ -3,10 +3,6 @@
 {
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
-    libsixel
-    timg
-    lsix
-    mongosh
     wget
     htop
     curl
@@ -38,19 +34,13 @@
     ruby
     php
     tree-sitter
-    redis
     pinentry-gtk2
     zlib
-    google-cloud-sdk
-    ansible
     sqlite
-    sshuttle
-    openconnect
     gh
     gnused
     gnutar
     coreutils
-    terraform
     pyenv
     duckdb
     jq

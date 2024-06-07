@@ -28,7 +28,7 @@
   ];
 
   launchd.user.agents.docker = {
-    serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/darwin/scripts/start_colima.sh" ];
+    serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/os/darwin/scripts/start_colima.sh" ];
     serviceConfig.RunAtLoad = true;
     serviceConfig.KeepAlive = false;
     serviceConfig.StandardOutPath = "/tmp/colima.out";
