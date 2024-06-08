@@ -1,18 +1,28 @@
 { inputs, config, pkgs, ... }:
 
+let
+myrepo = pkgs.fetchFromGitHub {
+  owner = "kbwhodat";
+  repo = "pass-keys";
+  rev = "20fadc63a83680779a112ff8667a39f702818cb9";
+  hash = "sha256-2OlQfsGJ+59y2xs6HePqoZS3mlD/5pHDRza+vtAQssw=";
+};
+in
 {
   imports =
     [ 
       inputs.sops-nix.nixosModules.sops
     ];
 
+  environment.etc.".secrets".source = "${myrepo}";
 
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
+  sops.age.keyFile = "/etc/.secrets/keys.txt";
 
-  sops.age.keyFile = "/home/katob/.config/sops/age/keys.txt";
-
-  sops.secrets.password = { };
+  sops.secrets.pass-gpg = {
+    owner = config.users.users.katob.name;
+  };
 
   system.stateVersion = "unstable"; 
 
