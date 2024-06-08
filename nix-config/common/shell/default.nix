@@ -8,6 +8,7 @@
       ./blesh.nix
       ./kitty.nix
       ./tmux.nix
+      #./zellij.nix
       ./neovim.nix
       ./password-store.nix
       ./gpg.nix
