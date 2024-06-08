@@ -45,5 +45,6 @@
     duckdb
     jq
     yq
+    sops
     ];
 }

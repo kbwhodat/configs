@@ -1,6 +1,18 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 {
+  imports =
+    [ 
+      inputs.sops-nix.nixosModules.sops
+    ];
+
+
+  sops.defaultSopsFile = ../../secrets/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
+
+  sops.age.keyFile = "/home/katob/.config/sops/age/keys.txt";
+
+  sops.secrets.password = { };
 
   system.stateVersion = "unstable"; 
 
@@ -119,10 +131,8 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     wireplumber.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
   };
+
+
+
 }

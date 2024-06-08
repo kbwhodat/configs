@@ -19,7 +19,6 @@ in
   home.username = "katob";
   home.homeDirectory = "/home/katob";
 
-
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
 
@@ -47,4 +46,7 @@ in
   };
 
   programs.home-manager.enable = true;
+
+  xdg.enable = true;
+  xdg.userDirs.enable = true;
 }

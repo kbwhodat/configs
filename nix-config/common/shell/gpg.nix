@@ -35,27 +35,20 @@ in
     }
     ];
     settings = {
-      use-agent = 
-        if !isDarwin then
-          false
-        else
-          true;
+      no-greeting = true;
+      use-agent = true;
     };
   };
 
   services.gpg-agent = {
-    enable = 
-      if !isDarwin then
-        true
-      else
-        false;
-
-    extraConfig = ''
-      pinentry-program ${pkgs.pinentry-gtk2}/bin/pinentry
-    '';
-    # pinentryPackage = pkgs.pinentry-gtk2;
+    enable = true;
+    pinentryPackage = pkgs.pinentry-gtk2;
+    enableExtraSocket = true;
     enableBashIntegration = true;
     maxCacheTtl = 86400; 
+    extraConfig = ''
+      allow-loopback-pinentry
+      '';
   };
 
   home.activation.gpgRepoSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -63,7 +56,8 @@ in
     ln -sfnT ${myrepo}/ ${config.home.homeDirectory}/.secrets
     '';
 
-  home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
-      ${pkgs.gnupg}/bin/gpg --import ${config.home.homeDirectory}/.secrets/subkey
-      '');
+  # home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
+  #     ${pkgs.gnupg}/bin/gpg-connect-agent reloadagent /bye
+  #     echo "mysecret" | ${pkgs.gnupg}/bin/gpg --import ${config.home.homeDirectory}/.secrets/subkey
+  #     '');
 }
