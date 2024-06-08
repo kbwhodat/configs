@@ -1,11 +1,15 @@
 { inputs, config, pkgs, ... }:
 
 let
-myrepo = pkgs.fetchFromGitHub {
-  owner = "kbwhodat";
-  repo = "pass-keys";
+# myrepo = pkgs.fetchFromGitHub {
+#   owner = "kbwhodat";
+#   repo = "pass-keys";
+#   rev = "20fadc63a83680779a112ff8667a39f702818cb9";
+# };
+myrepo = builtins.fetchGit {
+  url = "https://github.com/kbwhodat/pass-keys.git";
+  ref = "main";
   rev = "20fadc63a83680779a112ff8667a39f702818cb9";
-  hash = "sha256-2OlQfsGJ+59y2xs6HePqoZS3mlD/5pHDRza+vtAQssw=";
 };
 in
 {
@@ -14,19 +18,24 @@ in
       inputs.sops-nix.nixosModules.sops
     ];
 
-  environment.etc.".secrets".source = "${myrepo}";
 
-  sops.defaultSopsFile = ../../secrets/secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/etc/.secrets/keys.txt";
+  environment = {
+    etc.".secrets".source = "${myrepo}";
+    pathsToLink = [ "/libexec" ];
+  };
 
-  sops.secrets.pass-gpg = {
-    owner = config.users.users.katob.name;
+  sops = {
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/etc/.secrets/keys.txt";
+
+    secrets.pass-gpg = {
+      owner = config.users.users.katob.name;
+    };
   };
 
   system.stateVersion = "unstable"; 
 
-  environment.pathsToLink = [ "/libexec" ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 

@@ -54,6 +54,7 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.katob = import ./os/nixos/home;
+            home-manager.backupFileExtension = "backup";
             nixpkgs.overlays = overlays;
           }
         ];
@@ -69,6 +70,7 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.katob = import ./os/nixos/home;
+            home-manager.backupFileExtension = "backup";
             nixpkgs.overlays = overlays;
           }
         ];
@@ -84,6 +86,7 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.katob = import ./os/nixos/home;
+            home-manager.backupFileExtension = "backup";
             nixpkgs.overlays = overlays;
           }
         ];
