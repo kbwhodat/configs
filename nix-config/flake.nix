@@ -14,8 +14,9 @@
   inputs.nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-23.11";
 
   inputs.nixgl.url = "github:guibou/nixGL";
+  inputs.sops-nix.url = "github:Mic92/sops-nix";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, nixgl, ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, nixgl, sops-nix, ... }:
 
   let
     system = "x86_64-linux";
