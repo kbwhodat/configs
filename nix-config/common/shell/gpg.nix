@@ -2,15 +2,9 @@
 
 let
 inherit (pkgs.stdenv) isDarwin;
-myrepo = builtins.fetchGit {
-  url = "https://github.com/kbwhodat/pass-keys.git";
-  ref = "main";
-  rev = "0e74003dbfb97ba8b7697ba4b49427495734da0b";
-};
-
+keysLocation = "/etc/.secrets";
 in
 {
-
   programs.gpg = {
     enable = true;
     homedir = "${config.home.homeDirectory}/.gnupg";
@@ -51,13 +45,8 @@ in
       '';
   };
 
-  home.activation.gpgRepoSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    rm -rf ${config.home.homeDirectory}/.secrets
-    ln -sfnT ${myrepo}/ ${config.home.homeDirectory}/.secrets
-    '';
-
-  # home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
-  #     ${pkgs.gnupg}/bin/gpg-connect-agent reloadagent /bye
-  #     echo "mysecret" | ${pkgs.gnupg}/bin/gpg --import ${config.home.homeDirectory}/.secrets/subkey
-  #     '');
+  home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
+      ${pkgs.gnupg}/bin/gpg-connect-agent reloadagent /bye
+      cat /run/secrets/pass-gpg | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
+      '');
 }

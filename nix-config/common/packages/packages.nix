@@ -31,6 +31,7 @@
     php83Packages.composer
     python311Packages.pip
     nodePackages.neovim
+    vim
     ruby
     php
     tree-sitter
