@@ -23,20 +23,21 @@ in
 
   path = "/home/katob/.floorp";
 
-  extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-    browserpass
-      consent-o-matic
-      sponsorblock
-      leechblock-ng
-      df-youtube
-      kagi-search
-      darkreader
-      auto-tab-discard
-      browserpass
-      privacy-badger
-      ublock-origin
-      tridactyl
-  ];
+  policies = builtins.readFile ../../../chrome/policy.json;
+
+  # extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+  #     consent-o-matic
+  #     sponsorblock
+  #     leechblock-ng
+  #     df-youtube
+  #     kagi-search
+  #     darkreader
+  #     auto-tab-discard
+  #     browserpass
+  #     privacy-badger
+  #     ublock-origin
+  #     tridactyl
+  # ];
 
   settings = {
 # Settings for tabsleep, good for memory optimization
@@ -330,7 +331,7 @@ in
   in
   {
     home = {
-      inherit userChrome settings path extensions;
+      inherit userChrome settings path policies;
       id = 0;
     };
 
