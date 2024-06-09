@@ -18,6 +18,7 @@
 		       #sidebar-button,
 		       #pocket-button,
 		       #save-to-pocket-button,
+           .search-one-offs,
 		       #permissions-granted-icon,
 		       #fxa-toolbar-menu-button,
 		       #ublock0_raymondhill_net-browser-action) { display: none !important; }
