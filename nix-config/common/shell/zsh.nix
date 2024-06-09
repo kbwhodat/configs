@@ -6,7 +6,7 @@ in
 {
 	programs.zsh = {
 		enable = true;
-		enableAutosuggestions = false;
+		autosuggestion.enable = false;
 		enableCompletion = false;
 		dotDir = ".config/zsh";
 		plugins = [

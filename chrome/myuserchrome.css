@@ -10,6 +10,18 @@
 
 /* User changable variables */
 
+#main-window :-moz-any(
+		       #home-button,
+           #sidebar-reverse-position-toolbar,
+           #QRCodeGeneratePageAction-image,
+		       #library-button,
+		       #sidebar-button,
+		       #pocket-button,
+		       #save-to-pocket-button,
+		       #permissions-granted-icon,
+		       #fxa-toolbar-menu-button,
+		       #ublock0_raymondhill_net-browser-action) { display: none !important; }
+
 :root {
 	--tab-font-size: 0.8em; /* Font size of the tab labels */
 	--tab-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* The font used for the tab labels */
