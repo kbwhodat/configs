@@ -1,70 +1,65 @@
 {
   "policies": {
     "ExtensionSettings": {
-      		
-      // blocking the dumb search engines
+
       "startpage@search.mozilla.org": {
-        "installation_mode": "blocked",
+        "installation_mode": "blocked"
       },
       "ddg@search.mozilla.org": {
-        "installation_mode": "blocked",
+        "installation_mode": "blocked"
       },
       "bing@search.mozilla.org": {
-        "installation_mode": "blocked",
+        "installation_mode": "blocked"
       },
       "google@search.mozilla.org": {
-        "installation_mode": "blocked",
+        "installation_mode": "blocked"
       },
       "you.com@search.mozilla.org": {
-        "installation_mode": "blocked",
-      },
-      "uBlock0@raymondhill.net": {
-        "installation_mode": "normal_installed",
-        "updates_disabled": false
+        "installation_mode": "blocked"
       },
 
-      // the extensions that I really want!
-      //consent_o_matic
+      "uBlock0@raymondhill.net": {
+        "installation_mode": "allowed",
+        "updates_disabled": false
+      },
       "gdpr@cavi.au.dk": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
-      //privacy badger
       "jid1-MnnxcxisBPnSXQ@jetpack": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
-      //auto tab discard
-      "c2c003ee-bd69-42a2-b0e9-6f34222cb046": {
-        "installation_mode": "normal_installed",
+      "{c2c003ee-bd69-42a2-b0e9-6f34222cb046}": {
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "dfyoutube@example.com": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "browserpass@maximbaz.com": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "leechblockng@proginosko.com": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "addon@darkreader.org": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "sponsorBlocker@ajay.app": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "tridactyl.vim@cmcaine.co.uk": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       },
       "search@kagi.com": {
-        "installation_mode": "normal_installed",
+        "installation_mode": "allowed",
         "updates_disabled": false
       }
     }

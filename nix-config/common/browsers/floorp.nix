@@ -15,6 +15,12 @@ in
     else
       true;
 
+  programs.floorp.package = pkgs.floorp.override {
+    nativeMessagingHosts = [
+      pkgs.tridactyl-native
+    ];
+  };
+
   programs.floorp.profiles =
     let
 
@@ -23,21 +29,19 @@ in
 
   path = "/home/katob/.floorp";
 
-  policies = builtins.readFile ../../../chrome/policy.json;
-
-  # extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-  #     consent-o-matic
-  #     sponsorblock
-  #     leechblock-ng
-  #     df-youtube
-  #     kagi-search
-  #     darkreader
-  #     auto-tab-discard
-  #     browserpass
-  #     privacy-badger
-  #     ublock-origin
-  #     tridactyl
-  # ];
+  extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      consent-o-matic
+      sponsorblock
+      leechblock-ng
+      df-youtube
+      kagi-search
+      darkreader
+      auto-tab-discard
+      browserpass
+      privacy-badger
+      ublock-origin
+      tridactyl
+  ];
 
   settings = {
 # Settings for tabsleep, good for memory optimization
@@ -78,6 +82,7 @@ in
     "browser.urlbar.placeholderName.private" = "Kagi";
     "browser.firefox-view.feature-tour" = "{'screen':'','complete':true}";
     "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.searchEngines" = "kagi";
+    "browser.newtabpage.pinned" = "[{'url':'https://kagi.com','label':'@kagi','searchTopSite':true}]";
     "browser.bookmarks.addedImportButton" = true;
     "browser.startup.homepage" = "about:blank";
     "browser.search.region" = "US";
@@ -331,7 +336,7 @@ in
   in
   {
     home = {
-      inherit userChrome settings path policies;
+      inherit userChrome settings path extensions;
       id = 0;
     };
 
