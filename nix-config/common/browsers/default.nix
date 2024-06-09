@@ -3,6 +3,7 @@
 {
   imports = [
     ./firefox.nix
+    ./floorp.nix
     ./browserpass.nix
   ];
 }

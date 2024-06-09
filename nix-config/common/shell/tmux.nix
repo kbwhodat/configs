@@ -55,11 +55,8 @@
 				bind-key -T copy-mode-vi 'C-j' select-pane -D
 				bind-key -T copy-mode-vi 'C-k' select-pane -U
 				bind-key -T copy-mode-vi 'C-l' select-pane -R
-				# bind-key -T copy-mode-vi v send-keys -X begin-selection
-        bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
-
-# Optionally, you can also bind a key to exit copy mode manually
-        bind-key -T copy-mode-vi y send-keys -X copy-pipe "xclip -selection clipboard -i" \; send-keys -X cancel
+				bind-key -T copy-mode-vi v send-keys -X begin-selection
+        bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
 
 		'';
 	};

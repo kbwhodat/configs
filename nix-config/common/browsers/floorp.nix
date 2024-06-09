@@ -1,25 +1,27 @@
-{ config, pkgs, inputs,  ... }:
-
+{ config, pkgs, ... }:
 let
 inherit (pkgs.stdenv) isDarwin;
 fullName = "dns issue";
-
 in
 {
 
-  programs.firefox.enable = 
+ imports = [
+  ../../modules/floorp.nix
+ ];
+
+  programs.floorp.enable = 
     if isDarwin then
       false
     else
       true;
 
-  programs.firefox.package =
+  programs.floorp.package =
     if isDarwin then
 # Handled by the Homebrew module
 # This populates a dummy package to satsify the requirement
       pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
     else
-      pkgs.firefox.override {
+      pkgs.floorp.override {
          # enableTridactylNative = true;
         nativeMessagingHosts = [
           pkgs.tridactyl-native
@@ -27,11 +29,11 @@ in
         ];
       };
 
-  programs.firefox.profiles =
+  programs.floorp.profiles =
     let
     userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
-  extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+  extensions = with pkgs.nur.repos.rycee.floorp-addons; [
     browserpass
     consent-o-matic
     sponsorblock
