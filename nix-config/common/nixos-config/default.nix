@@ -63,6 +63,7 @@ in
     openssh.authorizedKeys.keys = [ 
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"   
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
+         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILuQLHoHdOry21yHqwszBboRaO/vhbXmpdseDW4oyZs6 server"
     ];
   };
 
@@ -72,7 +73,7 @@ in
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
   # Setting up env variables for image.nvim
@@ -109,8 +110,14 @@ in
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "us";
-    xkbVariant = "";
+    xkb.layout = "us";
+    xkb.variant = "";
+  };
+
+  services = {
+    displayManager = {
+      defaultSession = "none+i3";
+    };
   };
 
   services.xserver = {
@@ -118,11 +125,6 @@ in
     desktopManager = {
       plasma5.enable = false;
     };
-
-    displayManager = {
-      defaultSession = "none+i3";
-    };
-
 
     windowManager.i3 = {
       enable = true;
