@@ -28,21 +28,21 @@
 	text = "CellBackground"
 
 [font]
-normal = { family = "FiraCode Nerd Font", style = "Regular" }
+normal = { family = "FiraCode Nerd Font", style = "Medium" }
 bold = { family = "FiraCode Nerd Font", style = "Bold" }
-size = 13.5
+size = 13
 
 [window]
 decorations = "None"
 
 [env]
-TERM = "tmux-256color"
+TERM = "xterm-256color"
 
 [cursor]
 style = { shape = "Block", blinking = "On" }
 
 [shell]
-program = "bash"
+program = "/run/current-system/sw/bin/bash"
 
 [keyboard]
 bindings = [

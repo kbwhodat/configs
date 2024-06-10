@@ -12,7 +12,7 @@
 # ./ollama.nix
 			./neovim.nix
 			./password-store.nix
-			#./gpg.nix
+			./gpg.nix
 	];
 
 	home.sessionVariables = {
