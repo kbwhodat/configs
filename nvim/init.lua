@@ -76,6 +76,14 @@ vim.cmd('highlight @markup.raw.markdown_inline guifg=#b3b7e0')
 vim.cmd('set spelllang=en_us')
 vim.cmd('set spell')
 
+-- Automatically change the working directory to the directory of the open buffer
+vim.cmd([[
+  autocmd BufEnter * silent! lcd %:p:h
+]])
+--
+-- Prevent netrw from changing the working directory automatically
+vim.g.netrw_keepdir = 0
+
 -- Split windows
 keymap('n', '<Leader>v', ':vsplit<CR>', opts)
 -- Move to the left and right windows
@@ -92,7 +100,7 @@ keymap('n', '<Leader>k', '<C-w>k', opts)
 -- Buffers
 keymap("n", "<leader>;", ":bp<CR>", opts) -- This will move to the left buffer
 keymap("n", "<leader>'", ":bn<CR>", opts) -- This will move to the right buffer 
-keymap("n", "<leader>d", ":bd<CR>", opts) -- This will delete the current buffer
+keymap("n", "<leader>d", ":b#<bar>bd#<CR>", opts) -- This will delete the current buffer
 keymap("n", "<leader>bm", ":bm<CR>", opts) -- This will navigate to any buffers that is modified
 keymap("n", "<leader>bl", ":ls<CR>", opts) -- This will list the current buffers
 
@@ -106,7 +114,7 @@ vim.api.nvim_command('autocmd FileType markdown setlocal wrap')
 -- keymap("n", "<leader>t", ":ToggleTerm<CR>", opts)
 -- keymap("n", "<F3>", ":FloatermToggle<CR>", opts)
 
-
+vim.g.netrw_bufsettings = 'noma nomod nu nobl nowrap ro buftype=nofile'
 
 -- Obsidian key bindings
 -- vim.api.nvim_set_keymap('n', '<leader>gp', ':lua Obsidian_auto_commit()<CR>', { noremap = true, silent = true })

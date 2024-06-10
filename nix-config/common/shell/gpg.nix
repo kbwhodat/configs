@@ -2,15 +2,9 @@
 
 let
 inherit (pkgs.stdenv) isDarwin;
-myrepo = builtins.fetchGit {
-  url = "https://github.com/kbwhodat/pass-keys.git";
-  ref = "main";
-  rev = "0e74003dbfb97ba8b7697ba4b49427495734da0b";
-};
-
+keysLocation = "/etc/.secrets";
 in
 {
-
   programs.gpg = {
     enable = true;
     homedir = "${config.home.homeDirectory}/.gnupg";
@@ -35,33 +29,24 @@ in
     }
     ];
     settings = {
-      use-agent = false;
+      no-greeting = true;
+      use-agent = true;
     };
   };
 
   services.gpg-agent = {
-    enable = 
-      if !isDarwin then
-        true
-      else
-        false;
-
-    # enableSshSupport = true;
-    # sshKeys = [ "BE5719EC9B943BC43E91FF24B6CFCBFF9D438A21" ];
-    extraConfig = ''
-      pinentry-program ${pkgs.pinentry-gtk2}/bin/pinentry
-    '';
-    # pinentryPackage = pkgs.pinentry-gtk2;
+    enable = true;
+    pinentryPackage = pkgs.pinentry-gtk2;
+    enableExtraSocket = true;
     enableBashIntegration = true;
     maxCacheTtl = 86400; 
+    extraConfig = ''
+      allow-loopback-pinentry
+      '';
   };
 
-  home.activation.gpgRepoSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-  rm -rf ${config.home.homeDirectory}/.secrets
-  ln -sfnT ${myrepo}/ ${config.home.homeDirectory}/.secrets
-  '';
-
   home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
-      ${pkgs.gnupg}/bin/gpg --import ${config.home.homeDirectory}/.secrets/subkey
+      ${pkgs.gnupg}/bin/gpg-connect-agent reloadagent /bye
+      cat /run/secrets/pass-gpg | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
       '');
 }

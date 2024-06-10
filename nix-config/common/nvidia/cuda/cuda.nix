@@ -1,12 +1,14 @@
 { config, pkgs, lib, ... }:
 
 {
+
   # Enable CUDA support
   nixpkgs.config.cudaSupport = true;
 
   # Add CUDA toolkit to system packages
   environment.systemPackages = with pkgs; [
     cudaPackages_12_2.cudatoolkit
+    gcc-unwrapped
   ];
 
   # Enable NVIDIA drivers

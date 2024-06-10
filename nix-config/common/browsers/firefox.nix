@@ -6,6 +6,7 @@ fullName = "dns issue";
 
 in
 {
+
   programs.firefox.enable = 
     if isDarwin then
       false
@@ -19,10 +20,11 @@ in
       pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
     else
       pkgs.firefox.override {
-        cfg = { enableTridactylNative = true; };
-        # nativeMessagingHosts = [
-        #   pkgs.browserpass
-        # ];
+         # enableTridactylNative = true;
+        nativeMessagingHosts = [
+          pkgs.tridactyl-native
+          
+        ];
       };
 
   programs.firefox.profiles =
