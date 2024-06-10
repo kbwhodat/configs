@@ -3,11 +3,6 @@
 {
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
-    libsixel
-    timg
-    openstackclient
-    lsix
-    mongosh
     wget
     htop
     curl
@@ -36,25 +31,21 @@
     php83Packages.composer
     python311Packages.pip
     nodePackages.neovim
+    vim
     ruby
     php
     tree-sitter
-    redis
     pinentry-gtk2
     zlib
-    google-cloud-sdk
-    ansible
     sqlite
-    sshuttle
-    openconnect
     gh
     gnused
     gnutar
     coreutils
-    terraform
     pyenv
     duckdb
     jq
     yq
+    sops
     ];
 }
