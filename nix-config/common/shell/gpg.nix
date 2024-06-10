@@ -35,7 +35,7 @@ in
     }
     ];
     settings = {
-      use-agent = true;
+      use-agent = false;
     };
   };
 

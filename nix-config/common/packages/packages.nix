@@ -5,6 +5,7 @@
     inputs.nil.packages.${pkgs.system}.nil
     libsixel
     timg
+    openstackclient
     lsix
     mongosh
     wget

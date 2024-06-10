@@ -66,7 +66,7 @@ local plugins = {
 		opts = {
 			-- model = "dolphin-mixtral:8x7b-v2.5-q2_K"
       url = "http://174.163.19.205:11434",
-			model = "codellama:70b"
+			model = "codellama:34b"
 		}
 	},
 	{
