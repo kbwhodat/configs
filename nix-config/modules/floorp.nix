@@ -19,12 +19,18 @@ with lib; let
   floorpConfigPath =
     if isDarwin
     then "Library/Application Support/Floorp"
-    else "${config.home.homeDirectory}/.floorp";
+    else "${config.home.homeDirectory}.floorp";
 
   profilesPath =
     if isDarwin
     then "${floorpConfigPath}/Profiles"
     else floorpConfigPath;
+
+  nativeMessagingHostsPath = if isDarwin then
+    "${floorpConfigPath}/NativeMessagingHosts"
+  else
+    "${mozillaConfigPath}/native-messaging-hosts";
+
 
   # The extensions path shared by all profiles; will not be supported
   # by future Floorp versions.
@@ -713,12 +719,17 @@ in {
         {
           "${floorpConfigPath}/profiles.ini" =
             mkIf (cfg.profiles != {}) {text = profilesIni;};
+
+          "${nativeMessagingHostsPath}" = {
+            source = "${nativeMessagingHostsJoined}/lib/floorp/native-messaging-hosts";
+            recursive = true;
+            };
         }
       ]
       ++ flip mapAttrsToList cfg.profiles (_: profile: {
         "${profilesPath}/${profile.path}/.keep".text = "";
 
-        "${profilesPath}/${profile.path}/chrome/userChrome.css" =
+        "${profilesPath}/${profile.name}/chrome/userChrome.css" =
           mkIf (profile.userChrome != "") {text = profile.userChrome;};
 
         "${profilesPath}/${profile.path}/chrome/userContent.css" =

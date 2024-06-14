@@ -10,8 +10,10 @@
     defaultSopsFormat = "yaml";
     age.keyFile = "/etc/.secrets/keys.txt";
 
-    secrets.pass-gpg = {
-      owner = config.users.users.katob.name;
+    secrets = {
+      pass-gpg = {
+        path = "/Users/katob";
+      };
     };
   };
 
