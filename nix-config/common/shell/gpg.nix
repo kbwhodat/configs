@@ -35,7 +35,11 @@ in
   };
 
   services.gpg-agent = {
-    enable = true;
+    enable =
+      if isDarwin then
+        false
+      else
+        true;
     pinentryPackage = pkgs.pinentry-gtk2;
     enableExtraSocket = true;
     enableBashIntegration = true;

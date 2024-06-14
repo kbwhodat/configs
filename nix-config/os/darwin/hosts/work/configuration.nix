@@ -6,31 +6,14 @@
 }: 
 
 let
-myrepo = pkgs.fetchFromGitHub {
-  owner = "kbwhodat";
-  repo = "pass-keys";
+myrepo = builtins.fetchGit {
+  url = "https://github.com/kbwhodat/pass-keys.git";
+  ref = "main";
   rev = "20fadc63a83680779a112ff8667a39f702818cb9";
-  hash = "sha256-2OlQfsGJ+59y2xs6HePqoZS3mlD/5pHDRza+vtAQssw=";
 };
 in
 {
-# nix configuration
-# reference: https://daiderd.com/nix-darwin/manual/index.html#sec-options
-
-  imports =
-    [ 
-      inputs.sops-nix.nixosModules.sops
-    ];
-
   environment.etc.".secrets".source = "${myrepo}";
-
-  sops.defaultSopsFile = ../../secrets/secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/etc/.secrets/keys.txt";
-
-  sops.secrets.pass-gpg = {
-    owner = config.users.users.katob.name;
-  };
 
   services.nix-daemon.enable = true; # auto upgrade nix package and daemon service
     system = {
@@ -84,5 +67,6 @@ in
 
   nix.settings.allowed-users = ["root" "katob"];
   nix.settings.trusted-users = ["root" "katob"];
-  # system.stateVersion = 4;
+
+  # system.stateVersion = "unstable";
 }

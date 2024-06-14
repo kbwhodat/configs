@@ -16,12 +16,15 @@
   inputs.nixgl.url = "github:guibou/nixGL";
   inputs.sops-nix.url = "github:Mic92/sops-nix";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, nixgl, sops-nix, ... }:
+  inputs.firefox-darwin.url = "github:kbwhodat/nixpkgs-firefox-darwin/065edd0b85cc304eb139053a019d1036fdca041d";
+
+  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, nixgl, sops-nix, firefox-darwin,  ... }:
 
   let
     system = "x86_64-linux";
     overlays = [
       nur.overlay
+      firefox-darwin.overlay
       # nixgl.overlay
     ];
 
@@ -106,6 +109,7 @@
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.katob = import ./os/darwin/hosts/work/home;
             nixpkgs.overlays = overlays;
+            home-manager.backupFileExtension = "backup";
 
             users.users."katob".name = "katob";
             users.users."katob".home = "/Users/katob";
@@ -124,6 +128,7 @@
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.katob = import ./os/darwin/hosts/personal/home;
             nixpkgs.overlays = overlays;
+            home-manager.backupFileExtension = "backup";
 
             users.users."katob".name = "katob";
             users.users."katob".home = "/Users/katob";
