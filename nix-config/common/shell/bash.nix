@@ -122,7 +122,11 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
   home.file."input".target = "${config.home.homeDirectory}/.inputrc";
   home.file."input".source = builtins.toFile "inputrc" ''
     set editing-mode vi
-    #set keymap vi-command
+    set show-mode-in-prompt on
+    set show-all-if-ambiguous on
+    set vi-cmd-mode-string \1\e[2 q\2
+    set vi-ins-mode-string \1\e[6 q\2
+    set keymap vi-command
     set keymap vi-insert
   '';
 }
