@@ -40,7 +40,7 @@ in
         false
       else
         true;
-    # pinentryPackage = pkgs.pinentry-gtk2;
+    pinentryPackage = pkgs.pinentry-gtk2;
     enableExtraSocket = true;
     enableBashIntegration = true;
     maxCacheTtl = 86400; 

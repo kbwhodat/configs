@@ -11,7 +11,7 @@ in
 
   programs.floorp.enable = 
     if isDarwin then
-      false
+      true
     else
       true;
 
