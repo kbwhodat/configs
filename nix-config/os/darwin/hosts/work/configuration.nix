@@ -57,8 +57,8 @@ in
   nixpkgs.config.allowUnsupportedSystem = true; 
 
   homebrew = {
-    enable = true;
-    onActivation.cleanup = "uninstall";
+    enable = false;
+    # onActivation.cleanup = "uninstall";
 
     taps = ["benjiwolff/neovim-nightly" "koekeishiya/formulae"];
     brews = [ "helm" ];
@@ -68,5 +68,5 @@ in
   nix.settings.allowed-users = ["root" "katob"];
   nix.settings.trusted-users = ["root" "katob"];
 
-  # system.stateVersion = "unstable";
+  system.stateVersion = 4;
 }

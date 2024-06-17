@@ -24,18 +24,8 @@ in
     pathsToLink = [ "/libexec" ];
   };
 
-  sops = {
-    defaultSopsFile = ../../secrets/secrets.yaml;
-    defaultSopsFormat = "yaml";
-    age.keyFile = "/etc/.secrets/keys.txt";
-
-    secrets.pass-gpg = {
-      owner = config.users.users.katob.name;
-    };
-  };
 
   system.stateVersion = "unstable"; 
-
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 

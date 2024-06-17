@@ -14,6 +14,7 @@ in
 		../../../common/linux/okular
 		../../../common/linux/i3
 		../../../common
+    ../../../common/sops
 	];
 
   home.username = "katob";

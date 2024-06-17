@@ -24,7 +24,7 @@
     gzip
     go
     python3
-    alacritty
+    # alacritty
     perl
     cargo
     nodejs_22

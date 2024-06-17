@@ -2,9 +2,9 @@
 
 {
 	imports = [
-		../../../../../common
-    ../../../../../common/work
-    ../../../../../common/darwin/sops.nix
+    ../../../common/sops
+		../../../common
+    ../../../common/work
 	];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -17,7 +17,7 @@
   home.enableNixpkgsReleaseCheck = false;
 
 
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "23.11"; # Please read the comment before changing.
 
   home.sessionVariables = {
     EDITOR = "nvim";

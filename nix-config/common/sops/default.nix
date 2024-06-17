@@ -1,5 +1,9 @@
-{ inputs, config, pkgs, ... }:
+{ lib, inputs, config, pkgs, ... }:
 
+let
+inherit (pkgs.stdenv) isDarwin;
+keysLocation = "/etc/.secrets";
+in
 {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
@@ -12,9 +16,10 @@
 
     secrets = {
       pass-gpg = {
-        path = "/Users/katob";
+        path = "${config.home.homeDirectory}/.funentry";
       };
     };
   };
-
 }
+
+
