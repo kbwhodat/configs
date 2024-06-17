@@ -9,19 +9,21 @@
 
   inputs.nur.url = "github:nix-community/NUR";
 
-  inputs.nix-darwin.url = "github:lnl7/nix-darwin";
-  inputs.nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-23.11";
+  inputs.darwin.url = "github:lnl7/nix-darwin";
+  inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.nixgl.url = "github:guibou/nixGL";
   inputs.sops-nix.url = "github:Mic92/sops-nix";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, nix-darwin, nil, nur, nixgl, sops-nix, ... }:
+  inputs.firefox-darwin.url = "github:kbwhodat/nixpkgs-firefox-darwin/99da9bad5df256aad9b6e95448c07d7777f20aef";
+
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, nil, nur, nixgl, sops-nix, firefox-darwin,  ... }:
 
   let
     system = "x86_64-linux";
     overlays = [
       nur.overlay
+      firefox-darwin.overlay
       # nixgl.overlay
     ];
 
@@ -95,7 +97,7 @@
 
     darwinConfigurations = {
 
-      mac-work = nix-darwin.lib.darwinSystem {
+      mac-work = darwin.lib.darwinSystem {
         system = "x86_64-darwin";
         specialArgs = { inherit inputs; };
         modules = [
@@ -104,8 +106,9 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.katob = import ./os/darwin/hosts/work/home;
+            home-manager.users.katob = import ./os/darwin/home;
             nixpkgs.overlays = overlays;
+            home-manager.backupFileExtension = "backup";
 
             users.users."katob".name = "katob";
             users.users."katob".home = "/Users/katob";
@@ -113,7 +116,7 @@
         ];
       };
 
-      mac-personal = nix-darwin.lib.darwinSystem {
+      mac-personal = darwin.lib.darwinSystem {
         system = "x86_64-darwin";
         specialArgs = { inherit inputs; };
         modules = [
@@ -122,8 +125,9 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.katob = import ./os/darwin/hosts/personal/home;
+            home-manager.users.katob = import ./os/darwin/home;
             nixpkgs.overlays = overlays;
+            home-manager.backupFileExtension = "backup";
 
             users.users."katob".name = "katob";
             users.users."katob".home = "/Users/katob";

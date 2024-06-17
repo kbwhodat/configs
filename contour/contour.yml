@@ -117,7 +117,7 @@ on_mouse_select: CopyToClipboard
 # Determines whether the instance is reloading the configuration files whenever it is changing or not.
 #
 # Default: false
-live_config: false
+live_config: true
 
 # Inline image related default configuration and limits
 # -----------------------------------------------------
@@ -202,7 +202,7 @@ profiles:
 
         # When this profile is *activated*, this flag decides
         # whether or not the title bar will be shown
-        show_title_bar: true
+        show_title_bar: false
 
         # When this profile is *activated*, this flag decides
         # whether or not the size indicator on resize will be shown.
@@ -410,7 +410,7 @@ profiles:
                 # Font weight can be one of:
                 #   thin, extra_light, light, demilight, book, normal,
                 #   medium, demibold, bold, extra_bold, black, extra_black.
-                weight: regular
+                weight: medium
 
                 # Font slant can be one of: normal, italic, oblique.
                 slant: normal

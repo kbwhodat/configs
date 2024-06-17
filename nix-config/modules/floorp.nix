@@ -11,15 +11,10 @@ with lib; let
 
   jsonFormat = pkgs.formats.json {};
 
-  mozillaConfigPath =
-    if isDarwin
-    then "Library/Application Support/Mozilla"
-    else ".mozilla";
-
   floorpConfigPath =
     if isDarwin
     then "Library/Application Support/Floorp"
-    else "${config.home.homeDirectory}/.floorp";
+    else "${config.home.homeDirectory}.floorp";
 
   profilesPath =
     if isDarwin

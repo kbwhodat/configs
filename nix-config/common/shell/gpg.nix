@@ -35,8 +35,12 @@ in
   };
 
   services.gpg-agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-gtk2;
+    enable =
+      if isDarwin then
+        false
+      else
+        true;
+    # pinentryPackage = pkgs.pinentry-gtk2;
     enableExtraSocket = true;
     enableBashIntegration = true;
     maxCacheTtl = 86400; 
@@ -45,8 +49,11 @@ in
       '';
   };
 
-  home.activation.importGpgKeys = lib.mkForce (lib.mkAfter ''
-      ${pkgs.gnupg}/bin/gpg-connect-agent reloadagent /bye
-      cat /run/secrets/pass-gpg | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
-      '');
+  home.activation.importGpgKeys = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" "installPackages" "linkGeneration" "onFilesChange" "setupLaunchAgents" "sops-nix" ] ''
+
+      run sleep 1
+      run cat ${config.home.homeDirectory}/.funentry | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
+    '');
+
+
 }
