@@ -13,7 +13,7 @@
     # '';
     font = {
       name = "FiraCode Nerd Font Medium";
-      size = 13;
+      size = 13.5;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -22,7 +22,7 @@
 			enableZshIntegration = false;
 		};
 		extraConfig = ''
-			# shell bash
+			shell /run/current-system/sw/bin/bash
 			editor nvim
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
@@ -31,10 +31,10 @@
 
       hide_window_decorations yes
       macos_show_window_title_in none
-      cursor_shape block
+      # cursor_shape block
       draw_minimal_borders yes
 
-			disable_ligatures always
+			# disable_ligatures always
 		'';
 	};
 }

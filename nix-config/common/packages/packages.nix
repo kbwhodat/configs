@@ -5,6 +5,7 @@
     inputs.nil.packages.${pkgs.system}.nil
     wget
     htop
+    _7zz
     curl
     tmux
     git
@@ -23,7 +24,7 @@
     gzip
     go
     python3
-    alacritty
+    # alacritty
     perl
     cargo
     nodejs_22

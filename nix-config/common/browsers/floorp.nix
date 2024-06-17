@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let
 inherit (pkgs.stdenv) isDarwin;
 fullName = "dns issue";
@@ -15,11 +15,15 @@ in
     else
       true;
 
-  programs.floorp.package = pkgs.floorp.override {
-    nativeMessagingHosts = [
-      pkgs.tridactyl-native
-    ];
-  };
+  programs.floorp.package =
+    if isDarwin then
+      pkgs.floorp-darwin
+    else
+      pkgs.floorp.override {
+        nativeMessagingHosts = [
+          pkgs.tridactyl-native
+        ];
+      };
 
   programs.floorp.profiles =
     let
@@ -27,8 +31,13 @@ in
 # Using my own custom chrome.css
     userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
-  path = "/home/katob/.floorp";
+  path = 
+    if isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/Floorp"
+    else
+      "/home/katob/.floorp";
 
+  isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       consent-o-matic
       sponsorblock
@@ -336,9 +345,22 @@ in
   in
   {
     home = {
-      inherit userChrome settings path extensions;
+      inherit userChrome isDefault settings path extensions;
       id = 0;
     };
-
   };
+  # home.activation = {
+  #   aliasHomeFloorp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  #     app_folder="${config.home.homeDirectory}/Applications/Home Manager Trampolines"
+  #     rm -rf "$app_folder"
+  #     mkdir -p "$app_folder"
+  #     find "$genProfilePath/home-path/Applications/Floorp.app" -type l -print | while read -r app; do
+  #       app_target="$app_folder/$(basename "$app")"
+  #       real_app="$(readlink "$app")"
+  #       echo "mkalias \"$real_app\" \"$app_target\"" >&2
+  #       $DRY_RUN_CMD ${pkgs.mkalias}/bin/mkalias "$real_app" "$app_target"
+  #     done
+  #     '';
+  # };
+
 }
