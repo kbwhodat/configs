@@ -14,7 +14,7 @@ with lib; let
   floorpConfigPath =
     if isDarwin
     then "Library/Application Support/Floorp"
-    else "${config.home.homeDirectory}.floorp";
+    else "${config.home.homeDirectory}/.floorp";
 
   profilesPath =
     if isDarwin
