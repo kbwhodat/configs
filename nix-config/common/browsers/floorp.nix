@@ -35,7 +35,7 @@ in
     if isDarwin then
       "${config.home.homeDirectory}/Library/Application Support/Floorp"
     else
-      "/home/katob/.floorp";
+      "${config.home.homeDirectory}/.floorp";
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
@@ -50,6 +50,8 @@ in
       privacy-badger
       ublock-origin
       tridactyl
+      clearurls
+      istilldontcareaboutcookies
   ];
 
   settings = {
@@ -349,18 +351,5 @@ in
       id = 0;
     };
   };
-  # home.activation = {
-  #   aliasHomeFloorp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-  #     app_folder="${config.home.homeDirectory}/Applications/Home Manager Trampolines"
-  #     rm -rf "$app_folder"
-  #     mkdir -p "$app_folder"
-  #     find "$genProfilePath/home-path/Applications/Floorp.app" -type l -print | while read -r app; do
-  #       app_target="$app_folder/$(basename "$app")"
-  #       real_app="$(readlink "$app")"
-  #       echo "mkalias \"$real_app\" \"$app_target\"" >&2
-  #       $DRY_RUN_CMD ${pkgs.mkalias}/bin/mkalias "$real_app" "$app_target"
-  #     done
-  #     '';
-  # };
 
 }

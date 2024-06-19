@@ -32,7 +32,7 @@ in
     ueberzug
     pulseaudio
     autorandr
-    ungoogled-chromium
+    # ungoogled-chromium
     mpv
     vlc
 
