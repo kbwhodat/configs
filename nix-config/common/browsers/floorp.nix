@@ -64,13 +64,13 @@ in
     "floorp.chrome.theme.mode" = 1;
 
 #Handle the vertical tabs
-    "floorp.browser.tabs.verticaltab.enabled" = true;
-    "floorp.tabbar.style" = 2;
-    "floorp.browser.tabbar.settings" = 2;
+    "floorp.browser.tabs.verticaltab.enabled" = false;
+    "floorp.tabbar.style" = 0;
+    "floorp.browser.tabbar.settings" = 4;
     "floorp.browser.sidebae.is.displayed" = 2;
-    "floorp.browser.tabs.verticaltab" = true;
-    "floorp.verticaltab.hover.enabled" = true;
-    "floorp.verticaltab.show.newtab.button" = true;
+    "floorp.browser.tabs.verticaltab" = false;
+    "floorp.verticaltab.hover.enabled" = false;
+    "floorp.verticaltab.show.newtab.button" = false;
 
 # Disabling sidebar for now, I don't see the benefit
     "floorp.browser.sidebar.enable" = false;

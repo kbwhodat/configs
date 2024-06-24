@@ -54,7 +54,7 @@
 }
 /* Tab numbering */
 hbox.tab-content::before {
-		margin-top: -15px !important; /* Moves the icon higher */
+		margin-top: -10px !important; /* Moves the number higher */
     content: counter(tab) ": ";
     counter-increment: tab;
     color: white;
@@ -71,8 +71,8 @@ hbox.tab-content::before {
 .tabbrowser-tab::after {
   content: "";
   position: absolute;
-  top: 23%; /* adjust this value to control the offset from the top */
-  bottom: 23%; /* adjust this value to control the offset from the bottom */
+  top: 20%; /* adjust this value to control the offset from the top */
+  bottom: 33%; /* adjust this value to control the offset from the bottom */
   right: 0;
   width: 1px;
   background-color: #7CFC00; /* replace with your desired color */
@@ -87,6 +87,7 @@ hbox.tab-content::before {
 	display: none !important;
 }
 .tab-icon-image {
+  position: relative;
 	height: auto !important;
 	width: calc(var(--tab-height) / 1.5) !important;
 	margin-right: 4px !important;
@@ -108,10 +109,13 @@ hbox.tab-content::before {
     outline: none !important;   
 }
 	.tab-icon-image {
-		margin-top: -15px !important; /* Moves the icon higher */
+    position: relative;
+    height: auto !important;
+    width: calc(var(--tab-height) / 1.5) !important;
+		margin-top: -10px !important; /* Moves the icon higher */
 	}
 	.tab-label {
-		margin-top: -15px !important; /* Adjust this value to move the text higher */
+		margin-top: -10px !important; /* Adjust this value to move the text higher */
 	}
 
 #personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:12px !important}
@@ -137,8 +141,8 @@ min-height: 5px !important;
 	opacity    : 1           !important;
 }
 
-#nav-bar{
-	border-inline: var(--uc-window-drag-space-width) solid var(--toolbar-bgcolor);
+#urlbar {
+    padding-bottom: 5px !important; /* Adjust the value as needed */
 }
 #new-tab-button, #alltabs-button, #scrollbutton-down, .tab-loading-burst{
 	display: none;
