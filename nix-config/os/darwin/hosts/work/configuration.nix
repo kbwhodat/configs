@@ -33,7 +33,6 @@ in
     colima
     lima-bin
     libiconv-darwin
-    ollama
   ];
 
   launchd.user.agents.docker = {
@@ -42,12 +41,6 @@ in
     serviceConfig.KeepAlive = false;
     serviceConfig.StandardOutPath = "/tmp/colima.out";
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
-  };
-
-  launchd.user.agents.ollama = {
-    serviceConfig.ProgramArguments = [ "${pkgs.ollama}/bin/ollama" "serve" ];
-    serviceConfig.KeepAlive = true;
-    serviceConfig.RunAtLoad = true;
   };
 
   services.yabai.enable = true;

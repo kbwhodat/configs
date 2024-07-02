@@ -34,7 +34,7 @@
       # cursor_shape block
       draw_minimal_borders yes
 
-			# disable_ligatures always
+			disable_ligatures always
 		'';
 	};
 }
