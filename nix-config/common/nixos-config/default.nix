@@ -123,7 +123,7 @@ in
       ];
     };
   };
-  
+
   services.xserver.windowManager.i3.package = pkgs.i3-gaps;
 
   # Enable CUPS to print documents.

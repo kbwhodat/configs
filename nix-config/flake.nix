@@ -16,15 +16,23 @@
   # inputs.nixgl.url = "github:guibou/nixGL";
   # inputs.sops-nix.url = "github:Mic92/sops-nix";
 
-  inputs.firefox-darwin.url = "github:kbwhodat/nixpkgs-firefox-darwin/9fcc5a8f8e7b31f1b6782423841d72cb0ed07581";
+  inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin";
+  inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/4c72090322eadeb7afaaebd287ad1d617c4733c2";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, nil, nur, sops-nix, firefox-darwin,  ... }:
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, sops-nix, firefox-darwin,  ... }:
 
   let
+    customPythonPackages = final: prev: {
+      python3Packages = prev.python3Packages // {
+        inherit (import ./common/pythonpackages/python-packages.nix { pkgs = prev; }) selenium-profiles;
+      };
+    };
     system = "x86_64-linux";
     overlays = [
+      # customPythonPackages
       nur.overlay
       firefox-darwin.overlay
+      undetected-chromedriver.overlay
       # nixgl.overlay
     ];
 
