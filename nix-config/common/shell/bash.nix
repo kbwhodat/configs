@@ -36,7 +36,7 @@ export TMUX_CONF="~/.config/tmux/tmux.conf"
 
 alias clear="clear -x"
 
-if [[ ''${uname} -eq "Darwin" ]]; then
+if [[ ''${uname} == "Darwin" ]]; then
   export DOCKER_HOST="unix://${config.home.homeDirectory}/.colima/default/docker.sock"
   export LIBRARY_PATH="${if isDarwin then pkgs.libiconv-darwin else pkgs.libiconv}/lib"
 fi

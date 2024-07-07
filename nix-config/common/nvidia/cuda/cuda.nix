@@ -8,7 +8,6 @@
   # Add CUDA toolkit to system packages
   environment.systemPackages = with pkgs; [
     cudaPackages_12_2.cudatoolkit
-    gcc-unwrapped
   ];
 
   # Enable NVIDIA drivers
@@ -32,9 +31,9 @@
   # Enable Docker with NVIDIA support
   virtualisation.docker = {
     enable = true;
-    enableNvidia = true;
+    enableNvidia = false;
     rootless.enable = true;
-    extraOptions = "--experimental --default-runtime=nvidia";
+    # extraOptions = "--experimental --default-runtime=nvidia";
   };
 
   # Set environment variables for CUDA

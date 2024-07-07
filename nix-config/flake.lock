@@ -25,17 +25,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1718713565,
-        "narHash": "sha256-D7bMkDWw/iSh0G4+72svB0jONBX16LogbEy/+hDyjWo=",
-        "owner": "kbwhodat",
+        "lastModified": 1720140418,
+        "narHash": "sha256-5PeWV4n81VBgWlay4Gyy1pi93ayzTYQ2xCFHgs8AZjE=",
+        "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "9fcc5a8f8e7b31f1b6782423841d72cb0ed07581",
+        "rev": "26b7de13571b78124b0096b484d49292c6e309b4",
         "type": "github"
       },
       "original": {
-        "owner": "kbwhodat",
+        "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "9fcc5a8f8e7b31f1b6782423841d72cb0ed07581",
         "type": "github"
       }
     },
@@ -178,6 +177,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1719956923,
+        "narHash": "sha256-nNJHJ9kfPdzYsCOlHOnbiiyKjZUW5sWbwx3cakg3/C4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "706eef542dec88cc0ed25b9075d3037564b2d164",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nur": {
       "locked": {
         "lastModified": 1718589057,
@@ -201,7 +216,8 @@
         "nil": "nil",
         "nixpkgs": "nixpkgs_3",
         "nur": "nur",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "undetected-chromedriver": "undetected-chromedriver"
       }
     },
     "rust-overlay": {
@@ -259,6 +275,25 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "undetected-chromedriver": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_5"
+      },
+      "locked": {
+        "lastModified": 1720360037,
+        "narHash": "sha256-ZSPgauLrhrk1HIM55FZ4YHwkM+Gk2nXdm9cHYPp+TS4=",
+        "owner": "kbwhodat",
+        "repo": "undetected-chromedriver",
+        "rev": "4c72090322eadeb7afaaebd287ad1d617c4733c2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kbwhodat",
+        "repo": "undetected-chromedriver",
+        "rev": "4c72090322eadeb7afaaebd287ad1d617c4733c2",
         "type": "github"
       }
     }
