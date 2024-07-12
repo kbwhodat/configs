@@ -34,7 +34,8 @@ bindsym --release Control+$mod+4 exec --no-startup-id /home/katob/Documents/scri
 
 
 #To open firefox
-bindsym $mod+Shift+F exec --no-startup-id firefox
+# bindsym $mod+Shift+F exec --no-startup-id firefox
+bindsym $mod+Shift+F exec --no-startup-id floorp
 
 #to lock screen
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
