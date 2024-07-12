@@ -14,6 +14,8 @@ let
     pkgs.nss_latest
     pkgs.xorg.libxcb
     pkgs.nspr
+    pkgs.mesa
+    pkgs.libGL
   ];
 in
 {
@@ -44,7 +46,7 @@ in
     chromium
     mpv
     vlc
-    geckodriver
+    dsvpn
   ];
 
   home.enableNixpkgsReleaseCheck = false;
