@@ -46,7 +46,7 @@ in
     chromium
     mpv
     vlc
-    dsvpn
+    openvpn
   ];
 
   home.enableNixpkgsReleaseCheck = false;
