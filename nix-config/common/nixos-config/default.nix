@@ -129,6 +129,15 @@ in
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # I set this to do getting to many open files from os.pipe when attempting to setup ipvanish
+  security.pam.loginLimits = [
+    { domain = "*"; item = "nofile"; type = "soft"; value = "100000"; }
+    { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
+  ];
+
+  networking.firewall.allowedTCPPorts = [11434 8888];
+
+
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
