@@ -135,7 +135,7 @@ in
      * SECTION: FASTFOX                                                         *
      ****************************************************************************/
     /** GENERAL ***/
-    "content.notify.interval" = 100000;
+    "content.notify.interval" = 200000;
 
     /** GFX ***/
     "gfx.canvas.accelerated.cache-items" = 4096;
