@@ -91,9 +91,10 @@ in
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true;
+  # hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
+  # hardware.opengl.driSupport = true;
+  hardware.graphics.enable32Bit = true;
 
   # Configure keymap in X11
   services.xserver = {

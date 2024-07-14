@@ -9,7 +9,7 @@
 
   inputs.home-manager.url = "github:nix-community/home-manager/release-24.05";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   # inputs.nixpkgs.url = "github:NixOS/nixpkgs?ref=24.05";
 
   inputs.nur.url = "github:nix-community/NUR";
@@ -17,12 +17,10 @@
   inputs.darwin.url = "github:lnl7/nix-darwin";
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-  # inputs.sops-nix.url = "github:Mic92/sops-nix";
-
-  inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin";
+  inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/4c72090322eadeb7afaaebd287ad1d617c4733c2";
 
-  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.6";
+  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
 
   outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, firefox-darwin, sops-nix, lix-module, gonchill,  ... }:
 

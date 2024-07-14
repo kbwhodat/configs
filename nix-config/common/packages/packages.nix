@@ -52,9 +52,11 @@
     jq
     yq
     sops
-    (python3.withPackages (ps: with ps; [
+    (pkgs.python311.withPackages (ps: with ps; [
       blinker
-      selenium-wire
+      selenium-wire.overrideAttrs (oldAttrs: rec {
+        doCheck = false;  # Disable tests
+      })
       selenium
       packaging
       setuptools
