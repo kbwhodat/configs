@@ -2,9 +2,20 @@
 
 let
   # Define the library path here
+  libraryPath = lib.makeLibraryPath [
+    pkgs.glibc
+  ];
+
   ldLibraryPath = lib.makeLibraryPath [
-    pkgs.gcc-unwrapped.lib
+    pkgs.gcc_multi
     pkgs.linuxPackages.nvidia_x11
+    pkgs.glibc
+    pkgs.glib
+    pkgs.nss_latest
+    pkgs.xorg.libxcb
+    pkgs.nspr
+    pkgs.mesa
+    pkgs.libGL
   ];
 in
 {
@@ -32,10 +43,10 @@ in
     ueberzug
     pulseaudio
     autorandr
-    # ungoogled-chromium
+    chromium
     mpv
     vlc
-
+    openvpn
   ];
 
   home.enableNixpkgsReleaseCheck = false;
@@ -44,6 +55,9 @@ in
   home.sessionVariables = {
     EDITOR = "nvim";
     LD_LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LD_LIBRARY_PATH" != "") (builtins.getEnv "LD_LIBRARY_PATH" + ":")}${ldLibraryPath}";
+    LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LIBRARY_PATH" != "") (builtins.getEnv "LIBRARY_PATH" + ":")}${libraryPath}";
+    NIX_LDFLAGS = "${pkgs.lib.optionalString (builtins.getEnv "NIX_LDFLAGS" != "") (builtins.getEnv "NIX_LDFLAGS" + ":")}-L${libraryPath}";
+    NIX_CFLAGS_COMPILE = "${pkgs.lib.optionalString (builtins.getEnv "NIX_CFLAGS_COMPILE" != "") (builtins.getEnv "NIX_CFLAGS_COMPILE" + ":")}-I${pkgs.glibc}/include";
   };
 
   programs.home-manager.enable = true;

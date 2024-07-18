@@ -34,7 +34,8 @@ bindsym --release Control+$mod+4 exec --no-startup-id /home/katob/Documents/scri
 
 
 #To open firefox
-bindsym $mod+Shift+F exec --no-startup-id firefox
+# bindsym $mod+Shift+F exec --no-startup-id firefox
+bindsym $mod+Shift+F exec --no-startup-id floorp
 
 #to lock screen
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
@@ -146,15 +147,15 @@ bindsym $mod+Shift+Right move right
 # bindsym $mod+s split h
 
 # split in vertical orientation
-bindsym $mod+v split v
+# bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+# bindsym $mod+s layout stacking
+# bindsym $mod+w layout tabbed
+# bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -163,7 +164,7 @@ bindsym $mod+Shift+space floating toggle
 # bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
