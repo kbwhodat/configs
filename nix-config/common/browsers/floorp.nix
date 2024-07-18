@@ -17,7 +17,7 @@ in
 
   programs.floorp.package =
     if isDarwin then
-      pkgs.floorp-darwin
+      pkgs.floorp-bin
     else
       pkgs.floorp.override {
         nativeMessagingHosts = [
@@ -77,6 +77,9 @@ in
     "floorp.browser.sidebar.is.displayed" = false;
     "floorp.browser.sidebar.right" = false;
 
+# Bookmark related settings
+    "floorp.bookmarks.bar.focus.mode" = true;
+
 # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
@@ -89,7 +92,7 @@ in
     "extensions.webextensions.ExtensionStorageIDB.migrated.search@kagi.com" = true;
 
     "app.update.auto" = true;
-    "browser.toolbars.bookmarks.visibility" = "newtab";
+    "browser.toolbars.bookmarks.visibility" = "always";
     "browser.urlbar.placeholderName.private" = "Kagi";
     "browser.firefox-view.feature-tour" = "{'screen':'','complete':true}";
     "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.searchEngines" = "kagi";
