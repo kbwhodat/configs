@@ -251,16 +251,16 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1720768451,
-        "narHash": "sha256-EYekUHJE2gxeo2pM/zM9Wlqw1Uw2XTJXOSAO79ksc4Y=",
+        "lastModified": 1720823163,
+        "narHash": "sha256-FZ5dnrvKkln9ESdoTR8R7GKW9rNpXNZrxGsOXsbsTpE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7e7c39ea35c5cdd002cd4588b03a3fb9ece6fad9",
+        "rev": "f12ee5f64c6a09995e71c9626d88c4efa983b488",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "ref": "nixos-24.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -404,17 +404,17 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1720360037,
-        "narHash": "sha256-ZSPgauLrhrk1HIM55FZ4YHwkM+Gk2nXdm9cHYPp+TS4=",
+        "lastModified": 1721004763,
+        "narHash": "sha256-19tJStzOM/Rh7TLtUggpuGbnPN2zK4FuoSsY1Gq2msU=",
         "owner": "kbwhodat",
         "repo": "undetected-chromedriver",
-        "rev": "4c72090322eadeb7afaaebd287ad1d617c4733c2",
+        "rev": "8b0bd1e599c8367040eb5578f9c191846945f838",
         "type": "github"
       },
       "original": {
         "owner": "kbwhodat",
         "repo": "undetected-chromedriver",
-        "rev": "4c72090322eadeb7afaaebd287ad1d617c4733c2",
+        "rev": "8b0bd1e599c8367040eb5578f9c191846945f838",
         "type": "github"
       }
     }

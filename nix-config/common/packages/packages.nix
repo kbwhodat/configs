@@ -8,6 +8,7 @@
     wget
     lsof
     htop
+    yaegi # go interpreter
     _7zz
     curl
     tmux
@@ -52,11 +53,9 @@
     jq
     yq
     sops
-    (pkgs.python311.withPackages (ps: with ps; [
+    (python3.withPackages (ps: with ps; [
       blinker
-      selenium-wire.overrideAttrs (oldAttrs: rec {
-        doCheck = false;  # Disable tests
-      })
+      selenium-wire
       selenium
       packaging
       setuptools
