@@ -34,7 +34,7 @@ export EDITOR="nvim"
 export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"
 
-alias clear="clear -x"
+alias clear="tput reset"
 
 if [[ ''${uname} == "Darwin" ]]; then
   export DOCKER_HOST="unix://${config.home.homeDirectory}/.colima/default/docker.sock"

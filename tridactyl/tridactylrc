@@ -94,8 +94,8 @@ bind : fillcmdline_notrail
 bind s fillcmdline open search
 bind S fillcmdline tabopen search
 bind M gobble 1 quickmark
-bind B fillcmdline taball
-bind b fillcmdline tab
+"bind B fillcmdline taball
+bind b fillcmdline taball
 bind ZZ qall
 bind f hint
 bind F hint -b
@@ -171,6 +171,7 @@ bind <AS-ArrowUp><AS-ArrowUp><AS-ArrowDown><AS-ArrowDown><AS-ArrowLeft><AS-Arrow
 bind m gobble 1 markadd
 bind ` gobble 1 markjump
 bind N nix
+bind B fillcmdline bmarks
 
 " Aliases
 alias nix tabopen https://search.nixos.org/packages?query=
