@@ -9,7 +9,7 @@
 
   inputs.home-manager.url = "github:nix-community/home-manager/release-24.05";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
   # inputs.nixpkgs.url = "github:NixOS/nixpkgs?ref=24.05";
 
   inputs.nur.url = "github:nix-community/NUR";
@@ -18,7 +18,7 @@
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
-  inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/4c72090322eadeb7afaaebd287ad1d617c4733c2";
+  inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
 
