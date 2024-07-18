@@ -41,12 +41,12 @@
 	display: var(--show-titlebar-buttons);
 }
 
-:root:not([customizing]) #TabsToolbar {
-	margin-left: 1px !important;
-	margin-right: 1px !important;
-	border-radius: 0 !important;
-	padding: 0 !important;
-}
+/* :root:not([customizing]) #TabsToolbar { */
+/* 	margin-left: 1px !important; */
+/* 	margin-right: 1px !important; */
+/* 	border-radius: 0 !important; */
+/* 	padding: 0 !important; */
+/* } */
 .tabbrowser-tab * {
 	margin:0 !important;
 	border-radius: 0 !important;
@@ -128,10 +128,9 @@ hbox.tab-content::before {
 min-height: 5px !important;
 }
 #PersonalToolbar {
-		height: 15px !important;
+    font-size: 12px !important;
 	}
 #PlacesToolbarItems > .bookmark-item {
-		padding: 2px 4px !important;
 		font-size: 12px !important;
 	}
 
@@ -142,7 +141,7 @@ min-height: 5px !important;
 }
 
 #urlbar {
-    padding-bottom: 5px !important; /* Adjust the value as needed */
+    padding-bottom: 10px !important; /* Adjust the value as needed */
 }
 #new-tab-button, #alltabs-button, #scrollbutton-down, .tab-loading-burst{
 	display: none;
