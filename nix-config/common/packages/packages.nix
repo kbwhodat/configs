@@ -4,7 +4,6 @@
   home.packages = with pkgs; [          
     inputs.nil.packages.${pkgs.system}.nil
     gonchill
-    yazi
     wget
     lsof
     htop
