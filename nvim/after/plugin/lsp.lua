@@ -7,18 +7,6 @@ lsp.set_preferences({
 	sign_icons = { }
 })
 
-cmp.setup({
-  mapping = {
-    ['<CR>'] = cmp.mapping.confirm(),
-  }
-})
-
--- if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "helm" then
---       vim.diagnostic.disable(bufnr)
---       vim.defer_fn(function()
---         vim.diagnostic.reset(nil, bufnr)
---       end, 1000)
---     end
 
 -- diagnostics
 vim.lsp.handlers["textDocument/publishDiagnostics"] =
@@ -33,5 +21,14 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
         signs = false,
         update_in_insert = true
     })
+
 lsp.setup()
+
+-- Set up lspconfig.
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+require('lspconfig')['clangd'].setup {
+  capabilities = capabilities
+}
+
 
