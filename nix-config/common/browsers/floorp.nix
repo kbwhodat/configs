@@ -91,6 +91,9 @@ in
 # setting up kagi
     "extensions.webextensions.ExtensionStorageIDB.migrated.search@kagi.com" = true;
 
+# Prevents the alt/command key from showing the menu bar. Gets annoying at time.
+    "ui.key.menuAccessKeyFocuses" = false;
+
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "always";
     "browser.urlbar.placeholderName.private" = "Kagi";
