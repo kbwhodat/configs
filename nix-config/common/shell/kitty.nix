@@ -12,8 +12,6 @@
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';
     font = {
-      # name = "FiraCode Nerd Font Medium";
-      #name = "Input Mono Medium Regular";
       name = "Mononoki Regular";
       size = 14.0;
     };
