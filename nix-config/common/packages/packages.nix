@@ -7,7 +7,6 @@
     wget
     lsof
     htop
-    yaegi # go interpreter
     _7zz
     curl
     tmux
