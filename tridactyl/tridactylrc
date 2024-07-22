@@ -171,7 +171,7 @@ bind <AS-ArrowUp><AS-ArrowUp><AS-ArrowDown><AS-ArrowDown><AS-ArrowLeft><AS-Arrow
 bind m gobble 1 markadd
 bind ` gobble 1 markjump
 bind N nix
-bind B fillcmdline bmarks
+bind B fillcmdline bmarks -t
 
 " Aliases
 alias nix tabopen https://search.nixos.org/packages?query=
