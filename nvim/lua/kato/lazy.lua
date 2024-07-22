@@ -138,6 +138,18 @@ local plugins = {
 	},
   'christoomey/vim-tmux-navigator',
   {
+    "m4xshen/hardtime.nvim",
+    dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" }
+  },
+  "petertriho/cmp-git",
+  dependencies = { 'hrsh7th/nvim-cmp' },
+  opts = {
+    -- options go here
+  },
+  init = function()
+    table.insert(require("cmp").get_config().sources, { name = "git" })
+  end,
+  {
     'VonHeikemen/lsp-zero.nvim',
     dependencies = {
       -- LSP Support

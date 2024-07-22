@@ -23,6 +23,12 @@
     fd
     ripgrep
     fira-code
+    mononoki
+    roboto
+    roboto-mono
+    roboto-serif
+    hack-font
+    input-fonts
     unzip
     gzip
     go
