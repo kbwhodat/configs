@@ -30,6 +30,7 @@
     hack-font
     unzip
     gzip
+    fontconfig
     go
     # alacritty
     perl

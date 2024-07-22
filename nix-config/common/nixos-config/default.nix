@@ -63,8 +63,8 @@ in
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "Roboto Serif"];
-        sansSerif = [ "Roboto"];
+        serif = [ "RobotoMono Nerd Font Propo"];
+        sansSerif = [ "RobotoMono Nerd Font Propo"];
         monospace = [ "RobotoMono Nerd Font"];
     };
   };
