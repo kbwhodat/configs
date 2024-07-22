@@ -28,7 +28,6 @@
     roboto-mono
     roboto-serif
     hack-font
-    input-fonts
     unzip
     gzip
     go

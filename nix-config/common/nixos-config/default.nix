@@ -63,14 +63,14 @@ in
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "Input Serif Regular"];
-        sansSerif = [ "Input Sans Regular"];
-        monospace = [ "Input Mono Regular"];
+        serif = [ "Roboto Serif"];
+        sansSerif = [ "Roboto"];
+        monospace = [ "RobotoMono Nerd Font"];
     };
   };
 
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    (nerdfonts.override { fonts = ["RobotoMono"]; })
   ];
   # Setting up env variables for image.nvim
   # environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];

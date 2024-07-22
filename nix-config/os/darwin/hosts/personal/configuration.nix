@@ -42,10 +42,19 @@
   };
 
   services.yabai.enable = true;
+  services.yabai.enableScriptingAddition = true;
   services.skhd.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnsupportedSystem = true; 
+
+  fonts.packages = with pkgs; [
+    (nerdfonts.override {
+      fonts = [
+        "RobotoMono"
+      ];
+    })
+  ];
 
   homebrew = {
     enable = true;

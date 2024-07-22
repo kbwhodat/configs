@@ -13,9 +13,9 @@
     # '';
     font = {
       # name = "FiraCode Nerd Font Medium";
-      name = "Input Mono Medium Regular";
-      # name = "Mononoki Regular";
-      size = 13.0;
+      #name = "Input Mono Medium Regular";
+      name = "Mononoki Regular";
+      size = 14.0;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -29,8 +29,8 @@
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
 
-      bold_font        Input Mono Medium Bold
-      italic_font      Input Mono Medium Italic
+      bold_font        Mononoki Bold
+      italic_font      Mononoki Italic
 
       hide_window_decorations yes
       macos_show_window_title_in none
