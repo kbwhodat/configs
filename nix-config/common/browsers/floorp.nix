@@ -94,6 +94,13 @@ in
 # Prevents the alt/command key from showing the menu bar. Gets annoying at time.
     "ui.key.menuAccessKeyFocuses" = false;
 
+# fonts
+    "browser.display.use_document_fonts" = 0;
+    "font.default.x-western" = "sans-serif";
+    "font.name.monospace.x-western" = "Input Mono";
+    "font.name.sans-serif.x-western" = "Input Sans";
+    "font.name.serif.x-western" = "Input Serif";
+
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "always";
     "browser.urlbar.placeholderName.private" = "Kagi";

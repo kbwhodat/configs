@@ -12,8 +12,10 @@
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';
     font = {
-      name = "FiraCode Nerd Font Medium";
-      size = 13.5;
+      # name = "FiraCode Nerd Font Medium";
+      name = "Input Mono Medium Regular";
+      # name = "Mononoki Regular";
+      size = 13.0;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -27,7 +29,8 @@
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
 
-      bold_font        FiraCode Nerd Font Bold
+      bold_font        Input Mono Medium Bold
+      italic_font      Input Mono Medium Italic
 
       hide_window_decorations yes
       macos_show_window_title_in none
