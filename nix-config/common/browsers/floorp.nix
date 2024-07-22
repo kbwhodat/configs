@@ -97,9 +97,10 @@ in
 # fonts
     "browser.display.use_document_fonts" = 0;
     "font.default.x-western" = "sans-serif";
-    "font.name.monospace.x-western" = "Roboto Mono";
-    "font.name.sans-serif.x-western" = "Roboto";
-    "font.name.serif.x-western" = "Roboto Serif";
+    "font.size.variable.x-western" = 15;
+    "font.name.monospace.x-western" = "RobotoMono Nerd Font Mono";
+    "font.name.sans-serif.x-western" = "RobotoMono Nerd Font Propo";
+    "font.name.serif.x-western" = "RobotoMono Nerd Font Propo";
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "always";

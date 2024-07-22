@@ -12,8 +12,8 @@
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';
     font = {
-      name = "Mononoki Regular";
-      size = 14.0;
+      name = "RobotoMono Nerd Font Mono Medium Regular";
+      size = 13.0;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -27,8 +27,8 @@
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
 
-      bold_font        Mononoki Bold
-      italic_font      Mononoki Italic
+      bold_font        RobotoMono Nerd Font Mono Bold
+      italic_font      RobotoMono Nerd Font Mono Italic
 
       hide_window_decorations yes
       macos_show_window_title_in none
