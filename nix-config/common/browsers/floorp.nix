@@ -97,9 +97,9 @@ in
 # fonts
     "browser.display.use_document_fonts" = 0;
     "font.default.x-western" = "sans-serif";
-    "font.name.monospace.x-western" = "Input Mono";
-    "font.name.sans-serif.x-western" = "Input Sans";
-    "font.name.serif.x-western" = "Input Serif";
+    "font.name.monospace.x-western" = "Roboto Mono";
+    "font.name.sans-serif.x-western" = "Roboto";
+    "font.name.serif.x-western" = "Roboto Serif";
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "always";
