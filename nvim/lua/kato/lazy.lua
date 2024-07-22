@@ -137,6 +137,10 @@ local plugins = {
 		},
 	},
   'christoomey/vim-tmux-navigator',
+  {
+    "m4xshen/hardtime.nvim",
+    dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" }
+  },
   "petertriho/cmp-git",
   dependencies = { 'hrsh7th/nvim-cmp' },
   opts = {

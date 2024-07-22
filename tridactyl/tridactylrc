@@ -74,7 +74,7 @@ bind U undo window
 bind r reload
 bind R reloadhard
 bind x stop
-bind gi focusinput -l
+bind i focusinput -l
 bind g? rot13
 bind g! jumble
 bind g; changelistjump -1
