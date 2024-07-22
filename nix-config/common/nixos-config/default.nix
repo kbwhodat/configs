@@ -59,6 +59,15 @@ in
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.input-fonts.acceptLicense = true;
+
+  fonts.fontconfig = {
+    defaultFonts = {
+        serif = [ "Input Serif Regular"];
+        sansSerif = [ "Input Sans Regular"];
+        monospace = [ "Input Mono Regular"];
+    };
+  };
 
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" ]; })
