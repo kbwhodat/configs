@@ -47,6 +47,7 @@ in
     mpv
     vlc
     openvpn
+    yaegi
   ];
 
   home.enableNixpkgsReleaseCheck = false;
