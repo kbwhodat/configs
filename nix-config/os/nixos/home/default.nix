@@ -49,6 +49,7 @@ in
     openvpn
     yaegi
     dunst
+    tomato-c
   ];
 
   home.enableNixpkgsReleaseCheck = false;

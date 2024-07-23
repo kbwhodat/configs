@@ -32,7 +32,6 @@
     gzip
     fontconfig
     xdg-utils
-    tomato-c
     dbus
     go
     nix-prefetch-git
