@@ -1,4 +1,16 @@
-{ pkgs, config, ...}: 
+{ lib, pkgs, config, ...}:
+let
+  tmux-fzf-session-switch = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-fzf-session-switch";
+    version = "";
+    src = pkgs.fetchFromGitHub {
+      owner = "kbwhodat";
+      repo = "tmux-fzf-session-switch";
+      rev = "94c69808d9457903073431f5db95a028289c9196";
+      sha256 = "0wnn50k5fy4ngjd16k3abg49x1pfx7i5vzd4kkjs7k8v0k203p79";
+    };
+  };
+in
 
 {
 
@@ -9,7 +21,10 @@
 		plugins = with pkgs;
 		[
 			tmuxPlugins.better-mouse-mode
-			# tmuxPlugins.urlview
+      tmuxPlugins.fzf-tmux-url
+      tmux-fzf-session-switch
+      tmuxPlugins.sessionist
+      tmuxPlugins.resurrect
 			tmuxPlugins.yank
 		];
 
@@ -18,6 +33,9 @@
 				set -g set-clipboard on
 				setw -g mode-keys vi
 				set -sg escape-time 0
+
+        set -g @resurrect-strategy-nvim 'session'
+        set -g @resurrect-strategy-vim 'session'
 
 				set -g default-command "/run/current-system/sw/bin/bash"
 				set-option -g default-shell "/run/current-system/sw/bin/bash"

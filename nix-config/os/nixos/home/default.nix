@@ -48,6 +48,7 @@ in
     vlc
     openvpn
     yaegi
+    dunst
   ];
 
   home.enableNixpkgsReleaseCheck = false;
