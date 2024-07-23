@@ -95,9 +95,9 @@ in
     "ui.key.menuAccessKeyFocuses" = false;
 
 # fonts
-    "browser.display.use_document_fonts" = 0;
+    "browser.display.use_document_fonts" = 1;
     "font.default.x-western" = "sans-serif";
-    "font.size.variable.x-western" = 15;
+    "font.size.variable.x-western" = 16;
     "font.name.monospace.x-western" = "RobotoMono Nerd Font Mono";
     "font.name.sans-serif.x-western" = "RobotoMono Nerd Font Propo";
     "font.name.serif.x-western" = "RobotoMono Nerd Font Propo";

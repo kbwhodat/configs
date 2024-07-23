@@ -31,6 +31,7 @@
     unzip
     gzip
     fontconfig
+    xdg-utils
     go
     # alacritty
     perl

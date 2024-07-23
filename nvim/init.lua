@@ -58,6 +58,14 @@ vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray nu
 -- Optional: Set the cursor line number to have a distinct look
 vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bg = '#000000' })  -- White numbers on a slightly lighter gray background
 
+-- allows me to do di* ca* yi*
+vim.cmd('onoremap <silent> i* :<C-U>normal! T*vT*<CR> " inside *')
+vim.cmd('onoremap <silent> a* :<C-U>normal! F*vF*<CR> " around')
+
+--allows me to do vi*
+vim.cmd('xnoremap <silent> i* :<C-U>normal! T*vt*<CR> " inside *')
+vim.cmd('xnoremap <silent> a* :<C-U>normal! F*vf*<CR> " around *')
+
 -- vim.cmd('highlight @spell.markdown guifg=#ffffff')
 
 vim.cmd('highlight @markup.heading.1.markdown guifg=#E6EDF3 gui=bold')
