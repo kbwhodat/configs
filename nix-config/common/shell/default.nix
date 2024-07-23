@@ -3,21 +3,19 @@
 {
 	imports = [
     ./repos.nix
-      ./bash.nix
-      # ./zsh.nix
-      ./blesh.nix
-      ./kitty.nix
-      ./tmux.nix
-      #./zellij.nix
-      ./neovim.nix
-      ./password-store.nix
-       ./gpg.nix
+    ./bash.nix
+    ./blesh.nix
+    ./kitty.nix
+    ./tmux.nix
+    ./neovim.nix
+    ./password-store.nix
+    ./gpg.nix
 	];
 
 	home.sessionVariables = {
 
 		EDITOR = "nvim";
-		BROWSER = "firefox";
+		BROWSER = "floorp";
 		TERMINAL = "kitty";
 	};
 
