@@ -10,6 +10,7 @@
     ./neovim.nix
     ./password-store.nix
     ./gpg.nix
+    ./ghostty.nix
 	];
 
 	home.sessionVariables = {
