@@ -8,6 +8,7 @@
       ../../../../common/nvidia/cuda/cuda.nix
       ../../../../common/ssh/ssh.nix
       ../../../../common/nixos-config
+      ../../../../common/nixos-config/performance
     ];
 
 

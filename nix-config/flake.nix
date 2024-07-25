@@ -22,7 +22,11 @@
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, firefox-darwin, sops-nix, lix-module, gonchill,  ... }:
+  inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
+  inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
+
+
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ... }:
 
     let
       system = "x86_64-linux";

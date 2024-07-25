@@ -9,7 +9,7 @@ let
   ldLibraryPath = lib.makeLibraryPath [
     pkgs.gcc_multi
     pkgs.linuxPackages.nvidia_x11
-    pkgs.glibc
+    # pkgs.glibc
     pkgs.glib
     pkgs.nss_latest
     pkgs.xorg.libxcb
