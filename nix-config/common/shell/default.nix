@@ -11,6 +11,7 @@
     ./password-store.nix
     ./gpg.nix
     ./ghostty.nix
+    #./ghostty-hm.nix
 	];
 
 	home.sessionVariables = {

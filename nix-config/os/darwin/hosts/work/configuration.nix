@@ -9,7 +9,7 @@ let
 myrepo = builtins.fetchGit {
   url = "https://github.com/kbwhodat/pass-keys.git";
   ref = "main";
-  rev = "20fadc63a83680779a112ff8667a39f702818cb9";
+  rev = "10fb8bcdaff679ee2a12d26f89ec4bba7909f64b";
 };
 in
 {

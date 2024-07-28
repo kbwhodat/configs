@@ -13,8 +13,8 @@ in
 		sessionVariables = {
 			EDITOR = "nvim";
       VISUAL= "vim";
-      TERM = "xterm-256color";
-      # TERM = "xterm-ghostty";
+      #TERM = "xterm-256color";
+       TERM = "xterm-ghostty";
 			COLORTERM = "truecolor";
 		};
 

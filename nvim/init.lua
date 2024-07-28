@@ -26,6 +26,7 @@ vim.opt.list = false
 
 -- Setting Underline
 vim.api.nvim_command('set cursorline | hi clear cursorline | hi CursorLine gui=underline cterm=underline')
+-- Highlight to white
 -- Set highlight cursor line vertically
 vim.cmd('set cursorcolumn')
 -- add to clipboard
@@ -45,6 +46,7 @@ vim.cmd[[hi NormalNC guibg=#000000]]
 vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
+vim.cmd('hi Visual guibg=Grey')
 
 -- Set the status line for the active window
 vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#FFFFFF', bg = '#000000', bold = true })

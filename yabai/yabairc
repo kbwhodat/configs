@@ -41,6 +41,7 @@ yabai -m rule --add app="^Cisco Webex Start$" manage=off
 yabai -m rule --add app="^Private Internet Access$" manage=off
 yabai -m rule --add app="kitty" manage=off  
 yabai -m rule --add app="^WezTerm$" manage=off
+yabai -m rule --add app="^Ghostty$" manage=off
 yabai -m rule --add app="^Alacritty$" manage=off
 yabai -m rule --add app="^Contour$" manage=off
 yabai -m rule --add app="^Anki$" manage=off
