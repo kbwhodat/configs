@@ -1,12 +1,8 @@
-{ lib, inputs, config, pkgs, ... }:
-
-let
-inherit (pkgs.stdenv) isDarwin;
-keysLocation = "/etc/.secrets";
-in
+{ inputs, config, ...}:
 {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
+    #inputs.sops-nix.nixosModules.sops
   ];
 
   sops = {
@@ -15,6 +11,9 @@ in
     age.keyFile = "/etc/.secrets/keys.txt";
 
     secrets = {
+      #github-token = {
+      #  path = "${config.home.homeDirectory}/.teacupp";
+      #};
       pass-gpg = {
         path = "${config.home.homeDirectory}/.funentry";
       };

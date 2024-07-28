@@ -16,7 +16,7 @@ in
 
 	programs.tmux = {
 		enable = true;
-		# terminal = "screen-256color";
+		terminal = "screen-256color";
 		historyLimit = 100000;
 		plugins = with pkgs;
 		[
@@ -58,9 +58,14 @@ in
 
 				# set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
         # set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
-        set -g default-terminal "tmux-256color"
+
+        # Enable cursor blink
+        set-option -g terminal-overrides ',*:cnorm=\\E[?12l\\E[?25h'
+        set-option -ga terminal-overrides ',*:civis=\\E[?25l'
         set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
-        # set -g terminal-overrides '*:colors=256'
+        set-option -ga terminal-overrides ',xterm-kitty:cnorm=\E[?12h\E[?25h'
+        set-option -ga terminal-overrides ',screen-256color:cnorm=\\E[?12h\\E[?25h'
+        set -g terminal-overrides '*:colors=256'
 
 				set -gq allow-passthrough on
 				set -g visual-activity off

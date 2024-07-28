@@ -181,6 +181,25 @@
         "url": "ssh://git@github.com/ghostty-org/ghostty"
       }
     },
+    "ghostty-darwin": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1722107595,
+        "narHash": "sha256-WXMBV4XiZrujyECHUJNobObNa/0dXwz4IMZCinEOKRI=",
+        "owner": "kbwhodat",
+        "repo": "ghostty-nix-darwin",
+        "rev": "3a41520ca6f27db962f86a10a02d6a47aa23d550",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kbwhodat",
+        "repo": "ghostty-nix-darwin",
+        "rev": "3a41520ca6f27db962f86a10a02d6a47aa23d550",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -205,7 +224,7 @@
     },
     "gonchill": {
       "inputs": {
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_3"
       },
       "locked": {
         "lastModified": 1720920041,
@@ -293,7 +312,7 @@
     "nil": {
       "inputs": {
         "flake-utils": "flake-utils_5",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_4",
         "rust-overlay": "rust-overlay"
       },
       "locked": {
@@ -376,6 +395,22 @@
     },
     "nixpkgs_2": {
       "locked": {
+        "lastModified": 1721962658,
+        "narHash": "sha256-a+f+HXbbEuy4Xk5ZWeyNPI2n1p1y4VK9xMOuapqF+X0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0f410837baf3eb15f2da347a3a56bbf8c3b374ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
         "lastModified": 1720910238,
         "narHash": "sha256-J/IAXi62ICt+K4UTM9l/IGe2HtepKL46rot4NnQBpg8=",
         "owner": "NixOS",
@@ -390,7 +425,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1716977081,
         "narHash": "sha256-pFe5jLeIPlKEln5n2h998d7cpzXFdbrBMRe3suz4K1o=",
@@ -406,7 +441,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1720823163,
         "narHash": "sha256-FZ5dnrvKkln9ESdoTR8R7GKW9rNpXNZrxGsOXsbsTpE=",
@@ -422,7 +457,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_5": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1720181791,
         "narHash": "sha256-i4vJL12/AdyuQuviMMd1Hk2tsGt02hDNhA0Zj1m16N8=",
@@ -438,7 +473,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_6": {
+    "nixpkgs_7": {
       "locked": {
         "lastModified": 1719956923,
         "narHash": "sha256-nNJHJ9kfPdzYsCOlHOnbiiyKjZUW5sWbwx3cakg3/C4=",
@@ -474,11 +509,12 @@
         "darwin": "darwin",
         "firefox-darwin": "firefox-darwin",
         "ghostty": "ghostty",
+        "ghostty-darwin": "ghostty-darwin",
         "gonchill": "gonchill",
         "home-manager": "home-manager",
         "lix-module": "lix-module",
         "nil": "nil",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": "nixpkgs_5",
         "nur": "nur",
         "sops-nix": "sops-nix",
         "undetected-chromedriver": "undetected-chromedriver"
@@ -511,7 +547,7 @@
     },
     "sops-nix": {
       "inputs": {
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_6",
         "nixpkgs-stable": "nixpkgs-stable_2"
       },
       "locked": {
@@ -604,7 +640,7 @@
     },
     "undetected-chromedriver": {
       "inputs": {
-        "nixpkgs": "nixpkgs_6"
+        "nixpkgs": "nixpkgs_7"
       },
       "locked": {
         "lastModified": 1721004763,

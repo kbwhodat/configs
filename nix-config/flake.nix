@@ -25,11 +25,14 @@
   inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
   inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
 
+  inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/3a41520ca6f27db962f86a10a02d6a47aa23d550";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ... }:
+
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, ... }:
 
     let
       system = "x86_64-linux";
+
       overlays = [
         nur.overlay
         gonchill.overlay
@@ -121,6 +124,7 @@
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.katob = import ./os/darwin/home;
               nixpkgs.overlays = overlays;
+
               home-manager.backupFileExtension = "backup";
 
               users.users."katob".name = "katob";
