@@ -30,6 +30,8 @@
       bold_font        RobotoMono Nerd Font Mono Bold
       italic_font      RobotoMono Nerd Font Mono Italic
 
+      allow_remote_control yes
+
       hide_window_decorations yes
       macos_show_window_title_in none
       # cursor_shape block
