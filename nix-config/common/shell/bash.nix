@@ -13,8 +13,8 @@ in
 		sessionVariables = {
 			EDITOR = "nvim";
       VISUAL= "vim";
-      #TERM = "xterm-256color";
-       TERM = "xterm-ghostty";
+      TERM = "xterm-256color";
+      # TERM = "xterm-ghostty";
 			COLORTERM = "truecolor";
 		};
 
@@ -77,6 +77,7 @@ fi
 alias ls='ls --color'
 alias cat='bat --style plain'
 alias vim="$(which nvim)"
+alias vi="$(which vim)"
 
 if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
   
