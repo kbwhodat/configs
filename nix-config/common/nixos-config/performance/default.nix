@@ -6,5 +6,6 @@
     linuxPackages_latest.perf
     bcc
     atop
+    iotop
   ];
 }

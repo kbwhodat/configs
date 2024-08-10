@@ -24,6 +24,7 @@ in
       tmuxPlugins.fzf-tmux-url
       tmux-fzf-session-switch
       tmuxPlugins.sessionist
+      tmuxPlugins.extrakto
       tmuxPlugins.resurrect
 			tmuxPlugins.yank
 		];
