@@ -2,9 +2,12 @@
 
 {
   home.packages = with pkgs; [          
+    vimgolf
+    vim
     inputs.nil.packages.${pkgs.system}.nil
     nmap
     gonchill
+    libsixel
     wget
     lsof
     htop
