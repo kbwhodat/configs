@@ -29,15 +29,17 @@ in
     if isDarwin then
       with pkgsWithOverlay; [ pkgsWithOverlay.ghostty-darwin ]
     else
-      with pkgs; [ inputs.ghostty.packages.x86_64-darwin.default ];
+      with pkgs; [ inputs.ghostty.packages.x86_64-linux.default ];
 
   home.file."ghostty".target = "${config.home.homeDirectory}/.config/ghostty/config";
   home.file."ghostty".source = builtins.toFile "config" ''
 
     font-size = 13.3
 
-    font-family = "RobotoMono Nerd Font Mono"
-    font-family-bold = "RobotoMono Nerd Font Mono Bd"
+    #font-family = "RobotoMono Nerd Font Mono"
+    #font-family-bold = "RobotoMono Nerd Font Mono Bd"
+    font-family = "ComicShannsMono Nerd Font Mono"
+    font-family-bold = "ComicShannsMono Nerd Font Mono Bold"
     font-family-italic = "RobotoMono Nerd Font Mono It"
     font-family-bold-italic = "RobotoMono Nerd Font Mono Bd It"
 
@@ -60,6 +62,8 @@ in
     background = #000000
     foreground = #ffffff
 
+    cursor-color = #ffffff
+
     gtk-adwaita = true
     bold-is-bright = true
 
@@ -67,7 +71,7 @@ in
     window-padding-x = 0
     window-padding-y = 0
 
-    cursor-style-blink = false
+    cursor-style-blink = true
     shell-integration-features = cursor
 
     # selection-foreground =

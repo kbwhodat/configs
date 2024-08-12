@@ -36,14 +36,14 @@ in
 		"@wheel"
 	];
 
-	networking.wireless.networks = {
-		"results will vary" = {
-      extraConfig = ''
-            key_mgmt=WPA-PSK
-            psk=54047fa690627b6ef2e1176f21df83b09ce25d2c6a2dcc4eac5f8bac228f7c9a
-      '';
-		};
-  };
+	# networking.wireless.networks = {
+	# 	"results will vary" = {
+      # extraConfig = ''
+            # key_mgmt=WPA-PSK
+            # psk=54047fa690627b6ef2e1176f21df83b09ce25d2c6a2dcc4eac5f8bac228f7c9a
+      # '';
+	# 	};
+  # };
 
   users.users.katob = {
     isNormalUser = true;
@@ -61,6 +61,10 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+  ];
+
   fonts.fontconfig = {
     defaultFonts = {
         serif = [ "RobotoMono Nerd Font Propo"];
@@ -69,16 +73,16 @@ in
     };
   };
 
-  fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = ["RobotoMono"]; })
-  ];
   # Setting up env variables for image.nvim
   # environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
   environment.variables.PKG_CONFIG_PATH = [ "${pkgs.imagemagick.dev}/lib/pkgconfig" ];
 
   services.logind.lidSwitchExternalPower = "ignore";
 
-  networking.networkmanager.enable = false;
+  networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
+
+  networking.wireless.iwd.enable = true;
 
   time.timeZone = "America/New_York";
 

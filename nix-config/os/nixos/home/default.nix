@@ -50,6 +50,8 @@ in
     yaegi
     dunst
     tomato-c
+    clang-tools
+    transmission-qt
   ];
 
   home.enableNixpkgsReleaseCheck = false;

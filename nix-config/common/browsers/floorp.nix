@@ -98,9 +98,9 @@ in
     "browser.display.use_document_fonts" = 1;
     "font.default.x-western" = "sans-serif";
     "font.size.variable.x-western" = 16;
-    "font.name.monospace.x-western" = "RobotoMono Nerd Font Mono";
-    "font.name.sans-serif.x-western" = "RobotoMono Nerd Font Propo";
-    "font.name.serif.x-western" = "RobotoMono Nerd Font Propo";
+    "font.name.monospace.x-western" = "ComicShannsMono Nerd Font Mono";
+    "font.name.sans-serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "always";
@@ -111,7 +111,7 @@ in
     "browser.bookmarks.addedImportButton" = true;
     "browser.startup.homepage" = "about:blank";
     "browser.search.region" = "US";
-    "network.http.http3.enabled" = true;
+    "network.http.http3.enabled" = false;
     "dom.image-lazy-loading.enabled" = true;
 # "network.prefetch-next" = false;
     "general.smoothScroll" = true;

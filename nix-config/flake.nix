@@ -22,6 +22,7 @@
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
 
+  # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty?ref=kitty-unicode";
   inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
   inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
 
