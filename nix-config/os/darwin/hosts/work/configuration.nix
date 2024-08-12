@@ -59,12 +59,12 @@ in
   ];
 
   homebrew = {
-    enable = false;
+    enable = true;
     # onActivation.cleanup = "uninstall";
 
-    taps = ["benjiwolff/neovim-nightly" "koekeishiya/formulae"];
+    taps = ["benjiwolff/neovim-nightly"];
     brews = [ "helm" ];
-    casks = [ "zed" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    casks = [ "dbeaver-community" "tomatobar" "zed" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
