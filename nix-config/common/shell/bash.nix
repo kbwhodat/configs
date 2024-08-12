@@ -42,8 +42,6 @@ if [[ ''${uname} == "Darwin" ]]; then
   export LIBRARY_PATH="${if isDarwin then pkgs.libiconv-darwin else pkgs.libiconv}/lib"
 fi
 
-# source "${pkgs.blesh}"/share/blesh/ble.sh
-# source "${pkgs.blesh}"/share/blesh/lib/vim-surround.sh
     shopt -s histappend
     shopt -s cmdhist
     shopt -s lithist
@@ -114,7 +112,7 @@ PROMPT_COMMAND='
   PS1="\n[\w] $current_branch\n # "
 '
 
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+PROMPT_COMMAND="history -a; history -c; history -r $PROMPT_COMMAND"
 
 
 		'';
