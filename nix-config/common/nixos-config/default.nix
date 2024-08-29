@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, config, pkgs, lib, ... }:
 
 let
 # myrepo = pkgs.fetchFromGitHub {
@@ -77,7 +77,7 @@ in
   # environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
   environment.variables.PKG_CONFIG_PATH = [ "${pkgs.imagemagick.dev}/lib/pkgconfig" ];
 
-  services.logind.lidSwitchExternalPower = "ignore";
+  services.logind.lidSwitchExternalPower = lib.mkForce "ignore";
 
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";

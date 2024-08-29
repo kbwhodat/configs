@@ -17,11 +17,11 @@
   boot.loader.grub.device = "/dev/nvme0n1";
 
   networking.hostName = "nixos-util"; # Define your hostname.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp3s0" ];
 
-  services.logind.lidSwitchExternalPower = "suspend-then-hibernate";
-  services.logind.lidSwitch = "suspend-then-hibernate";
+  #services.logind.lidSwitchExternalPower = lib.mkForce "suspend-then-hibernate";
+  services.logind.lidSwitch = lib.mkForce "suspend-then-hibernate";
 
   systemd.sleep.extraConfig = "AllowSuspendThenHibernate=yes\nSuspendState=suspend\nHibernateState=hibernate\nHibernateDelaySec=60s";
 
