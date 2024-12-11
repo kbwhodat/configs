@@ -31,7 +31,7 @@ in
   home.username = "katob";
   home.homeDirectory = "/home/katob";
 
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "24.11"; # Please read the comment before changing.
 
 
   home.packages = with pkgs; [
@@ -51,7 +51,7 @@ in
     dunst
     tomato-c
     clang-tools
-    transmission-qt
+    transmission_4-qt
   ];
 
   home.enableNixpkgsReleaseCheck = false;

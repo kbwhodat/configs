@@ -5,9 +5,9 @@ fullName = "dns issue";
 in
 {
 
-  imports = [
-    ../../modules/floorp.nix
-  ];
+  # imports = [
+  #   ../../modules/floorp.nix
+  # ];
 
   programs.floorp.enable = 
     if isDarwin then
@@ -73,12 +73,12 @@ in
     "floorp.verticaltab.show.newtab.button" = false;
 
 # Disabling sidebar for now, I don't see the benefit
-    "floorp.browser.sidebar.enable" = false;
-    "floorp.browser.sidebar.is.displayed" = false;
-    "floorp.browser.sidebar.right" = false;
+    "floorp.browser.sidebar.enable" = true;
+    "floorp.browser.sidebar.is.displayed" = true;
+    "floorp.browser.sidebar.right" = true;
 
 # Bookmark related settings
-    "floorp.bookmarks.bar.focus.mode" = true;
+    "floorp.bookmarks.bar.focus.mode" = false;
 
 # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
@@ -103,7 +103,7 @@ in
     "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
 
     "app.update.auto" = true;
-    "browser.toolbars.bookmarks.visibility" = "always";
+    "browser.toolbars.bookmarks.visibility" = "newtab";
     "browser.urlbar.placeholderName.private" = "Kagi";
     "browser.firefox-view.feature-tour" = "{'screen':'','complete':true}";
     "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.searchEngines" = "kagi";
