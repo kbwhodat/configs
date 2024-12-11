@@ -25,7 +25,7 @@ in
   };
 
 
-  system.stateVersion = "unstable"; 
+  system.stateVersion = "24.11"; 
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -104,10 +104,10 @@ in
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  hardware.opengl.driSupport32Bit = true;
-    # hardware.graphics.enable = true;
+  # hardware.opengl.enable = true;
+  # hardware.opengl.driSupport = true;
+  # hardware.opengl.driSupport32Bit = true;
+  # hardware.graphics.enable = true;
   # hardware.opengl.driSupport = true;
   # hardware.graphics.enable32Bit = true;
 
@@ -152,11 +152,11 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [11434 8888];
+  networking.firewall.allowedTCPPorts = [11434 8888 8080];
 
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  # sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
