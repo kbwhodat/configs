@@ -1,9 +1,7 @@
-
 require("kato")
 require("kato.obsidian")
 require("kato.obsidian_functions")
 require("kato.nil-ls")
-
 
 local vim = vim
 
@@ -70,6 +68,20 @@ vim.cmd('xnoremap <silent> a* :<C-U>normal! F*vf*<CR> " around *')
 
 -- vim.cmd('highlight @spell.markdown guifg=#ffffff')
 
+vim.cmd('highlight markdownH1 guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH1Delimiter guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH2 guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH2Delimiter guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH3 guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH3Delimiter guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH4 guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH4Delimiter guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH5 guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH5Delimiter guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH6 guifg=#E6EDF3 gui=bold')
+vim.cmd('highlight markdownH6Delimiter guifg=#E6EDF3 gui=bold')
+
+-- For TreeSitter
 vim.cmd('highlight @markup.heading.1.markdown guifg=#E6EDF3 gui=bold')
 vim.cmd('highlight @markup.heading.2.markdown guifg=#E6EDF3 gui=bold')
 vim.cmd('highlight @markup.heading.3.markdown guifg=#E6EDF3 gui=bold')
@@ -187,4 +199,31 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end
 })
 
+-- vim.api.nvim_exec([[
+--   augroup RemoveSpellCheck
+--     autocmd!
+--     autocmd FileType go,c,cpp,python,javascript,html,css,nix setlocal syntax
+--   augroup END
+-- ]], false)
 
+vim.api.nvim_exec([[
+  augroup RemoveSpellCheck
+    autocmd!
+    autocmd FileType go,c,cpp,python,javascript,html,css,nix setlocal nospell
+  augroup END
+]], false)
+
+
+vim.cmd('syntax on')
+vim.cmd('set nocompatible')
+vim.cmd('set scrolloff=3')
+vim.cmd('set ai')
+vim.cmd('set showcmd')
+vim.cmd('set ignorecase')
+vim.cmd('set smartcase')
+vim.cmd('set visualbell t_vb=')
+vim.cmd('set novisualbell')
+vim.cmd('filetype on')
+vim.cmd('filetype indent on')
+
+vim.cmd('set guicursor=n-v-c:block,i:ver25,r:hor20,o:hor50')
