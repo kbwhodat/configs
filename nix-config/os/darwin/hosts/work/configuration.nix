@@ -54,6 +54,7 @@ in
     (nerdfonts.override {
       fonts = [
         "RobotoMono"
+        "ComicShannsMono"
       ];
     })
   ];
@@ -63,8 +64,8 @@ in
     # onActivation.cleanup = "uninstall";
 
     taps = ["benjiwolff/neovim-nightly"];
-    brews = [ "helm" ];
-    casks = [ "dbeaver-community" "tomatobar" "zed" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    brews = [ "helm" "kubectl" ];
+    casks = [ "google-cloud-sdk" "dbeaver-community" "tomatobar" "zed" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
