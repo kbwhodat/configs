@@ -111,6 +111,7 @@ local plugins = {
   'tpope/vim-commentary',
 	"rebelot/kanagawa.nvim",
   "towolf/vim-helm",
+  "leath-dub/snipe.nvim",
   'tpope/vim-surround',
 	{
 		"tpope/vim-fugitive",
@@ -137,10 +138,6 @@ local plugins = {
 		},
 	},
   'christoomey/vim-tmux-navigator',
-  {
-    "m4xshen/hardtime.nvim",
-    dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" }
-  },
   "petertriho/cmp-git",
   dependencies = { 'hrsh7th/nvim-cmp' },
   opts = {
