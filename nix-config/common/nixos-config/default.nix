@@ -167,6 +167,9 @@ in
     wireplumber.enable = true;
   };
 
+  environment.systemPackages = with pkgs; [
+    gccgo
+  ];
 
 
 }
