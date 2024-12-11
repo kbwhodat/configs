@@ -1,15 +1,17 @@
 {
   description = "A template that shows all standard flake outputs";
 
+  inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
+  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
   inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.nil.url = "github:oxalica/nil";
 
-  inputs.home-manager.url = "github:nix-community/home-manager/release-24.05";
+  inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
   # inputs.nixpkgs.url = "github:NixOS/nixpkgs?ref=24.05";
 
   inputs.nur.url = "github:nix-community/NUR";
@@ -26,7 +28,7 @@
   inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
   inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
 
-  inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/3a41520ca6f27db962f86a10a02d6a47aa23d550";
+  inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/2175e93944f1cb4ceda2cae4fdb67aeae8dd42e3";
 
 
   outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nil, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, ... }:
@@ -35,7 +37,7 @@
       system = "x86_64-linux";
 
       overlays = [
-        nur.overlay
+        nur.overlays.default
         gonchill.overlay
         firefox-darwin.overlay
         undetected-chromedriver.overlay
