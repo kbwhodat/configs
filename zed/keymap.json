@@ -1,0 +1,31 @@
+[
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      "space f f": ["task::Spawn", { "task_name": "search:project" }],
+      "space '": "pane::ActivateNextItem",
+      "space ;": "pane::ActivatePrevItem",
+      "space v": "pane::SplitRight",
+      "space d": "pane::CloseActiveItem"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
+      "space e": "workspace::ToggleLeftDock",
+      "space h": ["workspace::ActivatePaneInDirection", "Left"],
+      "space l": ["workspace::ActivatePaneInDirection", "Right"],
+      "space k": ["workspace::ActivatePaneInDirection", "Up"],
+      "space j": ["workspace::ActivatePaneInDirection", "Down"],
+      "space z": "workspace::ToggleZoom",
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e": "workspace::ToggleLeftDock",
+      "space l": ["workspace::ActivatePaneInDirection", "Right"],
+    }
+  }
+]
