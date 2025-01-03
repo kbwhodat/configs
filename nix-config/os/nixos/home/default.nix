@@ -52,6 +52,8 @@ in
     tomato-c
     clang-tools
     transmission_4-qt
+    tor
+    tor-browser
   ];
 
   home.enableNixpkgsReleaseCheck = false;
@@ -69,4 +71,9 @@ in
 
   xdg.enable = true;
   xdg.userDirs.enable = true;
+
+  # services.pass-secret-service = {
+  #   enable = true;
+  #   package = pkgs.libsecret;
+  # };
 }

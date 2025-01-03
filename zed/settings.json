@@ -1,0 +1,75 @@
+{
+  "auto_install_extensions": {
+    "ansible": true,
+    "c": true,
+    "go": true,
+    "nix": true,
+    "python": true,
+    "terraform": true
+  },
+  "auto_update": false,
+  "buffer_font_family": "ComicShannsMono Nerd Font Mono",
+  "buffer_font_size": 14,
+  "hour_format": "hour24",
+  "relative_line_numbers": true,
+  "terminal": {
+    "shell": {
+      "program": "/bin/sh"
+    }
+  },
+  "theme": {
+    "mode": "dark",
+    "dark": "Kanagawa Wave",
+    "light": "One Light"
+  },
+  "use_autoclose": true,
+  "format_on_save": "off",
+  "git": {
+    "enabled": true,
+    "git_status": true
+  },
+  "ui_font_family": "ComicShannsMono Nerd Font Mono",
+  "ui_font_size": 16,
+  "vim_mode": true,
+  "scrollbar": {
+    "show": "never"
+  },
+  "experimental.theme_overrides": {
+    "editor.document_highlight.bracket_background": "#808080",
+    "panel.focused_border": "#83a598ff",
+    "border.selected": "#FFFFFF",
+    "panel.foreground": "#FFFFFF",
+    "text": "#FFFFFF",
+    "text.muted": "#FFFFFF",
+    "title_bar.background": "#000000",
+    "elevated_surface.background": "#000000",
+    "surface.background": "#000000",
+    "border": "#000000",
+    "titlebar.border_color": "#000000",
+    "titlebar.button.background": "#000000",
+    "titlebar.button.hover_background": "#111111",
+    "editor.background": "#0b0b0b",
+    "editor.gutter.background": "#000000",
+    "editor.active_line.background": "#111111",
+    "editor.selection.background": "#202020",
+    "status_bar.background": "#00",
+    "element.background": "#000000",
+    "panel.background": "#000000",
+    "sidebar.background": "#000000",
+    "terminal.background": "#000000",
+    "titlebar.background": "#000000",
+    "tab_bar.background": "#000000",
+    "tab.inactive_background": "#000000",
+    "tab.active_background": "#0b0b0b",
+    "tab.hover_background": "#111111",
+    "tab_bar.border_color": "#000000",
+    "tab_bar.divider_color": "#000000",
+    "tab_bar.separator": "#000000",
+    "toolbar.background": "#000000",
+    "players": [
+      {
+        "cursor": "#DCDCCC"
+      }
+    ]
+  }
+}

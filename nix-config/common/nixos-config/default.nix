@@ -14,7 +14,7 @@ myrepo = builtins.fetchGit {
 in
 {
   imports =
-    [ 
+    [
       inputs.sops-nix.nixosModules.sops
     ];
 
@@ -25,7 +25,7 @@ in
   };
 
 
-  system.stateVersion = "24.11"; 
+  system.stateVersion = "24.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -50,8 +50,8 @@ in
     description = "kato";
     extraGroups = [ "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
-    openssh.authorizedKeys.keys = [ 
-         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"   
+    openssh.authorizedKeys.keys = [
+         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILuQLHoHdOry21yHqwszBboRaO/vhbXmpdseDW4oyZs6 server"
     ];
@@ -61,8 +61,13 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
+  # fonts.packages = with pkgs; [
+  #   (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+  # ];
+
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+    pkgs.nerd-fonts.roboto-mono
+    pkgs.nerd-fonts.comic-shanns-mono
   ];
 
   fonts.fontconfig = {
@@ -152,8 +157,15 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [11434 8888 8080];
+  networking.firewall.allowedTCPPorts = [11434 8888 8080 1714 1764];
 
+  #used for configuring KDE connect
+  programs.kdeconnect.enable = true;
+
+  # A window compistor for X11
+  services.picom.enable = true;
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable sound with pipewire.
   # sound.enable = true;
