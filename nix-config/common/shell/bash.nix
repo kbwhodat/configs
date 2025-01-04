@@ -67,22 +67,24 @@ if [[ ''${uname} == "Darwin" ]]; then
   if [ ! -f /usr/local/bin/pinentry-mac ]; then
     ln -s /run/current-system/sw/bin/pinentry-mac /usr/local/bin/pinentry-mac
   fi
+else
+    alias zed="$(which zeditor)"
 fi
 
 
- 
+
 alias ls='ls --color'
 alias cat='bat --style plain'
 alias vim="$(which nvim)"
 alias vi="$(which vim)"
 
 if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
-  
+
   TMUX_SESSION=`hostname -f`
   if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
     tmux -f ~/.config/tmux/tmux.conf attach-session -t $TMUX_SESSION
   else
-    tmux -f ~/.config/tmux/tmux.conf new-session -s $TMUX_SESSION 
+    tmux -f ~/.config/tmux/tmux.conf new-session -s $TMUX_SESSION
   fi
 fi
 
@@ -114,6 +116,22 @@ PROMPT_COMMAND='
 
 PROMPT_COMMAND="history -a; history -c; history -r $PROMPT_COMMAND"
 
+search_and_edit() {
+    selected_file="$(rg --column --hidden --line-number --no-heading --color=always --smart-case \
+        --glob '!**/.git/' --glob '!**/node_modules/' . \
+        | fzf --ansi --delimiter ':' \
+               --preview 'bat --style=numbers,changes,header --color=always --highlight-line {2} {1}' \
+               --preview-window 'up:60%:+{2}+3/3' \
+               --layout=reverse)"
+
+    if [ -n "$selected_file" ]; then
+        file="$(echo "$selected_file" | cut -d':' -f1)"
+        line="$(echo "$selected_file" | cut -d':' -f2)"
+        col="$(echo "$selected_file" | cut -d':' -f3)"
+
+        zed "$file:$line:$col"
+    fi
+}
 
 		'';
 	};

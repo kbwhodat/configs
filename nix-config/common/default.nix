@@ -5,5 +5,7 @@
     ./shell
     ./packages
     ./browsers
+    ./editors
+    ./lsp
   ];
 }
