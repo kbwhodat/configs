@@ -3,6 +3,9 @@
 {
   home.packages = with pkgs; [
     zed-editor
+    vulkan-tools
+    keepassxc
+    gnome-keyring
     vimgolf
     vim
     inputs.nil.packages.${pkgs.system}.nil
@@ -18,6 +21,7 @@
     tmux
     git
     bat
+    dig
     imagemagick
     imagemagick.dev
     luajit

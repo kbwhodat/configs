@@ -1,0 +1,22 @@
+{
+  "auto_install_extensions": {
+    "ansible": true,
+    "c": true,
+    "go": true,
+    "nix": true,
+    "python": true,
+    "terraform": true
+  },
+  "auto_update": false,
+  "buffer_font_family": "ComicShannsMono Nerd Font Mono",
+  "buffer_font_size": 14,
+  "hour_format": "hour24",
+  "relative_line_numbers": true,
+  "theme": {
+    "dark": "The Dark Side",
+    "mode": "system"
+  },
+  "ui_font_family": "ComicShannsMono Nerd Font Mono",
+  "ui_font_size": 16,
+  "vim_mode": true
+}
