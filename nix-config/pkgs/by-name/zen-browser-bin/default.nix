@@ -1,4 +1,5 @@
 {
+  pkgs,
   stdenv,
   lib,
   fetchzip,
@@ -61,13 +62,14 @@ let
       };
     };
   };
+  inherit (pkgs.stdenv) isDarwin;
 in
 stdenv.mkDerivation rec {
   pname = "zen-browser-bin";
-  version = "1.0.2-b.1";
+  version = "1.0.2-b.5";
 
   src = fetchzip {
-    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-specific.tar.bz2";
+    url = "${if isDarwin then "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2" else "https://github.com/zen-browser/desktop/releases/download/${version}/zen.macos-x86_64.dmg"}";
     hash = "sha256-gUKEfpTIfLdoXg3RyNpQybt/7K820a0ljFSZ+e+iyq4=";
   };
 
@@ -125,7 +127,7 @@ stdenv.mkDerivation rec {
     license = licenses.mpl20;
     maintainers = with maintainers; [ mordrag ];
     description = "Experience tranquillity while browsing the web without people tracking you!";
-    platforms = platforms.linux;
+    platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
     mainProgram = "zen";
   };
 }
