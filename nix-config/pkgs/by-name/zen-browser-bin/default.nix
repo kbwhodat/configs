@@ -70,7 +70,7 @@ stdenv.mkDerivation rec {
 
   src = fetchzip {
     url = "${if isDarwin then "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2" else "https://github.com/zen-browser/desktop/releases/download/${version}/zen.macos-x86_64.dmg"}";
-    hash = "sha256-gUKEfpTIfLdoXg3RyNpQybt/7K820a0ljFSZ+e+iyq4=";
+    hash = "sha256-sS9phyr97WawxB2AZAwcXkvO3xAmv8k4C8b8Qw364PY=";
   };
 
   desktopItems = [
