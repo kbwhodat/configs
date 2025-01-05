@@ -27,7 +27,8 @@ in {
       "text/html" = "zen-browser.desktop";
     };
 
-    home.packages = lib.optional (cfg.package != null) cfg.package;
+    #home.packages = lib.optional (cfg.package != null) cfg.package;
+    home.packages = [pkgs.zen-browser-bin];
 
     home.file.".zen/profiles.ini".text = lib.generators.toINI {} {
       General = {
