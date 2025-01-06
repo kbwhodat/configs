@@ -341,7 +341,6 @@ in {
               type = let
                 bookmarkSubmodule =
                   types.submodule ({
-                    config,
                     name,
                     ...
                   }: {
@@ -378,7 +377,6 @@ in {
 
                 directoryType =
                   types.submodule ({
-                    config,
                     name,
                     ...
                   }: {
