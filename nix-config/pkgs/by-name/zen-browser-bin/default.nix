@@ -63,34 +63,74 @@ let
     };
   };
   inherit (pkgs.stdenv) isDarwin;
+  version = "1.0.2-b.5";
+
+# Darwin vs. Linux URLs
+  darwinUrl  = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.macos-x86_64.dmg";
+  linuxUrl   = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2";
+  hash       = "sha256-sS9phyr97WawxB2AZAwcXkvO3xAmv8k4C8b8Qw364PY=";
 in
 stdenv.mkDerivation rec {
   pname = "zen-browser-bin";
-  version = "1.0.2-b.5";
 
-  src = fetchzip {
-    url = "${if isDarwin then "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2" else "https://github.com/zen-browser/desktop/releases/download/${version}/zen.macos-x86_64.dmg"}";
-    hash = "sha256-sS9phyr97WawxB2AZAwcXkvO3xAmv8k4C8b8Qw364PY=";
-  };
 
-  desktopItems = [
-    desktopItem
-  ];
+  src = if isDarwin then
+    pkgs.fetchurl {
+      name = "";
+      url = darwinUrl;
+      hash = hash;
+    }
+  else
+    fetchzip {
+      name = "";
+      url = linuxUrl;
+      hash = hash;
+    };
 
-  nativeBuildInputs = [
-    autoPatchelfHook
-    wrapGAppsHook3
-    copyDesktopItems
-  ];
+  desktopItems = if isDarwin then
+    ''''
+  else
+    [
+      desktopItem
+    ];
+
+  nativeBuildInputs = if isDarwin then
+    ''''
+  else
+    [
+      autoPatchelfHook
+        wrapGAppsHook3
+        copyDesktopItems
+    ];
 
   buildInputs = [
+    pkgs._7zz
     gtk3
     alsa-lib
     dbus-glib
     xorg.libXtst
   ] ++ nativeMessagingHosts;
 
-  installPhase = ''
+  unpackPhase = if isDarwin then ''
+    runHook preUnpack
+    7zz x "$src" -o"$sourceRoot"
+    runHook postUnpack
+  ''
+  else
+  '''';
+
+  installPhase = if isDarwin then ''
+    preInstall
+
+    mkdir -p $out/Applications
+    cp -r 'Zen Browser.app' "$out/Applications/"
+
+    runHook postInstall
+  ''
+
+  else
+
+  ''
     runHook preInstall
 
     mkdir -p $out/lib
@@ -109,7 +149,10 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  preFixup = ''
+  preFixup = if isDarwin then
+  ''''
+  else
+  ''
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [
         pciutils

@@ -11,14 +11,14 @@
     ./password-store.nix
     ./gpg.nix
     ./ghostty.nix
-    #./ghostty-hm.nix
+    # ./ghostty-hm.nix
 	];
 
 	home.sessionVariables = {
 
 		EDITOR = "nvim";
 		BROWSER = "floorp";
-		TERMINAL = "kitty";
+		TERMINAL = "ghostty";
 	};
 
 	home.shellAliases = {

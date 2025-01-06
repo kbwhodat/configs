@@ -60,7 +60,7 @@
     "titlebar.background": "#000000",
     "tab_bar.background": "#000000",
     "tab.inactive_background": "#000000",
-    "tab.active_background": "#0b0b0b",
+    "tab.active_background": "#1C1C1C.",
     "tab.hover_background": "#111111",
     "tab_bar.border_color": "#000000",
     "tab_bar.divider_color": "#000000",

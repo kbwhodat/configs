@@ -17,12 +17,14 @@
     postman
     #google-cloud-sdk
     tcptraceroute
-    ansible_2_16
+    # ansible_2_16
     util-linux
-    python311Packages.ansible
+    # python311Packages.ansible
     redis
     mongosh
     awscli2
-    openstackclient
+    undmg
+    _7zz
+    # openstackclient
   ];
 }
