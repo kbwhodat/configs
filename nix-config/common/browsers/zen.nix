@@ -77,7 +77,7 @@ in
     "zen.theme.accent-color" = "#dec663";
     "zen.view.sidebase-expanded" = false;
     "zen.view.sidebase-expanded.on-hover" = false;
-    "zen.view.use-single-toolbar" = true;
+    "zen.view.use-single-toolbar" = false;
     "zen.splitView.change-on-hover" = true;
 
     # Makes some website dark

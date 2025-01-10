@@ -95,7 +95,7 @@ bind s fillcmdline open search
 bind S fillcmdline tabopen search
 bind M gobble 1 quickmark
 "bind B fillcmdline taball
-bind b fillcmdline taball
+bind b fillcmdline tab
 bind ZZ qall
 bind f hint
 bind F hint -b
@@ -123,9 +123,9 @@ bind ;v hint -W mpvsafe
 bind ;V hint -V
 bind ;w hint -w
 bind ;t hint -W tabopen
-bind ;O hint -W fillcmdline_notrail open 
-bind ;W hint -W fillcmdline_notrail winopen 
-bind ;T hint -W fillcmdline_notrail tabopen 
+bind ;O hint -W fillcmdline_notrail open
+bind ;W hint -W fillcmdline_notrail winopen
+bind ;T hint -W fillcmdline_notrail tabopen
 bind ;d hint -W tabopen --discard
 bind ;gd hint -qW tabopen --discard
 bind ;z hint -z
