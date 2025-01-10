@@ -31,6 +31,8 @@
   "ui_font_family": "ComicShannsMono Nerd Font Mono",
   "ui_font_size": 16,
   "vim_mode": true,
+  "scroll_beyond_last_line": "off",
+  "vertical_scroll_margin": 0,
   "scrollbar": {
     "show": "never"
   },

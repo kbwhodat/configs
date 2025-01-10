@@ -78,8 +78,8 @@ in
   #};
 
   homebrew = {
-    # enable = true;
-    # onActivation.cleanup = "uninstall";
+    enable = true;
+    onActivation.cleanup = "uninstall";
 
     taps = ["benjiwolff/neovim-nightly"];
     brews = [ "helm" "kubectl" ];
