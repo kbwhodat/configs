@@ -1,7 +1,6 @@
-{ lib, config, pkgs, ... }:
+{ config, pkgs, ... }:
 let
 inherit (pkgs.stdenv) isDarwin;
-fullName = "dns issue";
 in
 {
 
@@ -9,7 +8,7 @@ in
   #   ../../modules/floorp.nix
   # ];
 
-  programs.floorp.enable = 
+  programs.floorp.enable =
     if isDarwin then
       true
     else
@@ -31,7 +30,7 @@ in
 # Using my own custom chrome.css
     userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
-  path = 
+  path =
     if isDarwin then
       "${config.home.homeDirectory}/Library/Application Support/Floorp"
     else

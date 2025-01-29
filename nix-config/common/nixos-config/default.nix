@@ -14,7 +14,7 @@ myrepo = builtins.fetchGit {
 in
 {
   imports =
-    [ 
+    [
       inputs.sops-nix.nixosModules.sops
     ];
 
@@ -25,7 +25,7 @@ in
   };
 
 
-  system.stateVersion = "24.11"; 
+  system.stateVersion = "unstable";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -50,8 +50,8 @@ in
     description = "kato";
     extraGroups = [ "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
-    openssh.authorizedKeys.keys = [ 
-         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"   
+    openssh.authorizedKeys.keys = [
+         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILuQLHoHdOry21yHqwszBboRaO/vhbXmpdseDW4oyZs6 server"
     ];
@@ -61,8 +61,13 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
+  # fonts.packages = with pkgs; [
+  #   (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+  # ];
+
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+    pkgs.nerd-fonts.roboto-mono
+    pkgs.nerd-fonts.comic-shanns-mono
   ];
 
   fonts.fontconfig = {
@@ -103,7 +108,8 @@ in
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-
+  programs.turbovnc.ensureHeadlessSoftwareOpenGL = false;
+  hardware.nvidia.forceFullCompositionPipeline = false;
   # hardware.opengl.enable = true;
   # hardware.opengl.driSupport = true;
   # hardware.opengl.driSupport32Bit = true;
@@ -152,11 +158,18 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [11434 8888 8080];
+  networking.firewall.allowedTCPPorts = [11434 8888 8080 1714 1764 8384 22000];
+  networking.firewall.allowedUDPPorts = [22000 21027];
 
+  #used for configuring KDE connect
+  programs.kdeconnect.enable = true;
+
+  # A window compistor for X11
+  services.picom.enable = true;
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable sound with pipewire.
-  # sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -171,5 +184,28 @@ in
     gccgo
   ];
 
+  services.syncthing = {
+    enable = true;
+    user = "katob";
+    openDefaultPorts = true;
+    settings.gui = {
+      theme = "black";
+    };
+    dataDir = "/home/katob/.config/syncthing";
+    settings.devices = {
+      "iphone" = {
+        id = "V5SVN25-M2CS2HQ-T2QIERP-HQ47OOC-YLDGWKB-EEGBAVK-4BB5JJF-VNASBA2";
+      };
+      "nixos-main" = {
+        id = "7JQTNQL-BAGUNWN-7SFZ3IC-7MA5VNX-3P65FPU-YOQ325K-VFVG76O-AGP2XAJ";
+      };
+    };
+    settings.folders = {
+      "/home/katob/vault" = {
+        id = "notes";
+        devices = [ "iphone" "nixos-main" ];
+      };
+    };
+  };
 
 }

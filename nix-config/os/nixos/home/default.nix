@@ -26,6 +26,8 @@ in
 		../../../common/linux/i3
 		../../../common
     ../../../common/sops
+    ../../../common/personal
+    ../../../common/gaming
 	];
 
   home.username = "katob";
@@ -33,8 +35,48 @@ in
 
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
+  services.grobi = {
+    enable = true;
+    rules = [
+      {
+        name = "docked";
+        outputs_connected = [ "DVI-I-2-2" "DVI-I-1-1" ];
+        atomic = true;
+        configure_row = [ "DVI-I-2-2" "DVI-I-1-1" ];
+        primary = "DVI-I-2-2";
+        # execute_after = [
+        #   "${pkgs.nitrogen}/bin/nitrogen --restore"
+        #   "${pkgs.qtile}/bin/qtile cmd-obj -o cmd -f restart"
+        #   "${pkgs.networkmanager}/bin/nmcli radio wifi off"
+        # ];
+      }
+      {
+        name = "undocked";
+        outputs_disconnected = [ "DVI-I-2-2" "DVI-I-1-1" ];
+        configure_single = "eDP-1";
+        primary = true;
+        atomic = true;
+        # execute_after = [
+        #   "${pkgs.nitrogen}/bin/nitrogen --restore"
+        #   "${pkgs.qtile}/bin/qtile cmd-obj -o cmd -f restart"
+        #   "${pkgs.networkmanager}/bin/nmcli radio wifi on"
+        # ];
+      }
+      {
+        name = "fallback";
+        configure_single = "eDP-1";
+      }
+    ];
+  };
 
   home.packages = with pkgs; [
+    kdePackages.kate
+    alsa-utils
+    xorg.xorgserver
+    obsidian
+    maven
+    vulkan-tools
+    picom
 		nmap
     pciutils
     xclip
@@ -52,6 +94,8 @@ in
     tomato-c
     clang-tools
     transmission_4-qt
+    tor
+    tor-browser
   ];
 
   home.enableNixpkgsReleaseCheck = false;
@@ -69,4 +113,9 @@ in
 
   xdg.enable = true;
   xdg.userDirs.enable = true;
+
+  # services.pass-secret-service = {
+  #   enable = true;
+  #   package = pkgs.libsecret;
+  # };
 }

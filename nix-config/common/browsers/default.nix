@@ -5,5 +5,6 @@
     ./firefox.nix
     ./floorp.nix
     ./browserpass.nix
+    ./zen.nix
   ];
 }

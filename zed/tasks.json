@@ -1,0 +1,33 @@
+[
+  {
+    "label": "search:project",
+    "command": "QUERY=${ZED_SELECTED_TEXT:-}; FILE=$(rg --column --hidden --line-number --no-heading --color=always --smart-case --colors match:fg:green --colors path:fg:white --colors path:style:nobold --glob '!**/.git/' '--glob' '!**/node_modules'  \"$QUERY\" . | fzf --ansi --delimiter : --preview 'bat --style=numbers,changes,header --color=always --highlight-line {2} {1}' --preview-window 'up:70%:+{2}+3/3' --layout=reverse --query \"$QUERY\" --print-query | tail -1); if [ -n \"$FILE\" ]; then LINE=$(echo $FILE | cut -d':' -f2); COL=$(echo $FILE | cut -d':' -f3); FILE=$(echo $FILE | cut -d':' -f1); zeditor --add $FILE:$LINE:$COL; fi",
+    "shell": {
+      "program": "/bin/sh"
+    },
+    "env": {
+      "PATH": "/run/wrappers/bin:/home/katob/.nix-profile/bin:/nix/profile/bin:/home/katob/.local/state/nix/profile/bin:/etc/profiles/per-user/katob/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin"
+    },
+    "cwd": "${ZED_WORKTREE_ROOT}",
+    "allow_concurrent_runs": false,
+    "use_new_terminal": false,
+    "reveal": "always",
+    "hide": "on_success"
+  },
+
+  {
+    "label": "open:terminal",
+    "command": "bash",
+    "shell": {
+      "program": "/bin/sh"
+    },
+    "env": {
+      "PATH": "/run/wrappers/bin:/home/katob/.nix-profile/bin:/nix/profile/bin:/home/katob/.local/state/nix/profile/bin:/etc/profiles/per-user/katob/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin"
+    },
+    "cwd": "${ZED_WORKTREE_ROOT}",
+    "allow_concurrent_runs": false,
+    "use_new_terminal": false,
+    "reveal": "always",
+    "hide": "on_success"
+  }
+]

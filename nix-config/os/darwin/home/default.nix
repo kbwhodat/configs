@@ -5,6 +5,7 @@
     ../../../common/sops
 		../../../common
     ../../../common/work
+    ../../../pkgs
 	];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -16,7 +17,7 @@
 	manual.json.enable = false;
   home.enableNixpkgsReleaseCheck = false;
 
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "25.05"; # Please read the comment before changing.
 
   #home.file."/Users/katob/.katotoken".source = config.sops.secrets."github-token".path;
   home.sessionVariables = {

@@ -1,7 +1,7 @@
 { config, pkgs, inputs, ... }: 
-# let
-#   nixgl = pkgs.nixgl;
-# in
+let
+  inherit (pkgs.stdenv) isDarwin;
+in
 {
 
 	home.sessionVariables.KITTY_CONFIG_DIRECTORY = "${config.home.homeDirectory}/.config/kitty";
@@ -12,8 +12,8 @@
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';
     font = {
-      name = "RobotoMono Nerd Font Mono Medium Regular";
-      size = 13.0;
+      name = "ComicShannsMono Nerd Font Mono";
+      size = if isDarwin then 13.0 else 12.3;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -27,7 +27,7 @@
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
 
-      bold_font        RobotoMono Nerd Font Mono Bold
+      bold_font        ComicShannsMono Nerd Font Mono Bold
       italic_font      RobotoMono Nerd Font Mono Italic
 
       allow_remote_control yes
