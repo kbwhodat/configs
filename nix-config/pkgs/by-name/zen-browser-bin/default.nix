@@ -1,5 +1,4 @@
 {
-  pkgs,
   stdenv,
   lib,
   fetchzip,
@@ -18,7 +17,8 @@
   libglvnd,
 
   # Adding this so I can use add-ons like browserpass and trydactyl
-  nativeMessagingHosts ? []
+  nativeMessagingHosts ? [],
+  ...
 }:
 
 let
@@ -62,75 +62,33 @@ let
       };
     };
   };
-  inherit (pkgs.stdenv) isDarwin;
-  version = "1.0.2-b.5";
-
-# Darwin vs. Linux URLs
-  darwinUrl  = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.macos-x86_64.dmg";
-  linuxUrl   = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2";
-  hash       = "sha256-sS9phyr97WawxB2AZAwcXkvO3xAmv8k4C8b8Qw364PY=";
 in
 stdenv.mkDerivation rec {
   pname = "zen-browser-bin";
+  version = "1.6b";
+  src = fetchzip {
+    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2";
+    hash = "sha256-7Z7PZMTmPhB4Sx9+YXpWTkhcBsblzkgWyIJvNTSTNSU=";
+  };
 
+  desktopItems = [
+    desktopItem
+  ];
 
-  src = if isDarwin then
-    pkgs.fetchurl {
-      name = "";
-      url = darwinUrl;
-      hash = hash;
-    }
-  else
-    fetchzip {
-      name = "";
-      url = linuxUrl;
-      hash = hash;
-    };
-
-  desktopItems = if isDarwin then
-    ''''
-  else
-    [
-      desktopItem
-    ];
-
-  nativeBuildInputs = if isDarwin then
-    ''''
-  else
-    [
-      autoPatchelfHook
-        wrapGAppsHook3
-        copyDesktopItems
-    ];
+  nativeBuildInputs = [
+    autoPatchelfHook
+    wrapGAppsHook3
+    copyDesktopItems
+  ];
 
   buildInputs = [
-    pkgs._7zz
     gtk3
     alsa-lib
     dbus-glib
     xorg.libXtst
   ] ++ nativeMessagingHosts;
 
-  unpackPhase = if isDarwin then ''
-    runHook preUnpack
-    7zz x "$src" -o"$sourceRoot"
-    runHook postUnpack
-  ''
-  else
-  '''';
-
-  installPhase = if isDarwin then ''
-    preInstall
-
-    mkdir -p $out/Applications
-    cp -r 'Zen Browser.app' "$out/Applications/"
-
-    runHook postInstall
-  ''
-
-  else
-
-  ''
+  installPhase = ''
     runHook preInstall
 
     mkdir -p $out/lib
@@ -149,10 +107,7 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  preFixup = if isDarwin then
-  ''''
-  else
-  ''
+  preFixup = ''
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [
         pciutils
@@ -170,7 +125,7 @@ stdenv.mkDerivation rec {
     license = licenses.mpl20;
     maintainers = with maintainers; [ mordrag ];
     description = "Experience tranquillity while browsing the web without people tracking you!";
-    platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
+    platforms = platforms.linux;
     mainProgram = "zen";
   };
 }

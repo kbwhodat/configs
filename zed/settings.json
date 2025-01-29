@@ -1,18 +1,56 @@
 {
   "auto_install_extensions": {
     "ansible": true,
+    "java": true,
     "c": true,
     "go": true,
     "nix": true,
     "python": true,
     "terraform": true
   },
+  "features": {
+    "copilot": false,
+    "inline_completion_provider": "none"
+  },
   "auto_update": false,
   "buffer_font_family": "ComicShannsMono Nerd Font Mono",
   "buffer_font_size": 14,
   "hour_format": "hour24",
+  "cursor_blink": false,
+  "unnecessary_code_fade": 0.5,
+  "notification_panel": {
+    "button": false,
+  },
+  "assistant": {
+    "provider": {
+      "name": "ollama",
+      "default_model": {
+        "name": "deepseek-r1:7b",
+        "display_name": null,
+        "max_tokens": 2048,
+        "keep_alive": -1
+      }
+    },
+    "version": "1",
+    "enabled": true
+  },
+  "outline_panel": {
+    "button": true,
+    "dock": "right",
+    "file_icons": true,
+    "folder_icons": true,
+  },
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false
+  },
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false
+  },
   "relative_line_numbers": true,
   "terminal": {
+    "button": false,
     "shell": {
       "program": "/bin/sh"
     }
@@ -24,6 +62,13 @@
   },
   "use_autoclose": true,
   "format_on_save": "off",
+  "collaboration_panel": {
+    "button": false,
+  },
+  "project_panel": {
+    "git_status": true,
+    "button": false
+  },
   "git": {
     "enabled": true,
     "git_status": true
@@ -31,6 +76,9 @@
   "ui_font_family": "ComicShannsMono Nerd Font Mono",
   "ui_font_size": 16,
   "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "always"
+  },
   "scroll_beyond_last_line": "off",
   "vertical_scroll_margin": 0,
   "scrollbar": {
@@ -73,5 +121,25 @@
         "cursor": "#DCDCCC"
       }
     ]
+  },
+  "lsp": {
+    "jdtls": {
+      "settings": {
+        "java.format.enabled": true,
+      }
+    }
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "available_models": [
+        {
+          "name": "deepseek-r1:7b",
+          "display_name": "deepseek-r1:7b",
+          "max_tokens": 32768,
+          "keep_alive": "5m"
+        }
+      ]
+    }
   }
 }

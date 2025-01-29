@@ -11,6 +11,7 @@
     ./password-store.nix
     ./gpg.nix
     ./ghostty.nix
+    # ./python.nix
     # ./ghostty-hm.nix
 	];
 

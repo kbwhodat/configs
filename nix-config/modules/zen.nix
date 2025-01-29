@@ -13,30 +13,27 @@ with lib; let
 
   zenConfigPath =
     if isDarwin
-    then "Library/Application Support/zen"
+    then "${config.home.homeDirectory}/Library/Application Support/zen"
     else "${config.home.homeDirectory}/.zen";
 
-  profilesPath =
-    if isDarwin
-    then "${zenConfigPath}/Profiles"
-    else zenConfigPath;
+  profilesPath = "${zenConfigPath}/Profiles";
 
   extensionPath = "extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
 
   profilesIni = lib.generators.toINI {} {
     General = {
       StartWithLastProfile = 1;
-      # Version = 2;
+      Version = 2;
     };
 
     Install0 = {
-       Default =  "/Users/katob/Library/Application Support/zen/Profiles/main";
+       Default =  "${zenConfigPath}/Profiles/main";
        Locked = 1;
     };
 
     Profile0 = {
       Name = "Default";
-      Path = "/Users/katob/Library/Application Support/zen/Profiles/main";
+      Path = "${zenConfigPath}/Profiles/main";
       IsRelative = 0;
       ZenAvatarPath = "chrome://browser/content/zen-avatars/avatar-32.svg";
       Default = 1;
@@ -48,7 +45,7 @@ with lib; let
   installs =
     flip mapAttrs' cfg.profiles (_: install:
         nameValuePair "Install${toString install.id}" {
-            Default = "/Users/katob/Library/Application Support/zen/Profiles/main";
+            Default = "${zenConfigPath}/Profiles/main";
             Locked  = 1;
         });
 
@@ -707,10 +704,10 @@ in {
 
     home.file = mkMerge ([
         {
-            "${zenConfigPath}/profiless.ini" =
+            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiles.ini"}" =
                 mkIf (cfg.profiles != {}) {text = profilesIni;};
 
-            "${zenConfigPath}/installss.ini" =
+            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installs.ini"}" =
                 {text = installsIni;};
         }
       ]
@@ -915,11 +912,11 @@ in {
           force = true;
         };
 
-        "${zenConfigPath}/profiles.ini" = {
+        "${zenConfigPath}/profiles.ini" = lib.optionalAttrs isDarwin {
           source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiles.ini";
         };
 
-        "${zenConfigPath}/installs.ini" = {
+        "${zenConfigPath}/installs.ini" = lib.optionalAttrs isDarwin {
           source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installs.ini";
         };
       }));

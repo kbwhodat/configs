@@ -34,7 +34,7 @@ in
   home.file."ghostty".target = "${config.home.homeDirectory}/.config/ghostty/config";
   home.file."ghostty".source = builtins.toFile "config" ''
 
-    font-size = 13.3
+    font-size = ${if isDarwin then "13.3" else "12.3"}
 
     #font-family = "RobotoMono Nerd Font Mono"
     #font-family-bold = "RobotoMono Nerd Font Mono Bd"

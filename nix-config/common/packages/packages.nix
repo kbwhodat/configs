@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     zed-editor
+    markdown-oxide
     #inputs.nil.packages.${pkgs.system}.nil
     nil
     nixd
@@ -40,7 +41,6 @@
     cargo
     nodejs_22
     php83Packages.composer
-    python311Packages.pip
     vim
     tree-sitter
     zlib
@@ -52,5 +52,6 @@
     jq
     yq
     sops
+    jdt-language-server
   ];
 }
