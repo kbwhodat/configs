@@ -7,43 +7,49 @@
 with lib; let
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
 
-  cfg = config.programs.floorp;
+  cfg = config.programs.zen-browser;
 
   jsonFormat = pkgs.formats.json {};
 
-  floorpConfigPath =
+  zenConfigPath =
     if isDarwin
-    then "Library/Application Support/Floorp"
-    else "${config.home.homeDirectory}/.floorp";
+    then "${config.home.homeDirectory}/Library/Application Support/zen"
+    else "${config.home.homeDirectory}/.zen";
 
-  profilesPath =
-    if isDarwin
-    then "${floorpConfigPath}/Profiles"
-    else floorpConfigPath;
+  profilesPath = "${zenConfigPath}/Profiles";
 
-  # The extensions path shared by all profiles; will not be supported
-  # by future Floorp versions.
   extensionPath = "extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
 
-  profiles =
-    flip mapAttrs' cfg.profiles (_: profile:
-      nameValuePair "Profile${toString profile.id}" {
-        Name = profile.name;
-        Path =
-          if isDarwin
-          then "Profiles/${profile.path}"
-          else profile.path;
-        IsRelative = 1;
-        Default =
-          if profile.isDefault
-          then 1
-          else 0;
-      })
-    // {
-      General = {StartWithLastProfile = 1;};
+  profilesIni = lib.generators.toINI {} {
+    General = {
+      StartWithLastProfile = 1;
+      Version = 2;
     };
 
-  profilesIni = generators.toINI {} profiles;
+    Install0 = {
+       Default =  "${zenConfigPath}/Profiles/main";
+       Locked = 1;
+    };
+
+    Profile0 = {
+      Name = "Default";
+      Path = "${zenConfigPath}/Profiles/main";
+      IsRelative = 0;
+      ZenAvatarPath = "chrome://browser/content/zen-avatars/avatar-32.svg";
+      Default = 1;
+    };
+  };
+
+  # profilesIni = generators.toINI {} profiles;
+
+  installs =
+    flip mapAttrs' cfg.profiles (_: install:
+        nameValuePair "Install${toString install.id}" {
+            Default = "${zenConfigPath}/Profiles/main";
+            Locked  = 1;
+        });
+
+  installsIni = generators.toINI {} installs;
 
   userPrefValue = pref:
     builtins.toJSON (
@@ -55,7 +61,7 @@ with lib; let
   mkUserJs = prefs: extraPrefs: bookmarks: let
     prefs' =
       lib.optionalAttrs ([] != bookmarks) {
-        "browser.bookmarks.file" = toString (floorpBookmarksFile bookmarks);
+        "browser.bookmarks.file" = toString (zenBookmarksFile bookmarks);
         "browser.places.importBookmarksHTML" = true;
       }
       // prefs;
@@ -87,7 +93,7 @@ with lib; let
     }}
   '';
 
-  floorpBookmarksFile = bookmarks: let
+  zenBookmarksFile = bookmarks: let
     indent = level:
       lib.concatStringsSep "" (map (lib.const "  ") (lib.range 1 level));
 
@@ -124,7 +130,7 @@ with lib; let
 
     bookmarkEntries = allItemsToHTML 1 bookmarks;
   in
-    pkgs.writeText "floorp-bookmarks.html" ''
+    pkgs.writeText "zen-bookmarks.html" ''
       <!DOCTYPE NETSCAPE-Bookmark-file-1>
       <!-- This is an automatically generated file.
         It will be read and overwritten.
@@ -156,20 +162,20 @@ with lib; let
     assertion = duplicates == {};
     message =
       ''
-        Must not have a Floorp ${entityKind} with an existing ID but
+        Must not have a Zen ${entityKind} with an existing ID but
       ''
       + concatStringsSep "\n" (mapAttrsToList mkMsg duplicates);
   });
 
   wrapPackage = package: let
-    # The configuration expected by the Floorp wrapper.
+    # The configuration expected by the Zen wrapper.
     fcfg = {enableGnomeExtensions = cfg.enableGnomeExtensions;};
 
     # A bit of hackery to force a config into the wrapper.
     browserName =
       package.browserName or (builtins.parseDrvName package.name).name;
 
-    # The configuration expected by the Floorp wrapper builder.
+    # The configuration expected by the Zen wrapper builder.
     bcfg = setAttrByPath [browserName] fcfg;
   in
     if package == null
@@ -182,42 +188,42 @@ with lib; let
         cfg = old.cfg or {} // fcfg;
         extraPolicies = cfg.policies;
       })
-    else (pkgs.wrapFloorp.override {config = bcfg;}) package {};
+    else (pkgs.wrapZen.override {config = bcfg;}) package {};
 in {
   meta.maintainers = [maintainers.rycee maintainers.kira-bruneau];
 
   imports = [
-    (mkRemovedOptionModule ["programs" "floorp" "extensions"] ''
+    (mkRemovedOptionModule ["programs" "zen-browser" "extensions"] ''
 
       Extensions are now managed per-profile. That is, change from
 
-        programs.floorp.extensions = [ foo bar ];
+        programs.zen-browser.extensions = [ foo bar ];
 
       to
 
-        programs.floorp.profiles.myprofile.extensions = [ foo bar ];'')
-    (mkRemovedOptionModule ["programs" "floorp" "enableAdobeFlash"]
+        programs.zen-browser.profiles.myprofile.extensions = [ foo bar ];'')
+    (mkRemovedOptionModule ["programs" "zen-browser" "enableAdobeFlash"]
       "Support for this option has been removed.")
-    (mkRemovedOptionModule ["programs" "floorp" "enableGoogleTalk"]
+    (mkRemovedOptionModule ["programs" "zen-browser" "enableGoogleTalk"]
       "Support for this option has been removed.")
-    (mkRemovedOptionModule ["programs" "floorp" "enableIcedTea"]
+    (mkRemovedOptionModule ["programs" "zen-browser" "enableIcedTea"]
       "Support for this option has been removed.")
   ];
 
   options = {
-    programs.floorp = {
-      enable = mkEnableOption "Floorp";
+    programs.zen-browser = {
+      enable = mkEnableOption "Zen Browser";
 
       package = mkOption {
         type = with types; nullOr package;
         default =
           if versionAtLeast config.home.stateVersion "19.09"
-          then pkgs.floorp
-          else pkgs.floorp-unwrapped;
-        defaultText = literalExpression "pkgs.floorp";
+          then pkgs.zen-browser-bin
+          else pkgs.zen-browser-bin;
+        defaultText = literalExpression "pkgs.zen-browser-bin";
         example = literalExpression ''
-          pkgs.floorp.override {
-            # See nixpkgs' floorp/wrapper.nix to check which options you can use
+          pkgs.zen-browser-bin.override {
+            # See nixpkgs' zen/wrapper.nix to check which options you can use
             nativeMessagingHosts = [
               # Gnome shell native connector
               pkgs.gnome-browser-connector
@@ -226,18 +232,12 @@ in {
             ];
           }
         '';
-        description = ''
-          The Floorp package to use. If state version ≥ 19.09 then
-          this should be a wrapped Floorp package. For earlier state
-          versions it should be an unwrapped Floorp package.
-          Set to `null` to disable installing Floorp.
-        '';
       };
 
       finalPackage = mkOption {
         type = with types; nullOr package;
         readOnly = true;
-        description = "Resulting Floorp package.";
+        description = "Resulting Zen package.";
       };
 
       policies = mkOption {
@@ -274,7 +274,7 @@ in {
             settings = mkOption {
               type = types.attrsOf (jsonFormat.type
                 // {
-                  description = "Floorp preference (int, bool, string, and also attrs, list, float as a JSON string)";
+                  description = "Zen preference (int, bool, string, and also attrs, list, float as a JSON string)";
                 });
               default = {};
               example = literalExpression ''
@@ -292,9 +292,9 @@ in {
                 }
               '';
               description = ''
-                Attribute set of Floorp preferences.
+                Attribute set of Zen preferences.
 
-                Floorp only supports int, bool, and string types for
+                Zen only supports int, bool, and string types for
                 preferences, but home-manager will automatically
                 convert all other JSON-compatible values into strings.
               '';
@@ -311,7 +311,7 @@ in {
             userChrome = mkOption {
               type = types.lines;
               default = "";
-              description = "Custom Floorp user chrome CSS.";
+              description = "Custom Zen user chrome CSS.";
               example = ''
                 /* Hide tab bar in FF Quantum */
                 @-moz-document url("chrome://browser/content/browser.xul") {
@@ -330,7 +330,7 @@ in {
             userContent = mkOption {
               type = types.lines;
               default = "";
-              description = "Custom Floorp user content CSS.";
+              description = "Custom Zen user content CSS.";
               example = ''
                 /* Hide scrollbar in FF Quantum */
                 *{scrollbar-width:none !important}
@@ -467,7 +467,7 @@ in {
                 default = false;
                 description = ''
                   Whether to force replace the existing search
-                  configuration. This is recommended since Floorp will
+                  configuration. This is recommended since Zen will
                   replace the symlink for the search configuration on every
                   launch, but note that you'll lose any existing
                   configuration by enabling this.
@@ -535,10 +535,10 @@ in {
                 description = ''
                   Attribute set of search engine configurations. Engines
                   that only have {var}`metaData` specified will
-                  be treated as builtin to Floorp.
+                  be treated as builtin to Zen.
 
                   See [SearchEngine.jsm](https://searchfox.org/mozilla-central/rev/669329e284f8e8e2bb28090617192ca9b4ef3380/toolkit/components/search/SearchEngine.jsm#1138-1177)
-                  in Floorp's source for available options. We maintain a
+                  in Zen's source for available options. We maintain a
                   mapping to let you specify all options in the referenced
                   link without underscores, but it may fall out of date with
                   future options.
@@ -631,30 +631,30 @@ in {
               type = types.listOf types.package;
               default = [];
               example = literalExpression ''
-                with pkgs.nur.repos.rycee.floorp-addons; [
+                with pkgs.nur.repos.rycee.zen-addons; [
                   privacy-badger
                 ]
               '';
               description = ''
-                List of Floorp add-on packages to install for this profile.
+                List of Zen add-on packages to install for this profile.
                 Some pre-packaged add-ons are accessible from the
                 [Nix User Repository](https://github.com/nix-community/NUR).
                 Once you have NUR installed run
 
                 ```console
-                $ nix-env -f '<nixpkgs>' -qaP -A nur.repos.rycee.floorp-addons
+                $ nix-env -f '<nixpkgs>' -qaP -A nur.repos.rycee.zen-addons
                 ```
 
-                to list the available Floorp add-ons.
+                to list the available Zen add-ons.
 
                 Note that it is necessary to manually enable these extensions
-                inside Floorp after the first installation.
+                inside Zen after the first installation.
               '';
             };
           };
         }));
         default = {};
-        description = "Attribute set of Floorp profiles.";
+        description = "Attribute set of Zen profiles.";
       };
 
       enableGnomeExtensions = mkOption {
@@ -679,7 +679,7 @@ in {
         in {
           assertion = cfg.profiles == {} || length defaults == 1;
           message =
-            "Must have exactly one default Floorp profile but found "
+            "Must have exactly one default Zen profile but found "
             + toString (length defaults)
             + optionalString (length defaults > 1)
             (", namely " + concatStringsSep ", " defaults);
@@ -692,20 +692,23 @@ in {
         cfg.profiles);
 
     warnings = optional (cfg.enableGnomeExtensions or false) ''
-      Using 'programs.floorp.enableGnomeExtensions' has been deprecated and
+      Using 'programs.zen-browser.enableGnomeExtensions' has been deprecated and
       will be removed in the future. Please change to overriding the package
-      configuration using 'programs.floorp.package' instead. You can refer to
+      configuration using 'programs.zen-browser.package' instead. You can refer to
       its example for how to do this.
     '';
 
-    programs.floorp.finalPackage = wrapPackage cfg.package;
+    programs.zen-browser.finalPackage = wrapPackage cfg.package;
 
     home.packages = lib.optional (cfg.finalPackage != null) cfg.finalPackage;
 
     home.file = mkMerge ([
         {
-          "${floorpConfigPath}/profiles.ini" =
-            mkIf (cfg.profiles != {}) {text = profilesIni;};
+            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiles.ini"}" =
+                mkIf (cfg.profiles != {}) {text = profilesIni;};
+
+            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installs.ini"}" =
+                {text = installsIni;};
         }
       ]
       ++ flip mapAttrsToList cfg.profiles (_: profile: {
@@ -780,7 +783,7 @@ in {
                         # are unique identifiers that are generally formatted
                         # like: [source]/path/to/engine.xml
                         loadPath = ''
-                          [home-manager]/programs.floorp.profiles.${profile.name}.search.engines."${
+                          [home-manager]/programs.zen-browser.profiles.${profile.name}.search.engines."${
                             replaceStrings ["\\"] ["\\\\"] input.name
                           }"'';
                       });
@@ -859,7 +862,7 @@ in {
               };
 
               # Home Manager doesn't circumvent user consent and isn't acting
-              # maliciously. We're modifying the search outside of Floorp, but
+              # maliciously. We're modifying the search outside of Zen, but
               # a claim by Mozilla to remove this would be very anti-user, and
               # is unlikely to be an issue for our use case.
               disclaimer = appName:
@@ -872,7 +875,7 @@ in {
 
               salt =
                 if profile.search.default != null
-                then profile.path + profile.search.default + disclaimer "Floorp"
+                then profile.path + profile.search.default + disclaimer "zen"
                 else null;
 
               privateSalt =
@@ -880,7 +883,7 @@ in {
                 then
                   profile.path
                   + profile.search.privateDefault
-                  + disclaimer "Floorp"
+                  + disclaimer "zen"
                 else null;
             in
               pkgs.runCommand "search.json.mozlz4" {
@@ -901,12 +904,20 @@ in {
         "${profilesPath}/${profile.path}/extensions" = mkIf (profile.extensions != []) {
           source = let
             extensionsEnvPkg = pkgs.buildEnv {
-              name = "hm-floorp-extensions";
+              name = "hm-zen-browser-extensions";
               paths = profile.extensions;
             };
           in "${extensionsEnvPkg}/share/mozilla/${extensionPath}";
           recursive = true;
           force = true;
+        };
+
+        "${zenConfigPath}/profiles.ini" = lib.optionalAttrs isDarwin {
+          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiles.ini";
+        };
+
+        "${zenConfigPath}/installs.ini" = lib.optionalAttrs isDarwin {
+          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installs.ini";
         };
       }));
   };

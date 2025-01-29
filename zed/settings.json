@@ -1,0 +1,145 @@
+{
+  "auto_install_extensions": {
+    "ansible": true,
+    "java": true,
+    "c": true,
+    "go": true,
+    "nix": true,
+    "python": true,
+    "terraform": true
+  },
+  "features": {
+    "copilot": false,
+    "inline_completion_provider": "none"
+  },
+  "auto_update": false,
+  "buffer_font_family": "ComicShannsMono Nerd Font Mono",
+  "buffer_font_size": 14,
+  "hour_format": "hour24",
+  "cursor_blink": false,
+  "unnecessary_code_fade": 0.5,
+  "notification_panel": {
+    "button": false,
+  },
+  "assistant": {
+    "provider": {
+      "name": "ollama",
+      "default_model": {
+        "name": "deepseek-r1:7b",
+        "display_name": null,
+        "max_tokens": 2048,
+        "keep_alive": -1
+      }
+    },
+    "version": "1",
+    "enabled": true
+  },
+  "outline_panel": {
+    "button": true,
+    "dock": "right",
+    "file_icons": true,
+    "folder_icons": true,
+  },
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false
+  },
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false
+  },
+  "relative_line_numbers": true,
+  "terminal": {
+    "button": false,
+    "shell": {
+      "program": "/bin/sh"
+    }
+  },
+  "theme": {
+    "mode": "dark",
+    "dark": "Kanagawa Wave",
+    "light": "One Light"
+  },
+  "use_autoclose": true,
+  "format_on_save": "off",
+  "collaboration_panel": {
+    "button": false,
+  },
+  "project_panel": {
+    "git_status": true,
+    "button": false
+  },
+  "git": {
+    "enabled": true,
+    "git_status": true
+  },
+  "ui_font_family": "ComicShannsMono Nerd Font Mono",
+  "ui_font_size": 16,
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "always"
+  },
+  "scroll_beyond_last_line": "off",
+  "vertical_scroll_margin": 0,
+  "scrollbar": {
+    "show": "never"
+  },
+  "experimental.theme_overrides": {
+    "editor.document_highlight.bracket_background": "#808080",
+    "panel.focused_border": "#83a598ff",
+    "border.selected": "#FFFFFF",
+    "panel.foreground": "#FFFFFF",
+    "text": "#FFFFFF",
+    "text.muted": "#FFFFFF",
+    "title_bar.background": "#000000",
+    "elevated_surface.background": "#000000",
+    "surface.background": "#000000",
+    "border": "#000000",
+    "titlebar.border_color": "#000000",
+    "titlebar.button.background": "#000000",
+    "titlebar.button.hover_background": "#111111",
+    "editor.background": "#0b0b0b",
+    "editor.gutter.background": "#000000",
+    "editor.active_line.background": "#111111",
+    "editor.selection.background": "#202020",
+    "status_bar.background": "#00",
+    "element.background": "#000000",
+    "panel.background": "#000000",
+    "sidebar.background": "#000000",
+    "terminal.background": "#000000",
+    "titlebar.background": "#000000",
+    "tab_bar.background": "#000000",
+    "tab.inactive_background": "#000000",
+    "tab.active_background": "#1C1C1C.",
+    "tab.hover_background": "#111111",
+    "tab_bar.border_color": "#000000",
+    "tab_bar.divider_color": "#000000",
+    "tab_bar.separator": "#000000",
+    "toolbar.background": "#000000",
+    "players": [
+      {
+        "cursor": "#DCDCCC"
+      }
+    ]
+  },
+  "lsp": {
+    "jdtls": {
+      "settings": {
+        "java.format.enabled": true,
+      }
+    }
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "available_models": [
+        {
+          "name": "deepseek-r1:7b",
+          "display_name": "deepseek-r1:7b",
+          "max_tokens": 32768,
+          "keep_alive": "5m"
+        }
+      ]
+    }
+  }
+}

@@ -4,47 +4,52 @@ inherit (pkgs.stdenv) isDarwin;
 in
 {
 
-  # imports = [
-  #   ../../modules/floorp.nix
-  # ];
+  imports = [
+    ../../modules/zen.nix
+  ];
 
-  programs.floorp.enable =
+  programs.zen-browser.enable =
     if isDarwin then
       true
     else
       true;
 
-  programs.floorp.package =
+  programs.zen-browser.package =
     if isDarwin then
-      pkgs.floorp-bin
-    else
-      pkgs.floorp.override {
+        pkgs.zen-browser-bin-darwin.override {
         nativeMessagingHosts = [
-          pkgs.tridactyl-native
+            # Tridactyl native connector
+            pkgs.tridactyl-native
         ];
-      };
+        }
+    else
+        pkgs.zen-browser-bin.override {
+        nativeMessagingHosts = [
+            # Gnome shell native connector
+            pkgs.gnome-browser-connector
+            # Tridactyl native connector
+            pkgs.tridactyl-native
+        ];
+        };
 
-  programs.floorp.profiles =
+  programs.zen-browser.profiles =
     let
 
 # Using my own custom chrome.css
-    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    userChrome = builtins.readFile ../../../chrome/zen-browser-theme.css;
 
-  path =
-    if isDarwin then
-      "${config.home.homeDirectory}/Library/Application Support/Floorp"
-    else
-      "${config.home.homeDirectory}/.floorp";
+    name = "kato";
+    path = "main";
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       consent-o-matic
       sponsorblock
-      leechblock-ng
+      # leechblock-ng
       df-youtube
       kagi-search
       darkreader
-      auto-tab-discard
+      # auto-tab-discard
       browserpass
       privacy-badger
       ublock-origin
@@ -54,39 +59,35 @@ in
   ];
 
   settings = {
-# Settings for tabsleep, good for memory optimization
-    "floorp.tabsleep.enabled" = true;
-    "floorp.tabsleep.tabTimeoutMinutes" = 30;
 
-# Setting for ui browser
-    "floorp.delete.browser.border" = true;
-    "floorp.chrome.theme.mode" = 1;
+    # Zen settings
+    "zen.themes.color-prefs.amoled" = true;
+    "theme.better_uniexbtn.custom" = "url(chrome://branding/content/icon32.png)";
+    "theme.better_uniexbtn.default" = "Default";
+    "zen.welcome-screen.seen" = false;
+    "zen.welcome-screen.enabled" = false;
+    "zen.theme.pill-button" = false;
+    "zen.themes.updated-value-observer" = true;
+    "zen.urlbar.behavior" = "floating-on-type";
+    "zen.view.compact" = true;
+    "zen.theme.accent-color" = "#dec663";
+    "zen.view.sidebase-expanded" = false;
+    "zen.view.sidebase-expanded.on-hover" = false;
+    "zen.view.use-single-toolbar" = false;
+    "zen.splitView.change-on-hover" = true;
+    "zen.tab-unloader.timeout-minutes" = 35;
+    "zen.view.compact.toolbar-flash-popup" = false;
 
-#Handle the vertical tabs
-    "floorp.browser.tabs.verticaltab.enabled" = false;
-    "floorp.tabbar.style" = 0;
-    "floorp.browser.tabbar.settings" = 4;
-    "floorp.browser.sidebae.is.displayed" = 2;
-    "floorp.browser.tabs.verticaltab" = false;
-    "floorp.verticaltab.hover.enabled" = false;
-    "floorp.verticaltab.show.newtab.button" = false;
-
-# Disabling sidebar for now, I don't see the benefit
-    "floorp.browser.sidebar.enable" = true;
-    "floorp.browser.sidebar.is.displayed" = true;
-    "floorp.browser.sidebar.right" = true;
-
-# Bookmark related settings
-    "floorp.bookmarks.bar.focus.mode" = false;
-
-# Makes some website dark
+    "zen.view.compact.hide-tabbar" = true;
+    "zen.view.compact.hide-toolbar" = true;
+    # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
-# browser/ui theme is not effective in Floorp - should use floorp.chrome.theme.mode
     "browser.theme.toolbar-theme" = 0;
     "browser.theme.content-theme" = 0;
     "ui.systemUsesDarkTheme" = 1;
 
+    "extension.activeThemeID" = "firefox-compact-dark@mozilla.org";
 # setting up kagi
     "extensions.webextensions.ExtensionStorageIDB.migrated.search@kagi.com" = true;
 
@@ -96,10 +97,11 @@ in
 # fonts
     "browser.display.use_document_fonts" = 1;
     "font.default.x-western" = "sans-serif";
-    "font.size.variable.x-western" = 16;
+    "font.size.variable.x-western" = 17;
     "font.name.monospace.x-western" = "ComicShannsMono Nerd Font Mono";
-    "font.name.sans-serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "font.name.sans-serif.x-western" = " ComicShannsMono Nerd Font Propo";
     "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "layout.css.devPixelsPerPx" = 1.0;
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "newtab";
@@ -115,7 +117,7 @@ in
 # "network.prefetch-next" = false;
     "general.smoothScroll" = true;
     "media.autoplay.default" = 1;
-    "browser.cache.disk.enable" = false;
+    "browser.cache.disk.enable" = true;
     "broswer.cache.memory.enable" = true;
     "broswer.sessionstore.resume_from_crash" = false;
     "browser.search.countryCode" = "US";
@@ -151,6 +153,7 @@ in
     "content.notify.interval" = 200000;
 
     /** GFX ***/
+    "layers.acceleration.enabled" = true;
     "gfx.canvas.accelerated.cache-items" = 4096;
     "gfx.canvas.accelerated.cache-size" = 512;
     "gfx.content.skia-font-cache-size" = 20;
@@ -177,7 +180,7 @@ in
     /** SPECULATIVE LOADING ***/
     "network.dns.disablePrefetch" = true;
     "network.dns.disablePrefetchFromHTTPS" = true;
-    "network.prefetch-next" = false;
+    "network.prefetch-next" = true;
     "network.predictor.enabled" = false;
     "network.predictor.enable-prefetch" = false;
 
@@ -360,7 +363,7 @@ in
   in
   {
     home = {
-      inherit userChrome isDefault settings path extensions;
+      inherit isDefault userChrome settings path extensions name;
       id = 0;
     };
   };
