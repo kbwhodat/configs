@@ -39,11 +39,7 @@ in
     userChrome = builtins.readFile ../../../chrome/zen-browser-theme.css;
 
     name = "kato";
-    path =
-    if isDarwin then
-      "main"
-    else
-      "${config.home.homeDirectory}/.zen";
+    path = "main";
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
@@ -53,7 +49,7 @@ in
       df-youtube
       kagi-search
       darkreader
-      auto-tab-discard
+      # auto-tab-discard
       browserpass
       privacy-badger
       ublock-origin
@@ -64,7 +60,7 @@ in
 
   settings = {
 
-    # Zen setting
+    # Zen settings
     "zen.themes.color-prefs.amoled" = true;
     "theme.better_uniexbtn.custom" = "url(chrome://branding/content/icon32.png)";
     "theme.better_uniexbtn.default" = "Default";
@@ -79,7 +75,11 @@ in
     "zen.view.sidebase-expanded.on-hover" = false;
     "zen.view.use-single-toolbar" = false;
     "zen.splitView.change-on-hover" = true;
+    "zen.tab-unloader.timeout-minutes" = 35;
+    "zen.view.compact.toolbar-flash-popup" = false;
 
+    "zen.view.compact.hide-tabbar" = true;
+    "zen.view.compact.hide-toolbar" = true;
     # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
@@ -117,7 +117,7 @@ in
 # "network.prefetch-next" = false;
     "general.smoothScroll" = true;
     "media.autoplay.default" = 1;
-    "browser.cache.disk.enable" = false;
+    "browser.cache.disk.enable" = true;
     "broswer.cache.memory.enable" = true;
     "broswer.sessionstore.resume_from_crash" = false;
     "browser.search.countryCode" = "US";
@@ -153,6 +153,7 @@ in
     "content.notify.interval" = 200000;
 
     /** GFX ***/
+    "layers.acceleration.enabled" = true;
     "gfx.canvas.accelerated.cache-items" = 4096;
     "gfx.canvas.accelerated.cache-size" = 512;
     "gfx.content.skia-font-cache-size" = 20;
@@ -179,7 +180,7 @@ in
     /** SPECULATIVE LOADING ***/
     "network.dns.disablePrefetch" = true;
     "network.dns.disablePrefetchFromHTTPS" = true;
-    "network.prefetch-next" = false;
+    "network.prefetch-next" = true;
     "network.predictor.enabled" = false;
     "network.predictor.enable-prefetch" = false;
 

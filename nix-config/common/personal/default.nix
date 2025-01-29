@@ -6,7 +6,6 @@
     yarn
     duckdb
     sqlite
-    vulkan-tools
     keepassxc
     gnome-keyring
     vimgolf
@@ -25,6 +24,8 @@
     gnused
     gnutar
     coreutils
+    conda
+
     (python3.withPackages (ps: with ps; let
       blinker = ps.buildPythonPackage rec {
         pname = "blinker";
@@ -122,6 +123,9 @@
       seleniumProfiles
       seleniumInterceptor
       ipvanish
+      torch-bin
+      dacite
+      ray
     ]))
   ];
 }

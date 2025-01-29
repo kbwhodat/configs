@@ -13,7 +13,7 @@
   inputs.home-manager.url = "github:nix-community/home-manager";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
   # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   inputs.nur.url = "github:nix-community/NUR";
 

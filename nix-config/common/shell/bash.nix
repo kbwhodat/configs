@@ -33,6 +33,7 @@ export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:$
 export EDITOR="nvim"
 export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"
+export ${ if isDarwin then "DRI_PRIME=0" else "DRI_PRIME=1" }
 
 alias clear="tput reset"
 
