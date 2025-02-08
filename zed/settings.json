@@ -22,16 +22,12 @@
     "button": false,
   },
   "assistant": {
-    "provider": {
-      "name": "ollama",
-      "default_model": {
-        "name": "deepseek-r1:7b",
-        "display_name": null,
-        "max_tokens": 2048,
-        "keep_alive": -1
-      }
+    "default_model": {
+      "provider": "ollama",
+      "model": "deepseek-r1:7b"
     },
-    "version": "1",
+    "provider": null,
+    "version": "2",
     "enabled": true
   },
   "outline_panel": {
@@ -63,7 +59,7 @@
   "use_autoclose": true,
   "format_on_save": "off",
   "collaboration_panel": {
-    "button": false,
+    "button": false
   },
   "project_panel": {
     "git_status": true,
@@ -86,8 +82,11 @@
   },
   "experimental.theme_overrides": {
     "editor.document_highlight.bracket_background": "#808080",
-    "panel.focused_border": "#83a598ff",
-    "border.selected": "#FFFFFF",
+    "editor.highlighted_line.background": "#FFFFFF",
+    "status_bar.background": "#000000",
+    "panel.focused_border": "#000000",
+    "border": "#ffffff",
+    "border.selected": "#000000",
     "panel.foreground": "#FFFFFF",
     "text": "#FFFFFF",
     "text.muted": "#FFFFFF",
@@ -98,11 +97,13 @@
     "titlebar.border_color": "#000000",
     "titlebar.button.background": "#000000",
     "titlebar.button.hover_background": "#111111",
-    "editor.background": "#0b0b0b",
+    "editor.background": "#000000",
+    "editor.line_number": "#FFFFFF",
     "editor.gutter.background": "#000000",
     "editor.active_line.background": "#111111",
+    "title_bar.inactive_background": "#000000",
     "editor.selection.background": "#202020",
-    "status_bar.background": "#00",
+    "editor.active_line_number": "#FFD700",
     "element.background": "#000000",
     "panel.background": "#000000",
     "sidebar.background": "#000000",
@@ -110,22 +111,36 @@
     "titlebar.background": "#000000",
     "tab_bar.background": "#000000",
     "tab.inactive_background": "#000000",
-    "tab.active_background": "#1C1C1C.",
+    "tab.active_background": "#474747",
     "tab.hover_background": "#111111",
     "tab_bar.border_color": "#000000",
     "tab_bar.divider_color": "#000000",
-    "tab_bar.separator": "#000000",
-    "toolbar.background": "#000000",
+    "tab_bar.separator": "#d3d3d3",
+    "toolbar.background": "#d3d3d3",
     "players": [
       {
         "cursor": "#DCDCCC"
       }
-    ]
+    ],
+    "syntax": {
+        "markup": {
+            "color": "#FFFFFF" 
+        },
+        "markup.heading": {
+            "color": "#FFD700"
+        },
+        "markup.bold": {
+            "color": "#00FF00"
+        },
+        "markup.italic": {
+            "color": "#FF69B4"
+        }
+    }
   },
   "lsp": {
     "jdtls": {
       "settings": {
-        "java.format.enabled": true,
+        "java.format.enabled": true
       }
     }
   },
