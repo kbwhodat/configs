@@ -25,7 +25,7 @@
 
   ];
 
-  networking.hostName = "nixos-frame16"; # Define your hostname.
+  networking.hostName = "nixos-frame13"; # Define your hostname.
   networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp0s20f3" ];
 

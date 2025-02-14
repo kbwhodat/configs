@@ -25,7 +25,7 @@ in
   };
 
 
-  system.stateVersion = "unstable";
+  system.stateVersion = "24.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -87,7 +87,7 @@ in
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
 
-  networking.wireless.iwd.enable = true;
+  # networking.wireless.iwd.enable = true;
 
   time.timeZone = "America/New_York";
 
@@ -116,6 +116,11 @@ in
   # hardware.graphics.enable = true;
   # hardware.opengl.driSupport = true;
   # hardware.graphics.enable32Bit = true;
+
+	hardware.graphics = {
+		enable = true;
+		enable32Bit = true;
+	};
 
 
   # Configure keymap in X11
@@ -177,7 +182,7 @@ in
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    wireplumber.enable = true;
+    wireplumber.enable = false;
   };
 
   services.syncthing = {
@@ -195,11 +200,14 @@ in
       "nixos-main" = {
         id = "7JQTNQL-BAGUNWN-7SFZ3IC-7MA5VNX-3P65FPU-YOQ325K-VFVG76O-AGP2XAJ";
       };
+      "nixos-frame16" = {
+        id = "35VEAHW-73R2GDD-7WA4MDA-S5XGNQI-YKJFE7S-4433VRJ-SS74LJA-BUDSRAD";
+      };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" ];
+        devices = [ "iphone" "nixos-main" "nixos-frame16" ];
       };
     };
   };
