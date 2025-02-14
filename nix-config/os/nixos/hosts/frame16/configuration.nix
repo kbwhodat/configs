@@ -16,34 +16,18 @@
 
   environment.systemPackages = with pkgs; [
     usbutils
-    displaylink
     steam
-    # zulu17
+    clang
     zulu11
-    grobi
-    linuxKernel.packages.linux_6_6.evdi
+    brightnessctl
+    xorg.xev
     # python3Packages.torch-bin
 
   ];
 
-  environment.variables = {    
-    WLR_EVDI_RENDER_DEVICE = "/dev/dri/card1";                                                                                                   
-  };
-
-  # Define the dlm.service (DisplayLink Manager)
-  systemd.services.dlm = {
-    enable = true;
-    description = "DisplayLink Manager Service";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.displaylink}/bin/DisplayLinkManager";
-      Restart = "always";
-      RestartSec = 5;
-    };
-  };
   networking.hostName = "nixos-frame16"; # Define your hostname.
   networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp0s20f3" ];
 
-  services.xserver.videoDrivers = [ "amdgpu" "displaylink" "modesetting" ];
+  services.xserver.videoDrivers = [ "amdgpu"  ];
 }
