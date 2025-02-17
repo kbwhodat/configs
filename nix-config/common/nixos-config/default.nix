@@ -194,17 +194,19 @@ in
   services.syncthing = {
     enable = true;
     user = "katob";
+    group = "users";
     openDefaultPorts = true;
+    dataDir = "/home/katob";
+    configDir = "/home/katob/.config/syncthing";
     settings.gui = {
       theme = "black";
     };
-    dataDir = "/home/katob/.config/syncthing";
     settings.devices = {
       "iphone" = {
         id = "V5SVN25-M2CS2HQ-T2QIERP-HQ47OOC-YLDGWKB-EEGBAVK-4BB5JJF-VNASBA2";
       };
       "nixos-main" = {
-        id = "7JQTNQL-BAGUNWN-7SFZ3IC-7MA5VNX-3P65FPU-YOQ325K-VFVG76O-AGP2XAJ";
+        id = "EL7YWBU-CXQDV4E-QMAOSD7-XS5JO2K-TMU3OA3-SHIOJH6-KOYDVHP-ZWIZOQM";
       };
       "nixos-frame13" = {
         id = "IMNRAP7-RZNJQFO-GOZLSJN-RHWC55N-WRODY7I-SNJCDBH-MZODTPJ-W7CZRQX";
