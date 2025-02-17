@@ -65,10 +65,10 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "zen-browser-bin";
-  version = "1.6b";
+  version = "1.7.6b";
   src = fetchzip {
-    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.bz2";
-    hash = "sha256-7Z7PZMTmPhB4Sx9+YXpWTkhcBsblzkgWyIJvNTSTNSU=";
+    url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
+    hash = "sha256-qVrwjQ147cRqDMFHz6eS6K/qAqQlmMRORHEYGRSwZqc=";
   };
 
   desktopItems = [
@@ -111,7 +111,7 @@ stdenv.mkDerivation rec {
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [
         pciutils
-        pipewire
+        # pipewire
         libva
         libglvnd
         ffmpeg

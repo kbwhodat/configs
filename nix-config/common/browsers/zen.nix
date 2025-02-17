@@ -45,11 +45,9 @@ in
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       consent-o-matic
       sponsorblock
-      # leechblock-ng
       df-youtube
       kagi-search
       darkreader
-      # auto-tab-discard
       browserpass
       privacy-badger
       ublock-origin
@@ -70,9 +68,11 @@ in
     "zen.themes.updated-value-observer" = true;
     "zen.urlbar.behavior" = "floating-on-type";
     "zen.view.compact" = true;
+    "browser.tabs.hoverPreview.enabled" = true;
     "zen.theme.accent-color" = "#dec663";
     "zen.view.sidebase-expanded" = false;
-    "zen.view.sidebase-expanded.on-hover" = false;
+    "zen.view.sidebase-expanded.on-hover" = true;
+    "zen.view.sidebar-expanded" = false;
     "zen.view.use-single-toolbar" = false;
     "zen.splitView.change-on-hover" = true;
     "zen.tab-unloader.timeout-minutes" = 35;

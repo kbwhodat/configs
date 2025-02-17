@@ -79,6 +79,15 @@ alias cat='bat --style plain'
 alias vim="$(which nvim)"
 alias vi="$(which vim)"
 
+keepassxc_helper() {
+  local DATABASE="/home/katob/.database/keedatabase.kdbx"
+
+  keepassxc-cli "$1" "$DATABASE" "''${@:2}"
+}
+
+# Alias for the helper script
+alias kp="keepassxc_helper"
+
 if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 
   TMUX_SESSION=`hostname -f`

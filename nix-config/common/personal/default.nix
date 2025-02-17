@@ -6,9 +6,7 @@
     yarn
     duckdb
     sqlite
-    keepassxc
     gnome-keyring
-    vimgolf
     gonchill
     undetected-chromedriver
     libsixel
