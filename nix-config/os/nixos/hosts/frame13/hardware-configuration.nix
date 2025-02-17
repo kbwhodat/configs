@@ -5,13 +5,13 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" ];
-	boot.initrd.kernelModules = [ "amdgpu" ];
-  # boot.kernelModules = [ "amdgpu" ];
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/023f0c97-7e35-46e5-b5b4-058427797825";
+    { device = "/dev/disk/by-uuid/e444936f-abc1-40c4-a593-c13404daaf38";
       fsType = "ext4";
     };
 
@@ -34,8 +34,4 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-	hardware.graphics.extraPackages = with pkgs; [
-		amdvlk
-	];
 }
-
