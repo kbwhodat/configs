@@ -61,14 +61,14 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
-  # fonts.packages = with pkgs; [
-  #   (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
-  # ];
-
   fonts.packages = with pkgs; [
-    pkgs.nerd-fonts.roboto-mono
-    pkgs.nerd-fonts.comic-shanns-mono
+    (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
   ];
+
+  # fonts.packages = with pkgs; [
+  #   pkgs.nerd-fonts.roboto-mono
+  #   pkgs.nerd-fonts.comic-shanns-mono
+  # ];
 
   fonts.fontconfig = {
     defaultFonts = {
@@ -207,7 +207,7 @@ in
         id = "7JQTNQL-BAGUNWN-7SFZ3IC-7MA5VNX-3P65FPU-YOQ325K-VFVG76O-AGP2XAJ";
       };
       "nixos-frame13" = {
-        id = "35VEAHW-73R2GDD-7WA4MDA-S5XGNQI-YKJFE7S-4433VRJ-SS74LJA-BUDSRAD";
+        id = "IMNRAP7-RZNJQFO-GOZLSJN-RHWC55N-WRODY7I-SNJCDBH-MZODTPJ-W7CZRQX";
       };
     };
     settings.folders = {
