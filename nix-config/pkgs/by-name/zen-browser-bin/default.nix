@@ -111,7 +111,7 @@ stdenv.mkDerivation rec {
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [
         pciutils
-        # pipewire
+        pipewire
         libva
         libglvnd
         ffmpeg
