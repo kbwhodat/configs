@@ -9,7 +9,7 @@ let
   ldLibraryPath = lib.makeLibraryPath [
     pkgs.gcc_multi
     pkgs.linuxPackages.nvidia_x11
-    # pkgs.glibc
+    pkgs.glibc
     pkgs.glib
     pkgs.nss_latest
     pkgs.xorg.libxcb
@@ -35,42 +35,41 @@ in
 
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
-  # services.grobi = {
-    # enable = true;
-    # rules = [
-    #   {
-    #     name = "docked";
-    #     outputs_connected = [ "DVI-I-2-2" "DVI-I-1-1" ];
-    #     atomic = true;
-    #     configure_row = [ "DVI-I-2-2" "DVI-I-1-1" ];
-    #     primary = "DVI-I-2-2";
-    #     # execute_after = [
-    #     #   "${pkgs.nitrogen}/bin/nitrogen --restore"
-    #     #   "${pkgs.qtile}/bin/qtile cmd-obj -o cmd -f restart"
-    #     #   "${pkgs.networkmanager}/bin/nmcli radio wifi off"
-    #     # ];
-    #   }
-    #   {
-    #     name = "undocked";
-    #     outputs_disconnected = [ "DVI-I-2-2" "DVI-I-1-1" ];
-    #     configure_single = "eDP-1";
-    #     primary = true;
-    #     atomic = true;
-    #     # execute_after = [
-    #     #   "${pkgs.nitrogen}/bin/nitrogen --restore"
-    #     #   "${pkgs.qtile}/bin/qtile cmd-obj -o cmd -f restart"
-    #     #   "${pkgs.networkmanager}/bin/nmcli radio wifi on"
-    #     # ];
-    #   }
-    #   {
-    #     name = "fallback";
-    #     configure_single = "eDP-1";
-    #   }
-    # ];
-  # };
+  services.grobi = {
+    enable = true;
+    rules = [
+      {
+        name = "docked";
+        outputs_connected = [ "DVI-I-2-2" "DVI-I-1-1" ];
+        atomic = true;
+        configure_row = [ "DVI-I-2-2" "DVI-I-1-1" ];
+        primary = "DVI-I-2-2";
+        # execute_after = [
+        #   "${pkgs.nitrogen}/bin/nitrogen --restore"
+        #   "${pkgs.qtile}/bin/qtile cmd-obj -o cmd -f restart"
+        #   "${pkgs.networkmanager}/bin/nmcli radio wifi off"
+        # ];
+      }
+      {
+        name = "undocked";
+        outputs_disconnected = [ "DVI-I-2-2" "DVI-I-1-1" ];
+        configure_single = "eDP-1";
+        primary = true;
+        atomic = true;
+        # execute_after = [
+        #   "${pkgs.nitrogen}/bin/nitrogen --restore"
+        #   "${pkgs.qtile}/bin/qtile cmd-obj -o cmd -f restart"
+        #   "${pkgs.networkmanager}/bin/nmcli radio wifi on"
+        # ];
+      }
+      {
+        name = "fallback";
+        configure_single = "eDP-1";
+      }
+    ];
+  };
 
   home.packages = with pkgs; [
-    kdePackages.kate
     alsa-utils
     xorg.xorgserver
     obsidian
@@ -89,7 +88,7 @@ in
     mpv
     vlc
     openvpn
-    yaegi
+    yaegi # go interpreter
     dunst
     tomato-c
     clang-tools

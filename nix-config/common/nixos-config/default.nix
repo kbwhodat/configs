@@ -48,7 +48,7 @@ in
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "audio" "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
     openssh.authorizedKeys.keys = [
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
@@ -72,9 +72,9 @@ in
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "RobotoMono Nerd Font Propo"];
-        sansSerif = [ "RobotoMono Nerd Font Propo"];
-        monospace = [ "RobotoMono Nerd Font"];
+        serif = [ "ComicShannsMono Nerd Font Propo"];
+        sansSerif = [ "ComicShannsMono Nerd Font Propo"];
+        monospace = [ "ComicShannsMono Nerd Font"];
     };
   };
 
@@ -135,6 +135,12 @@ in
     };
   };
 
+  xdg.portal = {
+    enable = true;
+    configPackages = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
   services.xserver = {
 
     desktopManager = {
@@ -175,10 +181,10 @@ in
   security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  hardware.pulseaudio.enable = true;
+  # security.rtkit.enable = false;
   services.pipewire = {
-    enable = true;
+    enable = false;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
@@ -200,14 +206,22 @@ in
       "nixos-main" = {
         id = "7JQTNQL-BAGUNWN-7SFZ3IC-7MA5VNX-3P65FPU-YOQ325K-VFVG76O-AGP2XAJ";
       };
-      "nixos-frame16" = {
+      "nixos-frame13" = {
         id = "35VEAHW-73R2GDD-7WA4MDA-S5XGNQI-YKJFE7S-4433VRJ-SS74LJA-BUDSRAD";
       };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" "nixos-frame16" ];
+        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
+      };
+      "/home/katob/.database" = {
+        id = "secrets";
+        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
+      };
+      "/home/katob/.password-store" = {
+        id = "password-store";
+        devices = [ "nixos-main" "nixos-frame13" ];
       };
     };
   };
