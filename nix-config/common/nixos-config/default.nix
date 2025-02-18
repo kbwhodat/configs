@@ -61,14 +61,15 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
-  fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
-  ];
+  #fonts.packages = with pkgs; [
+  #  (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+  #];
 
-  # fonts.packages = with pkgs; [
-  #   pkgs.nerd-fonts.roboto-mono
-  #   pkgs.nerd-fonts.comic-shanns-mono
-  # ];
+  # this is for the unstable nixpkg version - make sure to use this next when an upgrade happens
+  fonts.packages = with pkgs; [
+    pkgs.nerd-fonts.roboto-mono
+    pkgs.nerd-fonts.comic-shanns-mono
+  ];
 
   fonts.fontconfig = {
     defaultFonts = {
@@ -198,6 +199,8 @@ in
     openDefaultPorts = true;
     dataDir = "/home/katob";
     configDir = "/home/katob/.config/syncthing";
+    key = "/home/katob/.config/syncthing-keys/key.pem";
+    cert = "/home/katob/.config/syncthing-keys/cert.pem";
     settings.gui = {
       theme = "black";
     };
@@ -206,7 +209,7 @@ in
         id = "V5SVN25-M2CS2HQ-T2QIERP-HQ47OOC-YLDGWKB-EEGBAVK-4BB5JJF-VNASBA2";
       };
       "nixos-main" = {
-        id = "EL7YWBU-CXQDV4E-QMAOSD7-XS5JO2K-TMU3OA3-SHIOJH6-KOYDVHP-ZWIZOQM";
+        id = "UQAWJXF-VFHDTRI-AIEFOLH-OMVHBYD-X5MKXTN-CQJWEKV-47JOT5P-TMIXGA5";
       };
       "nixos-frame13" = {
         id = "IMNRAP7-RZNJQFO-GOZLSJN-RHWC55N-WRODY7I-SNJCDBH-MZODTPJ-W7CZRQX";
@@ -227,6 +230,4 @@ in
       };
     };
   };
-
-
 }

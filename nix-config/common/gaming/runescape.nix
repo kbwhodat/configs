@@ -4,6 +4,6 @@
   home.packages = with pkgs; [
     runelite
     hdos
-    bolt-launcher
+    # bolt-launcher
   ];
 }
