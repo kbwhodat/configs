@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    vim
     zed-editor
     markdown-oxide
     #inputs.nil.packages.${pkgs.system}.nil
@@ -41,7 +42,6 @@
     cargo
     nodejs_22
     php83Packages.composer
-    vim
     tree-sitter
     zlib
     gh
