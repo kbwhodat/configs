@@ -6,6 +6,5 @@
     ./floorp.nix
     ./browserpass.nix
     ./zen.nix
-    ./zen-browser.nix
   ];
 }
