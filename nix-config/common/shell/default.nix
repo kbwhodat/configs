@@ -18,7 +18,7 @@
 	home.sessionVariables = {
 
 		EDITOR = "nvim";
-		BROWSER = "floorp";
+		BROWSER = "zen";
 		TERMINAL = "ghostty";
 	};
 

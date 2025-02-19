@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    vim
     zed-editor
     markdown-oxide
     #inputs.nil.packages.${pkgs.system}.nil
@@ -16,13 +17,11 @@
     git
     bat
     dig
-    imagemagick
-    imagemagick.dev
-    luajit
-    tree
-    luarocks
     file
     fzf
+    tree
+    luajit
+    luarocks
     fd
     ripgrep
     fira-code
@@ -41,7 +40,6 @@
     cargo
     nodejs_22
     php83Packages.composer
-    vim
     tree-sitter
     zlib
     gh
