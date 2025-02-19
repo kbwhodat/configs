@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 let
 inherit (pkgs.stdenv) isDarwin;
 in
@@ -23,7 +23,7 @@ in
         ];
         }
     else
-        pkgs.zen-browser-bin.override {
+        inputs.zen-browser.packages.x86_64-linux.default.override {
         nativeMessagingHosts = [
             # Gnome shell native connector
             pkgs.gnome-browser-connector

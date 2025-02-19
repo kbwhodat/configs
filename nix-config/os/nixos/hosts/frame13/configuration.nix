@@ -16,7 +16,8 @@
 
   environment.systemPackages = with pkgs; [
     # amdenc
-    # amdvlk
+    pciutils
+    amdgpu_top
     usbutils
     clang
     brightnessctl
@@ -25,12 +26,13 @@
     clinfo
     pamixer
     ffmpeg
-    # python3Packages.torch-bin
 
   ];
 
   hardware.opengl.extraPackages = with pkgs; [
     rocmPackages.clr.icd
+    mesa.drivers
+    amdvlk
   ];
 
   services.xserver.displayManager.sessionCommands = ''
