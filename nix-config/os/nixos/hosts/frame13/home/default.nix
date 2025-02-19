@@ -39,7 +39,6 @@ in
     alsa-utils
     xorg.xorgserver
     obsidian
-    maven
     vulkan-tools
     picom
 		nmap
@@ -49,7 +48,6 @@ in
     xdotool
     ueberzug
     pulseaudio
-    autorandr
     chromium
     mpv
     vlc
@@ -58,9 +56,6 @@ in
     dunst
     tomato-c
     clang-tools
-    transmission_4-qt
-    tor
-    tor-browser
   ];
 
   home.enableNixpkgsReleaseCheck = false;

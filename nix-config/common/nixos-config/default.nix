@@ -35,6 +35,7 @@ in
 		"nixos"
 		"@wheel"
 	];
+  nix.settings.sandbox = false;
 
 	# networking.wireless.networks = {
 	# 	"results will vary" = {
@@ -80,7 +81,7 @@ in
   };
 
   # Setting up env variables for image.nvim
-  # environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
+  environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
   environment.variables.PKG_CONFIG_PATH = [ "${pkgs.imagemagick.dev}/lib/pkgconfig" ];
 
   services.logind.lidSwitchExternalPower = "ignore";

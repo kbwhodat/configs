@@ -17,13 +17,11 @@
     git
     bat
     dig
-    imagemagick
-    imagemagick.dev
-    luajit
-    tree
-    luarocks
     file
     fzf
+    tree
+    luajit
+    luarocks
     fd
     ripgrep
     fira-code

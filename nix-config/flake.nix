@@ -21,6 +21,8 @@
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
+  inputs.zen-browser.url = "github:kbwhodat/zen-browser-flake";
+
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
@@ -33,7 +35,7 @@
   inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/5b505c753310f169f1c69a22a80fbade7feab16f";
 
 
-  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, ... }:
+  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
