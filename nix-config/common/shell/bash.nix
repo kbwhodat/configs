@@ -30,7 +30,7 @@ in
 
 eval "$(direnv hook bash)"
 
-export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin"
+export PATH="/run/wrappers/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin":$PATH
 
 export EDITOR="nvim"
 export VISUAL="vim"
@@ -80,6 +80,15 @@ alias ls='ls --color'
 alias cat='bat --style plain'
 alias vim="$(which nvim)"
 alias vi="$(which vim)"
+
+keepassxc_helper() {
+  local DATABASE="/home/katob/.database/keedatabase.kdbx"
+
+  keepassxc-cli "$1" "$DATABASE" "''${@:2}"
+}
+
+# Alias for the helper script
+alias kp="keepassxc_helper"
 
 if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 

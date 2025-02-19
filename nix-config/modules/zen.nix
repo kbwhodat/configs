@@ -218,9 +218,9 @@ in {
         type = with types; nullOr package;
         default =
           if versionAtLeast config.home.stateVersion "19.09"
-          then pkgs.zen-browser-bin
-          else pkgs.zen-browser-bin;
-        defaultText = literalExpression "pkgs.zen-browser-bin";
+          then pkgs.zen-browser
+          else pkgs.zen-browser;
+        defaultText = literalExpression "pkgs.zen-browser";
         example = literalExpression ''
           pkgs.zen-browser-bin.override {
             # See nixpkgs' zen/wrapper.nix to check which options you can use
@@ -704,10 +704,10 @@ in {
 
     home.file = mkMerge ([
         {
-            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiles.ini"}" =
+            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiless.ini"}" =
                 mkIf (cfg.profiles != {}) {text = profilesIni;};
 
-            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installs.ini"}" =
+            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installss.ini"}" =
                 {text = installsIni;};
         }
       ]
@@ -912,11 +912,15 @@ in {
           force = true;
         };
 
-        "${zenConfigPath}/profiles.ini" = lib.optionalAttrs isDarwin {
+        "${zenConfigPath}/profiles.ini" = if !isDarwin then {
+          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiles.ini";
+        } else {
           source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiles.ini";
         };
 
-        "${zenConfigPath}/installs.ini" = lib.optionalAttrs isDarwin {
+        "${zenConfigPath}/installs.ini" = if !isDarwin then {
+          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installs.ini";
+        } else {
           source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installs.ini";
         };
       }));

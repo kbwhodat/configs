@@ -6,52 +6,14 @@ vim.cmd('set conceallevel=2')
 require('obsidian').setup({
 	workspaces = {
 		{
-			name = "Zettelkasten",
-			path = "~/vault/Zettelkasten",
-			overrides = {
-				notes_subdir = "Zettelkasten",
-			},
+			name = "Vault",
+			path = "~/vault",
 		},
 		{
 			name = "Work",
 			path = "~/vault/Work",
 			overrides = {
 				notes_subdir = "Work",
-			},
-		},
-		{
-			name = "Finance",
-			path = "~/vault/Finance",
-			overrides = {
-				notes_subdir = "Finance",
-			},
-		},
-		{
-			name = "Dump",
-			path = "~/vault/Dump",
-			overrides = {
-				notes_subdir = "Dump",
-			},
-		},
-		-- {
-		-- 	name = "School",
-		-- 	path = "~/vault/School",
-		-- 	overrides = {
-		-- 		notes_subdir = "School",
-		-- 	},
-		-- },
-		{
-			name = "Personal",
-			path = "~/vault/Personal",
-			overrides = {
-				notes_subdir = "Personal",
-			},
-		},
-		{
-			name = "Travel",
-			path = "~/vault/Travel",
-			overrides = {
-				notes_subdir = "Travel",
 			},
 		},
 	},
@@ -69,7 +31,7 @@ require('obsidian').setup({
 
   daily_notes = {
     -- Optional, if you keep daily notes in a separate directory.
-    folder = "notes/dailies",
+    folder = "dailies",
     -- Optional, if you want to change the date format for the ID of daily notes.
     date_format = "%Y-%m-%d",
     -- Optional, if you want to change the date format of the default alias of daily notes.

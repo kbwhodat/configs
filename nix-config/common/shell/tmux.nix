@@ -58,12 +58,12 @@ in
             | tr ":" " " \
             | sed "s/\b$CURRENT_SESSION\b/#[fg=yellow,bg=black]&#[default]/"
         )'
-        set -g status-right "#[fg=green]#(date)"
+        set -g status-right ""
 
 				set-option -g status-style bg=default
         #set -g status-left "#S "
-        set-option -g status-left-length 50
-        set -g status-right-length 10
+        set-option -g status-left-length 100
+        set -g status-right-length 0
         #set -g status-right ""
 				set -g window-status-current-format ""
 				set -g window-status-format ""

@@ -12,7 +12,7 @@
   #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
   inputs.home-manager.url = "github:nix-community/home-manager";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   inputs.nur.url = "github:nix-community/NUR";
@@ -21,18 +21,21 @@
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
+  inputs.zen-browser.url = "github:kbwhodat/zen-browser-flake";
+
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
 
   # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty?ref=kitty-unicode";
-  inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
+  # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
+	inputs.ghostty.url = "github:ghostty-org/ghostty";
   inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/5b505c753310f169f1c69a22a80fbade7feab16f";
 
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, ... }:
+  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
@@ -75,6 +78,42 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.katob = import ./os/nixos/home;
+              home-manager.backupFileExtension = "backup";
+              nixpkgs.overlays = overlays;
+            }
+          ];
+        };
+
+        frame16 = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./os/nixos/hosts/frame16/configuration.nix
+            lix-module.nixosModules.default
+            inputs.nixos-hardware.nixosModules.framework-16-7040-amd
+            home-manager.nixosModules.home-manager {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.users.katob = import ./os/nixos/home;
+              home-manager.backupFileExtension = "backup";
+              nixpkgs.overlays = overlays;
+            }
+          ];
+        };
+
+        frame13 = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./os/nixos/hosts/frame13/configuration.nix
+            lix-module.nixosModules.default
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            home-manager.nixosModules.home-manager {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.users.katob = import ./os/nixos/hosts/frame13/home;
               home-manager.backupFileExtension = "backup";
               nixpkgs.overlays = overlays;
             }

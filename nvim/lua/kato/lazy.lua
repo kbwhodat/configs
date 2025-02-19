@@ -17,65 +17,62 @@ local plugins = {
 		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
-	{
-		"https://github.com/apple/pkl-neovim",
-		lazy = true,
-		event = "BufReadPre *.pkl",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-		},
-		build = function()
-			vim.cmd("TSInstall! pkl")
-		end,
-	},
 	-- {
-	-- 	'3rd/image.nvim',
+	-- 	"https://github.com/apple/pkl-neovim",
 	-- 	lazy = true,
-	-- 	event = 'VimEnter',  -- Broad event for testing
-	-- 	config = function()
-	-- 		require('image').setup()
-	-- 	end
+	-- 	event = "BufReadPre *.pkl",
+	-- 	dependencies = {
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 	},
+	-- 	build = function()
+	-- 		vim.cmd("TSInstall! pkl")
+	-- 	end,
 	-- },
-	{
-		"kbwhodat/ollama.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-
-		-- All the user commands added by the plugin
-		cmd = { "Ollama", "OllamaModel", "OllamaServe", "OllamaServeStop" },
-
-		keys = {
-			-- Sample keybind for prompt menu. Note that the <c-u> is important for selections to work properly.
-			{
-				"<leader>oo",
-				":<c-u>lua require('ollama').prompt()<cr>",
-				desc = "ollama prompt",
-				mode = { "n", "v" },
-			},
-
-			-- Sample keybind for direct prompting. Note that the <c-u> is important for selections to work properly.
-			{
-				"<leader>oG",
-				":<c-u>lua require('ollama').prompt('Generate_Code')<cr>",
-				desc = "ollama Generate Code",
-				mode = { "n", "v" },
-			},
-		},
-
-		opts = {
-			-- model = "dolphin-mixtral:8x7b-v2.5-q2_K"
-      url = "http://174.163.19.205:11434",
-			model = "codellama:34b"
-		}
-	},
-	{
-		"touchmarine/vim-dadbod",
-		branch = "feat/duckdb-adapter"
-	},
-	{
-		"kristijanhusak/vim-dadbod-ui"
-	},
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      bigfile = { enabled = true },
+      quickfile = { enable = true },
+      dashboard = { enabled = false },
+      explorer = { enabled = false },
+      indent = { enabled = true },
+      input = { enabled = true },
+      picker = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      scroll = { enabled = true },
+      gitbrowser = { enabled = true },
+      scratch = { enabled = true },
+      statuscolumn = { enabled = true },
+      image = { 
+        enabled = true, 
+        force = false,
+        doc = {
+          enabled = true,
+          inline = false,
+          float = true,
+          max_width = 45,
+          max_height = 45,
+        },
+        cache = vim.fn.stdpath("cache") .. "/snacks/image",
+      },
+      words = { enabled = true },
+    },
+    keys = {
+      { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
+      { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+      { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+      { "<leader>G",  function() Snacks.gitbrowse() end, desc = "Git browsing" },
+      { "<leader>ff",  function() Snacks.picker() end, desc = "Picking out" },
+    }
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -97,9 +94,9 @@ local plugins = {
       { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
       { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
       { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+      { "<leader>qw", function() require("persistence").save() end, desc = "Save Current Session" },
     },
   },
-  'nvim-treesitter/nvim-treesitter-context',
   "mbbill/undotree",
 --	{
 --		'stevearc/oil.nvim',
@@ -108,26 +105,17 @@ local plugins = {
 --		dependencies = { "nvim-tree/nvim-web-devicons" },
 --	},
   'alvan/vim-closetag',
-  'tpope/vim-commentary',
 	"rebelot/kanagawa.nvim",
-  "towolf/vim-helm",
-  "leath-dub/snipe.nvim",
   'tpope/vim-surround',
 	{
 		"tpope/vim-fugitive",
 		delay = 5000,
-	},
-  {
-		'windwp/nvim-autopairs',
-		event = "InsertEnter",
-		config = false
 	},
 	{
 		'dkarter/bullets.vim',
 		lazy = true,
 		event = "BufReadPre *.md",
 	},
-	"akinsho/toggleterm.nvim",
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,

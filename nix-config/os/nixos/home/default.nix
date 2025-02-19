@@ -9,7 +9,7 @@ let
   ldLibraryPath = lib.makeLibraryPath [
     pkgs.gcc_multi
     pkgs.linuxPackages.nvidia_x11
-    # pkgs.glibc
+    pkgs.glibc
     pkgs.glib
     pkgs.nss_latest
     pkgs.xorg.libxcb
@@ -70,7 +70,6 @@ in
   };
 
   home.packages = with pkgs; [
-    kdePackages.kate
     alsa-utils
     xorg.xorgserver
     obsidian
@@ -89,7 +88,7 @@ in
     mpv
     vlc
     openvpn
-    yaegi
+    yaegi # go interpreter
     dunst
     tomato-c
     clang-tools

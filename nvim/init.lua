@@ -152,13 +152,8 @@ vim.api.nvim_set_keymap('n', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = t
 vim.api.nvim_set_keymap('v', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ot', ':ObsidianTags<CR>', { noremap = true, silent = true })
 -- workspaces
-vim.api.nvim_set_keymap('n', '<leader>oz', ':ObsidianWorkspace Zettelkasten<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ow', ':ObsidianWorkspace Work<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oT', ':ObsidianWorkspace Travel<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oF', ':ObsidianWorkspace Finance<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oc', ':ObsidianWorkspace School<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>od', ':ObsidianWorkspace Dump<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>op', ':ObsidianWorkspace Personal<CR>', { noremap = true, silent = true })
 
 
 vim.api.nvim_set_keymap('n', '<C-S>', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
@@ -172,12 +167,6 @@ vim.api.nvim_set_keymap('i', '<C-A>', '<cmd>lua vim.diagnostic.open_float(nil, {
 vim.api.nvim_set_keymap('n', '<Leader>tc', '<cmd>lua ToggleTaskStateComplete()<CR>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<Leader>tp', '<cmd>lua ToggleTaskStatePending()<CR>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<Leader>tt', '<cmd>lua ToggleTaskStateTodo()<CR>', {noremap = true, silent = true})
-
--- vim dadbod ui
-vim.api.nvim_set_keymap('n', '<Leader>H', ':DBUIToggle<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<Leader>A', ':DBUIAddConnection<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<Leader>L', ':DBUILastQueryInfo<CR>', {noremap = true, silent = true})
-
 
 
 -- Dynamic Autocommands
@@ -227,3 +216,18 @@ vim.cmd('filetype on')
 vim.cmd('filetype indent on')
 
 vim.cmd('set guicursor=n-v-c:block,i:ver25,r:hor20,o:hor50')
+
+
+
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "markdown",
+--   callback = function()
+--     require("snacks.image").setup({
+--       file = vim.fn.expand("%:p"),
+--       wo = {
+--         conceallevel = 2,
+--         spell = false
+--       }
+--     })
+--   end
+-- })
