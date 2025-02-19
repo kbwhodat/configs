@@ -25,6 +25,8 @@
     awscli2
     undmg
     _7zz
-    # openstackclient
+    openstackclient
+    wireshark
+    libreoffice-bin
   ];
 }

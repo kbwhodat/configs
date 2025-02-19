@@ -24,20 +24,21 @@ in
 
   security.pam.enableSudoTouchIdAuth = true;
 
-  ids.uids.nixbld = 301;
+  # ids.uids.nixbld = 301;
   nix.extraOptions = ''
     experimental-features = nix-command flakes
   '';
 
   environment.systemPackages = with pkgs; [
     pinentry_mac
-    yabai
+    # yabai
     docker-client
-    skhd
+    # skhd
     iina
     colima
     lima-bin
     libiconv-darwin
+    python311
   ];
 
   launchd.user.agents.docker = {
@@ -48,9 +49,10 @@ in
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
   };
 
-  services.yabai.enable = true;
+  services.yabai.enable = false;
   services.yabai.enableScriptingAddition = true;
-  services.skhd.enable = true;
+  services.skhd.enable = false;
+  services.lorri.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
@@ -78,12 +80,12 @@ in
   #};
 
   homebrew = {
-    enable = true;
-    onActivation.cleanup = "uninstall";
+    # enable = true;
+    # onActivation.cleanup = "uninstall";
 
     taps = ["benjiwolff/neovim-nightly"];
     brews = [ "helm" "kubectl" ];
-    casks = [ "google-cloud-sdk" "dbeaver-community" "tomatobar" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    casks = [ "yabai" "skhd" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
