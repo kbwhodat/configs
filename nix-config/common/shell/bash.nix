@@ -28,6 +28,8 @@ in
 
 		initExtra = ''
 
+eval "$(direnv hook bash)"
+
 export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin"
 
 export EDITOR="nvim"

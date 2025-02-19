@@ -7,7 +7,7 @@
 with lib; let
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
 
-  cfg = config.programs.floorp;
+  cfg = config.programs.myfloorp;
 
   jsonFormat = pkgs.formats.json {};
 
@@ -205,7 +205,7 @@ in {
   ];
 
   options = {
-    programs.floorp = {
+    programs.myfloorp = {
       enable = mkEnableOption "Floorp";
 
       package = mkOption {
@@ -698,7 +698,7 @@ in {
       its example for how to do this.
     '';
 
-    programs.floorp.finalPackage = wrapPackage cfg.package;
+    programs.myfloorp.finalPackage = wrapPackage cfg.package;
 
     home.packages = lib.optional (cfg.finalPackage != null) cfg.finalPackage;
 
