@@ -193,6 +193,22 @@ in
     wireplumber.enable = false;
   };
 
+  environment.systemPackages = with pkgs; [
+    chromium
+  ];
+
+  programs.chromium = {
+    enable = true;
+    extensions = [
+      "cjpalhdlnbpafiamejdnhcphjbkeiagm" #ublock origin
+      "hfjbmagddngcpeloejdejnfgbamkjaeg" #vimium c
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh" #dark reader
+      "cdglnehniifkbagbbombnjghhcihifij" #kagi search
+      "naepdomgkenhinolocfifgehidddafch" #browserpass
+      "egpjdkipkomnmjhjmdamaniclmdlobbo" #firenvim
+    ];
+  };
+
   services.syncthing = {
     enable = true;
     user = "katob";

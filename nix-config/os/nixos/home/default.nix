@@ -84,18 +84,33 @@ in
     ueberzug
     pulseaudio
     autorandr
-    chromium
     mpv
     vlc
     openvpn
     yaegi # go interpreter
     dunst
     tomato-c
+    clang
     clang-tools
     transmission_4-qt
     tor
     tor-browser
   ];
+
+  
+  programs.chromium = {
+    enable = false;
+    extensions = [
+      { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } #ublock origin
+      { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
+      { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } #dark reader
+      { id = "cdglnehniifkbagbbombnjghhcihifij"; } #kagi search
+      { id = "naepdomgkenhinolocfifgehidddafch"; } #browserpass
+      { id = "egpjdkipkomnmjhjmdamaniclmdlobbo"; } #firenvim
+      { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } #https everywhere
+    ];
+  };
+
 
   home.enableNixpkgsReleaseCheck = false;
 
