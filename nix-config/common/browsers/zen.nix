@@ -51,9 +51,10 @@ in
       browserpass
       privacy-badger
       ublock-origin
-      tridactyl
+      vimium-c
       clearurls
       istilldontcareaboutcookies
+      firenvim
   ];
 
   settings = {
