@@ -12,6 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
+  { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.4',
 		delay = 2000,
