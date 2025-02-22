@@ -5,7 +5,6 @@
     vim
     zed-editor
     markdown-oxide
-    #inputs.nil.packages.${pkgs.system}.nil
     nil
     nixd
     nmap
@@ -42,7 +41,6 @@
     php83Packages.composer
     tree-sitter
     zlib
-    gh
     gnused
     gnutar
     coreutils

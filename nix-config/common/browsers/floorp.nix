@@ -10,7 +10,7 @@ in
 
   programs.myfloorp.enable =
     if isDarwin then
-      true
+      false
     else
       false;
 
