@@ -64,7 +64,7 @@ in
 
     cursor-color = #ffffff
 
-    gtk-adwaita = true
+    gtk-adwaita = ${if isDarwin then "false" else "true"}
     bold-is-bright = true
 
     window-decoration = false

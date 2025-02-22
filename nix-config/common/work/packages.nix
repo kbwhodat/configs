@@ -15,7 +15,6 @@
     sshuttle
     openconnect
     postman
-    #google-cloud-sdk
     tcptraceroute
     # ansible_2_16
     util-linux

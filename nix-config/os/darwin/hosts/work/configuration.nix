@@ -51,26 +51,26 @@ in
 
   services.yabai.enable = false;
   services.yabai.enableScriptingAddition = true;
-  services.skhd.enable = false;
+  services.skhd.enable = true;
   services.lorri.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true;
 
-  fonts.packages = with pkgs; [
-    pkgs.nerd-fonts.roboto-mono
-    pkgs.nerd-fonts.comic-shanns-mono
-  ];
+  # fonts.packages = with pkgs; [
+  #   pkgs.nerd-fonts.roboto-mono
+  #   pkgs.nerd-fonts.comic-shanns-mono
+  # ];
 
-  #fonts.packages = with pkgs; [
-  #  (nerdfonts.override {
-  #    fonts = [
-  #      "RobotoMono"
-  #      "ComicShannsMono"
-  #    ];
-  #  })
-  #];
+  fonts.packages = with pkgs; [
+   (nerdfonts.override {
+     fonts = [
+       "RobotoMono"
+       "ComicShannsMono"
+     ];
+   })
+  ];
   #fonts.fontconfig = {
   #  defaultFonts = {
   #      serif = [ "RobotoMono Nerd Font Propo"];
@@ -83,9 +83,9 @@ in
     # enable = true;
     # onActivation.cleanup = "uninstall";
 
-    taps = ["benjiwolff/neovim-nightly"];
-    brews = [ "helm" "kubectl" ];
-    casks = [ "yabai" "skhd" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    taps = ["homebrew/services" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
+    brews = [ "helm" "kubectl"];
+    casks = [ "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];

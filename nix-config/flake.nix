@@ -4,7 +4,7 @@
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-2.tar.gz";
+  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
   inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
 
   #inputs.nil.url = "github:oxalica/nil";
@@ -12,8 +12,8 @@
   #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
   inputs.home-manager.url = "github:nix-community/home-manager";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   inputs.nur.url = "github:nix-community/NUR";
 
@@ -162,7 +162,7 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/darwin/hosts/work/configuration.nix
-            lix-module.nixosModules.default
+            # lix-module.nixosModules.default
             home-manager.darwinModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
