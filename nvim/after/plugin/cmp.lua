@@ -2,6 +2,10 @@ local cmp = require'cmp'
 
 
 cmp.setup({
+
+  enabled = function()
+    return vim.bo.filetype ~= "markdown"
+  end,
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)

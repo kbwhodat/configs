@@ -217,17 +217,60 @@ vim.cmd('filetype indent on')
 
 vim.cmd('set guicursor=n-v-c:block,i:ver25,r:hor20,o:hor50')
 
+-- Everything Below is Firenvim stuff
+vim.g.firenvim_config = {
+    globalSettings = { 
+    ignoreKeys = {
+      all = {  '<S-l>', '<S-h>', '<C-r>', '<C-l>', '<C-t>' },
+    },
+    alt = "all" 
+  },
+    localSettings = {
+        [".*"] = {
+            cmdline  = "neovim",
+            content  = "text",
+            priority = 0,
+            selector = "textarea, input",
+            takeover = "always"
+        }
+    }
+}
 
+if vim.g.started_by_firenvim then
+  vim.api.nvim_set_keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>", {noremap = true, silent = true})
+end
+if vim.g.started_by_firenvim then
+  vim.api.nvim_set_keymap("n", "<C-:>", "<Cmd>call firenvim#focus_input()<CR>", {noremap = true, silent = true})
+end
+if vim.g.started_by_firenvim then
+  vim.api.nvim_set_keymap("n", "<C-;>", "<Cmd>call firenvim#hide_frame()<CR><ESC>", {noremap = true, silent = true})
+end
 
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "markdown",
---   callback = function()
---     require("snacks.image").setup({
---       file = vim.fn.expand("%:p"),
---       wo = {
---         conceallevel = 2,
---         spell = false
---       }
---     })
---   end
--- })
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = "*",
+  callback = function()
+    if vim.g.started_by_firenvim then
+      vim.api.nvim_buf_set_keymap(0, 'i', '<CR>', '<Esc>:wq<CR>', {noremap = true, silent = true})
+    end
+  end
+})
+
+if vim.g.started_by_firenvim then
+  vim.o.number = false
+  vim.o.relativenumber = false
+
+  -- Hide the sign column
+  vim.o.signcolumn = "no"
+
+  -- Remove the status line
+  vim.o.laststatus = 0
+  vim.cmd('set noruler')
+  vim.cmd('set noshowmode')
+  vim.cmd('set shortmess+=F')
+  vim.cmd('set colorcolumn=0')
+  vim.cmd('set showtabline=1')
+  vim.cmd('set cmdheight=1')
+  vim.cmd('set nocursorline')
+  vim.cmd('set nonumber')
+  vim.cmd('set textwidth=200')
+end
