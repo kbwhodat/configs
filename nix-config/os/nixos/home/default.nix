@@ -71,6 +71,7 @@ in
   };
 
   home.packages = with pkgs; [
+    keepassxc
     alsa-utils
     xorg.xorgserver
     obsidian
