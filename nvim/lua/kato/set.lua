@@ -3,8 +3,8 @@ local vim = vim
 vim.opt.guicursor = "a:block"
 
 
-vim.opt.nu = true
-vim.opt.relativenumber = true
+vim.opt.nu = false
+vim.opt.relativenumber = false
 
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 0
