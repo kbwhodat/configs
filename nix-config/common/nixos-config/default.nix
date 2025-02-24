@@ -195,6 +195,9 @@ in
 
   environment.systemPackages = with pkgs; [
     chromium
+    zenity
+    libnotify
+    scrot
   ];
 
   programs.chromium = {
