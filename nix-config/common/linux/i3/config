@@ -13,6 +13,8 @@
 #set $mod Mod4
 set $mod Mod1
 
+exec --no-startup-id sh -c 'keepassxc <(cat /home/katob/.funentry) /home/katob/.database/keedatabase.kdbx &' --minimize --lock
+
 #To open kitty
 bindsym Control+space exec --no-startup-id /home/katob/Documents/scripts/toggle_kitty.sh
 
