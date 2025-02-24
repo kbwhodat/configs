@@ -23,6 +23,7 @@ in
 		../../../common/linux/rofi
 		../../../common/linux/calibre
 		../../../common/linux/okular
+		../../../common/linux/koreader
 		../../../common/linux/i3
 		../../../common
     ../../../common/sops
@@ -70,6 +71,7 @@ in
   };
 
   home.packages = with pkgs; [
+    keepassxc
     alsa-utils
     xorg.xorgserver
     obsidian
@@ -98,22 +100,7 @@ in
   ];
 
   
-  programs.chromium = {
-    enable = false;
-    extensions = [
-      { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } #ublock origin
-      { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
-      { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } #dark reader
-      { id = "cdglnehniifkbagbbombnjghhcihifij"; } #kagi search
-      { id = "naepdomgkenhinolocfifgehidddafch"; } #browserpass
-      { id = "egpjdkipkomnmjhjmdamaniclmdlobbo"; } #firenvim
-      { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } #https everywhere
-    ];
-  };
-
-
   home.enableNixpkgsReleaseCheck = false;
-
 
   home.sessionVariables = {
     EDITOR = "nvim";

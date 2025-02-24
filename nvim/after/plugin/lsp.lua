@@ -13,7 +13,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
     })
 
 -- Reserve a space in the gutter
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = 'no'
 
 -- Add cmp_nvim_lsp capabilities settings to lspconfig
 local lspconfig_defaults = require('lspconfig').util.default_config

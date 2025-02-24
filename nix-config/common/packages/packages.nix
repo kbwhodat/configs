@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    yazi
     vim
     zed-editor
     markdown-oxide
