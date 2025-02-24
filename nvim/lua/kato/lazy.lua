@@ -38,20 +38,20 @@ local plugins = {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-      bigfile = { enabled = true },
-      quickfile = { enable = true },
+      bigfile = { enabled = false },
+      quickfile = { enable = false },
       dashboard = { enabled = false },
       explorer = { enabled = false },
-      indent = { enabled = true },
-      input = { enabled = true },
-      picker = { enabled = true },
-      notifier = { enabled = true },
-      quickfile = { enabled = true },
-      scope = { enabled = true },
-      scroll = { enabled = true },
-      gitbrowser = { enabled = true },
-      scratch = { enabled = true },
-      statuscolumn = { enabled = true },
+      indent = { enabled = false },
+      input = { enabled = false },
+      picker = { enabled = false },
+      notifier = { enabled = false },
+      quickfile = { enabled = false },
+      scope = { enabled = false },
+      scroll = { enabled = false },
+      gitbrowser = { enabled = false },
+      scratch = { enabled = false },
+      statuscolumn = { enabled = false },
       image = { 
         enabled = true, 
         force = false,
@@ -87,10 +87,10 @@ local plugins = {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-		delay = 2000,
+  delay = 2000,
     opts = {
-			options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" },
-		},
+  	options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" },
+  },
     keys = {
       { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
       { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
@@ -99,15 +99,9 @@ local plugins = {
     },
   },
   "mbbill/undotree",
---	{
---		'stevearc/oil.nvim',
---		opts = {},
---		-- Optional dependencies
---		dependencies = { "nvim-tree/nvim-web-devicons" },
---	},
-  'alvan/vim-closetag',
+	 'alvan/vim-closetag',
 	"rebelot/kanagawa.nvim",
-  'tpope/vim-surround',
+	 'tpope/vim-surround',
 	{
 		"tpope/vim-fugitive",
 		delay = 5000,
@@ -126,15 +120,15 @@ local plugins = {
 			"nvim-lua/plenary.nvim"
 		},
 	},
-  'christoomey/vim-tmux-navigator',
-  "petertriho/cmp-git",
-  dependencies = { 'hrsh7th/nvim-cmp' },
-  opts = {
-    -- options go here
-  },
-  init = function()
-    table.insert(require("cmp").get_config().sources, { name = "git" })
-  end,
+	 'christoomey/vim-tmux-navigator',
+	 "petertriho/cmp-git",
+	 dependencies = { 'hrsh7th/nvim-cmp' },
+	 opts = {
+	   -- options go here
+	 },
+	 init = function()
+	   table.insert(require("cmp").get_config().sources, { name = "git" })
+	 end,
   {
     'VonHeikemen/lsp-zero.nvim',
     dependencies = {
@@ -153,7 +147,7 @@ local plugins = {
 
       -- Snippets
       {'rafamadriz/friendly-snippets'},
-		  {'L3MON4D3/LuaSnip'},
+    {'L3MON4D3/LuaSnip'},
     }
   }
 }
