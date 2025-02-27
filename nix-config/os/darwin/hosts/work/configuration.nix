@@ -80,12 +80,12 @@ in
   #};
 
   homebrew = {
-    # enable = true;
+    enable = true;
     # onActivation.cleanup = "uninstall";
 
-    taps = ["homebrew/services" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
+    taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
     brews = [ "helm" "kubectl"];
-    casks = [ "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    casks = [ "sketchybar" "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
