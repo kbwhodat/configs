@@ -24,20 +24,21 @@ in
 
   security.pam.enableSudoTouchIdAuth = true;
 
-  ids.uids.nixbld = 301;
+  # ids.uids.nixbld = 301;
   nix.extraOptions = ''
     experimental-features = nix-command flakes
   '';
 
   environment.systemPackages = with pkgs; [
     pinentry_mac
-    yabai
+    # yabai
     docker-client
-    skhd
+    # skhd
     iina
     colima
     lima-bin
     libiconv-darwin
+    python311
   ];
 
   launchd.user.agents.docker = {
@@ -48,27 +49,28 @@ in
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
   };
 
-  services.yabai.enable = true;
+  services.yabai.enable = false;
   services.yabai.enableScriptingAddition = true;
   services.skhd.enable = true;
+  services.lorri.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true;
 
-  fonts.packages = with pkgs; [
-    pkgs.nerd-fonts.roboto-mono
-    pkgs.nerd-fonts.comic-shanns-mono
-  ];
+  # fonts.packages = with pkgs; [
+  #   pkgs.nerd-fonts.roboto-mono
+  #   pkgs.nerd-fonts.comic-shanns-mono
+  # ];
 
-  #fonts.packages = with pkgs; [
-  #  (nerdfonts.override {
-  #    fonts = [
-  #      "RobotoMono"
-  #      "ComicShannsMono"
-  #    ];
-  #  })
-  #];
+  fonts.packages = with pkgs; [
+   (nerdfonts.override {
+     fonts = [
+       "RobotoMono"
+       "ComicShannsMono"
+     ];
+   })
+  ];
   #fonts.fontconfig = {
   #  defaultFonts = {
   #      serif = [ "RobotoMono Nerd Font Propo"];
@@ -79,11 +81,11 @@ in
 
   homebrew = {
     enable = true;
-    onActivation.cleanup = "uninstall";
+    # onActivation.cleanup = "uninstall";
 
-    taps = ["benjiwolff/neovim-nightly"];
-    brews = [ "helm" "kubectl" ];
-    casks = [ "google-cloud-sdk" "dbeaver-community" "tomatobar" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
+    brews = [ "helm" "kubectl"];
+    casks = [ "sketchybar" "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];

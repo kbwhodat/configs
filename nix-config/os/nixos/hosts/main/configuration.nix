@@ -25,7 +25,7 @@
     zulu11
     grobi
     linuxKernel.packages.linux_6_6.evdi
-    gdb
+    # gdb
     # python3Packages.torch-bin
 
   ];

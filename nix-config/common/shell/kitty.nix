@@ -13,7 +13,7 @@ in
     # '';
     font = {
       name = "ComicShannsMono Nerd Font Mono";
-      size = if isDarwin then 13.0 else 12.3;
+      size = if isDarwin then 13.3 else 12.3;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -37,7 +37,12 @@ in
       # cursor_shape block
       draw_minimal_borders yes
 
+      macos_thicken_font 0.40
+
 			disable_ligatures always
+
+      background = #000000
+      foreground = #ffffff
 		'';
 	};
 }
