@@ -36,6 +36,7 @@ in
 
 
   home.packages = with pkgs; [
+    anki-bin
     keepassxc
     alsa-utils
     xorg.xorgserver
