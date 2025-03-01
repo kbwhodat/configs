@@ -1,7 +1,7 @@
 -- require("oil").setup({
 --   -- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
 --   -- Set to false if you still want to use netrw.
---   default_file_explorer = true,
+--   default_file_explorer = false,
 --   -- Id is automatically added at the beginning, and name at the end
 --   -- See :help oil-columns
 --   columns = {
@@ -31,7 +31,7 @@
 --   -- Skip the confirmation popup for simple operations
 --   skip_confirm_for_simple_edits = false,
 --   -- Change this to customize the command used when deleting to trash
---   trash_command = "trash-put",
+--   -- trash_command = "trash-put",
 --   -- Selecting a new/moved/renamed file or directory will prompt you to save changes first
 --   prompt_save_on_select_new_entry = true,
 --   -- Keymaps in oil buffer. Can be any value that `vim.keymap.set` accepts OR a table of keymap
