@@ -4,17 +4,17 @@ inherit (pkgs.stdenv) isDarwin;
 in
 {
 
-  # imports = [
-  #   ../../modules/floorp.nix
-  # ];
+  imports = [
+    ../../modules/floorp.nix
+  ];
 
-  programs.floorp.enable =
+  programs.myfloorp.enable =
     if isDarwin then
-      true
+      false
     else
       false;
 
-  programs.floorp.package =
+  programs.myfloorp.package =
     if isDarwin then
       pkgs.floorp-bin
     else
@@ -24,7 +24,7 @@ in
         ];
       };
 
-  programs.floorp.profiles =
+  programs.myfloorp.profiles =
     let
 
 # Using my own custom chrome.css

@@ -10,6 +10,7 @@ let
       sha256 = "0wnn50k5fy4ngjd16k3abg49x1pfx7i5vzd4kkjs7k8v0k203p79";
     };
   };
+  inherit (pkgs.stdenv) isDarwin;
 in
 
 {
@@ -44,7 +45,7 @@ in
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
 				set -g cursor-color white
-				set -g prefix C-a
+				set -g prefix ${ if isDarwin then "C-a" else "C-a" }
 				unbind C-b
 				bind C-a send-prefix
 				bind R source-file ~/.config/tmux/tmux.conf \; display "Config Reloaded!"
