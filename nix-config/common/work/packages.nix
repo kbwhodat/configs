@@ -15,7 +15,6 @@
     sshuttle
     openconnect
     postman
-    #google-cloud-sdk
     tcptraceroute
     # ansible_2_16
     util-linux
@@ -25,6 +24,8 @@
     awscli2
     undmg
     _7zz
-    # openstackclient
+    openstackclient
+    wireshark
+    libreoffice-bin
   ];
 }
