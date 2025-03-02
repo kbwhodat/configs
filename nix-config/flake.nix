@@ -4,7 +4,7 @@
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-2.tar.gz";
+  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
   inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
 
   #inputs.nil.url = "github:oxalica/nil";
@@ -22,6 +22,7 @@
 
   inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
   inputs.zen-browser.url = "github:kbwhodat/zen-browser-flake";
+  inputs.zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
