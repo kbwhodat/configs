@@ -48,13 +48,14 @@ in
       df-youtube
       kagi-search
       darkreader
-      browserpass
+      # browserpass
       privacy-badger
       ublock-origin
       vimium-c
       clearurls
       istilldontcareaboutcookies
       firenvim
+      keepassxc-browser
   ];
 
   settings = {
