@@ -45,7 +45,7 @@ in
 
     font-thicken = true
 
-    theme = Wez
+    theme = Alabaster
 
     adjust-cursor-thickness = 50%
 

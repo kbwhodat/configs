@@ -5,6 +5,7 @@
     ./repos.nix
     ./bash.nix
     ./blesh.nix
+    ./direnv.nix
     ./kitty.nix
     ./tmux.nix
     ./neovim.nix
