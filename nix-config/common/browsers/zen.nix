@@ -50,6 +50,7 @@ in
       darkreader
       browserpass
       privacy-badger
+      onepassword-password-manager
       ublock-origin
       vimium-c
       clearurls
