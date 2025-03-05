@@ -25,11 +25,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1740877302,
-        "narHash": "sha256-7Z3oPLT3DgAJut34YDS/xfXHyTZgcfXMVm6cX9xEYgw=",
+        "lastModified": 1740963601,
+        "narHash": "sha256-NbQnqcthX2PBdrb0RqO9p4TqVxFEIV+zjXeC83igq9I=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "56a2bb8e4d7d11ad0024ad380f9e828e198cc2f3",
+        "rev": "049806b398fed4f04bbfca34fff8b99f0e045b5f",
         "type": "github"
       },
       "original": {
@@ -137,11 +137,11 @@
         "zig2nix": "zig2nix"
       },
       "locked": {
-        "lastModified": 1740890542,
-        "narHash": "sha256-xqEXkZj2gno8+jomC/PJthBDJ2hXQhphhojKEWHJMJ4=",
+        "lastModified": 1740954062,
+        "narHash": "sha256-VVsSwi1sTVCL0fijNHqw1hv/546acgxxrTAChl/K254=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "8721f2ae5169023e08681861ef11db6f9143f6cc",
+        "rev": "ee8ae196ee0fad3824c7ae9eac947f2128b4ae4f",
         "type": "github"
       },
       "original": {
@@ -309,11 +309,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1740933853,
-        "narHash": "sha256-gtSq5dPtk/UHrwGHFCfBw2dMrvnFQDINlMftdd6+1Ro=",
+        "lastModified": 1741022145,
+        "narHash": "sha256-F9sHjtdMNzLnCOzAd1f1T7cz34x8dtfQtFy6BKhyhzY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a3426aa6d43876175220f8b441351f22ba92d8f0",
+        "rev": "9e28a778517d9ce632a360c9c2b62e09dab17a79",
         "type": "github"
       },
       "original": {
@@ -350,7 +350,7 @@
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-24.11",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -410,11 +410,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1740930304,
-        "narHash": "sha256-xMqqnkc+cbLiNl7EVtwvMgJVS2OUAsee624ukArDYoU=",
+        "lastModified": 1741014528,
+        "narHash": "sha256-Nez5gUmX8wX1fxZXgiuzIe4wEtmkzRNM9/zIts6hyfQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "1e3ed66f42330c2a81dff559411a9da87aba0ff2",
+        "rev": "e5b6c67aaac0b58a91fe25b0497f9377f5945f34",
         "type": "github"
       },
       "original": {
