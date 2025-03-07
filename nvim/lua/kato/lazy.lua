@@ -18,17 +18,16 @@ local plugins = {
 		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
-	-- {
-	-- 	"https://github.com/apple/pkl-neovim",
-	-- 	lazy = true,
-	-- 	event = "BufReadPre *.pkl",
-	-- 	dependencies = {
-	-- 		"nvim-treesitter/nvim-treesitter",
-	-- 	},
-	-- 	build = function()
-	-- 		vim.cmd("TSInstall! pkl")
-	-- 	end,
-	-- },
+  {
+    "tris203/precognition.nvim"
+  },
+  {
+    "kbwhodat/alabaster.nvim",
+    init = function()
+      vim.g.alabaster_dim_comments = true
+      vim.g.background = dark
+    end,
+  },
   {
     "folke/snacks.nvim",
     priority = 1000,

@@ -32,7 +32,8 @@ vim.cmd('set clipboard+=unnamedplus')
 vim.cmd('set termguicolors')
 vim.cmd('set nolist')
 -- vim.cmd('colorscheme molokai-dark')
-vim.cmd('colorscheme kanagawa')
+-- vim.cmd('colorscheme kanagawa')
+vim.cmd('colorscheme alabaster')
 
 -- setting coneal for markdown stuff
 vim.cmd('set conceallevel=2')
@@ -46,6 +47,7 @@ vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
 vim.cmd('hi Visual guibg=Grey')
 
+vim.api.nvim_set_hl(0, "@AlabasterString.json", { fg = "#FFFFFF" })
 -- Set the status line for the active window
 vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#FFFFFF', bg = '#000000', bold = true })
 
@@ -53,7 +55,7 @@ vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#FFFFFF', bg = '#000000', bold = tr
 vim.api.nvim_set_hl(0, 'StatusLineNC', { fg = '#808080', bg = '#000000' })
 
 -- Set the line number foreground and background colors
-vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray numbers on a dark gray background
+-- vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray numbers on a dark gray background
 
 -- Optional: Set the cursor line number to have a distinct look
 vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bg = '#000000' })  -- White numbers on a slightly lighter gray background

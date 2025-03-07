@@ -45,7 +45,7 @@ in
 
     font-thicken = true
 
-    theme = Wez
+    theme = zenbones_dark
 
     adjust-cursor-thickness = 50%
 
@@ -64,8 +64,8 @@ in
 
     cursor-color = #ffffff
 
-    gtk-adwaita = ${if isDarwin then "false" else "true"}
-    bold-is-bright = true
+    #gtk-adwaita = ${if isDarwin then "false" else "true"}
+    bold-is-bright = false
 
     window-decoration = false
     window-padding-x = 0

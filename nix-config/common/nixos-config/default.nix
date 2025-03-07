@@ -18,6 +18,12 @@ in
       inputs.sops-nix.nixosModules.sops
     ];
 
+  services.lorri.enable = true;
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "katob" ];
+  };
 
   environment = {
     etc.".secrets".source = "${myrepo}";
@@ -62,9 +68,9 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
-  #fonts.packages = with pkgs; [
+  # fonts.packages = with pkgs; [
   #  (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
-  #];
+  # ];
 
   # this is for the unstable nixpkg version - make sure to use this next when an upgrade happens
   fonts.packages = with pkgs; [
