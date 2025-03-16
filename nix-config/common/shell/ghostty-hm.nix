@@ -20,7 +20,8 @@
       window-theme = "dark";
       clipboard-read = "allow";
 
-      command = "/etc/profiles/per-user/katob/bin/bash";
+      # command = "/etc/profiles/per-user/katob/bin/bash";
+      command = "/etc/profiles/per-user/katob/bin/zsh";
 
       shell-integration = "bash";
 
