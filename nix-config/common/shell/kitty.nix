@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }: 
+{ config, pkgs, inputs, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
 in
@@ -22,7 +22,7 @@ in
 			enableZshIntegration = false;
 		};
 		extraConfig = ''
-			shell /run/current-system/sw/bin/bash
+			shell /etc/profiles/per-user/katob/bin/zsh
 			editor nvim
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→

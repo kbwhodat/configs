@@ -39,8 +39,10 @@ in
         set -g @resurrect-strategy-nvim 'session'
         set -g @resurrect-strategy-vim 'session'
 
-				set -g default-command "/run/current-system/sw/bin/bash"
-				set-option -g default-shell "/run/current-system/sw/bin/bash"
+				# set -g default-command "/run/current-system/sw/bin/bash"
+				# set-option -g default-shell "/run/current-system/sw/bin/bash"
+				set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
+				set-option -g default-shell "/etc/profiles/per-user/katob/bin/zsh"
 
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
