@@ -1,4 +1,8 @@
 {
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false
+  },
   "auto_install_extensions": {
     "ansible": true,
     "java": true,
@@ -10,7 +14,7 @@
   },
   "features": {
     "copilot": false,
-    "inline_completion_provider": "none"
+    "edit_prediction_provider": "none"
   },
   "auto_update": false,
   "buffer_font_family": "ComicShannsMono Nerd Font Mono",
@@ -48,12 +52,12 @@
   "terminal": {
     "button": false,
     "shell": {
-      "program": "/bin/sh"
+      "program": "/bin/zsh"
     }
   },
   "theme": {
     "mode": "dark",
-    "dark": "Kanagawa Wave",
+    "dark": "Alabaster",
     "light": "One Light"
   },
   "use_autoclose": true,
@@ -63,7 +67,11 @@
   },
   "project_panel": {
     "git_status": true,
-    "button": false
+    "button": false,
+    "dock": "left",
+  },
+  "git_panel": {
+    "dock": "right"
   },
   "git": {
     "enabled": true,
@@ -216,7 +224,19 @@
       {
         "cursor": "#DCDCCC"
       }
-    ]
+    ],
+    "syntax": {
+      "comment": {
+        "color": "#696969",
+        "font_style": null,
+        "font_weight": null
+      },
+      "comment.doc": {
+        "color": "#696969",
+        "font_style": null,
+        "font_weight": null
+      },
+    },
   },
   "lsp": {
     "jdtls": {

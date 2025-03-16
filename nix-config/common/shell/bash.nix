@@ -7,7 +7,7 @@ in
 	programs.bash = {
 		enable = true;
 		enableCompletion = true;
-    historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
+    historyControl = [ "ignoreboth" "erasedups" ];
     historyIgnore = [ "ls" "cd" "exit" ];
 
 		sessionVariables = {
@@ -126,7 +126,15 @@ PROMPT_COMMAND='
   PS1="\n[\w] $current_branch\n # "
 '
 
-PROMPT_COMMAND="history -a; history -c; history -r $PROMPT_COMMAND"
+if [ -z "$PROMPT_COMMAND" ]; then
+  PROMPT_COMMAND="history -a; history -c; history -r"
+else
+  # Append only if it's not already included
+  case "$PROMPT_COMMAND" in
+    *history\ -a*) ;;  # already included
+    *) PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND" ;;
+  esac
+fi
 
 search_and_edit() {
     selected_file="$(rg --column --hidden --line-number --no-heading --color=always --smart-case \
@@ -158,5 +166,6 @@ search_and_edit() {
     set vi-ins-mode-string \1\e[6 q\2
     set keymap vi-command
     set keymap vi-insert
+    set keyseq-timeout 25
   '';
 }

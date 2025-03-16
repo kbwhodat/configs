@@ -2,12 +2,13 @@
 
 {
   home.packages = with pkgs; [
+    harper
     yazi
     vim
     zed-editor
     markdown-oxide
     nil
-    nixd
+    # nixd
     nmap
     wget
     lsof
