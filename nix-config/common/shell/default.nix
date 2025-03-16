@@ -4,6 +4,7 @@
 	imports = [
     ./repos.nix
     ./bash.nix
+    ./zsh.nix
     ./blesh.nix
     ./direnv.nix
     ./kitty.nix

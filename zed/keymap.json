@@ -4,7 +4,7 @@
     "bindings": {
       "space f f": ["task::Spawn", { "task_name": "search:project" }],
       "space '": "pane::ActivateNextItem",
-      "space ;": "pane::ActivatePrevItem",
+      "space ;": "pane::ActivatePreviousItem",
       "space v": "pane::SplitRight",
       "space H": "pane::SplitDown",
       "space d": "pane::CloseActiveItem",
@@ -13,16 +13,16 @@
       "shift-k": "editor::Hover",
 			"space /": "workspace::NewSearch",
 			"n": "search::SelectNextMatch",
-			"shift-n": "search::SelectPrevMatch",
+			"shift-n": "search::SelectPreviousMatch",
     }
   },
   {
     "context": "Dock || Terminal || Editor || ProjectPanel || AssistantPanel || CollabPanel || OutlinePanel || ChatPanel || VimControl || EmptyPane || SharedScreen || MarkdownPreview || KeyContextView",
     "bindings": {
-      "ctrl-l": ["vim::ResizePane", "Widen"],
-      "ctrl-h": ["vim::ResizePane", "Narrow"],
-      "ctrl-k": ["vim::ResizePane", "Shorten"],
-      "ctrl-j": ["vim::ResizePane", "Lengthen"]
+      "ctrl-l": "vim::ResizePaneRight",
+      "ctrl-h": "vim::ResizePaneLeft",
+      "ctrl-k": "vim::ResizePaneDown",
+      "ctrl-j": "vim::ResizePaneUp"
     }
   },
   {
@@ -30,35 +30,73 @@
     "bindings": {
       "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
       "space e": "workspace::ToggleLeftDock",
-      "space h": ["workspace::ActivatePaneInDirection", "Left"],
-      "space l": ["workspace::ActivatePaneInDirection", "Right"],
-      "space k": ["workspace::ActivatePaneInDirection", "Up"],
-      "space j": ["workspace::ActivatePaneInDirection", "Down"],
-      "space z": "workspace::ToggleZoom",
+      "space r": "workspace::ToggleRightDock",
+      "space h": "workspace::ActivatePaneLeft",
+      "space l": "workspace::ActivatePaneRight",
+      "space k": "workspace::ActivatePaneUp",
+      "space j": "workspace::ActivatePaneDown",
       "space z": "workspace::ToggleZoom",
       "space space": "file_finder::Toggle",
       "space /": "pane::DeploySearch",
+
+      "space gf": "git::Fetch",
+      "space gP": "git::Push",
+      "space gp": "git::Pull",
+      "ctrl-g shift-up": "git::ForcePush",
+      "space gd": "git::Diff",
+      "ctrl-g backspace": "git::RestoreTrackedFiles",
+      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
+      "space ga": "git::StageAll",
+      "ctrl-shift-space": "git::UnstageAll"
     }
   },
   {
     "context": "ProjectPanel",
     "bindings": {
       "space e": "workspace::ToggleLeftDock",
-      "space l": ["workspace::ActivatePaneInDirection", "Right"],
+      "space r": "workspace::ToggleRightDock",
+      "space l": "workspace::ActivatePaneRight",
     }
   },
   {
     "context": "EmptyPane || SharedScreen",
     "bindings": {
+      "space e": "project_panel::Open",
       "space space": "file_finder::Toggle",
       "space f p": "projects::OpenRecent",
     },
+  },
+  {
+    "context": "GitPanel && ChangesList",
+    "bindings": {
+      "a": "git::ToggleStaged",
+      "q": "workspace::ToggleRightDock",
+      "space r": "workspace::ToggleRightDock",
+      "k": "menu::SelectPrevious",
+      "j": "menu::SelectNext",
+    },
+  },
+  {
+    "context": "GitPanel",
+    "use_key_equivalents": true,
+    "bindings": {
+      "space gf": "git::Fetch",
+      "space gP": "git::Push",
+      "space gp": "git::Pull",
+      "ctrl-g shift-up": "git::ForcePush",
+      "space gd": "git::Diff",
+      "ctrl-g backspace": "git::RestoreTrackedFiles",
+      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
+      "space ga": "git::StageAll",
+      "ctrl-shift-space": "git::UnstageAll"
+    }
   },
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
       "q": "workspace::ToggleLeftDock",
       "space e": "workspace::ToggleLeftDock",
+      "space g": "workspace::ToggleRightDock",
     },
   },
   {
@@ -76,12 +114,7 @@
   {
     "context": "vim_mode == visual",
     "bindings": {
-      "shift-s": [
-        "vim::PushOperator",
-        {
-          "AddSurrounds": {}
-        }
-      ]
+      "shift-s": ["vim::PushAddSurrounds", {}]
     }
   },
   {

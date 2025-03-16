@@ -189,7 +189,7 @@ in
   security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = true;
+  services.pulseaudio.enable = true;
   # security.rtkit.enable = false;
   services.pipewire = {
     enable = false;

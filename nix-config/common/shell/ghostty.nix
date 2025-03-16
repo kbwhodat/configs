@@ -45,7 +45,7 @@ in
 
     font-thicken = true
 
-    theme = zenbones_dark
+    theme = Wez
 
     adjust-cursor-thickness = 50%
 
