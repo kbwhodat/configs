@@ -14,7 +14,7 @@
   },
   "features": {
     "copilot": false,
-    "edit_prediction_provider": "none"
+    "inline_completion_provider": "none"
   },
   "auto_update": false,
   "buffer_font_family": "ComicShannsMono Nerd Font Mono",
@@ -50,11 +50,14 @@
   },
   "relative_line_numbers": true,
   "terminal": {
-    "button": true,
+    "button": false,
+    "shell": {
+      "program": "/bin/sh"
+    }
   },
   "theme": {
     "mode": "dark",
-    "dark": "Alabaster Simple",
+    "dark": "Alabaster",
     "light": "One Light"
   },
   "use_autoclose": true,
@@ -64,11 +67,7 @@
   },
   "project_panel": {
     "git_status": true,
-    "button": false,
-    "dock": "left",
-  },
-  "git_panel": {
-    "dock": "right"
+    "button": false
   },
   "git": {
     "enabled": true,
