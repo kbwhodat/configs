@@ -50,14 +50,11 @@
   },
   "relative_line_numbers": true,
   "terminal": {
-    "button": false,
-    "shell": {
-      "program": "/bin/zsh"
-    }
+    "button": true,
   },
   "theme": {
     "mode": "dark",
-    "dark": "Alabaster",
+    "dark": "Alabaster Simple",
     "light": "One Light"
   },
   "use_autoclose": true,

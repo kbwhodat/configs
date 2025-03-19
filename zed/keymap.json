@@ -16,6 +16,13 @@
 			"shift-n": "search::SelectPreviousMatch",
     }
   },
+
+  {
+    "context": "Workspace",
+    "bindings": {
+      "space T": "workspace::ToggleBottomDock",
+    }
+  },
   {
     "context": "Dock || Terminal || Editor || ProjectPanel || AssistantPanel || CollabPanel || OutlinePanel || ChatPanel || VimControl || EmptyPane || SharedScreen || MarkdownPreview || KeyContextView",
     "bindings": {

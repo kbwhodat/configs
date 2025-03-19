@@ -1,0 +1,36 @@
+{
+  "$schema": "https://zed.dev/schema/themes/v0.1.0.json",
+  "name": "Alabaster",
+  "author": "kbwhodat (original by Nikita Prokopov)",
+  "themes": [
+    {
+      "name": "Alabaster Simple",
+      "appearance": "dark",
+      "background": "#0e1415",
+      "foreground": "#cecece",
+      "style": {
+        "background": "#0e1415",
+        "foreground": "#cecece",
+        "editor.background": "#0e1415",
+        "editor.foreground": "#cecece",
+        "editor.line_number": "#9a9a9a",
+        "editor.active_line.background": "#14191a",
+        "editor.active_line_number": "#cecece",
+        "editor.selection.background": "#303838",
+        "editor.cursor": "#cecece",
+        "syntax": {
+          "comment": { "color": "#dfdf8e" },
+          "string": { "color": "#95cb82" },
+          "constant": { "color": "#cc8bc9" },
+          "number": { "color": "#cc8bc9" },
+          "boolean": { "color": "#cc8bc9" },
+          "keyword": { "color": "#cecece" },
+          "variable": { "color": "#cecece" },
+          "operator": { "color": "#708b8d" },
+          "punctuation": { "color": "#bababa" },
+          "property": { "color": "#cecece" }
+        }
+      }
+    }
+  ]
+}

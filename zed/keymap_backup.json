@@ -1,0 +1,94 @@
+[
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+    "bindings": {
+      "space f f": ["task::Spawn", { "task_name": "search:project" }],
+      "space '": "pane::ActivateNextItem",
+      "space ;": "pane::ActivatePrevItem",
+      "space v": "pane::SplitRight",
+      "space H": "pane::SplitDown",
+      "space d": "pane::CloseActiveItem",
+      "space m": "markdown::OpenPreview",
+      "space M": "markdown::OpenPreviewToTheSide",
+      "shift-k": "editor::Hover",
+			"space /": "workspace::NewSearch",
+			"n": "search::SelectNextMatch",
+			"shift-n": "search::SelectPrevMatch",
+    }
+  },
+  {
+    "context": "Dock || Terminal || Editor || ProjectPanel || AssistantPanel || CollabPanel || OutlinePanel || ChatPanel || VimControl || EmptyPane || SharedScreen || MarkdownPreview || KeyContextView",
+    "bindings": {
+      "ctrl-l": ["vim::ResizePane", "Widen"],
+      "ctrl-h": ["vim::ResizePane", "Narrow"],
+      "ctrl-k": ["vim::ResizePane", "Shorten"],
+      "ctrl-j": ["vim::ResizePane", "Lengthen"]
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal || extension == md",
+    "bindings": {
+      "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
+      "space e": "workspace::ToggleLeftDock",
+      "space h": ["workspace::ActivatePaneInDirection", "Left"],
+      "space l": ["workspace::ActivatePaneInDirection", "Right"],
+      "space k": ["workspace::ActivatePaneInDirection", "Up"],
+      "space j": ["workspace::ActivatePaneInDirection", "Down"],
+      "space z": "workspace::ToggleZoom",
+      "space z": "workspace::ToggleZoom",
+      "space space": "file_finder::Toggle",
+      "space /": "pane::DeploySearch",
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e": "workspace::ToggleLeftDock",
+      "space l": ["workspace::ActivatePaneInDirection", "Right"],
+    }
+  },
+  {
+    "context": "EmptyPane || SharedScreen",
+    "bindings": {
+      "space e": "workspace::ToggleLeftDock",
+      "space space": "file_finder::Toggle",
+      "space f p": "projects::OpenRecent",
+    },
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "q": "workspace::ToggleLeftDock",
+      "space e": "workspace::ToggleLeftDock",
+    },
+  },
+  {
+    "context": "Editor && !menu",
+    "bindings": {
+      "ctrl-c": "editor::Copy",          // vim default: return to normal mode
+      "ctrl-x": "editor::Cut",           // vim default: decrement
+      "ctrl-v": "editor::Paste",         // vim default: visual block mode
+      "ctrl-y": "editor::Undo",          // vim default: line up
+      "ctrl-f": "buffer_search::Deploy", // vim default: page down
+      "ctrl-o": "workspace::Open",       // vim default: go back
+      "ctrl-a": "editor::SelectAll",     // vim default: increment
+    }
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "shift-s": [
+        "vim::PushOperator",
+        {
+          "AddSurrounds": {}
+        }
+      ]
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-shift-v": "editor::Paste",
+    }
+  }
+]
