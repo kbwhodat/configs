@@ -12,7 +12,7 @@
     ./neovim.nix
     ./password-store.nix
     ./gpg.nix
-    ./ghostty.nix
+    # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix
 	];
@@ -21,7 +21,7 @@
 
 		EDITOR = "nvim";
 		BROWSER = "zen";
-		TERMINAL = "ghostty";
+		TERMINAL = "kitty";
 	};
 
 	home.shellAliases = {

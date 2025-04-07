@@ -6,7 +6,7 @@
     ./packages
     ./browsers
     ./editors
-    # ./lsp
+    ./lsp
     ./neovim
   ];
 }

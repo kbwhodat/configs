@@ -2,7 +2,7 @@
 
 {
   programs.ghostty = {
-    enable = true;
+    enable = false;
     installVimSyntax = true;
     settings = {
       theme = "Wez";

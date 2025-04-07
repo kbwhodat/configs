@@ -246,12 +246,8 @@ in
         id = "notes";
         devices = [ "iphone" "nixos-main" "nixos-frame13" ];
       };
-      "/home/katob/.database" = {
-        id = "secrets";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
-      };
-      "/home/katob/.password-store" = {
-        id = "password-store";
+      "/home/katob/Documents" = {
+        id = "documents";
         devices = [ "nixos-main" "nixos-frame13" ];
       };
     };

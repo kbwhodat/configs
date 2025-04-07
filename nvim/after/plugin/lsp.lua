@@ -23,11 +23,23 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   require('cmp_nvim_lsp').default_capabilities()
 )
 
+-- Configure rust
+require('lspconfig').rust_analyzer.setup({
+    capabilities = require('cmp_nvim_lsp').default_capabilities(),
+})
+
 -- Configure clangd
 require('lspconfig').clangd.setup({
     -- The capabilities here ensure clangd is aware of your cmp settings.
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
-    -- You can add additional clangd-specific settings here if needed.
+
+    settings = {
+      ['rust-analyzer'] = {
+        diagnostics = {
+          enable = true;
+        }
+      }
+    }
 })
 
 
