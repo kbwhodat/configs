@@ -18,6 +18,13 @@
         "editor.active_line_number": "#cecece",
         "editor.selection.background": "#303838",
         "editor.cursor": "#cecece",
+        "players": [
+          {
+            "cursor": "#39bae5ff",
+            "background": "#39bae5ff",
+            "selection": "#44475A"
+          },
+        ],
         "syntax": {
           "comment": { "color": "#dfdf8e" },
           "string": { "color": "#95cb82" },

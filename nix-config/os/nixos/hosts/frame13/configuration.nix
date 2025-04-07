@@ -26,6 +26,7 @@
     pavucontrol
     clinfo
     pamixer
+    #zed-editor-fhs
     ffmpeg
   ];
 

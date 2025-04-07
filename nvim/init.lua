@@ -45,7 +45,7 @@ vim.cmd[[hi NormalNC guibg=#000000]]
 vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
-vim.cmd('hi Visual guibg=Grey')
+vim.cmd('hi Visual guibg=#44475A')
 
 vim.api.nvim_set_hl(0, "@AlabasterString.json", { fg = "#FFFFFF" })
 -- Set the status line for the active window
@@ -276,3 +276,5 @@ if vim.g.started_by_firenvim then
   vim.cmd('set nonumber')
   vim.cmd('set textwidth=200')
 end
+
+

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export DRI_PRIME=0
+
 # Directory where screenshots will be saved
 screenshot_dir="$HOME/vault/References"
 
