@@ -21,6 +21,7 @@ in
 	imports = [
 		../../../../../common/linux/rofi
 		../../../../../common/linux/calibre
+		../../../../../common/linux/koreader
 		../../../../../common/linux/okular
 		../../../../../common/linux/i3
 		../../../../../common

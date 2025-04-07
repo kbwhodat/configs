@@ -65,7 +65,7 @@ in
     "zen.themes.color-prefs.amoled" = true;
     "theme.better_uniexbtn.custom" = "url(chrome://branding/content/icon32.png)";
     "theme.better_uniexbtn.default" = "Default";
-    "zen.welcome-screen.seen" = false;
+    "zen.welcome-screen.seen" = true;
     "zen.welcome-screen.enabled" = false;
     "zen.theme.pill-button" = false;
     "zen.themes.updated-value-observer" = true;

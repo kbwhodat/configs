@@ -23,12 +23,54 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   require('cmp_nvim_lsp').default_capabilities()
 )
 
+-- Configure rust
+require('lspconfig').rust_analyzer.setup({
+    capabilities = require('cmp_nvim_lsp').default_capabilities(),
+})
+
 -- Configure clangd
 require('lspconfig').clangd.setup({
     -- The capabilities here ensure clangd is aware of your cmp settings.
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
-    -- You can add additional clangd-specific settings here if needed.
+
+    settings = {
+      ['rust-analyzer'] = {
+        diagnostics = {
+          enable = true;
+        }
+      }
+    }
 })
+
+
+require('lspconfig').harper_ls.setup {
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  filetypes = { "markdown", "gitcommit" },
+  settings = {
+    ["harper-ls"] = {
+      markdown = {
+        ignore_link_title = true
+      },
+      linters = {
+        sentence_capitalization = true,
+        avoid_curses = true,
+        spell_check = false,
+        spelled_numbers = false,
+        an_a = true,
+        sentence_capitalization = false,
+        unclosed_quotes = true,
+        wrong_quotes = false,
+        long_sentences = true,
+        repeated_words = true,
+        spaces = true,
+        matcher = true,
+        correct_number_suffix = true,
+        number_suffix_capitalization = true,
+        multiple_sequential_pronouns = true,
+      },
+    },
+  },
+}
 
 -- LSP actions - keymaps, etc.
 vim.api.nvim_create_autocmd('LspAttach', {

@@ -25,7 +25,7 @@ in
 
 {
 
-  home.packages = 
+  home.packages =
     if isDarwin then
       with pkgsWithOverlay; [ pkgsWithOverlay.ghostty-darwin ]
     else
@@ -45,16 +45,17 @@ in
 
     font-thicken = true
 
-    theme = zenbones_dark
+    theme = Wez
 
     adjust-cursor-thickness = 50%
 
     window-theme = dark
     clipboard-read = allow
 
-    command = /etc/profiles/per-user/katob/bin/bash
+    # command = /etc/profiles/per-user/katob/bin/bash
+    command = /etc/profiles/per-user/katob/bin/zsh
 
-    shell-integration = bash
+    shell-integration = zsh
     # gtk-titlebar = true
 
     cursor-style = block

@@ -189,7 +189,7 @@ in
   security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = true;
+  services.pulseaudio.enable = true;
   # security.rtkit.enable = false;
   services.pipewire = {
     enable = false;
@@ -246,12 +246,8 @@ in
         id = "notes";
         devices = [ "iphone" "nixos-main" "nixos-frame13" ];
       };
-      "/home/katob/.database" = {
-        id = "secrets";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
-      };
-      "/home/katob/.password-store" = {
-        id = "password-store";
+      "/home/katob/Documents" = {
+        id = "documents";
         devices = [ "nixos-main" "nixos-frame13" ];
       };
     };

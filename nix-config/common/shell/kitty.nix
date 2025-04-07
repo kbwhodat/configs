@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }: 
+{ config, pkgs, inputs, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
 in
@@ -13,7 +13,7 @@ in
     # '';
     font = {
       name = "ComicShannsMono Nerd Font Mono";
-      size = if isDarwin then 13.3 else 12.3;
+      size = if isDarwin then 13.3 else 13.0;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -22,7 +22,7 @@ in
 			enableZshIntegration = false;
 		};
 		extraConfig = ''
-			shell /run/current-system/sw/bin/bash
+			shell /etc/profiles/per-user/katob/bin/zsh
 			editor nvim
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
@@ -37,12 +37,12 @@ in
       # cursor_shape block
       draw_minimal_borders yes
 
-      macos_thicken_font 0.40
+      #macos_thicken_font 0.40
 
 			disable_ligatures always
 
-      background = #000000
-      foreground = #ffffff
+      background #000000
+      foreground #f0f0f0
 		'';
 	};
 }

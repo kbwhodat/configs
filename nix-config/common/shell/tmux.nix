@@ -6,8 +6,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "kbwhodat";
       repo = "tmux-fzf-session-switch";
-      rev = "94c69808d9457903073431f5db95a028289c9196";
-      sha256 = "0wnn50k5fy4ngjd16k3abg49x1pfx7i5vzd4kkjs7k8v0k203p79";
+      rev = "fe665f446fbe8727eb010ae157de618a67641bd4";
+      sha256 = "sha256-3ECDIw+hbDn8Zc+e9rwRUljm7SlN1w7VeLsp7SLcW8Q=";
     };
   };
   inherit (pkgs.stdenv) isDarwin;
@@ -39,8 +39,10 @@ in
         set -g @resurrect-strategy-nvim 'session'
         set -g @resurrect-strategy-vim 'session'
 
-				set -g default-command "/run/current-system/sw/bin/bash"
-				set-option -g default-shell "/run/current-system/sw/bin/bash"
+				# set -g default-command "/run/current-system/sw/bin/bash"
+				# set-option -g default-shell "/run/current-system/sw/bin/bash"
+				set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
+				set-option -g default-shell "/etc/profiles/per-user/katob/bin/zsh"
 
 				set-option -g mouse on
 				set -g @yank_selection_mouse 'clipboard'
@@ -69,13 +71,15 @@ in
 				set -g window-status-current-format ""
 				set -g window-status-format ""
 
+        set-option -g detach-on-destroy off
+
 				# set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
         # set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
 
         # Enable cursor blink
         set-option -g terminal-overrides ',*:cnorm=\\E[?12l\\E[?25h'
         set-option -ga terminal-overrides ',*:civis=\\E[?25l'
-        set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
+        #set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
         set-option -ga terminal-overrides ',xterm-kitty:cnorm=\E[?12h\E[?25h'
         set-option -ga terminal-overrides ',screen-256color:cnorm=\\E[?12h\\E[?25h'
         set -g terminal-overrides '*:colors=256'
