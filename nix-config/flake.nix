@@ -4,7 +4,7 @@
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
+  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-2.tar.gz";
   inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
 
   #inputs.nil.url = "github:oxalica/nil";
@@ -31,13 +31,12 @@
 
   # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty?ref=kitty-unicode";
   # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
-	inputs.ghostty.url = "github:ghostty-org/ghostty";
-  inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
+	# inputs.ghostty.url = "github:ghostty-org/ghostty";
+	#  inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
+  # inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/5b505c753310f169f1c69a22a80fbade7feab16f";
 
-  inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/5b505c753310f169f1c69a22a80fbade7feab16f";
 
-
-  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, ghostty, ghostty-darwin, zen-browser, ... }:
+  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, zen-browser, ... }:
 
     let
       system = "x86_64-linux";

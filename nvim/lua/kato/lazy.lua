@@ -18,6 +18,10 @@ local plugins = {
 		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
+  { "CRAG666/code_runner.nvim", config = true },
+  {
+    "frabjous/knap"
+  },
   {
     "tris203/precognition.nvim"
   },

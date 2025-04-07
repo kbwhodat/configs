@@ -19,17 +19,18 @@
     pciutils
     amdgpu_top
     usbutils
-    clang
+    # clang
+    gcc
     brightnessctl
     xorg.xev
     pavucontrol
     clinfo
     pamixer
+    #zed-editor-fhs
     ffmpeg
-
   ];
 
-  hardware.opengl.extraPackages = with pkgs; [
+  hardware.graphics.extraPackages = with pkgs; [
     rocmPackages.clr.icd
     mesa.drivers
     amdvlk
