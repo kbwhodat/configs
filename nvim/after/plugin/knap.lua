@@ -20,3 +20,24 @@ kmap({ 'n', 'v', 'i' },'<F7>', function() require("knap").toggle_autopreviewing(
 
 -- F8 invokes a SyncTeX forward search, or similar, where appropriate
 kmap({ 'n', 'v', 'i' },'<F8>', function() require("knap").forward_jump() end)
+
+-- Create a custom user command 'FullCompile' that automates:
+-- pdflatex => biber => pdflatex => pdflatex
+vim.api.nvim_create_user_command('FullCompile', function()
+    -- Ensure current changes are saved first
+    vim.cmd('w')
+    -- Get the current filename (with extension) and its root (without extension)
+    local texfile = vim.fn.expand('%')
+    local basename = vim.fn.expand('%:r')
+    
+    -- Run commands sequentially
+    os.execute('pdflatex ' .. texfile .. ' > /dev/null 2>&1')
+    os.execute('biber ' .. basename .. ' > /dev/null 2>&1')
+    os.execute('pdflatex ' .. texfile .. ' > /dev/null 2>&1')
+    os.execute('pdflatex ' .. texfile .. ' > /dev/null 2>&1')
+    
+    vim.notify('PDF compilation complete!')
+end, { desc = 'Compile with pdflatex, biber, and pdflatex twice' })
+
+-- Map the new 'FullCompile' command to F9
+kmap('n', '<F9>', ':FullCompile<CR>', { noremap = true, silent = true })

@@ -3,12 +3,21 @@
 {
 
   # Enable CUDA support
-  nixpkgs.config.cudaSupport = true;
+  nixpkgs.config.cudaSupport = false;
+
+  # nix.settings.substituters = [
+  #   "https://cuda-maintainers.cachix.org"
+  # ];
+  #
+  # nix.settings.trusted-public-keys = [
+  #   "cuda-maintainers.cachix.org-1:dq3ujKPMCXU4ylr9JUG0pVa7CNfq5E="
+  # ];
 
   # Add CUDA toolkit to system packages
-  environment.systemPackages = with pkgs; [
-    cudaPackages_12_2.cudatoolkit
-  ];
+  # it's only needed if I want to develop and utilize the cuda compilier and create cuda applications
+  # environment.systemPackages = with pkgs; [
+  #   cudaPackages_12_2.cudatoolkit
+  # ];
 
   # Enable NVIDIA drivers
   # services.xserver.videoDrivers = [ "nvidia" ];
