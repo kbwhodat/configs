@@ -4,7 +4,7 @@
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-2.tar.gz";
+  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-3.tar.gz";
   inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
 
   #inputs.nil.url = "github:oxalica/nil";
