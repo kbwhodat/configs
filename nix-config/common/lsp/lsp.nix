@@ -5,5 +5,7 @@
     #nixd
     rustc
     rust-analyzer
+    ltex-ls-plus
+    texlab
   ];
 }
