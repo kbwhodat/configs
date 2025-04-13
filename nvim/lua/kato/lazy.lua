@@ -132,27 +132,23 @@ local plugins = {
 	 init = function()
 	   table.insert(require("cmp").get_config().sources, { name = "git" })
 	 end,
-  {
-    'VonHeikemen/lsp-zero.nvim',
-    dependencies = {
-      -- LSP Support
-      {'neovim/nvim-lspconfig'},
-      {'williamboman/mason.nvim'},
-      {'williamboman/mason-lspconfig.nvim'},
 
-      -- Autocompletion
-      {'hrsh7th/nvim-cmp'},
-      {'hrsh7th/cmp-buffer'},
-      {'hrsh7th/cmp-path'},
-      {'saadparwaiz1/cmp_luasnip'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'hrsh7th/cmp-nvim-lua'},
+  {'neovim/nvim-lspconfig'},
+  {'williamboman/mason.nvim'},
+  {'williamboman/mason-lspconfig.nvim'},
 
-      -- Snippets
-      {'rafamadriz/friendly-snippets'},
-    {'L3MON4D3/LuaSnip'},
-    }
-  }
+  -- Autocompletion
+  {'hrsh7th/nvim-cmp'},
+  {'hrsh7th/cmp-buffer'},
+  {'hrsh7th/cmp-path'},
+  {'saadparwaiz1/cmp_luasnip'},
+  {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/cmp-nvim-lua'},
+
+  -- Snippets
+  {'rafamadriz/friendly-snippets'},
+  {'L3MON4D3/LuaSnip'},
+  'hrsh7th/vim-vsnip'
 }
 
 

@@ -62,6 +62,8 @@ in
   settings = {
 
     # Zen settings
+    "browser.tabs.allow_transparent_browser" = true;
+    "zen.theme.content-element-separation" = 0;
     "zen.themes.color-prefs.amoled" = true;
     "theme.better_uniexbtn.custom" = "url(chrome://branding/content/icon32.png)";
     "theme.better_uniexbtn.default" = "Default";
