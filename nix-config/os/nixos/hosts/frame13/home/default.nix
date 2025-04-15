@@ -27,7 +27,6 @@ in
 		../../../../../common
     ../../../../../common/sops
     ../../../../../common/personal
-
 	];
 
   home.username = "katob";
