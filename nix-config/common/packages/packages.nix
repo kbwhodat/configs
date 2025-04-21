@@ -4,7 +4,8 @@
   home.packages = with pkgs; [
     zathura
     rubber
-    texliveBookPub
+    # texliveBookPub
+    texliveFull
     taskwarrior3
     taskwarrior-tui
     rustc

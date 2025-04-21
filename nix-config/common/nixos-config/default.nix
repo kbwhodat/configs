@@ -204,6 +204,11 @@ in
     zenity
     libnotify
     scrot
+    libreoffice-still
+    # (pkgs.texlive.withPackages (ps: with ps; [
+    #   scheme-medium
+    #   booktabs
+    # ]))
   ];
 
   programs.chromium = {
