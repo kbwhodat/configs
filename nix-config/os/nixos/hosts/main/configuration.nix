@@ -20,18 +20,24 @@
   environment.systemPackages = with pkgs; [
     usbutils
     displaylink
-    steam
     # zulu17
     zulu11
     grobi
     linuxKernel.packages.linux_6_6.evdi
     # gdb
     # python3Packages.torch-bin
+    protonplus
 
   ];
 
   environment.variables = {    
-    WLR_EVDI_RENDER_DEVICE = "/dev/dri/card1";                                                                                                   
+  };
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   # Define the dlm.service (DisplayLink Manager)

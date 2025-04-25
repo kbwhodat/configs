@@ -2,6 +2,7 @@
   {
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
+      "ctrl-alt-p": ["task::Spawn", { "task_name": "build:run" }],
       "space f f": ["task::Spawn", { "task_name": "search:project" }],
       "space '": "pane::ActivateNextItem",
       "space ;": "pane::ActivatePreviousItem",
@@ -18,9 +19,19 @@
   },
 
   {
-    "context": "Workspace",
+    "context": "Workspace && not_editing",
     "bindings": {
       "space T": "workspace::ToggleBottomDock",
+      "space e": "workspace::ToggleLeftDock",
+      "space r": "workspace::ToggleRightDock",
+			"ctrl-i": "workspace::NewFile",
+    }
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "shift-tab": "editor::ContextMenuPrev",
+      "tab": "editor::ContextMenuNext",
     }
   },
   {
@@ -33,7 +44,13 @@
     }
   },
   {
-    "context": "Editor && vim_mode == normal || extension == md",
+    "context": "Editor || Terminal || ProjectPanel",
+    "bindings": {
+      "ctrl-'": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    "context": "((extension == md) && (vim_mode == normal)) || (Editor && vim_mode == normal)",
     "bindings": {
       "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
       "space e": "workspace::ToggleLeftDock",
@@ -58,11 +75,21 @@
     }
   },
   {
-    "context": "ProjectPanel",
+    "context": "ProjectPanel && not_editing",
     "bindings": {
       "space e": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
       "space l": "workspace::ActivatePaneRight",
+      "y": "project_panel::Copy",
+      "p": "project_panel::Paste",
+      "ctrl-v": "project_panel::Paste",
+      "shift-y": "project_panel::CopyPath",
+    }
+  },
+  {
+    "context": "ProjectPanel && editing",
+    "bindings": {
+      "ctrl-v": "project_panel::Paste",
     }
   },
   {
@@ -81,12 +108,14 @@
       "space r": "workspace::ToggleRightDock",
       "k": "menu::SelectPrevious",
       "j": "menu::SelectNext",
+      "esc": "workspace::ToggleRightDock",
     },
   },
   {
     "context": "GitPanel",
     "use_key_equivalents": true,
     "bindings": {
+      "esc": "workspace::ToggleRightDock",
       "space gf": "git::Fetch",
       "space P": "git::Push",
       "space gp": "git::Pull",

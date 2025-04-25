@@ -204,6 +204,11 @@ in
     zenity
     libnotify
     scrot
+    libreoffice-still
+    # (pkgs.texlive.withPackages (ps: with ps; [
+    #   scheme-medium
+    #   booktabs
+    # ]))
   ];
 
   programs.chromium = {
@@ -246,12 +251,8 @@ in
         id = "notes";
         devices = [ "iphone" "nixos-main" "nixos-frame13" ];
       };
-      "/home/katob/.database" = {
-        id = "secrets";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
-      };
-      "/home/katob/.password-store" = {
-        id = "password-store";
+      "/home/katob/Documents" = {
+        id = "documents";
         devices = [ "nixos-main" "nixos-frame13" ];
       };
     };
