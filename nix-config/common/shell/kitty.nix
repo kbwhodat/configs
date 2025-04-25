@@ -13,7 +13,7 @@ in
     # '';
     font = {
       name = "ComicShannsMono Nerd Font Mono";
-      size = if isDarwin then 13.3 else 12.3;
+      size = if isDarwin then 13.3 else 13.0;
     };
 		shellIntegration = {
 			mode = "no-rc";
@@ -41,8 +41,8 @@ in
 
 			disable_ligatures always
 
-      background = #000000
-      foreground = #ffffff
+      background #000000
+      foreground #f0f0f0
 		'';
 	};
 }

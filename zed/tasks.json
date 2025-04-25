@@ -29,5 +29,20 @@
     "use_new_terminal": false,
     "reveal": "always",
     "hide": "on_success"
+  },
+  {
+    "label": "build:run",
+    "command": "cargo run",
+    "options": {
+      "cwd": "${workspaceFolder}"
+    },
+    "use_new_terminal": false,
+    "reveal": "always",
+    "shell": {
+      "program": "/bin/sh"
+    },
+    "env": {
+      "PATH": "/run/wrappers/bin:/home/katob/.nix-profile/bin:/nix/profile/bin:/home/katob/.local/state/nix/profile/bin:/etc/profiles/per-user/katob/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:/home/katob/.local/share/tridactyl:/usr/local/bin"
+    }
   }
 ]

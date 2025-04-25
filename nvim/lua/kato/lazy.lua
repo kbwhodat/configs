@@ -18,6 +18,10 @@ local plugins = {
 		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
+  { "CRAG666/code_runner.nvim", config = true },
+  {
+    "frabjous/knap"
+  },
   {
     "tris203/precognition.nvim"
   },
@@ -71,6 +75,11 @@ local plugins = {
       { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
       { "<leader>G",  function() Snacks.gitbrowse() end, desc = "Git browsing" },
       { "<leader>ff",  function() Snacks.picker() end, desc = "Picking out" },
+      { "<leader>B", function() Snacks.picker.buffers() end, desc = "Buffers" },
+      { "<leader>g", function() Snacks.picker.grep() end, desc = "Grep" },
+      { "<leader>e", function() Snacks.explorer() end, desc = "explorer" },
+      { "<leader>:", function() Snacks.picker.command_history() end, desc = "command history" },
+      { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
     }
   },
   {
@@ -128,27 +137,23 @@ local plugins = {
 	 init = function()
 	   table.insert(require("cmp").get_config().sources, { name = "git" })
 	 end,
-  {
-    'VonHeikemen/lsp-zero.nvim',
-    dependencies = {
-      -- LSP Support
-      {'neovim/nvim-lspconfig'},
-      {'williamboman/mason.nvim'},
-      {'williamboman/mason-lspconfig.nvim'},
 
-      -- Autocompletion
-      {'hrsh7th/nvim-cmp'},
-      {'hrsh7th/cmp-buffer'},
-      {'hrsh7th/cmp-path'},
-      {'saadparwaiz1/cmp_luasnip'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'hrsh7th/cmp-nvim-lua'},
+  {'neovim/nvim-lspconfig'},
+  {'williamboman/mason.nvim'},
+  {'williamboman/mason-lspconfig.nvim'},
 
-      -- Snippets
-      {'rafamadriz/friendly-snippets'},
-    {'L3MON4D3/LuaSnip'},
-    }
-  }
+  -- Autocompletion
+  {'hrsh7th/nvim-cmp'},
+  {'hrsh7th/cmp-buffer'},
+  {'hrsh7th/cmp-path'},
+  {'saadparwaiz1/cmp_luasnip'},
+  {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/cmp-nvim-lua'},
+
+  -- Snippets
+  {'rafamadriz/friendly-snippets'},
+  {'L3MON4D3/LuaSnip'},
+  'hrsh7th/vim-vsnip'
 }
 
 

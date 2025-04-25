@@ -6,6 +6,7 @@
   "auto_install_extensions": {
     "ansible": true,
     "java": true,
+    "rust": true,
     "c": true,
     "go": true,
     "nix": true,
@@ -134,6 +135,8 @@
         "scrollbar.track.border": "#2e333cff",
         "editor.foreground": "#FFFFFF",
         "editor.background": "#000000",
+        "search.match_background": "#39bae53d",
+        "editor.document_highlight.bracket_background": "#ffffff00",
         "editor.gutter.background": "#000000",
         "editor.subheader.background": "#2f343eff",
         "editor.active_line.background": "#2f343ebf",
@@ -236,6 +239,28 @@
     },
   },
   "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        // get more cargo-less diagnostics from rust-analyzer,
+        // which might include false-positives (those can be turned off by their names)
+        "diagnostics": {
+          "experimental": {
+            "enable": true
+          }
+        },
+        // To disable the checking entirely
+        // (ignores all cargo and check settings below)
+        "checkOnSave": false,
+        // To check the `lib` target only.
+        "cargo": {
+          "allTargets": false
+        },
+        // Use `-p` instead of `--workspace` for cargo check
+        "check": {
+          "workspace": false
+        }
+      }
+    },
     "jdtls": {
       "settings": {
         "java.format.enabled": true

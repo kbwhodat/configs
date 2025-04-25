@@ -79,7 +79,7 @@ in
         # Enable cursor blink
         set-option -g terminal-overrides ',*:cnorm=\\E[?12l\\E[?25h'
         set-option -ga terminal-overrides ',*:civis=\\E[?25l'
-        set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
+        #set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
         set-option -ga terminal-overrides ',xterm-kitty:cnorm=\E[?12h\E[?25h'
         set-option -ga terminal-overrides ',screen-256color:cnorm=\\E[?12h\\E[?25h'
         set -g terminal-overrides '*:colors=256'
