@@ -60,7 +60,7 @@ in
   ];
 
   homebrew = {
-    enable = true;
+    # enable = true;
     # onActivation.cleanup = "uninstall";
 
     taps = ["benjiwolff/neovim-nightly"];
