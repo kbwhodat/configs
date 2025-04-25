@@ -37,7 +37,7 @@ in
       # cursor_shape block
       draw_minimal_borders yes
 
-      macos_thicken_font 0.40
+      #macos_thicken_font 0.40
 
 			disable_ligatures always
 

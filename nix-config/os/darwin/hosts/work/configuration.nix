@@ -15,14 +15,14 @@ in
 {
   environment.etc.".secrets".source = "${myrepo}";
 
-  services.nix-daemon.enable = true; # auto upgrade nix package and daemon service
+  nix.enable = true; # auto upgrade nix package and daemon service
     system = {
       defaults = {
         menuExtraClock.Show24Hour = true;
       };
     };
 
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # ids.uids.nixbld = 301;
   nix.extraOptions = ''
@@ -49,7 +49,7 @@ in
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
   };
 
-  services.yabai.enable = false;
+  services.yabai.enable = true;
   services.yabai.enableScriptingAddition = true;
   services.skhd.enable = true;
   services.lorri.enable = true;
@@ -58,19 +58,19 @@ in
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true;
 
-  # fonts.packages = with pkgs; [
-  #   pkgs.nerd-fonts.roboto-mono
-  #   pkgs.nerd-fonts.comic-shanns-mono
-  # ];
-
   fonts.packages = with pkgs; [
-   (nerdfonts.override {
-     fonts = [
-       "RobotoMono"
-       "ComicShannsMono"
-     ];
-   })
+    pkgs.nerd-fonts.roboto-mono
+    pkgs.nerd-fonts.comic-shanns-mono
   ];
+
+  # fonts.packages = with pkgs; [
+  #  (nerdfonts.override {
+  #    fonts = [
+  #      "RobotoMono"
+  #      "ComicShannsMono"
+  #    ];
+  #  })
+  # ];
   #fonts.fontconfig = {
   #  defaultFonts = {
   #      serif = [ "RobotoMono Nerd Font Propo"];
@@ -80,12 +80,12 @@ in
   #};
 
   homebrew = {
-    enable = true;
+    # enable = true;
     # onActivation.cleanup = "uninstall";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
-    brews = [ "helm" "kubectl"];
-    casks = [ "sketchybar" "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    brews = [ "terragrunt" "helm" "kubectl"];
+    casks = [ "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
