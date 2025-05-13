@@ -7,7 +7,7 @@ in
 	programs.bash = {
 		enable = true;
 		enableCompletion = true;
-    historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
+    historyControl = [ "ignoreboth" "erasedups" ];
     historyIgnore = [ "ls" "cd" "exit" ];
 
 		sessionVariables = {
@@ -28,7 +28,9 @@ in
 
 		initExtra = ''
 
-export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin"
+eval "$(direnv hook bash)"
+
+export PATH="/run/wrappers/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin":$PATH
 
 export EDITOR="nvim"
 export VISUAL="vim"
@@ -79,6 +81,15 @@ alias cat='bat --style plain'
 alias vim="$(which nvim)"
 alias vi="$(which vim)"
 
+keepassxc_helper() {
+  local DATABASE="/home/katob/.database/keedatabase.kdbx"
+
+  keepassxc-cli "$1" "$DATABASE" "''${@:2}"
+}
+
+# Alias for the helper script
+alias kp="keepassxc_helper"
+
 if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 
   TMUX_SESSION=`hostname -f`
@@ -115,7 +126,15 @@ PROMPT_COMMAND='
   PS1="\n[\w] $current_branch\n # "
 '
 
-PROMPT_COMMAND="history -a; history -c; history -r $PROMPT_COMMAND"
+if [ -z "$PROMPT_COMMAND" ]; then
+  PROMPT_COMMAND="history -a; history -c; history -r"
+else
+  # Append only if it's not already included
+  case "$PROMPT_COMMAND" in
+    *history\ -a*) ;;  # already included
+    *) PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND" ;;
+  esac
+fi
 
 search_and_edit() {
     selected_file="$(rg --column --hidden --line-number --no-heading --color=always --smart-case \
@@ -147,5 +166,6 @@ search_and_edit() {
     set vi-ins-mode-string \1\e[6 q\2
     set keymap vi-command
     set keymap vi-insert
+    set keyseq-timeout 25
   '';
 }

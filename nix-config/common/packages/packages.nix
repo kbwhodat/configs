@@ -2,11 +2,27 @@
 
 {
   home.packages = with pkgs; [
-    zed-editor
+    zathura
+    rubber
+    # texliveBookPub
+    texliveFull
+    taskwarrior3
+    taskwarrior-tui
+    rustc
+    harper
+    vim
     markdown-oxide
-    #inputs.nil.packages.${pkgs.system}.nil
+    (zed-editor-fhs.overrideAttrs (oldAttrs: rec {
+      preConfigure = ''
+    export PROTOC=${pkgs.protobuf}/bin/protoc
+      '' + (oldAttrs.preConfigure or "");
+
+      postInstall = (oldAttrs.postInstall or "") + ''
+    wrapProgram $out/bin/zeditor --set ZED_ALLOW_EMULATED_GPU 0
+      '';
+    }))
     nil
-    nixd
+    # nixd
     nmap
     wget
     lsof
@@ -16,13 +32,11 @@
     git
     bat
     dig
-    imagemagick
-    imagemagick.dev
-    luajit
-    tree
-    luarocks
     file
     fzf
+    tree
+    luajit
+    luarocks
     fd
     ripgrep
     fira-code
@@ -41,10 +55,8 @@
     cargo
     nodejs_22
     php83Packages.composer
-    vim
     tree-sitter
     zlib
-    gh
     gnused
     gnutar
     coreutils

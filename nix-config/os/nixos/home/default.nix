@@ -9,7 +9,7 @@ let
   ldLibraryPath = lib.makeLibraryPath [
     pkgs.gcc_multi
     pkgs.linuxPackages.nvidia_x11
-    # pkgs.glibc
+    pkgs.glibc
     pkgs.glib
     pkgs.nss_latest
     pkgs.xorg.libxcb
@@ -23,6 +23,7 @@ in
 		../../../common/linux/rofi
 		../../../common/linux/calibre
 		../../../common/linux/okular
+		../../../common/linux/koreader
 		../../../common/linux/i3
 		../../../common
     ../../../common/sops
@@ -70,7 +71,7 @@ in
   };
 
   home.packages = with pkgs; [
-    kdePackages.kate
+    keepassxc
     alsa-utils
     xorg.xorgserver
     obsidian
@@ -85,21 +86,21 @@ in
     ueberzug
     pulseaudio
     autorandr
-    chromium
     mpv
     vlc
     openvpn
-    yaegi
+    yaegi # go interpreter
     dunst
     tomato-c
+    clang
     clang-tools
     transmission_4-qt
     tor
     tor-browser
   ];
 
+  
   home.enableNixpkgsReleaseCheck = false;
-
 
   home.sessionVariables = {
     EDITOR = "nvim";

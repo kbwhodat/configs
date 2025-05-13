@@ -1,0 +1,15 @@
+-- local snipe = require("snipe")
+--
+-- snipe.setup({
+--   ui = {
+--     position="topleft"
+--   },
+--   sort = "last"
+-- })
+--
+-- -- Will delete a buffer that has been selected from the menu
+-- vim.keymap.set("n", "<leader>gd", snipe.toggle_menu(snipe.buffer_producer, function(bufnr, _)
+--   vim.api.nvim_buf_delete(bufnr, { force = false } )
+-- end))
+--
+-- vim.keymap.set("n", "<leader>gb", snipe.create_buffer_menu_toggler())

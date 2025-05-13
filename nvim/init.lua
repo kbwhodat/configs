@@ -1,7 +1,7 @@
 require("kato")
 require("kato.obsidian")
 require("kato.obsidian_functions")
-require("kato.nil-ls")
+require("kato.lsp")
 
 local vim = vim
 
@@ -32,7 +32,8 @@ vim.cmd('set clipboard+=unnamedplus')
 vim.cmd('set termguicolors')
 vim.cmd('set nolist')
 -- vim.cmd('colorscheme molokai-dark')
-vim.cmd('colorscheme kanagawa')
+-- vim.cmd('colorscheme kanagawa')
+vim.cmd('colorscheme alabaster')
 
 -- setting coneal for markdown stuff
 vim.cmd('set conceallevel=2')
@@ -44,8 +45,9 @@ vim.cmd[[hi NormalNC guibg=#000000]]
 vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
-vim.cmd('hi Visual guibg=Grey')
+vim.cmd('hi Visual guibg=#44475A')
 
+vim.api.nvim_set_hl(0, "@AlabasterString.json", { fg = "#FFFFFF" })
 -- Set the status line for the active window
 vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#FFFFFF', bg = '#000000', bold = true })
 
@@ -53,7 +55,7 @@ vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#FFFFFF', bg = '#000000', bold = tr
 vim.api.nvim_set_hl(0, 'StatusLineNC', { fg = '#808080', bg = '#000000' })
 
 -- Set the line number foreground and background colors
-vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray numbers on a dark gray background
+-- vim.api.nvim_set_hl(0, 'LineNr', { fg = '#FFFFFF', bg = '#000000' })  -- Gray numbers on a dark gray background
 
 -- Optional: Set the cursor line number to have a distinct look
 vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFFFFF', bg = '#000000' })  -- White numbers on a slightly lighter gray background
@@ -152,13 +154,8 @@ vim.api.nvim_set_keymap('n', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = t
 vim.api.nvim_set_keymap('v', '<leader>ol', ':ObsidianLinkNew<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ot', ':ObsidianTags<CR>', { noremap = true, silent = true })
 -- workspaces
-vim.api.nvim_set_keymap('n', '<leader>oz', ':ObsidianWorkspace Zettelkasten<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ow', ':ObsidianWorkspace Work<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oT', ':ObsidianWorkspace Travel<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oF', ':ObsidianWorkspace Finance<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oc', ':ObsidianWorkspace School<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>od', ':ObsidianWorkspace Dump<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>op', ':ObsidianWorkspace Personal<CR>', { noremap = true, silent = true })
 
 
 vim.api.nvim_set_keymap('n', '<C-S>', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
@@ -172,12 +169,6 @@ vim.api.nvim_set_keymap('i', '<C-A>', '<cmd>lua vim.diagnostic.open_float(nil, {
 vim.api.nvim_set_keymap('n', '<Leader>tc', '<cmd>lua ToggleTaskStateComplete()<CR>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<Leader>tp', '<cmd>lua ToggleTaskStatePending()<CR>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<Leader>tt', '<cmd>lua ToggleTaskStateTodo()<CR>', {noremap = true, silent = true})
-
--- vim dadbod ui
-vim.api.nvim_set_keymap('n', '<Leader>H', ':DBUIToggle<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<Leader>A', ':DBUIAddConnection<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<Leader>L', ':DBUILastQueryInfo<CR>', {noremap = true, silent = true})
-
 
 
 -- Dynamic Autocommands
@@ -227,3 +218,63 @@ vim.cmd('filetype on')
 vim.cmd('filetype indent on')
 
 vim.cmd('set guicursor=n-v-c:block,i:ver25,r:hor20,o:hor50')
+
+-- Everything Below is Firenvim stuff
+vim.g.firenvim_config = {
+    globalSettings = { 
+    ignoreKeys = {
+      all = {  '<S-l>', '<S-h>', '<C-r>', '<C-l>', '<C-t>' },
+    },
+    alt = "all" 
+  },
+    localSettings = {
+        [".*"] = {
+            cmdline  = "neovim",
+            content  = "text",
+            priority = 0,
+            selector = "textarea, input",
+            takeover = "never"
+        }
+    }
+}
+
+if vim.g.started_by_firenvim then
+  vim.api.nvim_set_keymap("n", "<Esc><Esc>", "<Cmd>call firenvim#focus_page()<CR>", {noremap = true, silent = true})
+end
+if vim.g.started_by_firenvim then
+  vim.api.nvim_set_keymap("n", "<C-:>", "<Cmd>call firenvim#focus_input()<CR>", {noremap = true, silent = true})
+end
+if vim.g.started_by_firenvim then
+  vim.api.nvim_set_keymap("n", "<C-;>", "<Cmd>call firenvim#hide_frame()<CR><ESC>", {noremap = true, silent = true})
+end
+
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = "*",
+  callback = function()
+    if vim.g.started_by_firenvim then
+      vim.api.nvim_buf_set_keymap(0, 'i', '<CR>', '<Esc>:wq<CR>', {noremap = true, silent = true})
+    end
+  end
+})
+
+if vim.g.started_by_firenvim then
+  vim.o.number = false
+  vim.o.relativenumber = false
+
+  -- Hide the sign column
+  vim.o.signcolumn = "no"
+
+  -- Remove the status line
+  vim.o.laststatus = 0
+  vim.cmd('set noruler')
+  vim.cmd('set noshowmode')
+  vim.cmd('set shortmess+=F')
+  vim.cmd('set colorcolumn=0')
+  vim.cmd('set showtabline=1')
+  vim.cmd('set cmdheight=1')
+  vim.cmd('set nocursorline')
+  vim.cmd('set nonumber')
+  vim.cmd('set textwidth=200')
+end
+
+

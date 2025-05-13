@@ -25,7 +25,7 @@ in
 
 {
 
-  home.packages = 
+  home.packages =
     if isDarwin then
       with pkgsWithOverlay; [ pkgsWithOverlay.ghostty-darwin ]
     else
@@ -34,7 +34,7 @@ in
   home.file."ghostty".target = "${config.home.homeDirectory}/.config/ghostty/config";
   home.file."ghostty".source = builtins.toFile "config" ''
 
-    font-size = ${if isDarwin then "13.3" else "12.3"}
+    font-size = ${if isDarwin then "13.3" else "13.0"}
 
     #font-family = "RobotoMono Nerd Font Mono"
     #font-family-bold = "RobotoMono Nerd Font Mono Bd"
@@ -52,9 +52,10 @@ in
     window-theme = dark
     clipboard-read = allow
 
-    command = /etc/profiles/per-user/katob/bin/bash
+    # command = /etc/profiles/per-user/katob/bin/bash
+    command = /etc/profiles/per-user/katob/bin/zsh
 
-    shell-integration = bash
+    shell-integration = zsh
     # gtk-titlebar = true
 
     cursor-style = block
@@ -64,8 +65,8 @@ in
 
     cursor-color = #ffffff
 
-    gtk-adwaita = true
-    bold-is-bright = true
+    #gtk-adwaita = ${if isDarwin then "false" else "true"}
+    bold-is-bright = false
 
     window-decoration = false
     window-padding-x = 0

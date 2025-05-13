@@ -2,6 +2,10 @@ local cmp = require'cmp'
 
 
 cmp.setup({
+
+  enabled = function()
+    return vim.bo.filetype ~= "markdown"
+  end,
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
@@ -21,13 +25,8 @@ cmp.setup({
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
+    ['<Tab>'] = cmp.mapping.select_next_item(),
+    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources({

@@ -1,0 +1,8 @@
+empower: 45.3k
+crypto: 30k
+fidility 85.6k
+checkings: 4.1
+acorn: 19.4k
+amex: 35.4k
+robinhood: 1.9k
+

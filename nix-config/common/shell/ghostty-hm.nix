@@ -2,7 +2,7 @@
 
 {
   programs.ghostty = {
-    enable = true;
+    enable = false;
     installVimSyntax = true;
     settings = {
       theme = "Wez";
@@ -20,7 +20,8 @@
       window-theme = "dark";
       clipboard-read = "allow";
 
-      command = "/etc/profiles/per-user/katob/bin/bash";
+      # command = "/etc/profiles/per-user/katob/bin/bash";
+      command = "/etc/profiles/per-user/katob/bin/zsh";
 
       shell-integration = "bash";
 
