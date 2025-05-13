@@ -12,70 +12,76 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
+  { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.4',
 		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
-	{
-		"https://github.com/apple/pkl-neovim",
-		lazy = true,
-		event = "BufReadPre *.pkl",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-		},
-		build = function()
-			vim.cmd("TSInstall! pkl")
-		end,
-	},
-	-- {
-	-- 	'3rd/image.nvim',
-	-- 	lazy = true,
-	-- 	event = 'VimEnter',  -- Broad event for testing
-	-- 	config = function()
-	-- 		require('image').setup()
-	-- 	end
-	-- },
-	{
-		"kbwhodat/ollama.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-
-		-- All the user commands added by the plugin
-		cmd = { "Ollama", "OllamaModel", "OllamaServe", "OllamaServeStop" },
-
-		keys = {
-			-- Sample keybind for prompt menu. Note that the <c-u> is important for selections to work properly.
-			{
-				"<leader>oo",
-				":<c-u>lua require('ollama').prompt()<cr>",
-				desc = "ollama prompt",
-				mode = { "n", "v" },
-			},
-
-			-- Sample keybind for direct prompting. Note that the <c-u> is important for selections to work properly.
-			{
-				"<leader>oG",
-				":<c-u>lua require('ollama').prompt('Generate_Code')<cr>",
-				desc = "ollama Generate Code",
-				mode = { "n", "v" },
-			},
-		},
-
-		opts = {
-			-- model = "dolphin-mixtral:8x7b-v2.5-q2_K"
-      url = "http://174.163.19.205:11434",
-			model = "codellama:34b"
-		}
-	},
-	{
-		"touchmarine/vim-dadbod",
-		branch = "feat/duckdb-adapter"
-	},
-	{
-		"kristijanhusak/vim-dadbod-ui"
-	},
+  { "CRAG666/code_runner.nvim", config = true },
+  {
+    "frabjous/knap"
+  },
+  {
+    "tris203/precognition.nvim"
+  },
+  {
+    "kbwhodat/alabaster.nvim",
+    init = function()
+      vim.g.alabaster_dim_comments = true
+      vim.g.background = dark
+    end,
+  },
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      bigfile = { enabled = false },
+      quickfile = { enable = false },
+      dashboard = { enabled = false },
+      explorer = { enabled = false },
+      indent = { enabled = false },
+      input = { enabled = false },
+      picker = { enabled = false },
+      notifier = { enabled = false },
+      quickfile = { enabled = false },
+      scope = { enabled = false },
+      scroll = { enabled = false },
+      gitbrowser = { enabled = false },
+      scratch = { enabled = false },
+      statuscolumn = { enabled = false },
+      image = { 
+        enabled = true, 
+        force = false,
+        doc = {
+          enabled = true,
+          inline = false,
+          float = true,
+          max_width = 45,
+          max_height = 45,
+        },
+        cache = vim.fn.stdpath("cache") .. "/snacks/image",
+      },
+      words = { enabled = true },
+    },
+    keys = {
+      { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
+      { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+      { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+      { "<leader>G",  function() Snacks.gitbrowse() end, desc = "Git browsing" },
+      { "<leader>ff",  function() Snacks.picker() end, desc = "Picking out" },
+      { "<leader>B", function() Snacks.picker.buffers() end, desc = "Buffers" },
+      { "<leader>g", function() Snacks.picker.grep() end, desc = "Grep" },
+      { "<leader>e", function() Snacks.explorer() end, desc = "explorer" },
+      { "<leader>:", function() Snacks.picker.command_history() end, desc = "command history" },
+      { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
+    }
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -89,45 +95,30 @@ local plugins = {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-		delay = 2000,
+  delay = 2000,
     opts = {
-			options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" },
-		},
+  	options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" },
+  },
     keys = {
       { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
       { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
       { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+      { "<leader>qw", function() require("persistence").save() end, desc = "Save Current Session" },
     },
   },
-  'nvim-treesitter/nvim-treesitter-context',
   "mbbill/undotree",
---	{
---		'stevearc/oil.nvim',
---		opts = {},
---		-- Optional dependencies
---		dependencies = { "nvim-tree/nvim-web-devicons" },
---	},
-  'alvan/vim-closetag',
-  'tpope/vim-commentary',
+	 'alvan/vim-closetag',
 	"rebelot/kanagawa.nvim",
-  "towolf/vim-helm",
-  "leath-dub/snipe.nvim",
-  'tpope/vim-surround',
+	 'tpope/vim-surround',
 	{
 		"tpope/vim-fugitive",
 		delay = 5000,
-	},
-  {
-		'windwp/nvim-autopairs',
-		event = "InsertEnter",
-		config = false
 	},
 	{
 		'dkarter/bullets.vim',
 		lazy = true,
 		event = "BufReadPre *.md",
 	},
-	"akinsho/toggleterm.nvim",
 	{'epwalsh/obsidian.nvim',
 		version = "*",
 		lazy = true,
@@ -137,36 +128,32 @@ local plugins = {
 			"nvim-lua/plenary.nvim"
 		},
 	},
-  'christoomey/vim-tmux-navigator',
-  "petertriho/cmp-git",
-  dependencies = { 'hrsh7th/nvim-cmp' },
-  opts = {
-    -- options go here
-  },
-  init = function()
-    table.insert(require("cmp").get_config().sources, { name = "git" })
-  end,
-  {
-    'VonHeikemen/lsp-zero.nvim',
-    dependencies = {
-      -- LSP Support
-      {'neovim/nvim-lspconfig'},
-      {'williamboman/mason.nvim'},
-      {'williamboman/mason-lspconfig.nvim'},
+	 'christoomey/vim-tmux-navigator',
+	 "petertriho/cmp-git",
+	 dependencies = { 'hrsh7th/nvim-cmp' },
+	 opts = {
+	   -- options go here
+	 },
+	 init = function()
+	   table.insert(require("cmp").get_config().sources, { name = "git" })
+	 end,
 
-      -- Autocompletion
-      {'hrsh7th/nvim-cmp'},
-      {'hrsh7th/cmp-buffer'},
-      {'hrsh7th/cmp-path'},
-      {'saadparwaiz1/cmp_luasnip'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'hrsh7th/cmp-nvim-lua'},
+  {'neovim/nvim-lspconfig'},
+  {'williamboman/mason.nvim'},
+  {'williamboman/mason-lspconfig.nvim'},
 
-      -- Snippets
-      {'rafamadriz/friendly-snippets'},
-		  {'L3MON4D3/LuaSnip'},
-    }
-  }
+  -- Autocompletion
+  {'hrsh7th/nvim-cmp'},
+  {'hrsh7th/cmp-buffer'},
+  {'hrsh7th/cmp-path'},
+  {'saadparwaiz1/cmp_luasnip'},
+  {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/cmp-nvim-lua'},
+
+  -- Snippets
+  {'rafamadriz/friendly-snippets'},
+  {'L3MON4D3/LuaSnip'},
+  'hrsh7th/vim-vsnip'
 }
 
 

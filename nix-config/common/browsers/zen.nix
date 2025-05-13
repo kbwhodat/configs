@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 let
 inherit (pkgs.stdenv) isDarwin;
 in
@@ -23,7 +23,7 @@ in
         ];
         }
     else
-        pkgs.zen-browser-bin.override {
+        inputs.zen-browser.packages.x86_64-linux.default.override {
         nativeMessagingHosts = [
             # Gnome shell native connector
             pkgs.gnome-browser-connector
@@ -45,34 +45,39 @@ in
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       consent-o-matic
       sponsorblock
-      # leechblock-ng
       df-youtube
       kagi-search
       darkreader
-      # auto-tab-discard
-      browserpass
+      # browserpass
       privacy-badger
+      onepassword-password-manager
       ublock-origin
-      tridactyl
+      vimium-c
       clearurls
       istilldontcareaboutcookies
+      firenvim
+      keepassxc-browser
   ];
 
   settings = {
 
     # Zen settings
+    "browser.tabs.allow_transparent_browser" = true;
+    "zen.theme.content-element-separation" = 0;
     "zen.themes.color-prefs.amoled" = true;
     "theme.better_uniexbtn.custom" = "url(chrome://branding/content/icon32.png)";
     "theme.better_uniexbtn.default" = "Default";
-    "zen.welcome-screen.seen" = false;
+    "zen.welcome-screen.seen" = true;
     "zen.welcome-screen.enabled" = false;
     "zen.theme.pill-button" = false;
     "zen.themes.updated-value-observer" = true;
     "zen.urlbar.behavior" = "floating-on-type";
     "zen.view.compact" = true;
+    "browser.tabs.hoverPreview.enabled" = true;
     "zen.theme.accent-color" = "#dec663";
     "zen.view.sidebase-expanded" = false;
-    "zen.view.sidebase-expanded.on-hover" = false;
+    "zen.view.sidebase-expanded.on-hover" = true;
+    "zen.view.sidebar-expanded" = false;
     "zen.view.use-single-toolbar" = false;
     "zen.splitView.change-on-hover" = true;
     "zen.tab-unloader.timeout-minutes" = 35;

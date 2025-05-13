@@ -7,5 +7,6 @@
     ./browsers
     ./editors
     ./lsp
+    ./neovim
   ];
 }

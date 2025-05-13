@@ -50,6 +50,9 @@ function create_obsidian_note()
         border = 'rounded',
     })
 
+    -- disabling auto complete
+    require('cmp').setup.buffer { enabled = false }
+
     -- Enter insert mode automatically
     vim.api.nvim_command('startinsert')
 
@@ -61,11 +64,24 @@ function create_obsidian_note()
     vim.api.nvim_win_set_cursor(win, {1, 19}) -- Move cursor one position to the right
 end
 
+function DeleteCurrentBufferIfEmpty()
+  local buf = vim.api.nvim_get_current_buf()  -- Get the current buffer handle
+  local line_count = vim.api.nvim_buf_line_count(buf)  -- Get the number of lines in the buffer
+
+  -- Check if the buffer is empty (only one line and that line is empty)
+  if line_count == 1 and vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] == "" then
+    vim.api.nvim_buf_delete(buf, { force = true })  -- Delete the buffer
+  else
+    vim.api.nvim_command('bnext')
+  end
+end
+
 function create_note_from_float(buf, win)
     local title = vim.fn.getline(1):sub(19) -- Adjust substring start to match cursor position
     vim.api.nvim_command('ObsidianNew ' .. title)
     -- Close the floating window
     vim.api.nvim_win_close(win, true)
+    DeleteCurrentBufferIfEmpty()
 end
 
 

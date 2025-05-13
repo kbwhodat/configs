@@ -18,6 +18,12 @@ in
       inputs.sops-nix.nixosModules.sops
     ];
 
+  services.lorri.enable = true;
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "katob" ];
+  };
 
   environment = {
     etc.".secrets".source = "${myrepo}";
@@ -25,7 +31,7 @@ in
   };
 
 
-  system.stateVersion = "unstable";
+  system.stateVersion = "24.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -35,6 +41,7 @@ in
 		"nixos"
 		"@wheel"
 	];
+  nix.settings.sandbox = false;
 
 	# networking.wireless.networks = {
 	# 	"results will vary" = {
@@ -48,7 +55,7 @@ in
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "audio" "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
     openssh.authorizedKeys.keys = [
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
@@ -62,9 +69,10 @@ in
   nixpkgs.config.input-fonts.acceptLicense = true;
 
   # fonts.packages = with pkgs; [
-  #   (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
+  #  (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
   # ];
 
+  # this is for the unstable nixpkg version - make sure to use this next when an upgrade happens
   fonts.packages = with pkgs; [
     pkgs.nerd-fonts.roboto-mono
     pkgs.nerd-fonts.comic-shanns-mono
@@ -72,14 +80,14 @@ in
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "RobotoMono Nerd Font Propo"];
-        sansSerif = [ "RobotoMono Nerd Font Propo"];
-        monospace = [ "RobotoMono Nerd Font"];
+        serif = [ "ComicShannsMono Nerd Font Propo"];
+        sansSerif = [ "ComicShannsMono Nerd Font Propo"];
+        monospace = [ "ComicShannsMono Nerd Font"];
     };
   };
 
   # Setting up env variables for image.nvim
-  # environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
+  environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
   environment.variables.PKG_CONFIG_PATH = [ "${pkgs.imagemagick.dev}/lib/pkgconfig" ];
 
   services.logind.lidSwitchExternalPower = lib.mkForce "ignore";
@@ -87,7 +95,7 @@ in
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
 
-  networking.wireless.iwd.enable = true;
+  # networking.wireless.iwd.enable = true;
 
   time.timeZone = "America/New_York";
 
@@ -117,6 +125,11 @@ in
   # hardware.opengl.driSupport = true;
   # hardware.graphics.enable32Bit = true;
 
+	hardware.graphics = {
+		enable = true;
+		enable32Bit = true;
+	};
+
 
   # Configure keymap in X11
   services.xserver = {
@@ -128,6 +141,12 @@ in
     displayManager = {
       defaultSession = "none+i3";
     };
+  };
+
+  xdg.portal = {
+    enable = true;
+    configPackages = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
   services.xserver = {
@@ -170,14 +189,38 @@ in
   security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  services.pulseaudio.enable = true;
+  # security.rtkit.enable = false;
   services.pipewire = {
-    enable = true;
+    enable = false;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    wireplumber.enable = true;
+    wireplumber.enable = false;
+  };
+
+  environment.systemPackages = with pkgs; [
+    chromium
+    zenity
+    libnotify
+    scrot
+    libreoffice-still
+    # (pkgs.texlive.withPackages (ps: with ps; [
+    #   scheme-medium
+    #   booktabs
+    # ]))
+  ];
+
+  programs.chromium = {
+    enable = true;
+    extensions = [
+      "cjpalhdlnbpafiamejdnhcphjbkeiagm" #ublock origin
+      "hfjbmagddngcpeloejdejnfgbamkjaeg" #vimium c
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh" #dark reader
+      "cdglnehniifkbagbbombnjghhcihifij" #kagi search
+      "naepdomgkenhinolocfifgehidddafch" #browserpass
+      "egpjdkipkomnmjhjmdamaniclmdlobbo" #firenvim
+    ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -187,25 +230,35 @@ in
   services.syncthing = {
     enable = true;
     user = "katob";
+    group = "users";
     openDefaultPorts = true;
+    dataDir = "/home/katob";
+    configDir = "/home/katob/.config/syncthing";
+    key = "/home/katob/.config/syncthing-keys/key.pem";
+    cert = "/home/katob/.config/syncthing-keys/cert.pem";
     settings.gui = {
       theme = "black";
     };
-    dataDir = "/home/katob/.config/syncthing";
     settings.devices = {
       "iphone" = {
         id = "V5SVN25-M2CS2HQ-T2QIERP-HQ47OOC-YLDGWKB-EEGBAVK-4BB5JJF-VNASBA2";
       };
       "nixos-main" = {
-        id = "7JQTNQL-BAGUNWN-7SFZ3IC-7MA5VNX-3P65FPU-YOQ325K-VFVG76O-AGP2XAJ";
+        id = "UQAWJXF-VFHDTRI-AIEFOLH-OMVHBYD-X5MKXTN-CQJWEKV-47JOT5P-TMIXGA5";
+      };
+      "nixos-frame13" = {
+        id = "IMNRAP7-RZNJQFO-GOZLSJN-RHWC55N-WRODY7I-SNJCDBH-MZODTPJ-W7CZRQX";
       };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" ];
+        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
+      };
+      "/home/katob/Documents" = {
+        id = "documents";
+        devices = [ "nixos-main" "nixos-frame13" ];
       };
     };
   };
-
 }

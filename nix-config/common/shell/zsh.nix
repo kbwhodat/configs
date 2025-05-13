@@ -1,7 +1,10 @@
 { pkgs, config, lib, ... }:
 
-let 
-	zshConf = builtins.readFile ./zshrc;
+# let 
+# 	zshConf = builtins.readFile ./zshrc;
+# in
+let
+  inherit (pkgs.stdenv) isDarwin;
 in
 {
 	programs.zsh = {
@@ -27,6 +30,7 @@ in
 			EDITOR = "nvim";
 			TERM = "xterm-256color";
 			COLORTERM = "truecolor";
+      TMUX_CONF = "~/.config/tmux/tmux.conf";
 		};
 
 		profileExtra = ''
@@ -37,14 +41,12 @@ in
       setopt correct                                                  # Auto correct mistakes
       setopt extendedglob                                             # Extended globbing. Allows using regular expressions with *
       setopt nocaseglob                                               # Case insensitive globbing
-      setopt rcexpandparam                                            # Array expension with parameters
-      #setopt nocheckjobs                                              # Don't warn about running processes when exiting
       setopt numericglobsort                                          # Sort filenames numerically when it makes sense
       setopt appendhistory                                            # Immediately append history instead of overwriting
       unsetopt histignorealldups                                      # If a new command is a duplicate, do not remove the older one
       setopt interactivecomments
-      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
-      zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"       # Colored completion (different colors for dirs/files/etc)
+      # zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
+      # zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"       # Colored completion (different colors for dirs/files/etc)
       zstyle ':completion:*' rehash true                              # automatically find new executables in path
       # Speed up completions
       # zstyle ':completion:*' accept-exact '*(N)'
@@ -60,9 +62,18 @@ in
 
 		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
 
+    export ${ if isDarwin then "DRI_PRIME=0" else "DRI_PRIME=1" }
+
+    keepassxc_helper() {
+      local DATABASE="/home/katob/.database/keedatabase.kdbx"
+
+      keepassxc-cli "$1" "$DATABASE" "''${@:2}"
+    }
+
 		alias ls='ls --color'
 		alias cat='bat --style plain'
 		alias vim="$(which nvim)"
+		alias vi="$(which vim)"
 
 		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 			TMUX_SESSION="genesis"
@@ -76,9 +87,24 @@ in
 		autoload -Uz compinit
 		compinit
 
-		source "${config.home.homeDirectory}"/.config/git-alias/git-aliases.zsh
-		source "${config.home.homeDirectory}"/.config/git-alias/lib/git.zsh
 
+    if [[ ''${uname} == "Darwin" ]]; then
+      if [ ! -f /usr/local/bin/pinentry-mac ]; then
+        ln -s /run/current-system/sw/bin/pinentry-mac /usr/local/bin/pinentry-mac
+      fi
+    else
+        alias zed="$(which zeditor)"
+    fi
+
+		source "${config.home.homeDirectory}"/.config/git-alias/git-aliases.zsh
+		# source "${config.home.homeDirectory}"/.config/git-alias/lib/git.zsh
+
+    alias clear="tput reset"
+
+    if [[ ''${uname} == "Darwin" ]]; then
+      export DOCKER_HOST="unix://${config.home.homeDirectory}/.colima/default/docker.sock"
+      export LIBRARY_PATH="${if isDarwin then pkgs.libiconv-darwin else pkgs.libiconv}/lib"
+    fi
 
 		# configure key keybindings
 		bindkey -e                                        # emacs key bindings
@@ -104,14 +130,19 @@ in
 		add-zsh-hook precmd vcs_info
 
 		zstyle ':vcs_info:*' check-for-changes true
-		zstyle ':vcs_info:*' unstagedstr ' *'
+		zstyle ':vcs_info:*' unstagedstr ' !'
 		zstyle ':vcs_info:*' stagedstr ' +'
 		zstyle ':vcs_info:git:*' formats '(%b%u%c)'
 		zstyle ':vcs_info:git:*' actionformats '(%b|%a%u%c)'
 
+    command_not_found_handler() {
+      echo "command not found: $1" >&2
+      return 127
+    }
+
 		PROMPT=$'\n[%~] ''${vcs_info_msg_0_}\n # '
 
-		RPROMPT=$'%(?.. %? )%(1j. %j ⚙.)'
+    RPROMPT=$'%(1j. %j ⚙.)'
 
 		VIRTUAL_ENV_DISABLE_PROMPT=1
 

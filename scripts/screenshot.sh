@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+export DRI_PRIME=0
 
 # Directory where screenshots will be saved
-screenshot_dir="$HOME/Documents/screenshots"
+screenshot_dir="$HOME/vault/References"
 
 # Ensure the screenshot directory exists
 mkdir -p "$screenshot_dir"

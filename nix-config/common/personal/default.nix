@@ -6,9 +6,7 @@
     yarn
     duckdb
     sqlite
-    keepassxc
     gnome-keyring
-    vimgolf
     gonchill
     undetected-chromedriver
     libsixel
@@ -123,9 +121,9 @@
       seleniumProfiles
       seleniumInterceptor
       ipvanish
-      torch-bin
-      dacite
-      ray
+      # torch-bin
+      # dacite
+      # ray
     ]))
   ];
 }
