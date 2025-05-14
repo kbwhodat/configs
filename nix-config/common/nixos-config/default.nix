@@ -200,15 +200,12 @@ in
   };
 
   environment.systemPackages = with pkgs; [
+		gccgo
     chromium
     zenity
     libnotify
     scrot
     libreoffice-still
-    # (pkgs.texlive.withPackages (ps: with ps; [
-    #   scheme-medium
-    #   booktabs
-    # ]))
   ];
 
   programs.chromium = {
@@ -222,10 +219,6 @@ in
       "egpjdkipkomnmjhjmdamaniclmdlobbo" #firenvim
     ];
   };
-
-  environment.systemPackages = with pkgs; [
-    gccgo
-  ];
 
   services.syncthing = {
     enable = true;
@@ -249,15 +242,18 @@ in
       "nixos-frame13" = {
         id = "IMNRAP7-RZNJQFO-GOZLSJN-RHWC55N-WRODY7I-SNJCDBH-MZODTPJ-W7CZRQX";
       };
+      "nixos-util" = {
+        id = "QZJBK62-4DPFF7J-T3PQRU6-HT4SBIY-5H7INBX-F5OMPBS-LLUONWG-KIJL5A3";
+      };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" ];
+        devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" ];
       };
       "/home/katob/Documents" = {
         id = "documents";
-        devices = [ "nixos-main" "nixos-frame13" ];
+        devices = [ "nixos-main" "nixos-frame13" "nixos-util"  ];
       };
     };
   };
