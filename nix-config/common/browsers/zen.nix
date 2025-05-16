@@ -60,6 +60,10 @@ in
   ];
 
   settings = {
+      
+    # Disabling hardware acceleration
+    "browser.preferences.defaultPerformanceSettings.enabled" = false;
+    "layers.acceleration.disabled" = true;
 
     # Zen settings
     "browser.tabs.allow_transparent_browser" = true;

@@ -56,7 +56,7 @@ local plugins = {
       scratch = { enabled = false },
       statuscolumn = { enabled = false },
       image = { 
-        enabled = true, 
+        enabled = false, 
         force = false,
         doc = {
           enabled = true,
