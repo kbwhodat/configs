@@ -27,7 +27,7 @@
 
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
-  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.7";
+  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.8";
 
   # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty?ref=kitty-unicode";
   # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
