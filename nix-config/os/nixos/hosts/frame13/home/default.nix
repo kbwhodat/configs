@@ -62,8 +62,12 @@ in
 
   home.enableNixpkgsReleaseCheck = false;
 
-
   home.sessionVariables = {
+    MOZ_DISABLE_RDD_SANDBOX = "1";
+    MOZ_ACCELERATED = "false";
+    MOZ_WEBRENDER = "0";
+    LIBGL_ALWAYS_SOFTWARE = "1";
+
     EDITOR = "nvim";
     LD_LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LD_LIBRARY_PATH" != "") (builtins.getEnv "LD_LIBRARY_PATH" + ":")}${ldLibraryPath}";
     LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LIBRARY_PATH" != "") (builtins.getEnv "LIBRARY_PATH" + ":")}${libraryPath}";
