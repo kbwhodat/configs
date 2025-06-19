@@ -66,5 +66,7 @@
   networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp0s20f3" ];
 
+  services.logind.lidSwitchExternalPower = "ignore";
+
   services.xserver.videoDrivers = [ "nvidia" "displaylink" "modesetting" ];
 }
