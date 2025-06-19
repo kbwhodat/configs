@@ -12,7 +12,7 @@ in
     if isDarwin then
       false
     else
-      false;
+      true;
 
   programs.myfloorp.package =
     if isDarwin then
