@@ -84,7 +84,7 @@ in
     "zen.view.compact.toolbar-flash-popup" = false;
 
     "zen.view.compact.hide-tabbar" = true;
-    "zen.view.compact.hide-toolbar" = true;
+    "zen.view.compact.hide-toolbar" = false;
     # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
@@ -323,6 +323,8 @@ in
 
     /** THEME ADJUSTMENTS ***/
     "browser.compactmode.show" = true;
+    "browser.tabs.groups.enabled" = true;
+    "browser.tabs.groups.smart.enabled" = true;
     "browser.display.focus_ring_on_anything" = true;
     "browser.display.focus_ring_style" = 0;
     "browser.display.focus_ring_width" = 0;

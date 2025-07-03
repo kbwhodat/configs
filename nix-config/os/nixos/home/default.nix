@@ -91,12 +91,12 @@ in
     openvpn
     yaegi # go interpreter
     dunst
-    tomato-c
     clang
     clang-tools
     transmission_4-qt
     tor
     tor-browser
+    bluez
   ];
 
   

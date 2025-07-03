@@ -2,9 +2,10 @@
   {
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
+      "ctrl-alt-p": ["task::Spawn", { "task_name": "build:run" }],
       "space f f": ["task::Spawn", { "task_name": "search:project" }],
       "space '": "pane::ActivateNextItem",
-      "space ;": "pane::ActivatePrevItem",
+      "space ;": "pane::ActivatePreviousItem",
       "space v": "pane::SplitRight",
       "space H": "pane::SplitDown",
       "space d": "pane::CloseActiveItem",
@@ -13,53 +14,125 @@
       "shift-k": "editor::Hover",
 			"space /": "workspace::NewSearch",
 			"n": "search::SelectNextMatch",
-			"shift-n": "search::SelectPrevMatch",
+			"shift-n": "search::SelectPreviousMatch",
+    }
+  },
+
+  {
+    "context": "Workspace && not_editing",
+    "bindings": {
+      "space T": "workspace::ToggleBottomDock",
+      "space e": "workspace::ToggleLeftDock",
+      "space r": "workspace::ToggleRightDock",
+			"ctrl-i": "workspace::NewFile",
+    }
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "shift-tab": "editor::ContextMenuPrev",
+      "tab": "editor::ContextMenuNext",
     }
   },
   {
     "context": "Dock || Terminal || Editor || ProjectPanel || AssistantPanel || CollabPanel || OutlinePanel || ChatPanel || VimControl || EmptyPane || SharedScreen || MarkdownPreview || KeyContextView",
     "bindings": {
-      "ctrl-l": ["vim::ResizePane", "Widen"],
-      "ctrl-h": ["vim::ResizePane", "Narrow"],
-      "ctrl-k": ["vim::ResizePane", "Shorten"],
-      "ctrl-j": ["vim::ResizePane", "Lengthen"]
+      "ctrl-l": "vim::ResizePaneRight",
+      "ctrl-h": "vim::ResizePaneLeft",
+      "ctrl-k": "vim::ResizePaneDown",
+      "ctrl-j": "vim::ResizePaneUp"
     }
   },
   {
-    "context": "Editor && vim_mode == normal || extension == md",
+    "context": "Editor || Terminal || ProjectPanel",
+    "bindings": {
+      "ctrl-'": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    "context": "((extension == md) && (vim_mode == normal)) || (Editor && vim_mode == normal)",
     "bindings": {
       "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
       "space e": "workspace::ToggleLeftDock",
-      "space h": ["workspace::ActivatePaneInDirection", "Left"],
-      "space l": ["workspace::ActivatePaneInDirection", "Right"],
-      "space k": ["workspace::ActivatePaneInDirection", "Up"],
-      "space j": ["workspace::ActivatePaneInDirection", "Down"],
-      "space z": "workspace::ToggleZoom",
+      "space r": "workspace::ToggleRightDock",
+      "space h": "workspace::ActivatePaneLeft",
+      "space l": "workspace::ActivatePaneRight",
+      "space k": "workspace::ActivatePaneUp",
+      "space j": "workspace::ActivatePaneDown",
       "space z": "workspace::ToggleZoom",
       "space space": "file_finder::Toggle",
       "space /": "pane::DeploySearch",
+
+      "space g f": "git::Fetch",
+      "space g P": "git::Push",
+      "space g p": "git::Pull",
+      "ctrl-g shift-up": "git::ForcePush",
+      "space g d": "git::Diff",
+      "ctrl-g backspace": "git::RestoreTrackedFiles",
+      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
+      "space ga": "git::StageAll",
+      "ctrl-shift-space": "git::UnstageAll"
     }
   },
   {
-    "context": "ProjectPanel",
+    "context": "ProjectPanel && not_editing",
     "bindings": {
       "space e": "workspace::ToggleLeftDock",
-      "space l": ["workspace::ActivatePaneInDirection", "Right"],
+      "space r": "workspace::ToggleRightDock",
+      "space l": "workspace::ActivatePaneRight",
+      "y": "project_panel::Copy",
+      "p": "project_panel::Paste",
+      "ctrl-v": "project_panel::Paste",
+      "shift-y": "project_panel::CopyPath",
+    }
+  },
+  {
+    "context": "ProjectPanel && editing",
+    "bindings": {
+      "ctrl-v": "project_panel::Paste",
     }
   },
   {
     "context": "EmptyPane || SharedScreen",
     "bindings": {
-      "space e": "workspace::ToggleLeftDock",
+      "space e": "project_panel::Open",
       "space space": "file_finder::Toggle",
       "space f p": "projects::OpenRecent",
     },
+  },
+  {
+    "context": "GitPanel && ChangesList",
+    "bindings": {
+      "a": "git::ToggleStaged",
+      "q": "workspace::ToggleRightDock",
+      "space r": "workspace::ToggleRightDock",
+      "k": "menu::SelectPrevious",
+      "j": "menu::SelectNext",
+      "esc": "workspace::ToggleRightDock",
+    },
+  },
+  {
+    "context": "GitPanel",
+    "use_key_equivalents": true,
+    "bindings": {
+      "esc": "workspace::ToggleRightDock",
+      "space gf": "git::Fetch",
+      "space P": "git::Push",
+      "space gp": "git::Pull",
+      "ctrl-g shift-up": "git::ForcePush",
+      "space gd": "git::Diff",
+      "ctrl-g backspace": "git::RestoreTrackedFiles",
+      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
+      "space ga": "git::StageAll",
+      "ctrl-shift-space": "git::UnstageAll"
+    }
   },
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
       "q": "workspace::ToggleLeftDock",
       "space e": "workspace::ToggleLeftDock",
+      "space g": "workspace::ToggleRightDock",
     },
   },
   {
@@ -77,12 +150,7 @@
   {
     "context": "vim_mode == visual",
     "bindings": {
-      "shift-s": [
-        "vim::PushOperator",
-        {
-          "AddSurrounds": {}
-        }
-      ]
+      "shift-s": ["vim::PushAddSurrounds", {}]
     }
   },
   {
