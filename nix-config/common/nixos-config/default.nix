@@ -149,6 +149,10 @@ in
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
+  services.blueman.enable = true;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
   services.xserver = {
 
     desktopManager = {
@@ -177,8 +181,8 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [11434 8888 8080 1714 1764 8384 22000];
-  networking.firewall.allowedUDPPorts = [22000 21027];
+  networking.firewall.allowedTCPPorts = [11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
+  networking.firewall.allowedUDPPorts = [22000 21027 1716 1717 1718 1719 1720];
 
   #used for configuring KDE connect
   programs.kdeconnect.enable = true;
@@ -206,6 +210,9 @@ in
     libnotify
     scrot
     libreoffice-still
+    # needed for exercism
+    gnumake
+    exercism
   ];
 
   programs.chromium = {

@@ -17,6 +17,14 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    mplayer = pkgs.mplayer.override {
+      v4lSupport = true;
+    };
+  };
+
+  fonts.fontDir.enable = true;
+
   environment.systemPackages = with pkgs; [
     usbutils
     displaylink
@@ -27,7 +35,10 @@
     # gdb
     # python3Packages.torch-bin
     protonplus
-
+    mplayer
+    v4l2-to-ndi
+    gpu-screen-recorder
+    obs-studio
   ];
 
   environment.variables = {    
