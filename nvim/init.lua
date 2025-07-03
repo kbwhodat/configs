@@ -126,7 +126,7 @@ keymap('n', '<Leader>k', '<C-w>k', opts)
 -- Buffers
 keymap("n", "<leader>;", ":bp<CR>", opts) -- This will move to the left buffer
 keymap("n", "<leader>'", ":bn<CR>", opts) -- This will move to the right buffer 
-keymap("n", "<leader>d", ":b#<bar>bd#<CR>", opts) -- This will delete the current buffer
+keymap("n", "<leader>d", ":bnext <bar> bd#<CR>", opts)
 keymap("n", "<leader>bm", ":bm<CR>", opts) -- This will navigate to any buffers that is modified
 keymap("n", "<leader>bl", ":ls<CR>", opts) -- This will list the current buffers
 

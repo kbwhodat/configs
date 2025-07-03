@@ -30,7 +30,7 @@
   {
     "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
-      "shift-tab": "editor::ContextMenuPrev",
+      "shift-tab": "editor::ContextMenuPrevious",
       "tab": "editor::ContextMenuNext",
     }
   },
@@ -44,9 +44,15 @@
     }
   },
   {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-\"": "workspace::ActivatePaneUp",
+    }
+  },
+  {
     "context": "Editor || Terminal || ProjectPanel",
     "bindings": {
-      "ctrl-'": "workspace::ToggleBottomDock"
+      "ctrl-'": "workspace::ToggleBottomDock",
     }
   },
   {
