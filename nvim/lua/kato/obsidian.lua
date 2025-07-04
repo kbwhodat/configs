@@ -9,13 +9,6 @@ require('obsidian').setup({
 			name = "Vault",
 			path = "~/vault",
 		},
-		{
-			name = "Work",
-			path = "~/vault/Work",
-			overrides = {
-				notes_subdir = "Work",
-			},
-		},
 	},
 
   -- Alternatively - and for backwards compatibility - you can set 'dir' to a single path instead of
