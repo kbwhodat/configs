@@ -11,6 +11,9 @@ in
       family = "ComicShannsMono Nerd Font Mono";
       size = if isDarwin then 11.3 else 11.0;
     };
+    navigation = {
+      mode = "Plain";
+    };
     colors = {
       background = "#000000";
     };
