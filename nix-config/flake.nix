@@ -29,13 +29,6 @@
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.9";
 
-  # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty?ref=kitty-unicode";
-  # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
-	# inputs.ghostty.url = "github:ghostty-org/ghostty";
-	#  inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
-  # inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/5b505c753310f169f1c69a22a80fbade7feab16f";
-
-
   outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, gonchill, zen-browser, ... }:
 
     let

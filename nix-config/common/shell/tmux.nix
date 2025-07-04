@@ -59,7 +59,7 @@ in
             | cut -d " " -f1 \
             | tr "\n" " " \
             | tr ":" " " \
-            | sed "s/\b$CURRENT_SESSION\b/#[fg=yellow,bg=black]&#[default]/"
+            | sed "s/\b$CURRENT_SESSION\b/#[fg=yellow]&#[default]/"
         )'
         set -g status-right ""
 
@@ -73,16 +73,10 @@ in
 
         set-option -g detach-on-destroy off
 
-				# set -sa terminal-overrides ',xterm-kitty:RGB,*:Ss=\033[0 q'
-        # set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
-
         # Enable cursor blink
-        set-option -g terminal-overrides ',*:cnorm=\\E[?12l\\E[?25h'
-        set-option -ga terminal-overrides ',*:civis=\\E[?25l'
-        #set-option -ga terminal-overrides ',xterm-ghostty:cnorm=\E[?12h\E[?25h'
-        set-option -ga terminal-overrides ',xterm-kitty:cnorm=\E[?12h\E[?25h'
-        set-option -ga terminal-overrides ',screen-256color:cnorm=\\E[?12h\\E[?25h'
-        set -g terminal-overrides '*:colors=256'
+        set-option -g terminal-overrides ',*:cnorm=\E[?12l\E[?25h'
+        set-option -ga terminal-overrides ',*:civis=\E[?25l'
+        set-option -ga terminal-overrides ',*:Tc'
 
 				set -gq allow-passthrough on
 				set -g visual-activity off

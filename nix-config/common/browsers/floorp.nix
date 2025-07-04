@@ -28,7 +28,7 @@ in
     let
 
 # Using my own custom chrome.css
-    # userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
   path =
     if isDarwin then
@@ -88,6 +88,7 @@ in
     "layout.css.prefers-color-scheme.content-override" = 0;
 
 # browser/ui theme is not effective in Floorp - should use floorp.chrome.theme.mode
+    "browser.proton.toolbar.version" = 3;
     "browser.theme.toolbar-theme" = 0;
     "browser.theme.content-theme" = 0;
     "ui.systemUsesDarkTheme" = 1;
@@ -365,7 +366,7 @@ in
   in
   {
     home = {
-      inherit isDefault settings path extensions;
+      inherit userChrome isDefault settings path extensions;
       id = 0;
     };
   };
