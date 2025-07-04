@@ -8,6 +8,7 @@
     ./blesh.nix
     ./direnv.nix
     ./kitty.nix
+    ./rio.nix
     ./tmux.nix
     ./neovim.nix
     ./password-store.nix

@@ -28,7 +28,7 @@ in
     let
 
 # Using my own custom chrome.css
-    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    # userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
   path =
     if isDarwin then
@@ -38,22 +38,25 @@ in
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      onepassword-password-manager
       consent-o-matic
       sponsorblock
-      leechblock-ng
       df-youtube
       kagi-search
       darkreader
       auto-tab-discard
-      browserpass
       privacy-badger
       ublock-origin
-      tridactyl
       clearurls
       istilldontcareaboutcookies
+      vimium-c
+      firenvim
   ];
 
   settings = {
+# user.js
+    "floorp.user.js.customize" = "Fastfox";
+
 # Settings for tabsleep, good for memory optimization
     "floorp.tabsleep.enabled" = true;
     "floorp.tabsleep.tabTimeoutMinutes" = 30;
@@ -65,15 +68,17 @@ in
 #Handle the vertical tabs
     "floorp.browser.tabs.verticaltab.enabled" = false;
     "floorp.tabbar.style" = 0;
-    "floorp.browser.tabbar.settings" = 4;
+    "floorp.browser.tabbar.settings" = 0;
+    "floorp.browser.tabbar.multirow.max.row" = 3;
+    "floorp.browser.tabbar.multirow.max.enabled" = true;
     "floorp.browser.sidebae.is.displayed" = 2;
     "floorp.browser.tabs.verticaltab" = false;
     "floorp.verticaltab.hover.enabled" = false;
     "floorp.verticaltab.show.newtab.button" = false;
 
 # Disabling sidebar for now, I don't see the benefit
-    "floorp.browser.sidebar.enable" = true;
-    "floorp.browser.sidebar.is.displayed" = true;
+    "floorp.browser.sidebar.enable" = false;
+    "floorp.browser.sidebar.is.displayed" = false;
     "floorp.browser.sidebar.right" = true;
 
 # Bookmark related settings
@@ -360,7 +365,7 @@ in
   in
   {
     home = {
-      inherit userChrome isDefault settings path extensions;
+      inherit isDefault settings path extensions;
       id = 0;
     };
   };
