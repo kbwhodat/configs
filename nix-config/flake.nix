@@ -27,7 +27,7 @@
 
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
-  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.9";
+  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.10";
 
   outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, gonchill, zen-browser, ... }:
 
