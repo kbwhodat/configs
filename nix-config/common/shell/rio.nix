@@ -9,7 +9,8 @@ in
     settings = {
     fonts = {
       family = "ComicShannsMono Nerd Font Mono";
-      size = if isDarwin then 11.3 else 11.0;
+      size = if isDarwin then 12.8 else 14.5;
+      use-drawable-chars = false;
     };
     navigation = {
       mode = "Plain";
