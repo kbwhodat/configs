@@ -65,16 +65,16 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1750613930,
-        "narHash": "sha256-Ov++3fC39zPv0CPZvneE0slc5jAewhr917xIggR5jms=",
+        "lastModified": 1751645749,
+        "narHash": "sha256-K5azVHB6yhXLxSxLemG0KPjL/ZnVgqdsTb4odyEb31Q=",
         "owner": "kbwhodat",
         "repo": "gonchill",
-        "rev": "1a5e9eaabd53095412a151cec8328dae6037bfd2",
+        "rev": "b61349234a8ad28104bacb0a431f42c6d5285099",
         "type": "github"
       },
       "original": {
         "owner": "kbwhodat",
-        "ref": "1.0.9",
+        "ref": "1.0.10",
         "repo": "gonchill",
         "type": "github"
       }
