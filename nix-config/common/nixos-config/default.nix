@@ -204,7 +204,7 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-		gccgo
+    #gccgo
     chromium
     zenity
     libnotify
