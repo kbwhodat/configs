@@ -18,6 +18,16 @@ vim.diagnostic.config({
   update_in_insert = false,
 })
 
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client and client.supports_method('textDocument/completion') then
+      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+  end,
+})
+
 -- LSP actions - keymaps, etc.
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
@@ -44,7 +54,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 vim.opt.signcolumn = 'no'
 
+
 vim.lsp.enable('rust')
 vim.lsp.enable('clangd')
 vim.lsp.enable('latex') -- spelling and grammar checks
 vim.lsp.enable('texlab') -- latex lsp
+vim.lsp.enable("jedi_language_server")

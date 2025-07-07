@@ -3,7 +3,8 @@
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
       "ctrl-alt-p": ["task::Spawn", { "task_name": "build:run" }],
-      "space f f": ["task::Spawn", { "task_name": "search:project" }],
+      // "space f f": ["task::Spawn", { "task_name": "search:project" }],
+      "space f f": "pane::DeploySearch",
       "space '": "pane::ActivateNextItem",
       "space ;": "pane::ActivatePreviousItem",
       "space v": "pane::SplitRight",
@@ -15,6 +16,7 @@
 			"space /": "workspace::NewSearch",
 			"n": "search::SelectNextMatch",
 			"shift-n": "search::SelectPreviousMatch",
+			"/": ["buffer_search::Deploy", { "focus": true, "selection_search_enabled": true }],
     }
   },
 
@@ -30,7 +32,7 @@
   {
     "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
-      "shift-tab": "editor::ContextMenuPrev",
+      "shift-tab": "editor::ContextMenuPrevious",
       "tab": "editor::ContextMenuNext",
     }
   },
@@ -44,9 +46,15 @@
     }
   },
   {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-\"": "workspace::ActivatePaneUp",
+    }
+  },
+  {
     "context": "Editor || Terminal || ProjectPanel",
     "bindings": {
-      "ctrl-'": "workspace::ToggleBottomDock"
+      "ctrl-'": "workspace::ToggleBottomDock",
     }
   },
   {
@@ -83,7 +91,7 @@
       "y": "project_panel::Copy",
       "p": "project_panel::Paste",
       "ctrl-v": "project_panel::Paste",
-      "shift-y": "project_panel::CopyPath",
+      "shift-y": "workspace::CopyPath",
     }
   },
   {
