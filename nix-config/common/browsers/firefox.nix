@@ -9,7 +9,7 @@ in
 
   programs.firefox.enable = 
     if isDarwin then
-      false
+      true
     else
       true;
 
