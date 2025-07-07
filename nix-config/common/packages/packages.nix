@@ -8,8 +8,6 @@
 		#texliveFull
     taskwarrior3
     taskwarrior-tui
-    rustc
-    harper
     vim
     markdown-oxide
     # (zed-editor-fhs.overrideAttrs (oldAttrs: rec {
@@ -21,8 +19,6 @@
     # wrapProgram $out/bin/zeditor --set ZED_ALLOW_EMULATED_GPU 0
     #   '';
     # }))
-    nil
-    # nixd
     nmap
     wget
     lsof
@@ -64,6 +60,5 @@
     jq
     yq
     sops
-    jdt-language-server
   ];
 }

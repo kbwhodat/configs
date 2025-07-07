@@ -4,8 +4,8 @@
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-3.tar.gz";
-  inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
+  # inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.93.0.tar.gz";
+  # inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
 
   #inputs.nil.url = "github:oxalica/nil";
 
@@ -27,16 +27,9 @@
 
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
-  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.8";
+  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.0.10";
 
-  # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty?ref=kitty-unicode";
-  # inputs.ghostty.url = "git+ssh://git@github.com/ghostty-org/ghostty";
-	# inputs.ghostty.url = "github:ghostty-org/ghostty";
-	#  inputs.ghostty.inputs.nixpkgs.follows = "nixpkgs";
-  # inputs.ghostty-darwin.url = "github:kbwhodat/ghostty-nix-darwin/5b505c753310f169f1c69a22a80fbade7feab16f";
-
-
-  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, lix-module, gonchill, zen-browser, ... }:
+  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, gonchill, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
@@ -73,7 +66,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/nixos/hosts/util/configuration.nix
-            lix-module.nixosModules.default
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -90,7 +82,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/nixos/hosts/frame16/configuration.nix
-            lix-module.nixosModules.default
             inputs.nixos-hardware.nixosModules.framework-16-7040-amd
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
@@ -108,7 +99,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/nixos/hosts/frame13/configuration.nix
-            lix-module.nixosModules.default
             nixos-hardware.nixosModules.framework-13-7040-amd
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
@@ -126,7 +116,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/nixos/hosts/server/configuration.nix
-            lix-module.nixosModules.default
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -143,7 +132,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/nixos/hosts/main/configuration.nix
-            lix-module.nixosModules.default
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -163,7 +151,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/darwin/hosts/work/configuration.nix
-            # lix-module.nixosModules.default
             home-manager.darwinModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -184,7 +171,6 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./os/darwin/hosts/personal/configuration.nix
-            lix-module.nixosModules.default
             home-manager.darwinModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;

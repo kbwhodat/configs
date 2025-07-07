@@ -36,6 +36,8 @@
     amdvlk
   ];
 
+  virtualisation.docker.enable = true;
+
   services.xserver.displayManager.sessionCommands = ''
     xrandr --output eDP --mode 2256x1504 --scale 0.85x0.85
   '';
