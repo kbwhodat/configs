@@ -39,6 +39,8 @@ in
     lima-bin
     libiconv-darwin
     python311
+    notion-app
+    elinks
   ];
 
   launchd.user.agents.docker = {
@@ -85,7 +87,7 @@ in
 
     taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
     brews = [ "terragrunt" "helm" "kubectl"];
-    casks = [ "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    casks = [ "colima" "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
   nix.settings.allowed-users = ["root" "katob"];
