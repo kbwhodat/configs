@@ -31,6 +31,7 @@ in
 			TERM = "xterm-256color";
 			COLORTERM = "truecolor";
       TMUX_CONF = "~/.config/tmux/tmux.conf";
+      BROWSER = "Floorp";
 		};
 
 		profileExtra = ''
@@ -145,6 +146,8 @@ in
     RPROMPT=$'%(1j. %j ⚙.)'
 
 		VIRTUAL_ENV_DISABLE_PROMPT=1
+
+    echo -ne "\033[6 q"
 
 		'';
 	};

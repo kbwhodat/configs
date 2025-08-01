@@ -121,6 +121,10 @@ hbox.tab-content::before {
 #personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:12px !important}
 #personal-bookmarks .bookmark-item > .toolbarbutton-icon { height:20px !important; width:10px !important; }
 #tabbrowser-tabs {
+    min-height: var(--tab-height) !important;
+    height: var(--tab-height) !important;
+    padding: 0 !important;
+    margin: 0 !important;
     --user-tab-rounding: 15px;
 }
 /* Fix for bug 725413 - Separators cause higher bookmark bar in Fx11 on OS X */
@@ -178,7 +182,12 @@ See the above repository for updates as well as full license text. */
 :root[sizemode="normal"] #nav-bar{ --uc-window-drag-space-width: 20px }
 
 #titlebar{ -moz-appearance: none !important; }
-#TabsToolbar{ min-height: 0px !important }
+#TabsToolbar {
+	min-height: var(--tab-height) !important;
+	height: var(--tab-height) !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
 
 #tabbrowser-tabs, #tabbrowser-tabs > .tabbrowser-arrowscrollbox, #tabbrowser-arrowscrollbox{ min-height: 0 !important; }
 

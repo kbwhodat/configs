@@ -74,9 +74,8 @@ in
         set-option -g detach-on-destroy off
 
         # Enable cursor blink
-        set-option -g terminal-overrides ',*:cnorm=\E[?12l\E[?25h'
-        set-option -ga terminal-overrides ',*:civis=\E[?25l'
-        set-option -ga terminal-overrides ',*:Tc'
+        set-option -g terminal-overrides ',*:cnorm=\E[?12h\E[?25h'  # make cursor normal + blinking
+        set-option -ga terminal-overrides ',*:civis=\E[?25l'       # invisible when needed
 
 				set -gq allow-passthrough on
 				set -g visual-activity off
@@ -86,6 +85,8 @@ in
 				bind-key -n C-k select-pane -U
         bind-key -n C-l select-pane -R
 
+        set -g default-terminal "kitty"
+        set-option -ga terminal-overrides ",kitty:Tc"
 
 				bind-key -T copy-mode-vi 'C-h' select-pane -L
 				bind-key -T copy-mode-vi 'C-j' select-pane -D
@@ -93,6 +94,8 @@ in
 				bind-key -T copy-mode-vi 'C-l' select-pane -R
 				bind-key -T copy-mode-vi v send-keys -X begin-selection
         bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
+
+        set -g terminal-overrides ',*:Ss=\E[%p1%d q:Se='
 
 		'';
 	};
