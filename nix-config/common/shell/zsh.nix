@@ -107,7 +107,7 @@ in
     fi
 
 		# configure key keybindings
-		bindkey -e                                        # emacs key bindings
+		bindkey -v                                        # emacs key bindings
 		bindkey ' ' magic-space                           # do history expansion on space
 		bindkey '^[[3;5~' kill-word                       # ctrl + Supr
 		bindkey '^[[3~' delete-char                       # delete
@@ -145,6 +145,8 @@ in
     RPROMPT=$'%(1j. %j ⚙.)'
 
 		VIRTUAL_ENV_DISABLE_PROMPT=1
+
+    printf '\ePtmux;\e\e[6 q\e\\'
 
 		'';
 	};
