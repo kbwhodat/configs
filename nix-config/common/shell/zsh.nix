@@ -31,7 +31,6 @@ in
 			TERM = "xterm-256color";
 			COLORTERM = "truecolor";
       TMUX_CONF = "~/.config/tmux/tmux.conf";
-      BROWSER = "Floorp";
 		};
 
 		profileExtra = ''
@@ -108,7 +107,7 @@ in
     fi
 
 		# configure key keybindings
-		bindkey -e                                        # emacs key bindings
+		bindkey -v                                        # emacs key bindings
 		bindkey ' ' magic-space                           # do history expansion on space
 		bindkey '^[[3;5~' kill-word                       # ctrl + Supr
 		bindkey '^[[3~' delete-char                       # delete
@@ -147,7 +146,7 @@ in
 
 		VIRTUAL_ENV_DISABLE_PROMPT=1
 
-    echo -ne "\033[6 q"
+    printf '\ePtmux;\e\e[6 q\e\\'
 
 		'';
 	};
