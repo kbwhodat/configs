@@ -22,7 +22,7 @@
     skhd
     iina
     colima
-    lima-bin
+    lima
     libiconv-darwin
     ollama
   ];
