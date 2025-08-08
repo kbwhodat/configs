@@ -5,11 +5,11 @@ in
 {
 
 	programs.rio = {
-		enable = true;
+		enable = if isDarwin then true else true;
     settings = {
     fonts = {
       family = "ComicShannsMono Nerd Font Mono";
-      size = if isDarwin then 11.3 else 11.0;
+      size = if isDarwin then 14.3 else 14.0;
     };
     navigation = {
       mode = "Plain";

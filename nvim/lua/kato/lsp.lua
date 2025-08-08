@@ -54,9 +54,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 vim.opt.signcolumn = 'no'
 
+local servers = {}
+for _, file in pairs(vim.api.nvim_get_runtime_file("lsp/*.lua", true)) do
+    local server = vim.fn.fnamemodify(file, ":t:r")
+    table.insert(servers, server)
+end
 
-vim.lsp.enable('rust')
-vim.lsp.enable('clangd')
-vim.lsp.enable('latex') -- spelling and grammar checks
-vim.lsp.enable('texlab') -- latex lsp
-vim.lsp.enable("jedi_language_server")
+vim.lsp.enable(servers)
+
+--vim.lsp.enable('rust')
+--vim.lsp.enable('clangd')
+--vim.lsp.enable('latex') -- spelling and grammar checks
+--vim.lsp.enable('texlab') -- latex lsp
+--vim.lsp.enable("jedi")

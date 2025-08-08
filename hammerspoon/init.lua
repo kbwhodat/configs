@@ -4,7 +4,7 @@ smallorbig = "small"
 local window = hs.window.focusedWindow()
 
 hs.hotkey.bind({"ctrl"}, "space", function()
-  local app = hs.application.get("com.mitchellh.ghostty")
+  local app = hs.application.get("net.kovidgoyal.kitty")
 
   if app:mainWindow() ~= nil then
     if app then
@@ -44,7 +44,7 @@ end)
 
 
 hs.hotkey.bind({"ctrl"}, "\\", function()
-  local app = hs.application.get("com.mitchellh.ghostty")
+  local app = hs.application.get("net.kovidgoyal.kitty")
 	local fwindow = app:mainWindow()
 	if fwindow:isVisible() then
 		if smallorbig == "small" then

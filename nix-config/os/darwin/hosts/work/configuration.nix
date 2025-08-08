@@ -15,6 +15,8 @@ in
 {
   environment.etc.".secrets".source = "${myrepo}";
 
+  system.primaryUser = "katob";
+
   nix.enable = true; # auto upgrade nix package and daemon service
     system = {
       defaults = {
@@ -36,11 +38,10 @@ in
     # skhd
     iina
     colima
-    lima-bin
+    lima
     libiconv-darwin
     python311
-    notion-app
-    elinks
+    devenv
   ];
 
   launchd.user.agents.docker = {
@@ -51,9 +52,9 @@ in
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
   };
 
-  services.yabai.enable = true;
+  services.yabai.enable = false;
   services.yabai.enableScriptingAddition = true;
-  services.skhd.enable = true;
+  services.skhd.enable = false;
   services.lorri.enable = true;
 
   nixpkgs.config.allowUnfree = true;
@@ -86,10 +87,11 @@ in
     # onActivation.cleanup = "uninstall";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
-    brews = [ "terragrunt" "helm" "kubectl"];
-    casks = [ "colima" "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    brews = [ "colima" "terragrunt" "helm" "kubectl"];
+    casks = [ "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
   };
 
+  nix.settings.download-buffer-size = 524288000;
   nix.settings.allowed-users = ["root" "katob"];
   nix.settings.trusted-users = ["root" "katob"];
 
