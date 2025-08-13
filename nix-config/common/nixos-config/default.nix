@@ -74,8 +74,9 @@ in
 
   # this is for the unstable nixpkg version - make sure to use this next when an upgrade happens
   fonts.packages = with pkgs; [
-    pkgs.nerd-fonts.roboto-mono
-    pkgs.nerd-fonts.comic-shanns-mono
+    nerd-fonts.roboto-mono
+    nerd-fonts.comic-shanns-mono
+    nerd-fonts.symbols-only
   ];
 
   fonts.fontconfig = {
