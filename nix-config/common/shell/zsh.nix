@@ -60,7 +60,7 @@ in
 
 		initExtra = ''
 
-		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl"
+		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.emacs.d/bin"
 
     export ${ if isDarwin then "DRI_PRIME=0" else "DRI_PRIME=1" }
 
@@ -145,8 +145,6 @@ in
     RPROMPT=$'%(1j. %j ⚙.)'
 
 		VIRTUAL_ENV_DISABLE_PROMPT=1
-
-    printf '\ePtmux;\e\e[6 q\e\\'
 
 		'';
 	};

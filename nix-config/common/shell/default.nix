@@ -2,6 +2,7 @@
 
 {
 	imports = [
+    ./emacs.nix
     ./repos.nix
     ./bash.nix
     ./zsh.nix

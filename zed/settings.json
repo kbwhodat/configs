@@ -32,7 +32,6 @@
       "model": "deepseek-r1:7b"
     },
     "provider": null,
-    "version": "2",
     "enabled": true
   },
   "outline_panel": {
@@ -222,7 +221,9 @@
         "warning.border": "#5d4c2fff",
     "players": [
       {
-        "cursor": "#DCDCCC"
+        "cursor": "#DCDCCC",
+// used for vim highlight selection
+        "selection": "#808080" 
       }
     ],
     "syntax": {
