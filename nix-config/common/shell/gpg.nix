@@ -53,6 +53,7 @@ in
 
       run sleep 1
       run cat ${config.home.homeDirectory}/.funentry | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
+      run rm ${config.home.homeDirectory}/.funentry
     '');
 
 

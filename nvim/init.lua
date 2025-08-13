@@ -18,7 +18,7 @@ vim.g.maplocalleader = " "
 
 vim.cmd('set autoindent expandtab tabstop=2 shiftwidth=2')
 vim.cmd('nnoremap <tab> %')
-vim.cmd('vnoremap <tab> %')			
+vim.cmd('vnoremap <tab> %')
 
 vim.opt.list = false
 
@@ -45,7 +45,7 @@ vim.cmd[[hi NormalNC guibg=#000000]]
 vim.cmd('hi Normal ctermbg=none guibg=none')
 vim.cmd('highlight LineNr guifg=white')
 vim.cmd('highlight LineNr ctermfg=black')
-vim.cmd('hi Visual guibg=#44475A')
+vim.cmd('hi Visual guibg=#5C5C5C')
 
 vim.api.nvim_set_hl(0, "@AlabasterString.json", { fg = "#FFFFFF" })
 -- Set the status line for the active window
