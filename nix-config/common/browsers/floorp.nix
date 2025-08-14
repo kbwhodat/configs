@@ -18,11 +18,7 @@ in
     if isDarwin then
       pkgs.floorp-bin
     else
-      pkgs.floorp.override {
-        nativeMessagingHosts = [
-          pkgs.tridactyl-native
-        ];
-      };
+      pkgs.floorp;
 
   programs.myfloorp.profiles =
     let

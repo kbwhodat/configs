@@ -64,16 +64,11 @@ in
 
     export ${ if isDarwin then "DRI_PRIME=0" else "DRI_PRIME=1" }
 
-    keepassxc_helper() {
-      local DATABASE="/home/katob/.database/keedatabase.kdbx"
-
-      keepassxc-cli "$1" "$DATABASE" "''${@:2}"
-    }
-
 		alias ls='ls --color'
 		alias cat='bat --style plain'
 		alias vim="$(which nvim)"
 		alias vi="$(which vim)"
+		alias history="fc -l 1"
 
 		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 			TMUX_SESSION="genesis"

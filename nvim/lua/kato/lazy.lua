@@ -115,11 +115,11 @@ local plugins = {
       quickfile = { enabled = false },
       scope = { enabled = false },
       scroll = { enabled = false },
-      gitbrowser = { enabled = false },
+      gitbrowser = { enabled = true },
       scratch = { enabled = false },
       statuscolumn = { enabled = false },
-      image = { 
-        enabled = false, 
+      image = {
+        enabled = false,
         force = false,
         doc = {
           enabled = true,
@@ -223,6 +223,3 @@ local plugins = {
 local opts = {}
 
 require("lazy").setup(plugins, opts)
-
-
-

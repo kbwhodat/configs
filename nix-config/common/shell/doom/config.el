@@ -12,6 +12,8 @@
 
 (desktop-save-mode -1)
 
+(setq display-line-numbers-type 'relative)
+
 ;; Enable persp-mode for workspace/session persistence
 (use-package! persp-mode
   :init
@@ -26,7 +28,7 @@
   ;; Restore session on startup
   (when (file-exists-p (expand-file-name persp-autosave-fname persp-save-dir))
     (persp-load-state-from-file (expand-file-name persp-autosave-fname persp-save-dir)))
-  
+
   ;; Optionally, save session whenever you kill Emacs
   (add-hook 'kill-emacs-hook
             (lambda ()
