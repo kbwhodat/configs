@@ -63,6 +63,7 @@ in
   home.enableNixpkgsReleaseCheck = false;
 
   home.sessionVariables = {
+    GPUI_X11_SCALE_FACTOR = "1"; # This prevent zed from trying calculate the dpi of my system
     MOZ_DISABLE_RDD_SANDBOX = "1";
     MOZ_ACCELERATED = "false";
     MOZ_WEBRENDER = "0";

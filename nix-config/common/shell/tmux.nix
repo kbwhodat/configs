@@ -25,31 +25,31 @@ in
       tmuxPlugins.sessionist
       # tmuxPlugins.extrakto
       tmuxPlugins.resurrect
+      tmuxPlugins.copycat
       tmuxPlugins.yank
       tmuxPlugins.continuum
     ];
 
     extraConfig = ''
+
       set -g set-clipboard on
       setw -g mode-keys vi
       set -sg escape-time 0
 
-      # Resurrect strategies (keep, these are fine)
-      set -g @resurrect-strategy-nvim 'session'
-      set -g @resurrect-strategy-vim  'session'
-      set -g @resurrect-capture-pane-contents 'on'
-
-      set -g @continuum-boot 'on'
-      set -g @continuum-restore 'on'
-      set -g @continuum-save-interval '10'
-
-      # Shell
-      set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
-      set -g default-shell   "/etc/profiles/per-user/katob/bin/zsh"
+      set -g status on
+      set -g status-left-length 100
+      set -g status-right-length 50
+      set -g status-interval 5
 
       set -g mouse on
       set -g @yank_selection_mouse 'clipboard'
       set -g cursor-color white
+
+      set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
+      set -g default-shell   "/etc/profiles/per-user/katob/bin/zsh"
+
+      # Resurrect settings
+      set -g @resurrect-capture-pane-contents 'on'
 
       # Prefix
       set -g prefix ${ if isDarwin then "C-a" else "C-a" }
@@ -57,7 +57,6 @@ in
       bind C-a send-prefix
       bind R source-file ~/.config/tmux/tmux.conf \; display "Config Reloaded!"
 
-      # Your custom left side is fine
       set -g status-left '#(
         CURRENT_SESSION=$(tmux display-message -p "#S");
         tmux ls \
@@ -67,17 +66,13 @@ in
           | sed "s/\b$CURRENT_SESSION\b/#[fg=yellow]&#[default]/"
       )'
 
-      set -g status on
-      set -g status-left-length 100
-      set -g status-right-length 50
 
-      set -g status-right "."
+      set -g status-right '#(${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/scripts/continuum_save.sh)'
 
       set -g status-interval 15
 
       set -g status-style bg=default
 
-      # If you truly want no window labels:
       set -g window-status-current-format ""
       set -g window-status-format ""
 
@@ -103,6 +98,12 @@ in
       bind-key -T copy-mode-vi C-l select-pane -R
       bind-key -T copy-mode-vi v send-keys -X begin-selection
       bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
+
+      # Continuum settings
+      set -g @resurrect-strategy-nvim 'session'
+      set -g @resurrect-strategy-vim  'session'
+      set -g @continuum-restore 'on'
+      set -g @continuum-save-interval '10'
     '';
   };
 }
