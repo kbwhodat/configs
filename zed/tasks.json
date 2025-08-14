@@ -14,7 +14,16 @@
     "reveal": "always",
     "hide": "on_success"
   },
-
+  {
+    "label": "Oil",
+    "command": "exec nvim --cmd \"set noswapfile\" -u \"$HOME/.config/nvim/init-minimal.lua\" -c \"lua vim.g.oil_open_in_zed = true\" -c \"autocmd FileType oil nnoremap <buffer><silent> q :qa!<CR> | nnoremap <buffer><silent> <Esc> :qa!<CR>\" -c \"lua require('oil').open()\"",
+    "shell": {
+      "program": "/run/current-system/sw/bin/bash"
+    },
+    "use_new_terminal": true,
+    "target": "center",
+    "hide": "always"
+  },
   {
     "label": "open:terminal",
     "command": "bash",

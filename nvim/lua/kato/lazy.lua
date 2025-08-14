@@ -23,6 +23,69 @@ local plugins = {
     "frabjous/knap"
   },
   {
+    "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      -- Set a custom highlight group for Oil float
+      vim.api.nvim_set_hl(0, "OilNormalFloat", { bg = "#000000" })  -- or "#1e1e1e" for softer black
+
+      require("oil").setup({
+        default_file_explorer = true,
+        skip_confirm_for_simple_edits = true,
+
+        keymaps = {
+          ["<CR>"] = {
+            function()
+              local oil = require("oil")
+              local entry = oil.get_cursor_entry()
+              local dir = oil.get_current_dir()
+
+              if entry and entry.type == "file" and dir and vim.g.oil_open_in_zed then
+                local file_path = dir .. entry.name
+                vim.fn.jobstart({ "zeditor", file_path }, { detach = true })
+                vim.cmd("qa!")
+              else
+                require("oil.actions").select.callback()
+              end
+            end,
+          },
+          ["<C-s>"] = { "actions.select", opts = { vertical = true } },
+          ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
+          ["<C-t>"] = { "actions.select", opts = { tab = true } },
+          ["<C-p>"] = "actions.preview",
+          ["<C-c>"] = "actions.close",
+          ["<C-r>"] = "actions.refresh",
+          ["-"] = "actions.parent",
+          ["_"] = "actions.open_cwd",
+          ["`"] = "actions.cd",
+          ["gs"] = "actions.change_sort",
+          ["gx"] = "actions.open_external",
+          ["g."] = "actions.toggle_hidden",
+          ["q"] = "actions.close",
+          ["<Esc>"] = "actions.close",
+        },
+
+        use_default_keymaps = false,
+
+        view_options = {
+          show_hidden = true,
+          is_always_hidden = function(name)
+            return name == ".." or name == ".git"
+          end,
+          natural_order = true,
+          sort = {
+            { "type", "asc" },
+            { "name", "asc" },
+          },
+        },
+      })
+
+      -- Global mappings
+      vim.keymap.set("n", "-", "<CMD>Oil<CR>")
+      vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>")
+    end,
+  },
+  {
     "tris203/precognition.nvim"
   },
   {
@@ -77,7 +140,7 @@ local plugins = {
       { "<leader>ff",  function() Snacks.picker() end, desc = "Picking out" },
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
       { "<leader>g", function() Snacks.picker.grep() end, desc = "Grep" },
-      { "<leader>e", function() Snacks.explorer() end, desc = "explorer" },
+      -- { "<leader>e", function() Snacks.explorer() end, desc = "explorer" },
       { "<leader>:", function() Snacks.picker.command_history() end, desc = "command history" },
       { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
     }

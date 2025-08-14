@@ -58,7 +58,7 @@ in
 
 		'';
 
-		initExtra = ''
+		initContent = ''
 
 		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.emacs.d/bin"
 

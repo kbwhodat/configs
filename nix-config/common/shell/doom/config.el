@@ -41,6 +41,8 @@
 (auto-save-visited-mode 1)
 (setq auto-save-visited-interval 5)
 
+;; remove window decoration on macos
+(add-to-list 'default-frame-alist '(undecorated . t))
 
 ;;; —— persistent scratch (unsaved notes survive restarts) ——
 (use-package! persistent-scratch

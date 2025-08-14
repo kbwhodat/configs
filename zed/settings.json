@@ -19,9 +19,9 @@
   },
   "auto_update": false,
   "buffer_font_family": "ComicShannsMono Nerd Font Mono",
-  "buffer_font_size": 14.5,
+  "buffer_font_size": 16.0,
   "hour_format": "hour24",
-  "cursor_blink": false,
+  "cursor_blink": true,
   "unnecessary_code_fade": 0.5,
   "notification_panel": {
     "button": false,
@@ -75,7 +75,7 @@
     "git_status": true
   },
   "ui_font_family": "ComicShannsMono Nerd Font Mono",
-  "ui_font_size": 16,
+  "ui_font_size": 18,
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always"
@@ -223,7 +223,7 @@
       {
         "cursor": "#DCDCCC",
 // used for vim highlight selection
-        "selection": "#808080" 
+        "selection": "#808080"
       }
     ],
     "syntax": {

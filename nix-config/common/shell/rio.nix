@@ -5,7 +5,7 @@ in
 {
 
 	programs.rio = {
-		enable = if isDarwin then true else true;
+		enable = if isDarwin then false else true;
     settings = {
     cursor = {
         shape = "beam";
