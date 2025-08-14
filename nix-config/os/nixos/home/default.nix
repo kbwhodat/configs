@@ -34,7 +34,7 @@ in
   home.username = "katob";
   home.homeDirectory = "/home/katob";
 
-  home.stateVersion = "24.11"; # Please read the comment before changing.
+  home.stateVersion = "25.11"; # Please read the comment before changing.
 
   services.grobi = {
     enable = true;

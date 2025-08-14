@@ -10,7 +10,7 @@
     harper
     nixd
     rustc
-    rust-analyzer
+    # rust-analyzer
     ltex-ls-plus
     texlab
   ];
