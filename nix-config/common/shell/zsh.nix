@@ -56,6 +56,7 @@ in
       # zstyle ':completion:*' menu select
       # WORDCHARS=''${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
 
+
 		'';
 
 		initContent = ''
@@ -78,6 +79,17 @@ in
 				tmux new-session -s $TMUX_SESSION
 			fi
 		fi
+
+    if [[ -n "$TMUX" ]]; then
+      pid="$(tmux display -p '#{client_pid}')"      
+      mark="/tmp/tmux-restored-$pid" 
+
+      if [[ ! -e "$mark" ]]; then
+        tmux run-shell -b "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh"
+        : > "$mark"
+      fi
+    fi
+
 
 		autoload -Uz compinit
 		compinit
