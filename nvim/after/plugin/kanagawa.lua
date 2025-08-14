@@ -14,15 +14,15 @@
 -- vim.cmd('highlight @markup.heading.6.marker.markdown guifg=#565F89')
 -- vim.cmd('highlight @markup.heading.6.markdown guifg=#bb9af7')
 
-vim.cmd('highlight @markup.italic.markdown_inline guifg=#FFFFFF')
-
-require('kanagawa').setup({
-	colors = {
-		palette = {
-			-- change all usages of these colors
-			sumiInk0 = "#000000",
-			fujiWhite = "#FFFFFF",
-		},
-	},
-	theme = "wave",              -- Load "wave" theme when 'background' option is not set
-})
+-- vim.cmd('highlight @markup.italic.markdown_inline guifg=#FFFFFF')
+--
+-- require('kanagawa').setup({
+-- 	colors = {
+-- 		palette = {
+-- 			-- change all usages of these colors
+-- 			sumiInk0 = "#000000",
+-- 			fujiWhite = "#FFFFFF",
+-- 		},
+-- 	},
+-- 	theme = "wave",              -- Load "wave" theme when 'background' option is not set
+-- })

@@ -3,6 +3,44 @@ smallorbig = "small"
 
 local window = hs.window.focusedWindow()
 
+hs.hotkey.bind({"ctrl", "shift"}, "space", function()
+  local app = hs.application.get("emacs")
+
+  if app:mainWindow() ~= nil then
+    if app then
+      local win = app:mainWindow()
+      local appscreen = win:screen()
+      local mousescreen = hs.mouse.getCurrentScreen()
+
+      if appscreen == mousescreen then
+        if app:isFrontmost() then
+          app:hide()
+        else
+          app:activate()
+        end
+      else
+
+        if app:isHidden() and appscreen ~= mousescreen then
+          win:moveToScreen(mousescreen)
+        elseif appscreen ~= mousescreen and app:isFrontmost() == false then
+          app:activate()
+        elseif app:isFrontmost() then
+          app:hide()
+        end
+      end
+    end
+  else
+    app:mainWindow():moveToUnit'[100,50,0,100]'
+    local mousescreen = hs.mouse.getCurrentScreen()
+    local win = app:mainWindow()
+    local appscreen = win:screen() 
+    win:moveToScreen(mousescreen)
+    app:mainWindow():moveToUnit'[100,50,0,100]'
+
+  end
+
+end)
+
 hs.hotkey.bind({"ctrl"}, "space", function()
   local app = hs.application.get("net.kovidgoyal.kitty")
 

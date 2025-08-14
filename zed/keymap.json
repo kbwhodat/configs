@@ -3,6 +3,7 @@
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
       "ctrl-alt-p": ["task::Spawn", { "task_name": "build:run" }],
+      "space e": ["task::Spawn", { "task_name": "Oil", "reveal_target": "center" }],
       // "space f f": ["task::Spawn", { "task_name": "search:project" }],
       "space f f": "pane::DeploySearch",
       "space '": "pane::ActivateNextItem",
@@ -24,7 +25,8 @@
     "context": "Workspace && not_editing",
     "bindings": {
       "space T": "workspace::ToggleBottomDock",
-      "space e": "workspace::ToggleLeftDock",
+      "space e": ["task::Spawn", { "task_name": "Oil", "reveal_target": "center" }],
+      //"space e": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
 			"ctrl-i": "workspace::NewFile",
     }
@@ -61,7 +63,7 @@
     "context": "((extension == md) && (vim_mode == normal)) || (Editor && vim_mode == normal)",
     "bindings": {
       "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
-      "space e": "workspace::ToggleLeftDock",
+      //"space e": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
       "space h": "workspace::ActivatePaneLeft",
       "space l": "workspace::ActivatePaneRight",
@@ -85,7 +87,7 @@
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
-      "space e": "workspace::ToggleLeftDock",
+      //"space e": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
       "space l": "workspace::ActivatePaneRight",
       "y": "project_panel::Copy",
@@ -103,7 +105,7 @@
   {
     "context": "EmptyPane || SharedScreen",
     "bindings": {
-      "space e": "project_panel::Open",
+      //"space e": "project_panel::Open",
       "space space": "file_finder::Toggle",
       "space f p": "projects::OpenRecent",
     },
@@ -139,7 +141,7 @@
     "context": "ProjectPanel && not_editing",
     "bindings": {
       "q": "workspace::ToggleLeftDock",
-      "space e": "workspace::ToggleLeftDock",
+      //"space e": "workspace::ToggleLeftDock",
       "space g": "workspace::ToggleRightDock",
     },
   },
@@ -159,6 +161,12 @@
     "context": "vim_mode == visual",
     "bindings": {
       "shift-s": ["vim::PushAddSurrounds", {}]
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "space e": ["task::Spawn", { "task_name": "Oil", "reveal_target": "center" }],
     }
   },
   {

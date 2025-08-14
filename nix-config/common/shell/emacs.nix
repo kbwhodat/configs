@@ -16,17 +16,6 @@ in {
     package = pkgs.emacs; # or pkgs.emacs29-pgtk, pkgs.emacs-30, etc.
   };
 
-  # # tools Doom likes during first sync/native-comp
-  # home.packages = [ pkgs.ripgrep ];
-  #
-  # # (Optional) put a tiny declarative Doom config in place
-  # home.file."${doomDir}/init.el".text = ''
-  #   (doom!
-  #    :ui doom modeline
-  #    :editor (evil +everywhere)
-  #    :lang (emacs-lisp)
-  #    :config (default +bindings +smartparens))
-  # '';
   home.file."${doomDir}/config.el".source = ./doom/config.el;
   home.file."${doomDir}/init.el".source = ./doom/init.el;
   home.file."${doomDir}/packages.el".source = ./doom/packages.el;

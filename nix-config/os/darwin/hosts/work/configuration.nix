@@ -64,6 +64,7 @@ in
   fonts.packages = with pkgs; [
     pkgs.nerd-fonts.roboto-mono
     pkgs.nerd-fonts.comic-shanns-mono
+    pkgs.nerd-fonts.symbols-only
   ];
 
   # fonts.packages = with pkgs; [
@@ -83,7 +84,7 @@ in
   #};
 
   homebrew = {
-    # enable = true;
+    enable = true;
     # onActivation.cleanup = "uninstall";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];

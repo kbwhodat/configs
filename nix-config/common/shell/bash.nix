@@ -90,15 +90,15 @@ keepassxc_helper() {
 # Alias for the helper script
 alias kp="keepassxc_helper"
 
-if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
-
-  TMUX_SESSION=`hostname -f`
-  if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-    tmux -f ~/.config/tmux/tmux.conf attach-session -t $TMUX_SESSION
-  else
-    tmux -f ~/.config/tmux/tmux.conf new-session -s $TMUX_SESSION
-  fi
-fi
+# if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
+#
+#   TMUX_SESSION=`hostname -f`
+#   if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
+#     tmux -f ~/.config/tmux/tmux.conf attach-session -t $TMUX_SESSION
+#   else
+#     tmux -f ~/.config/tmux/tmux.conf new-session -s $TMUX_SESSION
+#   fi
+# fi
 
 source "${config.home.homeDirectory}"/.config/git-alias/git-aliases.sh
 
@@ -135,23 +135,6 @@ else
     *) PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND" ;;
   esac
 fi
-
-search_and_edit() {
-    selected_file="$(rg --column --hidden --line-number --no-heading --color=always --smart-case \
-        --glob '!**/.git/' --glob '!**/node_modules/' . \
-        | fzf --ansi --delimiter ':' \
-               --preview 'bat --style=numbers,changes,header --color=always --highlight-line {2} {1}' \
-               --preview-window 'up:60%:+{2}+3/3' \
-               --layout=reverse)"
-
-    if [ -n "$selected_file" ]; then
-        file="$(echo "$selected_file" | cut -d':' -f1)"
-        line="$(echo "$selected_file" | cut -d':' -f2)"
-        col="$(echo "$selected_file" | cut -d':' -f3)"
-
-        zed "$file:$line:$col"
-    fi
-}
 
 		'';
 	};
