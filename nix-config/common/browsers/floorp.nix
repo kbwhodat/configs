@@ -58,7 +58,7 @@ in
     "floorp.tabsleep.tabTimeoutMinutes" = 30;
 
 # Setting for ui browser
-    "floorp.delete.browser.border" = true;
+    "floorp.delete.browser.border" = false;
     "floorp.chrome.theme.mode" = 1;
 
 #Handle the vertical tabs

@@ -9,231 +9,298 @@
 
 
 /* User changable variables */
-
 #main-window :-moz-any(
-		       #home-button,
-           #sidebar-reverse-position-toolbar,
-           #QRCodeGeneratePageAction-image,
-		       #library-button,
-		       #sidebar-button,
-		       #pocket-button,
-		       #save-to-pocket-button,
-           .search-one-offs,
-		       #permissions-granted-icon,
-		       #fxa-toolbar-menu-button,
-		       #ublock0_raymondhill_net-browser-action) { display: none !important; }
+  #home-button,
+  #sidebar-reverse-position-toolbar,
+  #QRCodeGeneratePageAction-image,
+  #library-button,
+  #sidebar-button,
+  #pocket-button,
+  #save-to-pocket-button,
+  .search-one-offs,
+  #permissions-granted-icon,
+  #fxa-toolbar-menu-button,
+  #ublock0_raymondhill_net-browser-action) { display: none !important; }
 
 :root {
-	--tab-font-size: 0.8em; /* Font size of the tab labels */
-	--tab-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* The font used for the tab labels */
-	--max-tab-width: 8%; /* The maximum width a tab in the tab bar can use. Set this to none for no limit */
-	--show-titlebar-buttons: none; /* Hide the buttons (close/minimize/maximize) in the title bar. Required on some platforms (e.g macOS) to fully hide the title bar. `none` hides them, `block` shows them */
-	--tab-height: 20px;
-
-	/* Tab numbering */
-	--tab-number-color: white; /* Change this to whatever color you want the numbers to be */
+  --tab-font-size: 0.8em; /* Font size of the tab labels */
+  --tab-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* The font used for the tab labels */
+  --max-tab-width: 6%; /* The maximum width a tab in the tab bar can use. Set this to none for no limit */
+  --show-titlebar-buttons: none; /* Hide titlebar buttons; set to block to show */
+  --tab-height: 26px;
+  /* Tab numbering */
+  --tab-number-color: white; /* Color for tab numbers */
 }
 
 /* Minima Source Code. Here be dragons. */
-/* Only change this if you know what you're doing */
+.titlebar-buttonbox-container { display: var(--show-titlebar-buttons); }
 
-.titlebar-buttonbox-container {
-	display: var(--show-titlebar-buttons);
-}
-
-/* :root:not([customizing]) #TabsToolbar { */
-/* 	margin-left: 1px !important; */
-/* 	margin-right: 1px !important; */
-/* 	border-radius: 0 !important; */
-/* 	padding: 0 !important; */
-/* } */
+/* .tabbrowser-tab base styles */
 .tabbrowser-tab * {
-	margin:0 !important;
-	border-radius: 0 !important;
-	font-family: var(--tab-font-family) !important;
+  margin:0 !important;
+  border-radius: 0 !important;
+  font-family: var(--tab-font-family) !important;
 }
+
 /* Tab numbering */
 hbox.tab-content::before {
-		margin-top: -10px !important; /* Moves the number higher */
-    content: counter(tab) ": ";
-    counter-increment: tab;
-    color: white;
-    margin-right: 9px;
+  margin-top: -10px !important; /* Moves the number higher */
+  content: counter(tab) ": ";
+  counter-increment: tab;
+  color: white;
+  margin-right: 9px;
 }
+
 .tabbrowser-tab {
-	height: var(--tab-height);
-	font-size: var(--tab-font-size) !important;
-	min-height: 0 !important;
-}
-.tabbrowser-tab {
+  height: var(--tab-height);
+  font-size: var(--tab-font-size) !important;
+  min-height: 0 !important;
   position: relative;
 }
+
 .tabbrowser-tab::after {
   content: "";
   position: absolute;
-  top: 20%; /* adjust this value to control the offset from the top */
-  bottom: 33%; /* adjust this value to control the offset from the bottom */
+  top: 20%;      /* line offset from top */
+  bottom: 33%;   /* line offset from bottom */
   right: 0;
   width: 1px;
-  background-color: #7CFC00; /* replace with your desired color */
+  background-color: #7CFC00;
 }
-.tabbrowser-tab:last-child::after {
-  display: none; /* remove the line from the last tab */
-}
+.tabbrowser-tab:last-child::after { display: none; }
+
 .tabbrowser-tab[fadein]:not([pinned]) {
-	max-width: var(--max-tab-width) !important;
+  max-width: var(--max-tab-width) !important;
 }
+
 .tab-close-button, .new-tab-button, #firefox-view-button, #scrollbutton-up, .tab-secondary-label {
-	display: none !important;
+  display: none !important;
+}
+
+.tab-icon-image {
+  position: relative;
+  height: auto !important;
+  width: calc(var(--tab-height) / 1.5) !important;
+  margin-right: 4px !important;
+}
+
+#tabs-newtab-button, #titlebar spacer { display: none !important; }
+
+:root:not([customizing]) #nav-bar {
+  min-height : 2.0em !important;
+  height     : 2.0em !important;
+}
+
+.tab-background {
+  padding: 0px !important;
+  margin-block: -1px 0 !important;
 }
 .tab-icon-image {
   position: relative;
-	height: auto !important;
-	width: calc(var(--tab-height) / 1.5) !important;
-	margin-right: 4px !important;
+  height: auto !important;
+  width: calc(var(--tab-height) / 1.5) !important;
+  margin-top: -10px !important; /* Moves the icon higher */
 }
-
-#tabs-newtab-button, #titlebar spacer {
-	display: none !important;
-}
-
-:root:not([customizing]) #nav-bar
-{
-	min-height : 2.0em       !important;
-	height     : 2.0em       !important;
-}
-.tab-background {
-		padding: 10px !important;
-		border-radius: 0 !important;
-    margin-block: 1px 0 !important;
-    outline: none !important;   
-}
-	.tab-icon-image {
-    position: relative;
-    height: auto !important;
-    width: calc(var(--tab-height) / 1.5) !important;
-		margin-top: -10px !important; /* Moves the icon higher */
-	}
-	.tab-label {
-		margin-top: -10px !important; /* Adjust this value to move the text higher */
-	}
+.tab-label { margin-top: -10px !important; /* Moves text higher */ }
 
 #personal-bookmarks .bookmark-item > .toolbarbutton-text { font-size:12px !important}
 #personal-bookmarks .bookmark-item > .toolbarbutton-icon { height:20px !important; width:10px !important; }
+
 #tabbrowser-tabs {
-    min-height: var(--tab-height) !important;
-    height: var(--tab-height) !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    --user-tab-rounding: 15px;
-}
-/* Fix for bug 725413 - Separators cause higher bookmark bar in Fx11 on OS X */
-#personal-bookmarks toolbarseparator {
-min-height: 5px !important;
-}
-#PersonalToolbar {
-    font-size: 12px !important;
-	}
-#PlacesToolbarItems > .bookmark-item {
-		font-size: 12px !important;
-	}
-
-:root:not([customizing]) #nav-bar:focus-within
-{
-	z-index    : 1000        !important;
-	opacity    : 1           !important;
+  min-height: var(--tab-height) !important;
+  height: var(--tab-height) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  --user-tab-rounding: 15px;
 }
 
-#urlbar {
-    padding-bottom: -5px !important; /* Adjust the value as needed */
+/* Fix for bug 725413 (old) */
+#personal-bookmarks toolbarseparator { min-height: 5px !important; }
+
+#PersonalToolbar { font-size: 12px !important; }
+#PlacesToolbarItems > .bookmark-item { font-size: 12px !important; }
+
+:root:not([customizing]) #nav-bar:focus-within {
+  z-index: 1000 !important;
+  opacity: 1 !important;
 }
-#new-tab-button, #alltabs-button, #scrollbutton-down, .tab-loading-burst{
-	display: none;
-}
-#titlebar {
-	counter-reset: tab
-}
-#titlebar {
-	overflow: none !important;
-}
+
+#urlbar { padding-bottom: -5px !important; /* (visual tweak) */ }
+
+#new-tab-button, #alltabs-button, #scrollbutton-down, .tab-loading-burst { display: none; }
+
+#titlebar { counter-reset: tab; overflow: none !important; }
 
 /* Move hover link to the right side */
-#browser {
-  position: relative;
-}
-
+#browser { position: relative; }
 #statuspanel {
   position: absolute !important;
   right: 0 !important;
   left: unset !important;
   bottom: 0 !important;
 }
+#statuspanel-label { direction: ltr !important; }
 
-#statuspanel-label {
-  direction: ltr !important;
-}
-
-/* Source file https://github.com/MrOtherGuy/firefox-csshacks/tree/master/chrome/hide_tabs_with_one_tab.css made available under Mozilla Public License v. 2.0
-See the above repository for updates as well as full license text. */
-
-/* Makes tabs toolbar items zero-height initially and sets enlarge them to fill up space equal to tab-min-height set on tabs. Optionally use privatemode_indicator_as_menu_button.css to replace main menu icon with private browsing indicator while tabs are hidden. */
-/* Firefox 65+ only */
-
+/* MrOtherGuy - hide tabs with one tab (license note kept) */
 :root[sizemode="normal"] #nav-bar{ --uc-window-drag-space-width: 20px }
-
 #titlebar{ -moz-appearance: none !important; }
 #TabsToolbar {
-	min-height: var(--tab-height) !important;
-	height: var(--tab-height) !important;
-	padding: 0 !important;
-	margin: 0 !important;
+  min-height: var(--tab-height) !important;
+  height: var(--tab-height) !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
-
 #tabbrowser-tabs, #tabbrowser-tabs > .tabbrowser-arrowscrollbox, #tabbrowser-arrowscrollbox{ min-height: 0 !important; }
-
 :root:not([customizing]) #tabbrowser-tabs .tabs-newtab-button,
 :root:not([customizing]) #tabs-newtab-button,
 :root:not([customizing]) #TabsToolbar-customization-target > .toolbarbutton-1,
 :root:not([customizing]) #TabsToolbar .titlebar-button{
-	-moz-appearance: none !important;
-	height: 0px;
-	padding-top: 0px !important;
-	padding-bottom: 0px !important;
-	-moz-box-align: stretch;
-	margin: 0 !important;
+  -moz-appearance: none !important;
+  height: 0px;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  -moz-box-align: stretch;
+  margin: 0 !important;
 }
-
-.accessibility-indicator,
-.private-browsing-indicator{ 
-	height: unset !important;
-}
+.accessibility-indicator, .private-browsing-indicator{ height: unset !important; }
 .accessibility-indicator > hbox{ padding-block: 0 !important }
-
-#tabbrowser-tabs tab:only-of-type {
-	visibility: collapse !important;
-}
-
-/* Button re-styling */
+#tabbrowser-tabs tab:only-of-type { visibility: collapse !important; }
 #tabs-newtab-button:hover,
 #tabbrowser-tabs .tabs-newtab-button:hover{ background-color: var(--toolbarbutton-hover-background) }
-
 #tabs-newtab-button > .toolbarbutton-icon,
 #tabbrowser-tabs .tabs-newtab-button > .toolbarbutton-icon{
-	padding: 0 !important;
-	transform: scale(0.6);
-	background-color: transparent !important;
+  padding: 0 !important;
+  transform: scale(0.6);
+  background-color: transparent !important;
 }
-/* Extra top padding  in maximized window */
+/* Extra top padding in maximized window */
 @media (-moz-os-version: windows-win10){
-	:root[sizemode="maximized"] #navigator-toolbox{ padding-top:7px !important; }
+  :root[sizemode="maximized"] #navigator-toolbox{ padding-top:7px !important; }
 }
 /* Fix window controls not being clickable */
 :root[tabsintitlebar] #toolbar-menubar[autohide="true"][inactive]{
-	transition: height 0ms steps(1) 80ms;
+  transition: height 0ms steps(1) 80ms;
 }
-#nav-bar{
-	border-inline: var(--uc-window-drag-space-width) solid var(--toolbar-bgcolor);
-}
+#nav-bar{ border-inline: var(--uc-window-drag-space-width) solid var(--toolbar-bgcolor); }
+#navigator-toolbox { appearance: toolbar !important; } /* keeps window drag working */
+
+/* ===========================
+   ADDED: PUT ADDRESS BAR AT THE BOTTOM
+   =========================== */
 #navigator-toolbox {
-	appearance: toolbar !important; /* Pretty much anything except none */
+  display: flex !important;
+  flex-direction: column !important; /* stack rows so we can reorder */
+}
+
+/* Order: Tabs (top), Bookmarks (middle), Address bar (bottom) */
+#toolbar-menubar { order: 0 !important; }
+#TabsToolbar     { order: 1 !important; }
+#PersonalToolbar { order: 2 !important; } /* optional row */
+#nav-bar         { order: 3 !important; } /* address bar at the bottom */
+
+#nav-bar {
+  border-top: 1px solid var(--chrome-content-separator-color, rgba(0,0,0,.2)) !important;
+  box-shadow: none !important;
+}
+#urlbar-container { flex: 1 1 auto !important; min-width: 0 !important; }
+
+/* ===========================
+   BACK/FORWARD IN TAB BAR — split positions so both show
+   =========================== */
+
+/* Positioning context for the tab row */
+#TabsToolbar {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Back sits LEFT of Forward */
+#back-button {
+  position: fixed !important;
+  top: calc(var(--tab-height) * 0.5 + 0px);
+  transform: translateY(-50%);
+  right: auto;                              /* <— moved left so it’s visible */
+  left: -2px !important;
+  padding-left: 0px !important;
+  margin: 0 !important;
+
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+  -moz-window-dragging: no-drag !important;
+  display: -moz-box !important;
+  opacity: 1 !important;
+  visibility: visible !important;           /* always show */
+}
+
+#forward-button {
+  position: fixed !important;
+  top: calc(var(--tab-height) * 0.5 + 0px);  /* vertical center */
+  transform: translateY(-50%);
+  right: -3px !important;                    /* distance from right edge */
+  left: auto !important;
+  padding-left: 15px !important;
+  margin: 0 !important;
+
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+  -moz-window-dragging: no-drag !important;
+  display: -moz-box !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Don’t let pseudo-layers eat clicks */
+#TabsToolbar::before,
+#TabsToolbar::after {
+  pointer-events: none !important;
+}
+
+/* Push all tabs right to make room for Back/Forward buttons */
+#tabbrowser-tabs {
+  padding-left: 25px !important;  /* adjust to width of buttons + spacing */
+  padding-right: 25px !important;  /* adjust to width of buttons + spacing */
+}
+
+/* Optional: if you want *only* the first visible tab pushed */
+#tabbrowser-tabs > .tabbrowser-arrowscrollbox > .tabbrowser-tab[first-visible-tab="true"] {
+  margin-left: 80px !important; /* adjust as needed */
+}
+
+/* Gray out Back/Forward when disabled */
+#back-button[disabled="true"] > .toolbarbutton-icon,
+#forward-button[disabled="true"] > .toolbarbutton-icon {
+  filter: grayscale(100%) brightness(0.7) !important; /* desaturate + dim */
+  opacity: 0.6 !important;                             /* make it semi-transparent */
+}
+
+/* Optional: remove hover effect when disabled */
+#back-button[disabled="true"]:hover > .toolbarbutton-icon,
+#forward-button[disabled="true"]:hover > .toolbarbutton-icon {
+  background: none !important;
+}
+
+/* Hide the Extensions (puzzle piece) button */
+#unified-extensions-button {
+  display: none !important;
+}
+
+/* Square address bar field (all states) */
+#urlbar-container { --toolbarbutton-border-radius: 0 !important; flex: 1; }
+
+
+/* Remove gap above the tab strip */
+#navigator-toolbox {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+#TabsToolbar {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  border-top: none !important;
+}
+
+/* For Windows titlebar integration */
+:root[sizemode="maximized"] #navigator-toolbox {
+  padding-top: 0 !important;
 }
