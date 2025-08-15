@@ -214,6 +214,7 @@ in
     # needed for exercism
     gnumake
     exercism
+    firefoxpwa
   ];
 
   programs.chromium = {

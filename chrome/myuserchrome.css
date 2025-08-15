@@ -279,13 +279,8 @@ hbox.tab-content::before {
   background: none !important;
 }
 
-/* Hide the Extensions (puzzle piece) button */
-#unified-extensions-button {
-  display: none !important;
-}
-
 /* Square address bar field (all states) */
-#urlbar-container { --toolbarbutton-border-radius: 0 !important; flex: 1; }
+#urlbar-container { --toolbarbutton-border-radius: 0 !important; }
 
 
 /* Remove gap above the tab strip */

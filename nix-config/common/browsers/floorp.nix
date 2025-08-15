@@ -16,9 +16,17 @@ in
 
   programs.myfloorp.package =
     if isDarwin then
-      pkgs.floorp-bin
+      pkgs.floorp.override {
+        nativeMessagingHosts = [
+          pkgs.firefoxpwa
+        ];
+      }
     else
-      pkgs.floorp;
+      pkgs.floorp.override {
+        nativeMessagingHosts = [
+          pkgs.firefoxpwa
+      ];
+      };
 
   programs.myfloorp.profiles =
     let
@@ -58,7 +66,7 @@ in
     "floorp.tabsleep.tabTimeoutMinutes" = 30;
 
 # Setting for ui browser
-    "floorp.delete.browser.border" = false;
+    "floorp.delete.browser.border" = true;
     "floorp.chrome.theme.mode" = 1;
 
 #Handle the vertical tabs
