@@ -37,10 +37,8 @@ in
 
   home.packages = with pkgs; [
     anki-bin
-    keepassxc
     alsa-utils
     xorg.xorgserver
-    obsidian
     vulkan-tools
     picom
 		nmap
@@ -56,7 +54,6 @@ in
     openvpn
     yaegi # go interpreter
     dunst
-    tomato-c
     clang-tools
   ];
 

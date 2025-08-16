@@ -30,7 +30,7 @@ local plugins = {
       vim.api.nvim_set_hl(0, "OilNormalFloat", { bg = "#000000" })  -- or "#1e1e1e" for softer black
 
       require("oil").setup({
-        default_file_explorer = true,
+        default_file_explorer = false,
         skip_confirm_for_simple_edits = true,
 
         keymaps = {
@@ -134,15 +134,24 @@ local plugins = {
     },
     keys = {
       { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
-      { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+      { "<leader>x",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
       { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
       { "<leader>G",  function() Snacks.gitbrowse() end, desc = "Git browsing" },
-      { "<leader>ff",  function() Snacks.picker() end, desc = "Picking out" },
+      { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
+      { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
+      { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
+      { "<leader>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
+      { "<leader>fg", function() Snacks.picker.git_files() end, desc = "Find Git Files" },
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
       { "<leader>g", function() Snacks.picker.grep() end, desc = "Grep" },
       -- { "<leader>e", function() Snacks.explorer() end, desc = "explorer" },
+      { '<leader>s/', function() Snacks.picker.search_history() end, desc = "Search History" },
+
+      { '<leader>s"', function() Snacks.picker.registers() end, desc = "Registers" },
       { "<leader>:", function() Snacks.picker.command_history() end, desc = "command history" },
       { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
+      { "<leader>sk", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
+      { "<leader>sl", function() Snacks.picker.loclist() end, desc = "Location List" },
     }
   },
   {
