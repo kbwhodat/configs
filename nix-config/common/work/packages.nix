@@ -15,6 +15,8 @@
     sshuttle
     openconnect
     postman
+    bruno
+    bruno-cli
     tcptraceroute
     # ansible_2_16
     util-linux
