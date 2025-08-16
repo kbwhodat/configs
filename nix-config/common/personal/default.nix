@@ -12,16 +12,12 @@
     libsixel
     #clang
     perl
-    cargo
     nodejs_22
     nodePackages.peerflix
     ruby
     php
     pinentry-gtk2
     gh
-    gnused
-    gnutar
-    coreutils
     conda
     texliveFull
 
