@@ -39,7 +39,6 @@ in
       tmuxPlugins.resurrect
       tmuxPlugins.yank
       tmuxPlugins.continuum
-      tmuxPlugins.copycat
     ];
 
     extraConfig = ''
@@ -47,6 +46,20 @@ in
       set -g set-clipboard on
       setw -g mode-keys vi
       set -sg escape-time 0
+
+      set -g copy-mode-match-style 'fg=black,bg=yellow,bold'
+
+      bind-key / command-prompt -p "search:" \
+        "copy-mode; send -X search-backward '%%';"
+
+      bind-key ? command-prompt -p "search:" \
+        "copy-mode; send -X search-forward '%%';"
+
+      unbind-key n
+      unbind-key N
+
+      bind-key -T copy-mode-vi n send -X search-again
+      bind-key -T copy-mode-vi N send -X search-reverse
 
       set -g status on
       set -g status-left-length 100
