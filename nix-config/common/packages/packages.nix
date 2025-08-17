@@ -51,5 +51,6 @@
     jq
     yq
     sops
+    tiny
   ];
 }

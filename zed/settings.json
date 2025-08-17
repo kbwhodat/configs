@@ -28,8 +28,8 @@
   },
   "agent": {
     "default_model": {
-      "provider": "ollama",
-      "model": "deepseek-r1:7b"
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
     },
     "provider": null,
     "enabled": true

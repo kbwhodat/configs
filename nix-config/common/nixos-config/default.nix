@@ -224,8 +224,10 @@ in
       "hfjbmagddngcpeloejdejnfgbamkjaeg" #vimium c
       "eimadpbcbfnmbkopoojfekhnkhdbieeh" #dark reader
       "cdglnehniifkbagbbombnjghhcihifij" #kagi search
-      "naepdomgkenhinolocfifgehidddafch" #browserpass
       "egpjdkipkomnmjhjmdamaniclmdlobbo" #firenvim
+      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" #1password
+      "mdjildafknihdffpkfmmpnpoiajfjnjd" #consent-o-matic
+      "edibdbjcniadpccecjdfdjjppcpchdlm" #dontcareaboutcookies
     ];
   };
 
