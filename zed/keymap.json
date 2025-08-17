@@ -20,7 +20,15 @@
 			"/": ["buffer_search::Deploy", { "focus": true, "selection_search_enabled": true }],
     }
   },
-
+  {
+    "context": "Editor && mode == full",
+    "bindings": {
+      "ctrl-shift-enter": [
+        "assistant::InlineAssist",
+        { "prompt": "add comments to explain to me like I'm a 10 year old with why you made the changes you did. Be minimal and not very verbose as well. Be concise." }
+      ]
+    }
+  },
   {
     "context": "Workspace && not_editing",
     "bindings": {
