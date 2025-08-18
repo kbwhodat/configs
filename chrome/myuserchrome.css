@@ -27,7 +27,7 @@
   --tab-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* The font used for the tab labels */
   --max-tab-width: 6%; /* The maximum width a tab in the tab bar can use. Set this to none for no limit */
   --show-titlebar-buttons: none; /* Hide titlebar buttons; set to block to show */
-  --tab-height: 26px;
+  --tab-height: 23px;
   /* Tab numbering */
   --tab-number-color: white; /* Color for tab numbers */
 }
@@ -40,15 +40,6 @@
   margin:0 !important;
   border-radius: 0 !important;
   font-family: var(--tab-font-family) !important;
-}
-
-/* Tab numbering */
-hbox.tab-content::before {
-  margin-top: -10px !important; /* Moves the number higher */
-  content: counter(tab) ": ";
-  counter-increment: tab;
-  color: white;
-  margin-right: 9px;
 }
 
 .tabbrowser-tab {
@@ -93,7 +84,7 @@ hbox.tab-content::before {
 
 .tab-background {
   padding: 0px !important;
-  margin-block: -1px 0 !important;
+  margin-block: 0px 0 !important;
 }
 .tab-icon-image {
   position: relative;
