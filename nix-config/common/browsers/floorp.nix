@@ -42,6 +42,7 @@ in
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      pwas-for-firefox
       onepassword-password-manager
       consent-o-matic
       sponsorblock
