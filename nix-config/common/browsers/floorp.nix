@@ -10,17 +10,13 @@ in
 
   programs.myfloorp.enable =
     if isDarwin then
-      false
+      true
     else
       true;
 
   programs.myfloorp.package =
     if isDarwin then
-      pkgs.floorp.override {
-        nativeMessagingHosts = [
-          pkgs.firefoxpwa
-        ];
-      }
+      pkgs.floorp
     else
       pkgs.floorp.override {
         nativeMessagingHosts = [

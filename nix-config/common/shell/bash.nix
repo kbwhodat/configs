@@ -67,6 +67,9 @@ HISTFILE="${config.home.homeDirectory}/.bash_historys"
 export HISTSIZE HISTFILESIZE HISTFILE
 
 if [[ ''${uname} == "Darwin" ]]; then
+
+  alias zeditor="$(which zed)"
+
   if [ ! -f /usr/local/bin/pinentry-mac ]; then
     ln -s /run/current-system/sw/bin/pinentry-mac /usr/local/bin/pinentry-mac
   fi
