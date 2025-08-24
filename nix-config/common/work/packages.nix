@@ -29,5 +29,6 @@
     openstackclient
     wireshark
     libreoffice-bin
+    slack
   ];
 }
