@@ -24,9 +24,9 @@
   {
     "context": "Editor && mode == full",
     "bindings": {
-      "ctrl-shift-enter": [
+      "ctrl-enter": [
         "assistant::InlineAssist",
-        { "prompt": "add comments to explain to me like I'm a 10 year old with why you made the changes you did. Be minimal and not very verbose as well. Be concise." }
+        { "prompt": "DO NOT APPLY THE CHANGES TO THE CODE. By concise and add a comment on what needs to be changed. I repeat to not apply the changes to the code." }
       ]
     }
   },
@@ -175,7 +175,7 @@
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-shift-v": "editor::Paste",
+      "ctrl-v": "editor::Paste",
     }
   }
 ]
