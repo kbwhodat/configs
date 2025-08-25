@@ -37,7 +37,7 @@ bindsym --release Control+$mod+4 exec --no-startup-id /home/katob/Documents/scri
 
 #To open firefox
 # bindsym $mod+Shift+F exec --no-startup-id firefox
-bindsym $mod+Shift+F exec --no-startup-id zen
+bindsym $mod+Shift+F exec --no-startup-id floorp
 
 #to lock screen
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
@@ -157,9 +157,9 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-# bindsym $mod+s layout stacking
-# bindsym $mod+w layout tabbed
-# bindsym $mod+e layout toggle split
+bindsym $mod+w layout stacking
+bindsym $mod+t layout tabbed
+bindsym $mod+v layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -234,10 +234,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt

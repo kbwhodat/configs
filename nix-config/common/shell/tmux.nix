@@ -10,16 +10,6 @@ let
       sha256 = "sha256-3ECDIw+hbDn8Zc+e9rwRUljm7SlN1w7VeLsp7SLcW8Q=";
     };
   };
-  tmux-copyrat = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "tmux-copyrat";
-    version = "";
-    src = pkgs.fetchFromGitHub {
-      owner = "kbwhodat";
-      repo = "tmux-copyrat";
-      rev = "b0ba5434b04f10db6ad490564fdf2a0f79a68d11";
-      sha256 = "sha256-4evkHJYqfqoG5VU+kZCpJO1etaityS3hGDgCr198WFg=";
-    };
-  };
   inherit (pkgs.stdenv) isDarwin;
 in
 {
@@ -32,7 +22,6 @@ in
       tmuxPlugins.better-mouse-mode
       tmuxPlugins.fzf-tmux-url
       tmux-fzf-session-switch
-      tmux-copyrat
       tmuxPlugins.fingers
       tmuxPlugins.sessionist
       # tmuxPlugins.extrakto

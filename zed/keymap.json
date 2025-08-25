@@ -3,6 +3,7 @@
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
     "bindings": {
       "ctrl-alt-p": ["task::Spawn", { "task_name": "build:run" }],
+      "alt-e": ["task::Spawn", { "task_name": "run file" }],
       "space e": ["task::Spawn", { "task_name": "Oil", "reveal_target": "center" }],
       // "space f f": ["task::Spawn", { "task_name": "search:project" }],
       "space f f": "pane::DeploySearch",
@@ -172,15 +173,9 @@
     }
   },
   {
-    "context": "Workspace",
-    "bindings": {
-      "space e": ["task::Spawn", { "task_name": "Oil", "reveal_target": "center" }],
-    }
-  },
-  {
     "context": "Editor",
     "bindings": {
-      "ctrl-shift-v": "editor::Paste",
+      "ctrl-v": "editor::Paste",
     }
   }
 ]

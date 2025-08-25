@@ -10,17 +10,13 @@ in
 
   programs.myfloorp.enable =
     if isDarwin then
-      false
+      true
     else
       true;
 
   programs.myfloorp.package =
     if isDarwin then
-      pkgs.floorp.override {
-        nativeMessagingHosts = [
-          pkgs.firefoxpwa
-        ];
-      }
+      pkgs.floorp
     else
       pkgs.floorp.override {
         nativeMessagingHosts = [
@@ -32,7 +28,7 @@ in
     let
 
 # Using my own custom chrome.css
-    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    # userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
   path =
     if isDarwin then
@@ -42,6 +38,7 @@ in
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      pwas-for-firefox
       onepassword-password-manager
       consent-o-matic
       sponsorblock
@@ -370,7 +367,7 @@ in
   in
   {
     home = {
-      inherit userChrome isDefault settings path extensions;
+      inherit isDefault settings path extensions;
       id = 0;
     };
   };

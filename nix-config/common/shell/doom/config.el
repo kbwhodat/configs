@@ -60,6 +60,8 @@
 (setq org-directory "~/vault/"
       org-roam-directory (file-truename org-directory))
 
+(setq org-agenda-files '("~/vault/"))
+
 (use-package! org-roam
   :init
   ;; ensure the dir is set before loading

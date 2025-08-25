@@ -29,7 +29,7 @@ in {
       ${lib.optionalString useXDG ''export DOOMDIR="${doomDir}"''}
 
       if [ ! -d "${emacsDir}" ]; then
-        git clone --depth 1 https://github.com/hlissner/doom-emacs "${emacsDir}"
+        git clone https://github.com/hlissner/doom-emacs "${emacsDir}"
       fi
 
       "${emacsDir}"/bin/doom sync
