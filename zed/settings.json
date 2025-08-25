@@ -27,6 +27,10 @@
     "button": false,
   },
   "agent": {
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
+    },
     "default_model": {
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
