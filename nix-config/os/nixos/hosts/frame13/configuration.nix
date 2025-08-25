@@ -5,8 +5,8 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../../../../common/ssh/ssh.nix
+      ../../../../common/nixos-config/performance
       ../../../../common/nixos-config
-      # ../../../../pkgs
     ];
 
 
@@ -15,18 +15,15 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
-    # amdenc
     pciutils
     amdgpu_top
     usbutils
-    # clang
     gcc
     brightnessctl
     xorg.xev
     pavucontrol
     clinfo
     pamixer
-    #zed-editor-fhs
     ffmpeg
   ];
 

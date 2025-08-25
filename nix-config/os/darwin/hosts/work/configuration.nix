@@ -85,11 +85,11 @@ in
 
   homebrew = {
     enable = true;
-    # onActivation.cleanup = "uninstall";
+    onActivation.cleanup = "uninstall";
 
-    taps = ["homebrew/services" "FelixKratz/formulae" "benjiwolff/neovim-nightly" "nikitabobko/tap"];
-    brews = [ "colima" "terragrunt" "helm" "kubectl"];
-    casks = [ "firefoxpwa" "aerospace" "google-cloud-sdk" "dbeaver-community" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
+    brews = [ "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
+    casks = [ "aerospace" "dbeaver-community" "firefox" "obsidian" "vlc" "hyperkey" "hammerspoon" "webcatalog" "raycast" "chromium" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;

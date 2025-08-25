@@ -16,6 +16,9 @@ keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- prevents netrw from being disabled
+vim.g.oil_disable_netrw = false
+
 vim.cmd('set autoindent expandtab tabstop=2 shiftwidth=2')
 vim.cmd('nnoremap <tab> %')
 vim.cmd('vnoremap <tab> %')

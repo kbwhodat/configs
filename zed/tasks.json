@@ -15,6 +15,13 @@
     "hide": "on_success"
   },
   {
+    "label": "run file",
+    "command": "bash ~/.config/zed/scripts/runfile.sh",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
     "label": "Oil",
     "command": "exec nvim --cmd \"set noswapfile\" -u \"$HOME/.config/nvim/init-minimal.lua\" -c \"lua vim.g.oil_open_in_zed = true\" -c \"autocmd FileType oil nnoremap <buffer><silent> q :qa!<CR> | nnoremap <buffer><silent> <Esc> :qa!<CR>\" -c \"lua require('oil').open()\"",
     "shell": {
