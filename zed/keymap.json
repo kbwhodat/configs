@@ -23,9 +23,9 @@
   {
     "context": "Editor && mode == full",
     "bindings": {
-      "ctrl-shift-enter": [
+      "ctrl-enter": [
         "assistant::InlineAssist",
-        { "prompt": "add comments to explain to me like I'm a 10 year old with why you made the changes you did. Be minimal and not very verbose as well. Be concise." }
+        { "prompt": "DO NOT PROVIDE THE CHANGE OR THE FIX I WANT TO FIX IT MYSELF. add comments to explain what change should be made, be concise as well. But do not, I repeat to not apply the changes." }
       ]
     }
   },
