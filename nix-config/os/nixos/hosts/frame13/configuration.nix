@@ -25,6 +25,7 @@
     clinfo
     pamixer
     ffmpeg
+    kmonad
   ];
 
   hardware.graphics.extraPackages = with pkgs; [

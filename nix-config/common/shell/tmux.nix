@@ -92,12 +92,14 @@ in
 
       set -g detach-on-destroy off
 
-      # Terminal overrides
-      set -ga terminal-overrides ',*:cnorm=\E[?12l\E[?25h'
-      set -ga terminal-overrides ',*:civis=\E[?25l'
-      set -ga terminal-overrides ',*:Tc'
+      # inside-tmux TERM
+      set -g default-terminal "xterm-256color"
 
-      set -gq allow-passthrough on
+      # truecolor support
+      set -as terminal-features 'xterm*:RGB'
+      set -as terminal-features 'xterm-kitty:RGB'
+
+      set -ga allow-passthrough all
       set -g visual-activity off
 
       # Pane movement (normal + copy mode)
