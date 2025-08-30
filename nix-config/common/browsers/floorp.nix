@@ -28,7 +28,7 @@ in
     let
 
 # Using my own custom chrome.css
-    # userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
   path =
     if isDarwin then
@@ -367,7 +367,7 @@ in
   in
   {
     home = {
-      inherit isDefault settings path extensions;
+      inherit userChrome isDefault settings path extensions;
       id = 0;
     };
   };
