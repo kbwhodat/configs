@@ -27,7 +27,6 @@ in
   programs.myfloorp.profiles =
     let
 
-# Using my own custom chrome.css
   userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
   path =
