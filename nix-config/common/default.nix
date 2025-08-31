@@ -5,6 +5,7 @@
     ./shell
     ./packages
     ./browsers
+    ./keyboard
     ./editors
     ./lsp
     ./neovim
