@@ -21,7 +21,7 @@
     conda
     texliveFull
 
-    (python312.withPackages (ps: with ps; let
+    (python313.withPackages (ps: with ps; let
       blinker = ps.buildPythonPackage rec {
         pname = "blinker";
         version = "1.7.0";
@@ -34,10 +34,10 @@
         };
 
         nativeBuildInputs = [
-          pkgs.python312Packages.build     # for `python -m build`
-          pkgs.python312Packages.flit-core # backend for pyproject.toml
-          pkgs.python312Packages.pip
-          pkgs.python312Packages.wheel
+          pkgs.python313Packages.build     # for `python -m build`
+          pkgs.python313Packages.flit-core # backend for pyproject.toml
+          pkgs.python313Packages.pip
+          pkgs.python313Packages.wheel
         ];
 
         buildPhase = ''
@@ -130,6 +130,9 @@
       seleniumProfiles
       seleniumInterceptor
       ipvanish
+      webdriver-manager
+      playwright
+      playwright-stealth
       # torch-bin
       # dacite
       # ray

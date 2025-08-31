@@ -228,6 +228,7 @@ in
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" #1password
       "mdjildafknihdffpkfmmpnpoiajfjnjd" #consent-o-matic
       "edibdbjcniadpccecjdfdjjppcpchdlm" #dontcareaboutcookies
+      "pfdeiaeaofodcolaiadjdflpejkofhpf" #simple adblocker - use it for camel.live
     ];
   };
 
