@@ -41,7 +41,6 @@ in
     lima
     libiconv-darwin
     python311
-    devenv
   ];
 
   launchd.user.agents.docker = {

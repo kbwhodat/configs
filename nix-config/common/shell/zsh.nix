@@ -94,6 +94,13 @@ in
 		autoload -Uz compinit
 		compinit
 
+    dev-init() {
+      cp -a ~/.config/nix-config/templates/direnv/. .
+      
+      direnv allow
+    }
+
+
 
     if [[ ''${uname} == "Darwin" ]]; then
       if [ ! -f /usr/local/bin/pinentry-mac ]; then
