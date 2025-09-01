@@ -21,71 +21,30 @@
     conda
     texliveFull
 
-    (python312.withPackages (ps: with ps; let
-      blinker = ps.buildPythonPackage rec {
-        pname = "blinker";
-        version = "1.7.0";
+    (python313.withPackages (ps: with ps; let
+      seleniuim_driverless = ps.buildPythonPackage rec {
+        pname = "selenium-driverless";
+        version = "1.9.4";
         format = "setuptools";
         build-system = [ setuptools ];
-
         src = pkgs.fetchurl {
-          url = "https://files.pythonhosted.org/packages/a1/13/6df5fc090ff4e5d246baf1f45fe9e5623aa8565757dfa5bd243f6a545f9e/blinker-1.7.0.tar.gz";
-          sha256 = "e6820ff6fa4e4d1d8e2747c2283749c3f547e4fee112b98555cdcdae32996182";
+          url = "https://files.pythonhosted.org/packages/5e/92/3fcf637eebbc334543de61b319c4f00d01526053edf33c2f25aa08f05c13/selenium_driverless-1.9.4.tar.gz";
+          sha256 = "151ccf57d399691ec4e943a941a496dbe575d0154a520cc2eca988ebe5d07a76";
         };
 
-        nativeBuildInputs = [
-          pkgs.python312Packages.build     # for `python -m build`
-          pkgs.python312Packages.flit-core # backend for pyproject.toml
-          pkgs.python312Packages.pip
-          pkgs.python312Packages.wheel
-        ];
-
-        buildPhase = ''
-          python -m build --wheel --no-isolation --outdir dist
-        '';
-
-        installPhase = ''
-          pip install --no-deps --prefix=$out dist/*.whl
-        '';
         doCheck = false;
       };
 
-      seleniumWire = ps.buildPythonPackage rec {
-        pname = "selenium-wire";
-        version = "5.1.0";
+      cdp-socket = ps.buildPythonPackage rec {
+        pname = "cdp-socket";
+        version = "1.9.4";
         format = "setuptools";
         build-system = [ setuptools ];
         src = pkgs.fetchurl {
-          url = "https://files.pythonhosted.org/packages/9f/00/60b39e8a1efe6919d1390f07d84a3eeba4aeae5b829f2f848344c798f783/selenium-wire-5.1.0.tar.gz";
-          sha256 = "b1cd4eae44d9959381abe3bb186472520d063c658e279f98555def3d4e6dd29b";
+          url = "https://files.pythonhosted.org/packages/7d/28/58812797e54fb8cf22bff61125e5a7d2763de1a86855549ecc417bdd06d5/cdp-socket-1.2.8.tar.gz";
+          sha256 = "d8a3d55883205c7c45c05292cf5ef5a5c74534873e369e258e61213cce15be1a";
         };
 
-        # Ensure selenium-wire has access to blinker at runtime
-        propagatedBuildInputs = [ blinker ];
-        doCheck = false;
-      };
-
-      seleniumProfiles = ps.buildPythonPackage rec {
-        pname = "selenium-profiles";
-        version = "2.2.10";
-        format = "setuptools";
-        build-system = [ setuptools ];
-        src = pkgs.fetchurl {
-          url = "https://files.pythonhosted.org/packages/d1/82/99772a2f5951bd62de5e871056c374322aa951301503c065f001ea33cbbe/selenium_profiles-2.2.10.tar.gz";
-          sha256 = "d2bb5c60c76c025f36bca62617875bc97dc2541cb25730e2dba50a3ddac95857";
-        };
-        doCheck = false;
-      };
-
-      seleniumInterceptor = ps.buildPythonPackage rec {
-        pname = "selenium-interceptor";
-        version = "1.0.2";
-        format = "setuptools";
-        build-system = [ setuptools ];
-        src = pkgs.fetchurl {
-          url = "https://files.pythonhosted.org/packages/f2/4a/ec8229dfd7b06363afa49a2dffb3809b080c8f9ebe710e6ae592d5f20f42/selenium_interceptor-1.0.2.tar.gz";
-          sha256 = "e6410f743484e875d285da6fb9238b825ba76ae4efbbc5c6b9a3a45d2a6c4d39";
-        };
         doCheck = false;
       };
 
@@ -105,34 +64,19 @@
       };
 
     in [
-      brotli
-      certifi
-      h2
-      hyperframe
-      kaitaistruct
-      pyasn1
-      pyopenssl
-      pyparsing
-      pysocks
+      websockets
+      numpy
+      aiofiles
+      matplotlib
+      scipy
+      platformdirs
+      aiohttp
+      jsondiff
+      orjson
       selenium
-      requests
-      wsproto
-      tqdm
-      zstandard
-      packaging
-      setuptools
-      undetected-chromedriver
-      beautifultable
-      beautifulsoup4
-      click
-      blinker
-      seleniumWire
-      seleniumProfiles
-      seleniumInterceptor
+      cdp-socket
+      seleniuim_driverless
       ipvanish
-      # torch-bin
-      # dacite
-      # ray
     ]))
   ];
 }
