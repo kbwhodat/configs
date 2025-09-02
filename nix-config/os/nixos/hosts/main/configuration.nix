@@ -25,6 +25,9 @@
 
   fonts.fontDir.enable = true;
 
+  # qmk
+  hardware.keyboard.qmk.enable = true;
+
   environment.systemPackages = with pkgs; [
     usbutils
     displaylink

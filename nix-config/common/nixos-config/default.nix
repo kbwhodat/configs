@@ -232,6 +232,11 @@ in
     ];
   };
 
+  programs.direnv.nix-direnv = {
+    enable = true;
+    package = pkgs.nix-direnv;
+  };
+
   services.syncthing = {
     enable = true;
     user = "katob";
