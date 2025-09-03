@@ -27,6 +27,14 @@
     ollama
   ];
 
+  services.kanata = {
+    enable = true;
+    package = pkgs.kanata-with-cmd;
+    keyboards.macos = {
+      config = builtins.readFile ../../../../../kanata/kanata.kbd;
+    };
+  };
+
   launchd.user.agents.docker = {
     serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/os/darwin/scripts/start_colima.sh" ];
     serviceConfig.RunAtLoad = true;

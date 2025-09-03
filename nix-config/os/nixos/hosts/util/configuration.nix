@@ -25,6 +25,14 @@
 
   systemd.sleep.extraConfig = "AllowSuspendThenHibernate=yes\nSuspendState=suspend\nHibernateState=hibernate\nHibernateDelaySec=60s";
 
+
+  services.kanata = {
+    enable = true;
+    package = pkgs.kanata-with-cmd;
+    keyboards.thinkpad = {
+      config = builtins.readFile ../../../../../kanata/kanata.kbd;
+    };
+  };
 #  services.autosuspend = {
 #    enable = true;
 #    settings = {

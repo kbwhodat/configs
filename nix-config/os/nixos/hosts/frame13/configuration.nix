@@ -25,8 +25,15 @@
     clinfo
     pamixer
     ffmpeg
-    kmonad
   ];
+
+  services.kanata = {
+    enable = true;
+    package = pkgs.kanata-with-cmd;
+    keyboards.frame13 = {
+      config = builtins.readFile ../../../../../kanata/kanata.kbd;
+    };
+  };
 
   hardware.graphics.extraPackages = with pkgs; [
     rocmPackages.clr.icd

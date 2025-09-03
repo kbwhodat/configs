@@ -6,6 +6,7 @@
     ./floorp.nix
     # ./browserpass.nix
     ./zen.nix
+    ./librewolf.nix
     # ./ladybird.nix
   ];
 }
