@@ -38,19 +38,19 @@ in
       df-youtube
       kagi-search
       darkreader
-      # browserpass
-      privacy-badger
       onepassword-password-manager
       ublock-origin
       vimium-c
       clearurls
       istilldontcareaboutcookies
       firenvim
-      keepassxc-browser
   ];
 
   settings = {
       
+    # This will enable firefox sync
+    "identity.fxaccounts.enabled" = true;
+
     # Disabling hardware acceleration
     "browser.preferences.defaultPerformanceSettings.enabled" = false;
     "layers.acceleration.disabled" = true;

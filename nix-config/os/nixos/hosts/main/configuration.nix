@@ -25,8 +25,13 @@
 
   fonts.fontDir.enable = true;
 
-  # qmk
-  hardware.keyboard.qmk.enable = true;
+  services.kanata = {
+    enable = true;
+    package = pkgs.kanata-with-cmd;
+    keyboards.frame13 = {
+      config = builtins.readFile ../../../../../kanata/kanata.kbd;
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     usbutils

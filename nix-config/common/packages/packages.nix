@@ -51,6 +51,6 @@
     jq
     yq
     sops
-    kmonad
+    _1password-gui
   ];
 }

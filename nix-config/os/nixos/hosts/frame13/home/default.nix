@@ -48,7 +48,6 @@ in
     xdotool
     ueberzug
     pulseaudio
-    chromium
     mpv
     vlc
     openvpn

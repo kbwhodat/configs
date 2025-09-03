@@ -206,7 +206,6 @@ in
 
   environment.systemPackages = with pkgs; [
     #gccgo
-    chromium
     zenity
     libnotify
     scrot
@@ -217,25 +216,11 @@ in
     firefoxpwa
   ];
 
-  programs.chromium = {
-    enable = true;
-    extensions = [
-      "cjpalhdlnbpafiamejdnhcphjbkeiagm" #ublock origin
-      "hfjbmagddngcpeloejdejnfgbamkjaeg" #vimium c
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh" #dark reader
-      "cdglnehniifkbagbbombnjghhcihifij" #kagi search
-      "egpjdkipkomnmjhjmdamaniclmdlobbo" #firenvim
-      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" #1password
-      "mdjildafknihdffpkfmmpnpoiajfjnjd" #consent-o-matic
-      "edibdbjcniadpccecjdfdjjppcpchdlm" #dontcareaboutcookies
-      "pfdeiaeaofodcolaiadjdflpejkofhpf" #simple adblocker - use it for camel.live
-    ];
-  };
-
   programs.direnv.nix-direnv = {
     enable = true;
     package = pkgs.nix-direnv;
   };
+
 
   services.syncthing = {
     enable = true;

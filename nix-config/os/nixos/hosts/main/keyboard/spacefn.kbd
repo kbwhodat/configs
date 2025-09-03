@@ -1,0 +1,41 @@
+(defcfg
+  input  (device-file "/dev/input/event20")
+  output (uinput-sink "kmonad output")
+  fallthrough true
+)
+
+;; ---------- alias ----------
+;; SpaceFN: tap = space, hold = momentary Fn layer
+(defalias
+  capsfn (tap-hold-next-release 1500 caps (layer-toggle fn))
+)
+
+(defsrc
+  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  grv   1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab   q    w    e    r    t    y    u    i    o    p    [    ]    backslash
+  caps  a    s    d    f    g    h    j    k    l    ;    '         ret
+  lsft  z    x    c    v    b    n    m    ,    .    /              rsft
+  lctl  lmet lalt                  spc                     ralt rmet rctl
+)
+
+;; ---------- base layer (must mirror defsrc 1:1; only spc -> @sfn) ----------
+(deflayer base
+  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  grv   1    2    3    4    5   6    7    8    9    0    -    =    bspc
+  tab   q    w    e    r    t    y    u    i    o    p    [    ]    backslash
+  @capsfn  a    s    d    f    g    h    j    k    l    ;    '         ret
+  lsft  z    x    c    v    b    n    m    ,    .    /              rsft
+  lctl  lmet lalt                  spc                     ralt rmet rctl
+)
+
+
+;; ---------- fn layer (same shape as defsrc; '_' = transparent) ----------
+(deflayer fn
+  esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  grv   1    2    3    4    f5   f6    7    8    9    0    f11    =    bspc
+  tab   q    w    e    r    t    y    pageup    pagedown    o    p    [    ]    backslash
+  @capsfn  a    s    d    f    home    left    down    up    right    end    '         ret
+  lsft  z    x    c    v    b    n    m    ,    .    /              rsft
+  lctl  lmet lalt                  spc                     ralt rmet rctl
+)

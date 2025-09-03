@@ -7,6 +7,7 @@
     # ./browserpass.nix
     ./zen.nix
     ./librewolf.nix
+    ./chrome.nix
     # ./ladybird.nix
   ];
 }
