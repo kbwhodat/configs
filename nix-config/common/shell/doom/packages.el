@@ -9,4 +9,7 @@
 ;; (package! some-package)
 
 (package! persistent-scratch)
-(package! doom-alabaster-theme :recipe (:host github :repo "kbwhodat/doom-alabaster-theme"))
+(package! md-roam
+          :recipe (:host github :repo "nobiot/md-roam" :files ("*.el")))
+(package! doom-alabaster-theme 
+          :recipe (:host github :repo "kbwhodat/doom-alabaster-theme"))

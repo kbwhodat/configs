@@ -56,27 +56,42 @@
 (setq doom-theme 'doom-alabaster)
 (setq doom-font (font-spec :family "ComicShannsMono Nerd Font" :size 16))
 
+(use-package! md-roam
+              :after org-roam
+              :config
+              (setq md-roam-file-extension "md")
+              (setq md-roam-use-org-roam-ui t)
+              (md-roam-mode 1))
+
 ;; If you use a custom roam dir, set it BEFORE org-roam loads
 (setq org-directory "~/vault/"
-      org-roam-directory (file-truename org-directory))
+      org-roam-directory (file-truename org-directory)
+      org-roam-file-extensions '("org" "md")
+      org-roam-completion-everywhere nil)
 
 (setq org-agenda-files '("~/vault/"))
 
 (use-package! org-roam
-  :init
-  ;; ensure the dir is set before loading
-  (setq org-roam-directory (file-truename org-directory))
-  :custom
-  (org-roam-completion-everywhere t)
+  :after md-roam
   :config
-  (org-roam-db-autosync-mode)
+  (org-roam-db-autosync-mode 1)
 
-  ;; custom capture template
-  (setq org-roam-capture-templates
-        '(("d" "default" plain "%?"
-           :if-new (file+head "${slug}.org"
-                              "#+title: ${title}\n#+date: %<%Y-%m-%d>\n#+filetags: ")
-           :unnarrowed t))))
+ (setq org-roam-capture-templates
+       '(("d" "default" plain
+          ""
+          :if-new (file+head "${slug}.md"
+"---
+id: ${slug}
+aliases:
+  - ${title}
+tags: []
+date: %<%Y-%m-%d>
+uid: %(org-id-uuid)
+---
+
+# ${title}")
+                             :immediate-finish t
+                             :unnarrowed t))))
 
 (map! :leader
       :desc "Delete current buffer"
