@@ -1,0 +1,22 @@
+(defsrc
+  grv   1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab   q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps  a    s    d    f    g    h    j    k    l    ;    '         ret
+)
+
+(defalias
+  capsfn (tap-hold 200 200 caps (layer-while-held fn))
+)
+
+(deflayer base
+  grv   1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab   q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @capsfn  a    s    d    f    g    h    j    k    l    ;    '         ret
+)
+
+(deflayer fn
+  grv   1    2    3    4    f5    f6    7    8    9    0    -    =    bspc
+  tab   q    w    e    r    t    y    pgup    pgdn    o    p    [    ]    \
+  @capsfn  a    s    d    f    home    left    down    up    right    end    '         ret
+)
+

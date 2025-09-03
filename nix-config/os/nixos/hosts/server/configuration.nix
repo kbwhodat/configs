@@ -10,6 +10,13 @@
       ../../../../common/nixos-config
     ];
 
+  services.kanata = {
+    enable = true;
+    package = pkgs.kanata-with-cmd;
+    keyboards.keychron = {
+      config = builtins.readFile ../../../../../kanata/kanata.kbd;
+    };
+  };
 
   # more modern way of enabling bootloader
   boot.loader.systemd-boot.enable = true;

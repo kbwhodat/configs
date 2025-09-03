@@ -1,99 +1,69 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 let
 inherit (pkgs.stdenv) isDarwin;
 in
 {
 
-  imports = [
-    ../../modules/floorp.nix
-  ];
 
-  programs.myfloorp.enable =
+  programs.librewolf.enable =
     if isDarwin then
       true
     else
       true;
 
-  programs.myfloorp.package =
+  programs.librewolf.package =
     if isDarwin then
-      pkgs.floorp
-    else
-      pkgs.floorp.override {
+        pkgs.zen-browser-bin-darwin.override {
         nativeMessagingHosts = [
-          pkgs.firefoxpwa
-      ];
-      };
+            # Tridactyl native connector
+            pkgs.tridactyl-native
+        ];
+        }
+    else
+      pkgs.librewolf-bin;
 
-  programs.myfloorp.profiles =
+  programs.librewolf.profiles =
     let
 
 # Using my own custom chrome.css
-  userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
 
-  path =
-    if isDarwin then
-      "${config.home.homeDirectory}/Library/Application Support/Floorp"
-    else
-      "${config.home.homeDirectory}/.floorp";
+    name = "kato";
+    path = "main";
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-      pwas-for-firefox
-      onepassword-password-manager
       consent-o-matic
       sponsorblock
       df-youtube
       kagi-search
       darkreader
-      auto-tab-discard
+      # browserpass
       privacy-badger
+      onepassword-password-manager
       ublock-origin
+      vimium-c
       clearurls
       istilldontcareaboutcookies
-      vimium-c
       firenvim
+      keepassxc-browser
   ];
 
   settings = {
-# user.js
-    "floorp.user.js.customize" = "Fastfox";
+      
+    # Disabling hardware acceleration
+    "browser.preferences.defaultPerformanceSettings.enabled" = false;
+    "layers.acceleration.disabled" = true;
 
-# Settings for tabsleep, good for memory optimization
-    "floorp.tabsleep.enabled" = true;
-    "floorp.tabsleep.tabTimeoutMinutes" = 30;
-
-# Setting for ui browser
-    "floorp.delete.browser.border" = true;
-    "floorp.chrome.theme.mode" = 1;
-
-#Handle the vertical tabs
-    "floorp.browser.tabs.verticaltab.enabled" = false;
-    "floorp.tabbar.style" = 0;
-    "floorp.browser.tabbar.settings" = 0;
-    "floorp.browser.tabbar.multirow.max.row" = 3;
-    "floorp.browser.tabbar.multirow.max.enabled" = true;
-    "floorp.browser.sidebae.is.displayed" = 2;
-    "floorp.browser.tabs.verticaltab" = false;
-    "floorp.verticaltab.hover.enabled" = false;
-    "floorp.verticaltab.show.newtab.button" = false;
-
-# Disabling sidebar for now, I don't see the benefit
-    "floorp.browser.sidebar.enable" = false;
-    "floorp.browser.sidebar.is.displayed" = false;
-    "floorp.browser.sidebar.right" = true;
-
-# Bookmark related settings
-    "floorp.bookmarks.bar.focus.mode" = false;
-
-# Makes some website dark
+    "browser.tabs.hoverPreview.enabled" = true;
+    # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
-# browser/ui theme is not effective in Floorp - should use floorp.chrome.theme.mode
-    "browser.proton.toolbar.version" = 3;
     "browser.theme.toolbar-theme" = 0;
     "browser.theme.content-theme" = 0;
     "ui.systemUsesDarkTheme" = 1;
 
+    "extension.activeThemeID" = "firefox-compact-dark@mozilla.org";
 # setting up kagi
     "extensions.webextensions.ExtensionStorageIDB.migrated.search@kagi.com" = true;
 
@@ -103,10 +73,11 @@ in
 # fonts
     "browser.display.use_document_fonts" = 1;
     "font.default.x-western" = "sans-serif";
-    "font.size.variable.x-western" = 16;
+    "font.size.variable.x-western" = 17;
     "font.name.monospace.x-western" = "ComicShannsMono Nerd Font Mono";
-    "font.name.sans-serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "font.name.sans-serif.x-western" = " ComicShannsMono Nerd Font Propo";
     "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "layout.css.devPixelsPerPx" = 1.0;
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "newtab";
@@ -122,7 +93,7 @@ in
 # "network.prefetch-next" = false;
     "general.smoothScroll" = true;
     "media.autoplay.default" = 1;
-    "browser.cache.disk.enable" = false;
+    "browser.cache.disk.enable" = true;
     "broswer.cache.memory.enable" = true;
     "broswer.sessionstore.resume_from_crash" = false;
     "browser.search.countryCode" = "US";
@@ -158,6 +129,7 @@ in
     "content.notify.interval" = 200000;
 
     /** GFX ***/
+    "layers.acceleration.enabled" = true;
     "gfx.canvas.accelerated.cache-items" = 4096;
     "gfx.canvas.accelerated.cache-size" = 512;
     "gfx.content.skia-font-cache-size" = 20;
@@ -184,7 +156,7 @@ in
     /** SPECULATIVE LOADING ***/
     "network.dns.disablePrefetch" = true;
     "network.dns.disablePrefetchFromHTTPS" = true;
-    "network.prefetch-next" = false;
+    "network.prefetch-next" = true;
     "network.predictor.enabled" = false;
     "network.predictor.enable-prefetch" = false;
 
@@ -322,6 +294,8 @@ in
 
     /** THEME ADJUSTMENTS ***/
     "browser.compactmode.show" = true;
+    "browser.tabs.groups.enabled" = true;
+    "browser.tabs.groups.smart.enabled" = true;
     "browser.display.focus_ring_on_anything" = true;
     "browser.display.focus_ring_style" = 0;
     "browser.display.focus_ring_width" = 0;
@@ -367,7 +341,7 @@ in
   in
   {
     home = {
-      inherit userChrome isDefault settings path extensions;
+      inherit isDefault userChrome settings path extensions name;
       id = 0;
     };
   };

@@ -56,6 +56,14 @@ in
   services.skhd.enable = false;
   services.lorri.enable = true;
 
+  services.kanata = {
+    enable = true;
+    package = pkgs.kanata-with-cmd;
+    keyboards.keychron = {
+      config = builtins.readFile ../../../../../kanata/kanata.kbd;
+    };
+  };
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true;
