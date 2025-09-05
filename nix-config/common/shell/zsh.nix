@@ -1,6 +1,6 @@
 { pkgs, config, lib, ... }:
 
-# let 
+# let
 # 	zshConf = builtins.readFile ./zshrc;
 # in
 let
@@ -80,15 +80,15 @@ in
 			fi
 		fi
 
-    if [[ -n "$TMUX" ]]; then
-      pid="$(tmux display -p '#{client_pid}')"      
-      mark="/tmp/tmux-restored-$pid" 
+		if [[ -n "$TMUX" ]]; then
+				pid="$(tmux display -p '#{client_pid}')"
+				mark="/tmp/tmux-restored-$pid"
 
-      if [[ ! -e "$mark" ]]; then
-        tmux run-shell -b "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh"
-        : > "$mark"
-      fi
-    fi
+				if [[ ! -e "$mark" ]]; then
+						tmux run-shell -b "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh"
+						touch "$mark"
+				fi
+			fi
 
 
 		autoload -Uz compinit
@@ -96,7 +96,7 @@ in
 
     dev-init() {
       cp -a ~/.config/nix-config/templates/direnv/. .
-      
+
       direnv allow
     }
 

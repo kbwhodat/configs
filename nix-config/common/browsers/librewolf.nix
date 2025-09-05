@@ -13,12 +13,7 @@ in
 
   programs.librewolf.package =
     if isDarwin then
-        pkgs.zen-browser-bin-darwin.override {
-        nativeMessagingHosts = [
-            # Tridactyl native connector
-            pkgs.tridactyl-native
-        ];
-        }
+      pkgs.librewolf 
     else
       pkgs.librewolf-bin;
 
@@ -49,7 +44,7 @@ in
   settings = {
       
     # This will enable firefox sync
-    "identity.fxaccounts.enabled" = true;
+    "identity.fxaccounts.enabled" = if isDarwin then false else true;
 
     # Disabling hardware acceleration
     "browser.preferences.defaultPerformanceSettings.enabled" = false;

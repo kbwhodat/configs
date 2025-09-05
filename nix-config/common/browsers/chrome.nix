@@ -5,7 +5,7 @@ let
 in
 {
   programs.chromium = {
-    enable = true;
+    enable = if isDarwin then false else true;
     package = if isDarwin then 
       pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
     else

@@ -56,14 +56,6 @@ in
   services.skhd.enable = false;
   services.lorri.enable = true;
 
-  services.kanata = {
-    enable = true;
-    package = pkgs.kanata-with-cmd;
-    keyboards.keychron = {
-      config = builtins.readFile ../../../../../kanata/kanata.kbd;
-    };
-  };
-
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true;
@@ -74,29 +66,13 @@ in
     pkgs.nerd-fonts.symbols-only
   ];
 
-  # fonts.packages = with pkgs; [
-  #  (nerdfonts.override {
-  #    fonts = [
-  #      "RobotoMono"
-  #      "ComicShannsMono"
-  #    ];
-  #  })
-  # ];
-  #fonts.fontconfig = {
-  #  defaultFonts = {
-  #      serif = [ "RobotoMono Nerd Font Propo"];
-  #      sansSerif = [ "RobotoMono Nerd Font Propo"];
-  #      monospace = [ "RobotoMono Nerd Font"];
-  #  };
-  #};
-
   homebrew = {
-    enable = true;
-    onActivation.cleanup = "uninstall";
+    # enable = true;
+    # onActivation.cleanup = "uninstall";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
-    casks = [ "aerospace" "dbeaver-community" "firefox" "obsidian" "vlc" "hyperkey" "hammerspoon" "webcatalog" "raycast" "chromium" "gcloud-cli"];
+    brews = [ "kanata" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
+    casks = [ "karabiner-elements" "clocker" "aerospace" "dbeaver-community" "firefox" "obsidian" "vlc" "hyperkey" "hammerspoon" "webcatalog" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;

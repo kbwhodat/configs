@@ -81,7 +81,7 @@ in
       )'
 
 
-      set -g status-right '#(${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/scripts/continuum_save.sh)'
+      set -g status-right '#(sleep 5; ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/scripts/continuum_save.sh)'
 
       set -g status-interval 15
 

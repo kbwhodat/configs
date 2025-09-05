@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     _7zz
+    _1password-gui
     yarn
     duckdb
     sqlite
