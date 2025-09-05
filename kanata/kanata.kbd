@@ -5,7 +5,7 @@
 )
 
 (defalias
-  capsfn (tap-hold 200 200 caps (layer-while-held fn))
+  capsfn (tap-hold 200 200 nop0 (layer-while-held fn))
 )
 
 (deflayer base

@@ -51,6 +51,5 @@
     jq
     yq
     sops
-    _1password-gui
   ];
 }

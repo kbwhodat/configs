@@ -21,7 +21,7 @@
   inputs.darwin.url = "github:lnl7/nix-darwin";
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-  inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
+  # inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
   inputs.zen-browser.url = "github:kbwhodat/zen-browser-flake";
   inputs.zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -30,7 +30,7 @@
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.0";
   # inputs.gonchill.url = "github:kbwhodat/gonchill/2607f4315c455d6303afb8b20d9ee9cbe694686e";
 
-  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, firefox-darwin, sops-nix, gonchill, zen-browser, ... }:
+  outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
@@ -38,7 +38,7 @@
       overlays = [
         nur.overlays.default
         gonchill.overlay
-        firefox-darwin.overlay
+        # firefox-darwin.overlay
         undetected-chromedriver.overlay
         (import ./pkgs/overlay.nix)
       ];
