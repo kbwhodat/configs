@@ -253,6 +253,10 @@ in
         id = "notes";
         devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" ];
       };
+      "/home/katob/.task" = {
+        id = "taskwarrior";
+        devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" ];
+      };
       "/home/katob/Documents" = {
         id = "documents";
         devices = [ "nixos-main" "nixos-frame13" "nixos-util"  ];

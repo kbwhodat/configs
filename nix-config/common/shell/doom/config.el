@@ -4,6 +4,9 @@
 ;; Save point (cursor) in files
 (save-place-mode 1)
 
+;; disable doom-modeline
+(remove-hook 'doom-first-buffer-hook #'doom-modeline-mode)
+
 ;; Save minibuffer/history across sessions
 (savehist-mode 1)
 (setq history-length 1000)
