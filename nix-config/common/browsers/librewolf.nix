@@ -82,6 +82,7 @@ in
     "browser.newtabpage.pinned" = "[{'url':'https://kagi.com','label':'@kagi','searchTopSite':true}]";
     "browser.bookmarks.addedImportButton" = true;
     "browser.startup.homepage" = "about:blank";
+    "browser.startup.page" = 3;
     "browser.search.region" = "US";
     "network.http.http3.enabled" = false;
     "dom.image-lazy-loading.enabled" = true;
