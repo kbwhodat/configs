@@ -11,6 +11,12 @@
 (savehist-mode 1)
 (setq history-length 1000)
 
+(after! markdown-mode
+  ;; stop code-block syntax colors + header scaling, hide markup chars like ** _
+  (setq markdown-fontify-code-blocks-natively nil
+        markdown-hide-markup t
+        markdown-header-scaling nil))
+
 (setq confirm-kill-emacs nil)
 
 (desktop-save-mode -1)
@@ -59,6 +65,28 @@
 (setq doom-theme 'doom-alabaster)
 (setq doom-font (font-spec :family "ComicShannsMono Nerd Font" :size 16))
 
+(after! markdown-mode
+  (setq markdown-hide-markup t
+        markdown-fontify-code-blocks-natively nil
+        markdown-header-scaling nil)
+
+  (custom-set-faces!
+    '(markdown-bold-face        :weight bold :foreground nil)
+    '(markdown-italic-face      :slant italic :foreground nil)
+    '(markdown-header-face      :inherit default :weight bold)
+    '(markdown-header-face-1    :inherit default :weight bold)
+    '(markdown-header-face-2    :inherit default :weight bold)
+    '(markdown-header-face-3    :inherit default :weight bold)
+    '(markdown-header-face-4    :inherit default :weight bold)
+    '(markdown-code-face        :inherit default :foreground nil :background nil)
+    '(markdown-inline-code-face :inherit default :foreground nil :background nil)
+    '(markdown-blockquote-face  :inherit default)
+    '(markdown-header-delimiter-face :inherit default :foreground nil :background nil :weight bold)
+    '((markdown-language-keyword-face markdown-code-face) :inherit default :foreground nil :background nil)
+    '(markdown-link-face        :inherit default :underline nil)
+    '(markdown-url-face         :inherit default :underline nil)
+    '(markdown-markup-face      :inherit default)))
+
 ;; If you use a custom roam dir, set it BEFORE org-roam loads
 (setq org-directory "~/vault/"
       org-roam-directory (file-truename org-directory)
@@ -67,39 +95,56 @@
 
 
 (defun my/new-markdown-note (title)
-  "Create a new Markdown note with TITLE as the filename, and insert template if new."
+  "Create a new Markdown note with TITLE."
   (interactive "sNote title: ")
-  (let* ((dir "~/vault/")  ;; change this path to your notes folder
-         (slug (replace-regexp-in-string " " "-" (downcase title)))
-         (file (expand-file-name (concat slug ".md") dir)))
-    (unless (file-exists-p dir)
+  (let* ((dir  (expand-file-name "~/vault/"))
+         (slug (replace-regexp-in-string "[^[:alnum:]-]+" "-" (downcase title)))
+         (file (expand-file-name (concat slug ".md") dir))
+         (new? (not (file-exists-p file))))
+    (unless (file-directory-p dir)
       (make-directory dir t))
-    (if (file-exists-p file)
-        (find-file file)
-      (find-file file)
-      ;; insert template only if it's a brand new file
-      (insert (my/markdown-template title))
+    (find-file file)
+    (when new?
+      (insert (my/markdown-template title slug))
       (save-buffer))))
 
 (defun my/markdown-template (title slug)
-  "Return a string for the default Markdown note template with TITLE and SLUG."
+  "Return default Markdown template using TITLE and SLUG."
   (let ((uid (format "%d-%s"
-                     (random (expt 10 10))  ;; 10-digit random number
+                     (random (expt 10 10))
                      (substring (md5 (number-to-string (float-time))) 0 4))))
     (format
-     "---\nid: %s\naliases:\n  - %s\ntags: []\ndate: %s\nuid: %s\n---\n\n"
-     slug
-     title
-     (format-time-string "%Y-%m-%d")
-     uid)))
+     "---\nid: %s\naliases:\n  - %s\ntags: []\ndate: %s\nuid: %s\n---\n\n# %s\n\n"
+     slug title (format-time-string "%Y-%m-%d") uid title)))
 
 (defvar my/notes-dir "~/vault")
 
-(setq deft-directory "~/vault"        ;; where your markdown notes live
-      deft-extensions '("md")   ;; which file types to include
-      deft-recursive t                ;; search subfolders too
+(setq deft-directory "~/vault"        
+      deft-extensions '("md")   
+      deft-recursive t         
       deft-filter-only-filenames nil 
-      deft-use-filename-as-title t)
+      deft-use-filename-as-title t
+      deft-file-naming-rules
+      '((noslash . "-")
+        (nospace . "-")))
+
+(defun my/deft-insert-template-if-new ()
+  "If this is a brand-new Markdown file inside `deft-directory`, insert template."
+  (when (and (derived-mode-p 'markdown-mode)
+             buffer-file-name
+             (= (buffer-size) 0) 
+             (string-prefix-p (file-name-as-directory (expand-file-name deft-directory))
+                              (file-name-directory (expand-file-name buffer-file-name))))
+    (let* ((slug  (file-name-base buffer-file-name))
+           (title (mapconcat #'capitalize (split-string slug "[-_ ]+") " ")))
+      (insert (my/markdown-template title slug))
+      (save-buffer))))
+
+; ;; Prefer this (Deft provides it). If it doesn't exist in your Deft, use the fallback below.
+; (add-hook 'deft-open-file-hook #'my/deft-insert-template-if-new)
+
+;; Fallback if your Deft lacks `deft-open-file-hook`:
+(add-hook 'find-file-hook #'my/deft-insert-template-if-new)
 
 ; (defun notes-search-md () (interactive)
 ;   (let ((default-directory my/notes-dir)
