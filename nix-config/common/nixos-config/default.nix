@@ -203,6 +203,7 @@ in
     gnumake
     exercism
     firefoxpwa
+    unixtools.netstat
   ];
 
   programs.direnv.nix-direnv = {

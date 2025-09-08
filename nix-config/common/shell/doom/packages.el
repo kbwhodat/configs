@@ -9,6 +9,7 @@
 ;; (package! some-package)
 
 (package! persistent-scratch)
+(package! consult)
 (package! md-roam
           :recipe (:host github :repo "nobiot/md-roam" :files ("*.el")))
 (package! doom-alabaster-theme 
