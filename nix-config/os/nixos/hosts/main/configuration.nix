@@ -28,7 +28,7 @@
   services.kanata = {
     enable = true;
     package = pkgs.kanata-with-cmd;
-    keyboards.frame13 = {
+    keyboards.main = {
       config = builtins.readFile ../../../../../kanata/kanata.kbd;
     };
   };

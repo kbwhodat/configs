@@ -1,8 +1,4 @@
 { pkgs, config, lib, ... }:
-
-# let
-# 	zshConf = builtins.readFile ./zshrc;
-# in
 let
   inherit (pkgs.stdenv) isDarwin;
 in
@@ -71,6 +67,12 @@ in
 		alias vi="$(which vim)"
 		alias history="fc -l 1"
 
+    task() {
+      ${pkgs.taskwarrior3}/bin/task sync >/dev/null
+
+      ${pkgs.taskwarrior3}/bin/task "$@"
+    }
+
 		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
 			TMUX_SESSION="genesis"
 			if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
@@ -88,8 +90,7 @@ in
 						tmux run-shell -b "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh"
 						touch "$mark"
 				fi
-			fi
-
+    fi
 
 		autoload -Uz compinit
 		compinit

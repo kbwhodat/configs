@@ -52,5 +52,6 @@
     yq
     sops
     taskwarrior3
+    sqlite
   ];
 }
