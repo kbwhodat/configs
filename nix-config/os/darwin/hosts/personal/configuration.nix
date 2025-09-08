@@ -17,9 +17,9 @@
 
   environment.systemPackages = with pkgs; [ 
     pinentry_mac
-    yabai
+    # yabai
     docker-client
-    skhd
+    # skhd
     iina
     colima
     lima
@@ -27,12 +27,17 @@
     ollama
   ];
 
-  services.kanata = {
-    enable = true;
-    package = pkgs.kanata-with-cmd;
-    keyboards.macos = {
-      config = builtins.readFile ../../../../../kanata/kanata.kbd;
-    };
+
+  launchd.user.agents.kanata = {
+    serviceConfig.ProgramArguments = [
+      "${pkgs.kanata}/bin/kanata"
+      "-c"
+      "/Users/katob/.config/kanata/kanata.kbd"
+    ];
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.KeepAlive = false;
+    serviceConfig.StandardOutPath = "/tmp/kanata.out";
+    serviceConfig.StandardErrorPath = "/tmp/kanata.err";
   };
 
   launchd.user.agents.docker = {
@@ -49,31 +54,31 @@
     serviceConfig.RunAtLoad = true;
   };
 
-  services.yabai.enable = true;
-  services.yabai.enableScriptingAddition = true;
-  services.skhd.enable = true;
+  services.yabai.enable = false;
+  services.yabai.enableScriptingAddition = false;
+  services.skhd.enable = false;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnsupportedSystem = true; 
 
   fonts.packages = with pkgs; [
-    (nerdfonts.override {
-      fonts = [
-        "RobotoMono"
-      ];
-    })
+    pkgs.nerd-fonts.roboto-mono
+    pkgs.nerd-fonts.comic-shanns-mono
+    pkgs.nerd-fonts.symbols-only
   ];
 
   homebrew = {
     enable = true;
     onActivation.cleanup = "uninstall";
 
-    taps = ["benjiwolff/neovim-nightly" "koekeishiya/formulae"];
-    brews = [ "helm" ];
-    casks = [ "zed" "firefox" "obsidian" "vlc" "insomnia" "hyperkey" "hammerspoon" "neovim-nightly" "webcatalog" "raycast" "chromium"];
+    taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
+    brews = [ "kanata" "firefoxpwa" "colima"];
+    casks = [ "karabiner-elements" "clocker" "aerospace" "dbeaver-community" "obsidian" "vlc" "hyperkey" "hammerspoon" "webcatalog" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 
+  nix.settings.download-buffer-size = 524288000;
   nix.settings.allowed-users = ["root" "katob"];
   nix.settings.trusted-users = ["root" "katob"];
-  # system.stateVersion = 4;
+
+  system.stateVersion = 4;
 }
