@@ -65,6 +65,13 @@
       };
 
     in [
+      #for ipvanish
+      beautifultable
+      beautifulsoup4
+      click
+      requests
+
+      # for driverless
       websockets
       numpy
       aiofiles

@@ -19,6 +19,7 @@
 
        :ui
        (modeline +light)   ; I'm assuming the lighter version of it?
+       deft
        workspaces        ; tab emulation, persistence & separate workspaces
 
        :editor
@@ -40,8 +41,8 @@
        :lang
        emacs-lisp        ; drown in parentheses
        json                ; At least it ain't XML
-       org               ; organize your plain life in plain text
-       (org +roam2)        ; Roaming your notes away
+       ; org               ; organize your plain life in plain text
+       ; (org +roam2)        ; Roaming your notes away
        sh                ; she sells {ba,z,fi}sh shells on the C xor
        yaml              ; JSON, but readable
 
