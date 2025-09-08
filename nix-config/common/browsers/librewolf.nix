@@ -46,6 +46,8 @@ in
     # This will enable firefox sync
     "identity.fxaccounts.enabled" = if isDarwin then false else true;
 
+    "security.cert_pinning.enforcement_level" = 1;
+
     # Disabling hardware acceleration
     "browser.preferences.defaultPerformanceSettings.enabled" = false;
     "layers.acceleration.disabled" = true;
