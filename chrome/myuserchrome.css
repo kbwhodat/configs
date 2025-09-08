@@ -23,11 +23,11 @@
   #ublock0_raymondhill_net-browser-action) { display: none !important; }
 
 :root {
-  --tab-font-size: 0.8em; /* Font size of the tab labels */
+  --tab-font-size: 1.0em; /* Font size of the tab labels */
   --tab-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* The font used for the tab labels */
-  --max-tab-width: 6%; /* The maximum width a tab in the tab bar can use. Set this to none for no limit */
+  --max-tab-width: 420px; /* The maximum width a tab in the tab bar can use. Set this to none for no limit */
   --show-titlebar-buttons: none; /* Hide titlebar buttons; set to block to show */
-  --tab-height: 23px;
+  --tab-height: 28px;
   /* Tab numbering */
   --tab-number-color: white; /* Color for tab numbers */
 }
