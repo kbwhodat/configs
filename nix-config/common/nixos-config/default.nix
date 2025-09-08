@@ -37,25 +37,17 @@ in
 
   nix.settings.trusted-users = [
 		"root"
+    "taskchampion"
 		"katob"
 		"nixos"
 		"@wheel"
 	];
   nix.settings.sandbox = false;
 
-	# networking.wireless.networks = {
-	# 	"results will vary" = {
-      # extraConfig = ''
-            # key_mgmt=WPA-PSK
-            # psk=54047fa690627b6ef2e1176f21df83b09ce25d2c6a2dcc4eac5f8bac228f7c9a
-      # '';
-	# 	};
-  # };
-
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
-    extraGroups = [ "audio" "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "taskchampion" "audio" "docker" "networkmanager" "wheel" ];
 		shell = pkgs.bash;
     openssh.authorizedKeys.keys = [
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
@@ -68,9 +60,6 @@ in
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.input-fonts.acceptLicense = true;
 
-  # fonts.packages = with pkgs; [
-  #  (nerdfonts.override { fonts = ["RobotoMono" "ComicShannsMono"]; })
-  # ];
 
   # this is for the unstable nixpkg version - make sure to use this next when an upgrade happens
   fonts.packages = with pkgs; [
@@ -182,8 +171,8 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
-  networking.firewall.allowedUDPPorts = [22000 21027 1716 1717 1718 1719 1720];
+  networking.firewall.allowedTCPPorts = [10222 11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
+  networking.firewall.allowedUDPPorts = [10222 22000 21027 1716 1717 1718 1719 1720];
 
   #used for configuring KDE connect
   programs.kdeconnect.enable = true;
@@ -221,6 +210,11 @@ in
     package = pkgs.nix-direnv;
   };
 
+  services.taskchampion-sync-server = {
+    enable = true;
+    host = "0.0.0.0";
+    group = "users";
+  };
 
   services.syncthing = {
     enable = true;
@@ -251,10 +245,6 @@ in
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" ];
-      };
-      "/home/katob/.task" = {
-        id = "taskwarrior";
         devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" ];
       };
       "/home/katob/Documents" = {
