@@ -4,9 +4,18 @@
 ;; Save point (cursor) in files
 (save-place-mode 1)
 
+;; disable doom-modeline
+(remove-hook 'doom-first-buffer-hook #'doom-modeline-mode)
+
 ;; Save minibuffer/history across sessions
 (savehist-mode 1)
 (setq history-length 1000)
+
+(after! markdown-mode
+  ;; stop code-block syntax colors + header scaling, hide markup chars like ** _
+  (setq markdown-fontify-code-blocks-natively nil
+        markdown-hide-markup t
+        markdown-header-scaling nil))
 
 (setq confirm-kill-emacs nil)
 
@@ -56,12 +65,27 @@
 (setq doom-theme 'doom-alabaster)
 (setq doom-font (font-spec :family "ComicShannsMono Nerd Font" :size 16))
 
-(use-package! md-roam
-              :after org-roam
-              :config
-              (setq md-roam-file-extension "md")
-              (setq md-roam-use-org-roam-ui t)
-              (md-roam-mode 1))
+(after! markdown-mode
+  (setq markdown-hide-markup t
+        markdown-fontify-code-blocks-natively nil
+        markdown-header-scaling nil)
+
+  (custom-set-faces!
+    '(markdown-bold-face        :weight bold :foreground nil)
+    '(markdown-italic-face      :slant italic :foreground nil)
+    '(markdown-header-face      :inherit default :weight bold)
+    '(markdown-header-face-1    :inherit default :weight bold)
+    '(markdown-header-face-2    :inherit default :weight bold)
+    '(markdown-header-face-3    :inherit default :weight bold)
+    '(markdown-header-face-4    :inherit default :weight bold)
+    '(markdown-code-face        :inherit default :foreground nil :background nil)
+    '(markdown-inline-code-face :inherit default :foreground nil :background nil)
+    '(markdown-blockquote-face  :inherit default)
+    '(markdown-header-delimiter-face :inherit default :foreground nil :background nil :weight bold)
+    '((markdown-language-keyword-face markdown-code-face) :inherit default :foreground nil :background nil)
+    '(markdown-link-face        :inherit default :underline nil)
+    '(markdown-url-face         :inherit default :underline nil)
+    '(markdown-markup-face      :inherit default)))
 
 ;; If you use a custom roam dir, set it BEFORE org-roam loads
 (setq org-directory "~/vault/"
@@ -69,29 +93,71 @@
       org-roam-file-extensions '("org" "md")
       org-roam-completion-everywhere nil)
 
-(setq org-agenda-files '("~/vault/"))
 
-(use-package! org-roam
-  :after md-roam
-  :config
-  (org-roam-db-autosync-mode 1)
+(defun my/new-markdown-note (title)
+  "Create a new Markdown note with TITLE."
+  (interactive "sNote title: ")
+  (let* ((dir  (expand-file-name "~/vault/"))
+         (slug (replace-regexp-in-string "[^[:alnum:]-]+" "-" (downcase title)))
+         (file (expand-file-name (concat slug ".md") dir))
+         (new? (not (file-exists-p file))))
+    (unless (file-directory-p dir)
+      (make-directory dir t))
+    (find-file file)
+    (when new?
+      (insert (my/markdown-template title slug))
+      (save-buffer))))
 
- (setq org-roam-capture-templates
-       '(("d" "default" plain
-          ""
-          :if-new (file+head "${slug}.md"
-"---
-id: ${slug}
-aliases:
-  - ${title}
-tags: []
-date: %<%Y-%m-%d>
-uid: %(org-id-uuid)
----
+(defun my/markdown-template (title slug)
+  "Return default Markdown template using TITLE and SLUG."
+  (let ((uid (format "%d-%s"
+                     (random (expt 10 10))
+                     (substring (md5 (number-to-string (float-time))) 0 4))))
+    (format
+     "---\nid: %s\naliases:\n  - %s\ntags: []\ndate: %s\nuid: %s\n---\n\n# %s\n\n"
+     slug title (format-time-string "%Y-%m-%d") uid title)))
 
-# ${title}")
-                             :immediate-finish t
-                             :unnarrowed t))))
+(defvar my/notes-dir "~/vault")
+
+(setq deft-directory "~/vault"        
+      deft-extensions '("md")   
+      deft-recursive t         
+      deft-filter-only-filenames nil 
+      deft-use-filename-as-title t
+      deft-file-naming-rules
+      '((noslash . "-")
+        (nospace . "-")))
+
+(defun my/deft-insert-template-if-new ()
+  "If this is a brand-new Markdown file inside `deft-directory`, insert template."
+  (when (and (derived-mode-p 'markdown-mode)
+             buffer-file-name
+             (= (buffer-size) 0) 
+             (string-prefix-p (file-name-as-directory (expand-file-name deft-directory))
+                              (file-name-directory (expand-file-name buffer-file-name))))
+    (let* ((slug  (file-name-base buffer-file-name))
+           (title (mapconcat #'capitalize (split-string slug "[-_ ]+") " ")))
+      (insert (my/markdown-template title slug))
+      (save-buffer))))
+
+; ;; Prefer this (Deft provides it). If it doesn't exist in your Deft, use the fallback below.
+; (add-hook 'deft-open-file-hook #'my/deft-insert-template-if-new)
+
+;; Fallback if your Deft lacks `deft-open-file-hook`:
+(add-hook 'find-file-hook #'my/deft-insert-template-if-new)
+
+; (defun notes-search-md () (interactive)
+;   (let ((default-directory my/notes-dir)
+;         (consult-ripgrep-args "rg --null --line-number --column --smart-case --no-heading --color=never -e '^tags:' -g *.md"))
+;     (consult-ripgrep default-directory)))
+
+;; Key binding
+(map! :leader
+      :desc "Deft" "n s" #'deft)
+
+(map! :leader
+      :desc "New plain markdown note"
+      "n n" #'my/new-markdown-note)
 
 (map! :leader
       :desc "Delete current buffer"
