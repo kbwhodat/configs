@@ -40,8 +40,20 @@ in
     colima
     lima
     libiconv-darwin
-    python311
+    python312
   ];
+
+  launchd.user.agents.kanata = {
+    serviceConfig.ProgramArguments = [
+      "${pkgs.kanata}/bin/kanata"
+      "-c"
+      "/Users/katob/.config/kanata/kanata.kbd"
+    ];
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.KeepAlive = false;
+    serviceConfig.StandardOutPath = "/tmp/kanata.out";
+    serviceConfig.StandardErrorPath = "/tmp/kanata.err";
+  };
 
   launchd.user.agents.docker = {
     serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/os/darwin/scripts/start_colima.sh" ];
