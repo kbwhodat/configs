@@ -32,11 +32,11 @@
        undo              ; persistent, smarter undo for your inevitable mistakes
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
+       ; syntax              ; tasing you for every semicolon you forget
 
        :os
        (:if (featurep :system 'macos) macos)  ; improve compatibility with macOS
-       tty               ; improve the terminal Emacs experience
+       ; tty               ; improve the terminal Emacs experience
 
        :lang
        emacs-lisp        ; drown in parentheses
