@@ -12,7 +12,7 @@ in
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';
     font = {
-      name = "ComicShannsMono Nerd Font Mono";
+      name = "CommitMono Nerd Font";
       size = if isDarwin then 13.3 else 13.0;
     };
 		shellIntegration = {
@@ -27,8 +27,8 @@ in
 			bindkey "\e[1;3D" backward-word # ⌥←
 			bindkey "\e[1;3C" forward-word # ⌥→
 
-      bold_font        ComicShannsMono Nerd Font Mono Bold
-      italic_font      RobotoMono Nerd Font Mono Italic
+      bold_font        CommitMono Nerd Font Mono Bold
+      italic_font      CommitMono Nerd Font Mono Italic
 
       allow_remote_control yes
 

@@ -66,13 +66,14 @@ in
     nerd-fonts.roboto-mono
     nerd-fonts.comic-shanns-mono
     nerd-fonts.symbols-only
+    nerd-fonts.commit-mono
   ];
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "ComicShannsMono Nerd Font Propo"];
-        sansSerif = [ "ComicShannsMono Nerd Font Propo"];
-        monospace = [ "ComicShannsMono Nerd Font"];
+        serif = [ "CommitMono Nerd Font Mono Propo"];
+        sansSerif = [ "CommitMono Nerd Font Mono Propo"];
+        monospace = [ "CommitMono Nerd Font Mono"];
     };
   };
 
