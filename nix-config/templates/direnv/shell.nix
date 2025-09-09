@@ -1,5 +1,7 @@
 { pkgs ? import <nixpkgs> {}}:
 
 pkgs.mkShell {
-  packages = [ pkgs.hello ];
+  packages = with pkgs; [ 
+    hello 
+  ];
 }
