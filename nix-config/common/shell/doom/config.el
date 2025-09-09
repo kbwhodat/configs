@@ -83,8 +83,6 @@
     '(markdown-blockquote-face  :inherit default)
     '(markdown-header-delimiter-face :inherit default :foreground nil :background nil :weight bold)
     '((markdown-language-keyword-face markdown-code-face) :inherit default :foreground nil :background nil)
-    '(markdown-link-face        :inherit default :underline nil)
-    '(markdown-url-face         :inherit default :underline nil)
     '(markdown-markup-face      :inherit default)))
 
 ;; If you use a custom roam dir, set it BEFORE org-roam loads
@@ -128,28 +126,6 @@
       '((noslash . "-")
         (nospace . "-")))
 
-(defun my/deft-insert-template-if-new ()
-  "If this is a brand-new Markdown file inside `deft-directory`, insert template."
-  (when (and (derived-mode-p 'markdown-mode)
-             buffer-file-name
-             (= (buffer-size) 0) 
-             (string-prefix-p (file-name-as-directory (expand-file-name deft-directory))
-                              (file-name-directory (expand-file-name buffer-file-name))))
-    (let* ((slug  (file-name-base buffer-file-name))
-           (title (mapconcat #'capitalize (split-string slug "[-_ ]+") " ")))
-      (insert (my/markdown-template title slug))
-      (save-buffer))))
-
-; ;; Prefer this (Deft provides it). If it doesn't exist in your Deft, use the fallback below.
-; (add-hook 'deft-open-file-hook #'my/deft-insert-template-if-new)
-
-;; Fallback if your Deft lacks `deft-open-file-hook`:
-(add-hook 'find-file-hook #'my/deft-insert-template-if-new)
-
-; (defun notes-search-md () (interactive)
-;   (let ((default-directory my/notes-dir)
-;         (consult-ripgrep-args "rg --null --line-number --column --smart-case --no-heading --color=never -e '^tags:' -g *.md"))
-;     (consult-ripgrep default-directory)))
 
 ;; Key binding
 (map! :leader

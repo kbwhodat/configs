@@ -145,7 +145,14 @@ automatically-unhide-macos-hidden-apps = true
     cmd-shift-8 = 'move-node-to-workspace 8'
     cmd-shift-9 = 'move-node-to-workspace 9'
 
-    ctrl-alt-cmd-shift-f = "fullscreen"
+    # ctrl-alt-cmd-shift-f = "fullscreen"
+    alt-f = 'fullscreen'
+    alt-s = 'layout v_accordion'
+    alt-w = 'layout h_accordion'
+    alt-e = 'layout tiles vertical horizontal'
+
+    # alt-h = 'split horizontal'
+    # alt-v = 'split vertical'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     cmd-tab = 'workspace-back-and-forth'
