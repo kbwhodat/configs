@@ -12,6 +12,7 @@ in
       pkgs.ungoogled-chromium;
     extensions = [
       { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } #ublock origin
+      { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } #privacy badger
       { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
       { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } #dark reader
       { id = "cdglnehniifkbagbbombnjghhcihifij"; } #kagi search
@@ -20,6 +21,7 @@ in
       { id = "mdjildafknihdffpkfmmpnpoiajfjnjd"; } #consent-o-matic
       { id = "edibdbjcniadpccecjdfdjjppcpchdlm"; } #dontcareaboutcookies
       { id = "pfdeiaeaofodcolaiadjdflpejkofhpf"; } #simple adblocker - use it for camel.live
+      { id = "nomnklagbgmgghhjidfhnoelnjfndfpd"; } #canvas blocker
     ];
   };
 }

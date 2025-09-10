@@ -104,7 +104,7 @@ in
     "browser.newtabpage.enabled" = false;
     "browser.bookmarks.showMobileBookmarks" = true;
     "browser.uidensity" = 1;
-    "browser.urlbar.placeholderName" = "search for something man";
+    "browser.urlbar.placeholderName" = "Help me...";
     "browser.urlbar.update1" = true;
     "extensions.pocket.enable" = false;
     "extensions.pocket.showHome" = false;
