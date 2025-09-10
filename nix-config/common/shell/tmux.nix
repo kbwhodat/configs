@@ -115,6 +115,9 @@ in
       bind-key -T copy-mode-vi v send-keys -X begin-selection
       bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
 
+      #tmux fingers
+      set -g @fingers-key f
+
       # Continuum settings
       set -g @resurrect-strategy-nvim 'session'
       set -g @resurrect-strategy-vim  'session'

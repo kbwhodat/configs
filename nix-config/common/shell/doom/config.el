@@ -126,8 +126,13 @@
       '((noslash . "-")
         (nospace . "-")))
 
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "/etc/profiles/per-user/katob/bin/librewolf")
 
 ;; Key binding
+; (map! :n
+;       :desc "browse url" "g x" #'browse-url)
+
 (map! :leader
       :desc "Deft" "n s" #'deft)
 
