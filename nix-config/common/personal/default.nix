@@ -20,6 +20,7 @@
     pinentry-gtk2
     gh
     conda
+    anki
     texliveFull
 
     (python313.withPackages (ps: with ps; let
