@@ -65,6 +65,7 @@
     pkgs.nerd-fonts.roboto-mono
     pkgs.nerd-fonts.comic-shanns-mono
     pkgs.nerd-fonts.symbols-only
+    nerd-fonts.commit-mono
   ];
 
   homebrew = {
