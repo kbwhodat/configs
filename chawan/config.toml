@@ -1,0 +1,13 @@
+[buffer]
+images = true          # allow images
+styling = true         # use site CSS (default is true)
+
+[display]
+image-mode = "kitty"
+color-mode = "monochrome"
+
+[siteconf.all]
+host = '.*'          # regex: matches every site
+scripting = "app"     # enable JavaScript
+cookie = "save"      # optional: keep cookies across runs
+referer-from = true  # optional: send Referer when following links
