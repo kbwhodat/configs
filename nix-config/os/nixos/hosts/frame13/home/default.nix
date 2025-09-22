@@ -36,7 +36,6 @@ in
 
 
   home.packages = with pkgs; [
-    anki-bin
     alsa-utils
     xorg.xorgserver
     vulkan-tools

@@ -53,5 +53,6 @@
     sops
     taskwarrior3
     sqlite
+    newsboat
   ];
 }
