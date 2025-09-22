@@ -14,6 +14,7 @@
     ./neovim.nix
     ./password-store.nix
     ./gpg.nix
+    ./wezterm.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix
@@ -22,8 +23,8 @@
 	home.sessionVariables = {
 
 		EDITOR = "nvim";
-		BROWSER = "floorp";
-		TERMINAL = "kitty";
+		BROWSER = "librewolf";
+		TERMINAL = "wezterm";
 	};
 
 	home.shellAliases = {
