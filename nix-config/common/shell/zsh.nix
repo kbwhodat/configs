@@ -72,25 +72,25 @@ in
 
       ${pkgs.taskwarrior3}/bin/task "$@"
     }
-
-		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
-			TMUX_SESSION="genesis"
-			if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-				tmux attach-session -t $TMUX_SESSION
-			else
-				tmux new-session -s $TMUX_SESSION
-			fi
-		fi
-
-		if [[ -n "$TMUX" ]]; then
-				pid="$(tmux display -p '#{client_pid}')"
-				mark="/tmp/tmux-restored-$pid"
-
-				if [[ ! -e "$mark" ]]; then
-						tmux run-shell -b "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh"
-						touch "$mark"
-				fi
-    fi
+		#
+		# if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
+		# 	TMUX_SESSION="genesis"
+		# 	if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
+		# 		tmux attach-session -t $TMUX_SESSION
+		# 	else
+		# 		tmux new-session -s $TMUX_SESSION
+		# 	fi
+		# fi
+		#
+		# if [[ -n "$TMUX" ]]; then
+		# 		pid="$(tmux display -p '#{client_pid}')"
+		# 		mark="/tmp/tmux-restored-$pid"
+		#
+		# 		if [[ ! -e "$mark" ]]; then
+		# 				tmux run-shell -b "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh"
+		# 				touch "$mark"
+		# 		fi
+		#   fi
 
 		autoload -Uz compinit
 		compinit

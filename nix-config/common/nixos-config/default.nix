@@ -172,7 +172,7 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [10222 11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
+  networking.firewall.allowedTCPPorts = [3000 9100 9090 10222 11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
   networking.firewall.allowedUDPPorts = [10222 22000 21027 1716 1717 1718 1719 1720];
 
   #used for configuring KDE connect
@@ -216,6 +216,35 @@ in
     enable = true;
     host = "0.0.0.0";
     group = "users";
+    allowClientIds = ["1578cf97-0993-47e3-badc-2dc56fb832e7"];
+  };
+
+  services.grafana = {
+    enable = true;
+  };
+
+  services.prometheus = {
+    enable = true;
+
+    scrapeConfigs = [
+      {
+        job_name = "node";
+        static_configs = [{
+          targets = ["localhost:9100"];
+          labels = { host = config.networking.hostName; };
+        }];
+
+      }
+    ];
+
+    exporters = {
+      process = {
+        enable = true;
+      };
+      node = {
+        enable = true;
+      };
+    };
   };
 
   services.syncthing = {
