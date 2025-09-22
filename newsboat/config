@@ -1,0 +1,25 @@
+prepopulate-query-feeds yes
+ssl-verifyhost no
+ssl-verifypeer no
+
+bind-key j down
+bind-key k up
+bind-key - quit
+bind-key l open
+bind-key G end
+bind-key gg home
+bind-key d pagedown
+bind-key u pageup
+
+show-keymap-hint no
+
+color listfocus black white bold
+color listfocus_unread black white bold
+
+show-title-bar no
+
+cleanup-on-quit yes
+
+reload-threads 150
+
+articlelist-format "%D %t"
