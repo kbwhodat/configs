@@ -7,5 +7,6 @@
     bcc
     atop
     iotop
+    jmeter
   ];
 }
