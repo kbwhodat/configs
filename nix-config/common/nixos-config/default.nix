@@ -146,10 +146,6 @@ in
 
   services.xserver = {
 
-    desktopManager = {
-      plasma5.enable = false;
-    };
-
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [

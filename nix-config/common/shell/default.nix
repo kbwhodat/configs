@@ -24,7 +24,7 @@
 
 		EDITOR = "nvim";
 		BROWSER = "librewolf";
-		TERMINAL = "wezterm";
+		TERMINAL = "kitty";
 	};
 
 	home.shellAliases = {
