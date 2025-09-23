@@ -146,10 +146,6 @@ in
 
   services.xserver = {
 
-    desktopManager = {
-      plasma5.enable = false;
-    };
-
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [
@@ -172,7 +168,7 @@ in
     { domain = "*"; item = "nofile"; type = "hard"; value = "200000"; }
   ];
 
-  networking.firewall.allowedTCPPorts = [10222 11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
+  networking.firewall.allowedTCPPorts = [3000 9100 9090 10222 11434 8888 8080 1714 1764 8384 22000 1716 1717 1718 1719 1720];
   networking.firewall.allowedUDPPorts = [10222 22000 21027 1716 1717 1718 1719 1720];
 
   #used for configuring KDE connect
@@ -212,10 +208,70 @@ in
     package = pkgs.nix-direnv;
   };
 
+  services.smartdns = {
+    enable = true;
+    bindPort = 53;
+    settings = {
+      speed-check-mode = "ping";
+      cache-size = 4096;
+      serve-expired = "yes";
+      prefetch-domain = true;
+    };
+  };
+
+  services.resolved = {
+    enable = true;
+    extraConfig = "
+      nameserver 127.0.0.1
+    ";
+  };
+
   services.taskchampion-sync-server = {
     enable = true;
     host = "0.0.0.0";
     group = "users";
+    allowClientIds = ["1578cf97-0993-47e3-badc-2dc56fb832e7"];
+  };
+
+  services.grafana = {
+    enable = if config.networking.hostName == "nixos-main" then true else false;
+    settings = {
+      server = {
+        http_addr = "10.0.0.20";
+      };
+    };
+  };
+
+  services.prometheus = {
+    enable = if config.networking.hostName == "nixos-main" then true else false;
+    listenAddress = "0.0.0.0";
+    port = 9090;
+
+    scrapeConfigs = [
+      {
+        job_name = "node";
+        static_configs = [
+          {
+            targets = ["10.0.0.20:9100"];
+            labels = { host = "nixos-main"; };
+          }
+          {
+            targets = ["10.0.0.31:9100"];
+            labels = { host = "nixos-frame13"; };
+          }
+        ];
+
+      }
+    ];
+
+    exporters = {
+      process = {
+        enable = true;
+      };
+      node = {
+        enable = true;
+      };
+    };
   };
 
   services.syncthing = {

@@ -43,6 +43,7 @@ in
 
       background #000000
       foreground #f0f0f0
+
 		'';
 	};
 }
