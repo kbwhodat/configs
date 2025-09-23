@@ -234,7 +234,7 @@ in
   };
 
   services.grafana = {
-    enable = true;
+    enable = if config.networking.hostName == "nixos-main" then true else false;
     settings = {
       server = {
         http_addr = "10.0.0.20";
@@ -243,15 +243,23 @@ in
   };
 
   services.prometheus = {
-    enable = true;
+    enable = if config.networking.hostName == "nixos-main" then true else false;
+    listenAddress = "0.0.0.0";
+    port = 9090;
 
     scrapeConfigs = [
       {
         job_name = "node";
-        static_configs = [{
-          targets = ["localhost:9100"];
-          labels = { host = config.networking.hostName; };
-        }];
+        static_configs = [
+          {
+            targets = ["10.0.0.20:9100"];
+            labels = { host = "nixos-main"; };
+          }
+          {
+            targets = ["10.0.0.31:9100"];
+            labels = { host = "nixos-frame13"; };
+          }
+        ];
 
       }
     ];
