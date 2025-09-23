@@ -217,6 +217,11 @@ in
 
   services.grafana = {
     enable = true;
+    settings = {
+      server = {
+        http_addr = "10.0.0.20";
+      };
+    };
   };
 
   services.prometheus = {
