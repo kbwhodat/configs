@@ -32,6 +32,8 @@ in
 
     extraConfig = ''
 
+      set -g @fingers-key f
+
       set -g set-clipboard on
       setw -g mode-keys vi
       set -sg escape-time 0
@@ -97,7 +99,7 @@ in
 
       # truecolor support
       set -as terminal-features 'xterm*:RGB'
-      set -as terminal-features 'xterm-wezterm:RGB'
+      set -as terminal-features 'xterm-kitty:RGB'
 
       set -ga allow-passthrough all
       set -g visual-activity off
@@ -116,7 +118,6 @@ in
       bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
 
       #tmux fingers
-      set -g @fingers-key f
 
       # Continuum settings
       set -g @resurrect-strategy-nvim 'session'
