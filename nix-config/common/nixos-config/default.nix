@@ -212,6 +212,24 @@ in
     package = pkgs.nix-direnv;
   };
 
+  services.smartdns = {
+    enable = true;
+    bindPort = 53;
+    settings = {
+      speed-check-mode = "ping";
+      cache-size = 4096;
+      serve-expired = "yes";
+      prefetch-domain = true;
+    };
+  };
+
+  services.resolved = {
+    enable = true;
+    extraConfig = "
+      nameserver 127.0.0.1
+    ";
+  };
+
   services.taskchampion-sync-server = {
     enable = true;
     host = "0.0.0.0";
