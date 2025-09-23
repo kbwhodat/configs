@@ -97,7 +97,7 @@ in
 
       # truecolor support
       set -as terminal-features 'xterm*:RGB'
-      set -as terminal-features 'xterm-wezterm:RGB'
+      set -as terminal-features 'xterm-kitty:RGB'
 
       set -ga allow-passthrough all
       set -g visual-activity off
