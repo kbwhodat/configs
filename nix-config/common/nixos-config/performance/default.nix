@@ -8,5 +8,6 @@
     atop
     iotop
     jmeter
+    stress-ng
   ];
 }
