@@ -8,6 +8,8 @@
       ../../../../common/nvidia/cuda/cuda.nix
       ../../../../common/ssh/ssh.nix
       ../../../../common/nixos-config
+      ../../../../common/nixos-config/performance
+      # ../../../../pkgs
     ];
 
   services.kanata = {
@@ -22,10 +24,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  fonts.fontDir.enable = true;
+
   networking.hostName = "nixos-server"; # Define your hostname.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.wireless.interfaces = [ "wlo1" ];
+  networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.interfaces = [ "wlan0" ];
 
 	programs.zsh.enable = true;
 
+  services.xserver.videoDrivers = [ "nvidia" "modesetting" ];
 }
