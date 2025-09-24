@@ -227,7 +227,7 @@ in
   };
 
   services.taskchampion-sync-server = {
-    enable = true;
+    enable = if config.networking.hostName == "nixos-main" then true else false;
     host = "0.0.0.0";
     group = "users";
     allowClientIds = ["1578cf97-0993-47e3-badc-2dc56fb832e7"];
