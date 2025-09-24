@@ -70,6 +70,7 @@
       RestartSec = 5;
     };
   };
+
   networking.hostName = "nixos-main"; # Define your hostname.
   networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
   networking.wireless.interfaces = [ "wlp0s20f3" ];

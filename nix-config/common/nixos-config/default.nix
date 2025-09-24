@@ -259,6 +259,10 @@ in
             targets = ["10.0.0.31:9100"];
             labels = { host = "nixos-frame13"; };
           }
+          {
+            targets = ["10.0.0.122:9100"];
+            labels = { host = "nixos-server"; };
+          }
         ];
 
       }
@@ -299,15 +303,18 @@ in
       "nixos-util" = {
         id = "QZJBK62-4DPFF7J-T3PQRU6-HT4SBIY-5H7INBX-F5OMPBS-LLUONWG-KIJL5A3";
       };
+      "nixos-server" = {
+        id = "SHP6VHK-GAS77UE-YTPE4XN-VJREHJA-62GGVJ5-CFWYAAJ-WWHUSSL-EWABPQ6";
+      };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" ];
+        devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
       };
       "/home/katob/Documents" = {
         id = "documents";
-        devices = [ "nixos-main" "nixos-frame13" "nixos-util"  ];
+        devices = [ "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
       };
     };
   };
