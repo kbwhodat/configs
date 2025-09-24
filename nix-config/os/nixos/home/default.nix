@@ -40,6 +40,13 @@ in
     enable = true;
     rules = [
       {
+        name = "server";
+        outputs_connected = [ "HDMI-2" ];
+        outputs_present = [ "HDMI-2" ];
+        primary = true;
+        atomic = true;
+      }
+      {
         name = "docked";
         outputs_connected = [ "DVI-I-2-2" "DVI-I-1-1" ];
         atomic = true;
