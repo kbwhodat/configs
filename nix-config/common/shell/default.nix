@@ -15,6 +15,7 @@
     ./password-store.nix
     ./gpg.nix
     ./wezterm.nix
+    ./alacritty.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix

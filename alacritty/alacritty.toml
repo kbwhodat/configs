@@ -28,9 +28,9 @@
 	text = "CellBackground"
 
 [font]
-normal = { family = "FiraCode Nerd Font", style = "Medium" }
-bold = { family = "FiraCode Nerd Font", style = "Bold" }
-size = 13
+normal = { family = "CommitMono Nerd Font", style = "Regular" }
+bold = { family = "CommitMono Nerd Font", style = "Bold" }
+size = 11
 
 [window]
 decorations = "None"
@@ -41,8 +41,8 @@ TERM = "xterm-256color"
 [cursor]
 style = { shape = "Block", blinking = "On" }
 
-[shell]
-program = "/run/current-system/sw/bin/bash"
+[terminal.shell]
+program = "/etc/profiles/per-user/katob/bin/zsh"
 
 [keyboard]
 bindings = [
