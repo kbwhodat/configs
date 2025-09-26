@@ -23,3 +23,5 @@ cleanup-on-quit yes
 reload-threads 150
 
 articlelist-format "%D %t"
+
+browser "cha %u"
