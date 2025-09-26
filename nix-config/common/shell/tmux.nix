@@ -22,7 +22,7 @@ in
       tmuxPlugins.better-mouse-mode
       tmuxPlugins.fzf-tmux-url
       tmux-fzf-session-switch
-      tmuxPlugins.fingers
+      tmuxPlugins.tmux-thumbs
       tmuxPlugins.sessionist
       # tmuxPlugins.extrakto
       tmuxPlugins.resurrect
@@ -31,8 +31,6 @@ in
     ];
 
     extraConfig = ''
-
-      set -g @fingers-key f
 
       set -g set-clipboard on
       setw -g mode-keys vi
@@ -117,13 +115,12 @@ in
       bind-key -T copy-mode-vi v send-keys -X begin-selection
       bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
 
-      #tmux fingers
-
       # Continuum settings
       set -g @resurrect-strategy-nvim 'session'
       set -g @resurrect-strategy-vim  'session'
       set -g @continuum-restore 'on'
       set -g @continuum-save-interval '10'
+
     '';
   };
 }

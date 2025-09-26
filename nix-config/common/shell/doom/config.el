@@ -63,12 +63,14 @@
 
 ; (setq doom-theme 'doom-homage-black)
 (setq doom-theme 'doom-alabaster)
-(setq doom-font (font-spec :family "CommitMono Nerd Font" :size 16))
+(setq doom-font (font-spec :family "CommitMono Nerd Font Mono" :size 16))
 
 (after! markdown-mode
   (setq markdown-hide-markup t
         markdown-fontify-code-blocks-natively nil
         markdown-header-scaling nil)
+
+  (add-hook 'markdown-mode-hook #'markdown-toggle-markup-hiding)
 
   (custom-set-faces!
     '(markdown-bold-face        :weight bold :foreground nil)
@@ -144,21 +146,21 @@
       :desc "Delete current buffer"
       "d" #'kill-current-buffer)
 
-(map! :g
+(map! :leader
       :desc "Move to the down window"
-      "C-j" #'windmove-down)
+      "j" #'windmove-down)
 
-(map! :g
+(map! :leader
       :desc "Move to the up window"
-      "C-k" #'windmove-up)
+      "k" #'windmove-up)
 
-(map! :g
+(map! :leader
       :desc "Move to the left window"
-      "C-h" #'windmove-left)
+      "h" #'windmove-left)
 
-(map! :g
+(map! :leader
       :desc "Move to the right window"
-      "C-l" #'windmove-right)
+      "l" #'windmove-right)
 
 (map! :leader
       :desc "Previous Buffer" ";" #'previous-buffer
