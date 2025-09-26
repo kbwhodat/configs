@@ -85,7 +85,7 @@ in
 
     taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "kanata" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
-    casks = [ "karabiner-elements" "clocker" "aerospace" "dbeaver-community" "firefox" "obsidian" "vlc" "hyperkey" "hammerspoon" "webcatalog" "raycast" "ungoogled-chromium" "gcloud-cli"];
+    casks = [ "karabiner-elements" "clocker" "aerospace" "zed" "dbeaver-community" "firefox" "obsidian" "vlc" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;
