@@ -4,7 +4,7 @@ let
 in
 {
   programs.zed-editor = {
-    enable = true;
+    enable = if isDarwin then false else true;
     package = if isDarwin then 
       pkgs.zed-editor
     else

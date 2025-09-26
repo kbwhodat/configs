@@ -1,4 +1,7 @@
-{ inputs, config, lib, ...}:
+{ pkgs, inputs, config, lib, ...}:
+let
+  inherit (pkgs.stdenv) isDarwin;
+in
 {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
@@ -21,7 +24,7 @@
     };
   };
 
-  home.activation.writeTaskrc = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" "installPackages" "linkGeneration" "onFilesChange" "setupLaunchAgents" "sops-nix" ] ''
+  home.activation.writeTaskrc = if isDarwin then "" else lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" "installPackages" "linkGeneration" "onFilesChange" "setupLaunchAgents" "sops-nix" ] ''
     secret=$(cat ${config.sops.secrets.taskchamp-pass.path})
     mkdir -p "$HOME/.config/task"
     cat > "$HOME/.config/task/taskrc" <<EOF

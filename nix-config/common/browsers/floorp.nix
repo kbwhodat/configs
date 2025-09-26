@@ -16,7 +16,7 @@ in
 
   programs.myfloorp.package =
     if isDarwin then
-      pkgs.floorp
+      pkgs.floorp-bin
     else
       pkgs.floorp.override {
         nativeMessagingHosts = [
