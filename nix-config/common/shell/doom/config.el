@@ -82,6 +82,7 @@
     '(markdown-header-face-4    :inherit default :weight bold)
     '(markdown-code-face        :inherit default :foreground nil :background nil)
     '(markdown-inline-code-face :inherit default :foreground nil :background nil)
+    '(markdown-metadata-key-face :inherit default :foreground nil :background nil)
     '(markdown-blockquote-face  :inherit default)
     '(markdown-header-delimiter-face :inherit default :foreground nil :background nil :weight bold)
     '((markdown-language-keyword-face markdown-code-face) :inherit default :foreground nil :background nil)

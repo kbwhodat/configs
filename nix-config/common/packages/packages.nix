@@ -2,6 +2,7 @@
 {
   home.packages = with pkgs; [
     zathura
+    skim
     rubber
     # texliveBookPub
 		#texliveFull
