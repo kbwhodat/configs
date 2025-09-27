@@ -22,7 +22,9 @@ in
       tmuxPlugins.better-mouse-mode
       tmuxPlugins.fzf-tmux-url
       tmux-fzf-session-switch
-      tmuxPlugins.tmux-thumbs
+      tmuxPlugins.jump
+      tmuxPlugins.fuzzback
+      tmuxPlugins.sidebar
       tmuxPlugins.sessionist
       # tmuxPlugins.extrakto
       tmuxPlugins.resurrect
@@ -41,8 +43,8 @@ in
       bind-key / command-prompt -p "search:" \
         "copy-mode; send -X search-backward '%%';"
 
-      bind-key ? command-prompt -p "search:" \
-        "copy-mode; send -X search-forward '%%';"
+      # bind-key ? command-prompt -p "search:" \
+      #   "copy-mode; send -X search-forward '%%';"
 
       unbind-key n
       unbind-key N
@@ -81,10 +83,6 @@ in
       )'
 
 
-      set -g status-right '#(sleep 5; ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/scripts/continuum_save.sh)'
-
-      set -g status-interval 15
-
       set -g status-style bg=default
 
       set -g window-status-current-format ""
@@ -120,6 +118,14 @@ in
       set -g @resurrect-strategy-vim  'session'
       set -g @continuum-restore 'on'
       set -g @continuum-save-interval '10'
+
+      set -g status-right '#(sleep 5; ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/scripts/continuum_save.sh)'
+
+      set -g status-interval 15
+
+      set -g @fuzzback-hide-preview 1
+      set -g @fuzzback-popup 0
+
 
     '';
   };
