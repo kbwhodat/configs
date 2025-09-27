@@ -71,9 +71,9 @@ in
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "CommitMono Nerd Font Mono Propo"];
-        sansSerif = [ "CommitMono Nerd Font Mono Propo"];
-        monospace = [ "CommitMono Nerd Font Mono"];
+        serif = [ "ComicShannsMono Nerd Font Mono Propo"];
+        sansSerif = [ "ComicShannsMono Nerd Font Mono Propo"];
+        monospace = [ "ComicShannsMono Nerd Font Mono"];
     };
   };
 

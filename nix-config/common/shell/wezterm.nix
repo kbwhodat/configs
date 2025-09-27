@@ -43,17 +43,17 @@ in
         font_size = ${if isDarwin then "13.5" else "13.0"},
         line_height = ${if isDarwin then "1.3" else "1.0"},
         default_prog = { "/etc/profiles/per-user/katob/bin/zsh" },
-        font = wezterm.font("CommitMono Nerd Font Mono", { weight = ${if isDarwin then "Bold" else "Normal"} }),
+        font = wezterm.font("ComicShannsMono Nerd Font Mono", { weight = ${if isDarwin then "Bold" else "Normal"} }),
         font_rules = {
           {
             intensity = "Bold",
             italic = false,
-            font = wezterm.font("CommitMono Nerd Font Mono", { weight = "Bold", style = "Normal" }),
+            font = wezterm.font("ComicShannsMono Nerd Font Mono", { weight = "Bold", style = "Normal" }),
           },
           {
             intensity = "Bold",
             italic = true,
-            font = wezterm.font("CommitMono Nerd Font Mono", { weight = "Bold", style = "Normal" }),
+            font = wezterm.font("ComicShannsMono Nerd Font Mono", { weight = "Bold", style = "Normal" }),
           },
         },
         window_background_opacity = 4.0,

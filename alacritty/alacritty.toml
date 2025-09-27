@@ -28,8 +28,8 @@
 	text = "CellBackground"
 
 [font]
-normal = { family = "CommitMono Nerd Font", style = "Regular" }
-bold = { family = "CommitMono Nerd Font", style = "Bold" }
+normal = { family = "ComicShannsMono Nerd Font", style = "Regular" }
+bold = { family = "ComicShannsMono Nerd Font", style = "Bold" }
 size = 11
 
 [window]

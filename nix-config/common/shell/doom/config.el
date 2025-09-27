@@ -63,7 +63,7 @@
 
 ; (setq doom-theme 'doom-homage-black)
 (setq doom-theme 'doom-alabaster)
-(setq doom-font (font-spec :family "CommitMono Nerd Font Mono" :size 16))
+(setq doom-font (font-spec :family "ComicShannsMono Nerd Font Mono" :size 17))
 
 (after! markdown-mode
   (setq markdown-hide-markup t
