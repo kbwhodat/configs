@@ -107,8 +107,8 @@ in
     "browser.display.use_document_fonts" = 1;
     "font.default.x-western" = "sans-serif";
     "font.size.variable.x-western" = 17;
-    "font.name.monospace.x-western" = "CommitMono Nerd Font Mono";
-    "font.name.sans-serif.x-western" = "CommitMono Nerd Font Propo";
+    "font.name.monospace.x-western" = "ComicShannsMono Nerd Font Mono";
+    "font.name.sans-serif.x-western" = "ComicShannsMono Nerd Font Propo";
     "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
     "layout.css.devPixelsPerPx" = 1.0;
 
