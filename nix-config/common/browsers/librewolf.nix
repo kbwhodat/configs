@@ -21,7 +21,7 @@ in
     let
 
 # Using my own custom chrome.css
-    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    userChrome = builtins.readFile ../../../chrome/darkchrome.css;
 
     name = "kato";
     path = "main";
@@ -53,6 +53,7 @@ in
     "layers.acceleration.disabled" = true;
 
     "browser.tabs.hoverPreview.enabled" = true;
+    "sidebar.verticalTabs" = true;
     # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
