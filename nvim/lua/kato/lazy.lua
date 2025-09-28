@@ -12,16 +12,16 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-  { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
+  -- { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.4',
 		delay = 2000,
     dependencies = { {'nvim-lua/plenary.nvim'} }
   },
   { "CRAG666/code_runner.nvim", config = true },
-  {
-    "frabjous/knap"
-  },
+  -- {
+  --   "frabjous/knap"
+  -- },
   {
     "stevearc/oil.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -143,7 +143,7 @@ local plugins = {
       { "<leader>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
       { "<leader>fg", function() Snacks.picker.git_files() end, desc = "Find Git Files" },
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-      { "<leader>g", function() Snacks.picker.grep() end, desc = "Grep" },
+      { "<leader>g", function() Snacks.picker.git_grep() end, desc = "Grep" },
       -- { "<leader>e", function() Snacks.explorer() end, desc = "explorer" },
       { '<leader>s/', function() Snacks.picker.search_history() end, desc = "Search History" },
 
@@ -210,7 +210,7 @@ local plugins = {
 	   table.insert(require("cmp").get_config().sources, { name = "git" })
 	 end,
 
-  {'neovim/nvim-lspconfig'},
+  -- {'neovim/nvim-lspconfig'},
   {'williamboman/mason.nvim'},
   {'williamboman/mason-lspconfig.nvim'},
 
