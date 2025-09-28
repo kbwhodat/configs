@@ -70,6 +70,10 @@
         markdown-fontify-code-blocks-natively nil
         markdown-header-scaling nil)
 
+  (map! :map markdown-mode-map
+        :i "RET" #'newline
+        :n "RET"  nil)
+
   (add-hook 'markdown-mode-hook #'markdown-toggle-markup-hiding)
 
   (custom-set-faces!
