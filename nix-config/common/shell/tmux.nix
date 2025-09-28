@@ -24,7 +24,6 @@ in
       tmux-fzf-session-switch
       tmuxPlugins.jump
       tmuxPlugins.fuzzback
-      tmuxPlugins.sidebar
       tmuxPlugins.sessionist
       # tmuxPlugins.extrakto
       tmuxPlugins.resurrect
