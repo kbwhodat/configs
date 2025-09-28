@@ -65,29 +65,61 @@
 (setq doom-theme 'doom-alabaster)
 (setq doom-font (font-spec :family "ComicShannsMono Nerd Font Mono" :size 17))
 
+(defvar nb/current-line '(0 . 0)
+  "(start . end) of current line in current buffer")
+(make-variable-buffer-local 'nb/current-line)
+
+(defun nb/unhide-current-line (limit)
+  "Font-lock function"
+  (let ((start (max (point) (car nb/current-line)))
+        (end (min limit (cdr nb/current-line))))
+    (when (< start end)
+      (remove-text-properties start end
+                              '(invisible t display "" composition ""))
+      (goto-char limit)
+      t)))
+
+(defun nb/refontify-on-linemove ()
+  "Post-command-hook"
+  (let* ((start (line-beginning-position))
+         (end (line-beginning-position 2))
+         (needs-update (not (equal start (car nb/current-line)))))
+    (setq nb/current-line (cons start end))
+    (when needs-update
+      (font-lock-fontify-block 3))))
+
+(defun nb/markdown-unhighlight ()
+  "Enable markdown concealing with live unhide on current line."
+  (interactive)
+  (markdown-toggle-markup-hiding 'toggle)
+  (font-lock-add-keywords nil '((nb/unhide-current-line)) t)
+  (add-hook 'post-command-hook #'nb/refontify-on-linemove nil t))
+
 (after! markdown-mode
   (setq markdown-hide-markup t
         markdown-fontify-code-blocks-natively nil
+        markdown-list-item-bullets (make-list 6 "-")
         markdown-header-scaling nil)
 
   (map! :map markdown-mode-map
         :i "RET" #'newline
         :n "RET"  nil)
 
-  (add-hook 'markdown-mode-hook #'markdown-toggle-markup-hiding)
+  ; (add-hook 'markdown-mode-hook #'markdown-toggle-markup-hiding)
+  (add-hook 'markdown-mode-hook #'nb/markdown-unhighlight)
 
   (custom-set-faces!
-    '(markdown-bold-face        :weight bold :foreground nil)
-    '(markdown-italic-face      :slant italic :foreground nil)
-    '(markdown-header-face      :inherit default :weight bold)
-    '(markdown-header-face-1    :inherit default :weight bold)
-    '(markdown-header-face-2    :inherit default :weight bold)
-    '(markdown-header-face-3    :inherit default :weight bold)
-    '(markdown-header-face-4    :inherit default :weight bold)
-    '(markdown-code-face        :inherit default :foreground nil :background nil)
-    '(markdown-inline-code-face :inherit default :foreground nil :background nil)
-    '(markdown-metadata-key-face :inherit default :foreground nil :background nil)
-    '(markdown-blockquote-face  :inherit default)
+    '(markdown-bold-face             :weight bold :foreground nil)
+    '(markdown-italic-face           :slant italic :foreground nil)
+    '(markdown-header-face           :inherit default :weight bold)
+    '(markdown-header-face-1         :inherit default :weight bold)
+    '(markdown-header-face-2         :inherit default :weight bold)
+    '(markdown-header-face-3         :inherit default :weight bold)
+    '(markdown-header-face-4         :inherit default :weight bold)
+    '(markdown-code-face             :inherit default :foreground nil :background nil)
+    '(markdown-inline-code-face      :inherit default :foreground nil :background nil)
+    '(markdown-metadata-key-face     :inherit default :foreground nil :background nil)
+    '(markdown-blockquote-face       :inherit default)
     '(markdown-header-delimiter-face :inherit default :foreground nil :background nil :weight bold)
     '((markdown-language-keyword-face markdown-code-face) :inherit default :foreground nil :background nil)
     '(markdown-markup-face      :inherit default)))
