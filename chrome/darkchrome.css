@@ -1,0 +1,34 @@
+/* ----- Full Black Firefox UI ----- */
+:root {
+  --toolbar-bgcolor: #000 !important;
+  --toolbar-color: #fff !important;
+  --toolbar-field-background-color: #000 !important;
+  --toolbar-field-color: #fff !important;
+  --lwt-accent-color: #000 !important;
+  --lwt-text-color: #fff !important;
+  --tab-selected-bgcolor: #000 !important;
+  --tab-line-color: #fff !important;
+}
+
+/* Tabs & toolbars */
+#TabsToolbar,
+#nav-bar,
+#PersonalToolbar,
+#sidebar-header,
+#sidebar-box {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+/* Remove borders/shadows for a clean look */
+#navigator-toolbox,
+#TabsToolbar,
+#nav-bar {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.tabbrowser-tab[selected="true"] {
+  background-color: #222 !important;   /* a lighter black/gray */
+  color: #fff !important;
+}
