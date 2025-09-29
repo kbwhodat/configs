@@ -48,7 +48,8 @@ in
     isNormalUser = true;
     description = "kato";
     extraGroups = [ "taskchampion" "audio" "docker" "networkmanager" "wheel" ];
-		shell = pkgs.bash;
+    ignoreShellProgramCheck = true;
+		shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
@@ -241,6 +242,10 @@ in
         http_addr = "10.0.0.20";
       };
     };
+  };
+
+  services.postgresql = {
+    enable = if config.networking.hostName == "nixos-server" then true else false;
   };
 
   services.prometheus = {
