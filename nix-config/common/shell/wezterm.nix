@@ -23,7 +23,6 @@ in
       return {
         front_end = "WebGpu",
         freetype_load_target = 'Light',
-        cell_width = 1.0;
 
         enable_wayland = false,
         enable_kitty_graphics = true,
@@ -40,8 +39,8 @@ in
         window_decorations = "RESIZE",
         hide_tab_bar_if_only_one_tab = true,
         enable_tab_bar = false,
-        font_size = ${if isDarwin then "13.5" else "13.0"},
-        line_height = ${if isDarwin then "1.3" else "1.0"},
+        font_size = ${if isDarwin then "14.0" else "13.0"},
+        line_height = ${if isDarwin then "1.1" else "1.0"},
         default_prog = { "/etc/profiles/per-user/katob/bin/zsh" },
         font = wezterm.font("ComicShannsMono Nerd Font Mono", { weight = ${if isDarwin then "Bold" else "Normal"} }),
         font_rules = {
