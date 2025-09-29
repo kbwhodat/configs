@@ -32,3 +32,12 @@
   background-color: #222 !important;   /* a lighter black/gray */
   color: #fff !important;
 }
+
+#browser { position: relative; }
+#statuspanel {
+  position: absolute !important;
+  right: 0 !important;
+  left: unset !important;
+  bottom: 0 !important;
+}
+#statuspanel-label { direction: ltr !important; }
