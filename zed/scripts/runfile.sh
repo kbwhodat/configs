@@ -18,6 +18,8 @@ elif [[ "$extension" == "py" ]]; then
     python3 "$full_path";
 elif [[ "$extension" == "c" ]]; then
     clang "$full_path" -o "$filename" && ./"$filename" && rm "$filename";
+elif [[ "$extension" == "go" ]]; then
+    go build "$full_path" && ./"$filename" && rm "$filename";
 else
     echo "no"
 fi

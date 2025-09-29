@@ -19,6 +19,12 @@
 			"n": "search::SelectNextMatch",
 			"shift-n": "search::SelectPreviousMatch",
 			"/": ["buffer_search::Deploy", { "focus": true, "selection_search_enabled": true }],
+      "g d": "editor::GoToDefinition",
+      "g i": "editor::GoToImplementation",
+      "g h": "editor::Hover",
+      "g t": "editor::GoToTypeDefinition",
+      "g r": "editor::FindAllReferences",
+      "g s": "editor::ShowSignatureHelp",
     }
   },
   {
@@ -36,6 +42,7 @@
       "space T": "workspace::ToggleBottomDock",
       "space e": ["task::Spawn", { "task_name": "Oil", "reveal_target": "center" }],
       //"space e": "workspace::ToggleLeftDock",
+      "ctrl-b": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
 			"ctrl-i": "workspace::NewFile",
     }
@@ -73,6 +80,7 @@
     "bindings": {
       "space t t": ["task::Spawn", { "task_name": "open:terminal" }],
       //"space e": "workspace::ToggleLeftDock",
+      "ctrl-b": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
       "space h": "workspace::ActivatePaneLeft",
       "space l": "workspace::ActivatePaneRight",
@@ -97,6 +105,7 @@
     "context": "ProjectPanel && not_editing",
     "bindings": {
       //"space e": "workspace::ToggleLeftDock",
+      "ctrl-b": "workspace::ToggleLeftDock",
       "space r": "workspace::ToggleRightDock",
       "space l": "workspace::ActivatePaneRight",
       "y": "project_panel::Copy",
@@ -176,6 +185,12 @@
     "context": "Editor",
     "bindings": {
       "ctrl-v": "editor::Paste",
+      "g d": "editor::GoToDefinition",
+      "g i": "editor::GoToImplementation",
+      "g h": "editor::Hover",
+      "g t": "editor::GoToTypeDefinition",
+      "g r": "editor::FindAllReferences",
+      "g s": "editor::ShowSignatureHelp",
     }
   }
 ]
