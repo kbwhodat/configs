@@ -12,7 +12,7 @@ in
     if isDarwin then
       true
     else
-      false;
+      true;
 
   programs.zen-browser.package =
     if isDarwin then

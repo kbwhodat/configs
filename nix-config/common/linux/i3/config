@@ -113,6 +113,9 @@ bindsym $mod+Return exec wezterm
 # kill focused window
 bindsym $mod+q kill
 
+# back and forth workspaces
+bindsym $mod+Tab workspace back_and_forth
+
 # start dmenu (a program launcher)
 # bindsym $mod+space exec --no-startup-id dmenu_run
 bindsym $mod+space exec --no-startup-id rofi -show combi -combi-modi window#drun#ssh -icon-theme "Papirus" -show-icons
