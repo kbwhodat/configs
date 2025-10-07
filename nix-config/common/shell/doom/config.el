@@ -14,6 +14,7 @@
 (after! markdown-mode
   ;; stop code-block syntax colors + header scaling, hide markup chars like ** _
   (setq markdown-fontify-code-blocks-natively nil
+        font-lock-verbose nil
         markdown-hide-markup t
         markdown-header-scaling nil))
 
@@ -22,6 +23,25 @@
 (desktop-save-mode -1)
 
 (setq display-line-numbers-type 'relative)
+
+;; Hard-disable completion UI in Markdown/JSON/YAML
+(when (featurep 'corfu)
+  (dolist (hook '(markdown-mode-hook json-mode-hook yaml-mode-hook))
+    (add-hook hook (lambda () (corfu-mode -1)))))
+
+(when (featurep 'company)
+  (dolist (hook '(markdown-mode-hook json-mode-hook yaml-mode-hook))
+    (add-hook hook (lambda () (company-mode -1)))))
+
+;; Also kill snippets there
+(with-eval-after-load 'yasnippet
+  (dolist (hook '(markdown-mode-hook json-mode-hook yaml-mode-hook))
+    (add-hook hook (lambda () (yas-minor-mode -1)))))
+
+;; Optional: no flyspell / no eldoc
+(add-hook 'markdown-mode-hook (lambda () (flyspell-mode -1)))
+(with-eval-after-load 'eldoc
+  (add-hook 'markdown-mode-hook (lambda () (eldoc-mode -1))))
 
 ;; Enable persp-mode for workspace/session persistence
 (use-package! persp-mode
@@ -82,18 +102,25 @@
 (defun nb/refontify-on-linemove ()
   "Post-command-hook"
   (let* ((start (line-beginning-position))
-         (end (line-beginning-position 2))
-         (needs-update (not (equal start (car nb/current-line)))))
+         (end   (line-beginning-position 2))
+         (needs-update (not (equal start (car-safe nb/current-line)))))
     (setq nb/current-line (cons start end))
     (when needs-update
-      (font-lock-fontify-block 3))))
+      (font-lock-flush start end)
+      (ignore-errors (font-lock-ensure start end)))))
 
 (defun nb/markdown-unhighlight ()
   "Enable markdown concealing with live unhide on current line."
   (interactive)
+  (setq-local font-lock-verbose nil)
   (markdown-toggle-markup-hiding 'toggle)
   (font-lock-add-keywords nil '((nb/unhide-current-line)) t)
   (add-hook 'post-command-hook #'nb/refontify-on-linemove nil t))
+
+(add-hook 'markdown-mode-hook (lambda ()
+  ;; calm things down
+  (setq-local font-lock-verbose nil
+              markdown-fontify-code-blocks-natively nil)))
 
 (after! markdown-mode
   (setq markdown-hide-markup t
@@ -164,6 +191,38 @@
       deft-file-naming-rules
       '((noslash . "-")
         (nospace . "-")))
+
+;; Close Deft after opening a file — Doom friendly, no overrides.
+(after! deft
+  ;; Remember the Deft window when Deft starts
+  (defvar my/deft-window nil)
+  (add-hook 'deft-mode-hook
+            (lambda () (setq my/deft-window (selected-window))))
+
+  (defun my/deft-open-and-close ()
+    "Open the file at point, then close the Deft buffer/window."
+    (interactive)
+    (let ((file (deft-filename-at-point)))
+      (unless file
+        (user-error "No file at point"))
+      ;; Open the note first
+      (deft-open-file file)
+      ;; Then clean up Deft
+      (let ((buf (get-buffer "*Deft*")))
+        (when buf
+          (when-let ((win (get-buffer-window buf t)))
+            (when (window-live-p win)
+              ;; If Deft isn't the only window, close that window.
+              (if (one-window-p)
+                  (kill-buffer buf)      ; just kill buffer if it's the only window
+                (delete-window win))))
+          ;; Ensure the buffer is gone either way.
+          (when (buffer-live-p buf)
+            (kill-buffer buf))))))
+
+  ;; Rebind RET in Deft to our open+close function
+  (define-key deft-mode-map (kbd "RET") #'my/deft-open-and-close)
+  (define-key deft-mode-map (kbd "<return>") #'my/deft-open-and-close))
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "/etc/profiles/per-user/katob/bin/librewolf")

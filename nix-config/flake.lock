@@ -46,16 +46,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1756712029,
-        "narHash": "sha256-+yNtB2pf40QlIsa0KdzgUCC/4oaKPcts1w0vkHnjDas=",
+        "lastModified": 1759017282,
+        "narHash": "sha256-1URnq9AeQrjZYAs082heifgQ4QXrVe6rQIGBvYuHTqs=",
         "owner": "kbwhodat",
         "repo": "gonchill",
-        "rev": "c754233ca2089d678125e25f30685ce04491c5e4",
+        "rev": "0f0820343a47550556fabced6c639ec427fd8aa5",
         "type": "github"
       },
       "original": {
         "owner": "kbwhodat",
-        "ref": "1.1.0",
+        "ref": "1.1.1",
         "repo": "gonchill",
         "type": "github"
       }

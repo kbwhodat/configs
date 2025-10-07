@@ -7,7 +7,6 @@
     openssl_legacy
     yarn
     duckdb
-    sqlite
     gnome-keyring
     gonchill
     undetected-chromedriver
@@ -23,6 +22,7 @@
     conda
     anki
     texliveFull
+    bruno
 
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
@@ -87,6 +87,9 @@
       cdp-socket
       seleniuim_driverless
       ipvanish
+      
+      #for gonwatch
+      langdetect
     ]))
   ];
 }
