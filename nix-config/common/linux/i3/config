@@ -16,7 +16,7 @@ set $mod Mod1
 exec --no-startup-id sh -c 'keepassxc <(cat /home/katob/.funentry) /home/katob/.database/keedatabase.kdbx &' --minimize --lock
 
 #To open kitty
-bindsym Control+space exec --no-startup-id /home/katob/Documents/scripts/toggle_kitty.sh
+# bindsym Control+space exec --no-startup-id /home/katob/Documents/scripts/toggle_kitty.sh
 
 #Used for displaying notifications
 exec_always --no-startup-id dunst
@@ -119,6 +119,12 @@ bindsym $mod+Tab workspace back_and_forth
 # start dmenu (a program launcher)
 # bindsym $mod+space exec --no-startup-id dmenu_run
 bindsym $mod+space exec --no-startup-id rofi -show combi -combi-modi window#drun#ssh -icon-theme "Papirus" -show-icons
+
+bindsym Ctrl+space exec --no-startup-id bash -c 'pgrep -x wezterm-gui >/dev/null && i3-msg "[class=\"org.wezfurlong.wezterm\"] focus" || wezterm &'
+
+bindsym Ctrl+Shift+space exec --no-startup-id bash -c 'pgrep -x emacs >/dev/null && i3-msg "[class=\"Emacs\"] focus" || emacs &'
+
+bindsym Ctrl+Mod4+space exec --no-startup-id bash -c 'pgrep -f zed-editor >/dev/null && i3-msg "[class=\"dev.zed.Zed\"] focus" || zed-editor &'
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
