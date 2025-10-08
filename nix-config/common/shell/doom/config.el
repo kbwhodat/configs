@@ -228,8 +228,12 @@
       browse-url-generic-program "/etc/profiles/per-user/katob/bin/librewolf")
 
 ;; Key binding
-; (map! :n
-;       :desc "browse url" "g x" #'browse-url)
+
+(after! evil-exchange
+  (map! :nv "gx" nil
+        :nv "gX" nil))
+(map! :n
+      :desc "browse url" "gx" #'markdown-follow-link-at-point)
 
 (map! :leader
       :desc "Deft" "n s" #'deft)
