@@ -7,9 +7,9 @@
 		fi
   '';
 
-  home.activation.clonePasswordStore = ''
-		if [ ! -d ${config.home.homeDirectory}/.password-store ]; then
-			${pkgs.git}/bin/git clone https://github.com/kbwhodat/store-secrets ${config.home.homeDirectory}/.password-store
-		fi
-  '';
+  # home.activation.clonePasswordStore = ''
+  # if [ ! -d ${config.home.homeDirectory}/.password-store ]; then
+  # 	${pkgs.git}/bin/git clone https://github.com/kbwhodat/store-secrets ${config.home.homeDirectory}/.password-store
+  # fi
+  # '';
 }

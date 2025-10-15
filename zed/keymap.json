@@ -25,6 +25,13 @@
       "g t": "editor::GoToTypeDefinition",
       "g r": "editor::FindAllReferences",
       "g s": "editor::ShowSignatureHelp",
+      "g e": ["editor::GoToDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
+      "g E": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
+      "g D": "diagnostics::Deploy",
+      "space g": "search::FocusSearch",
+      "space shift-b l": ["pane::CloseItemsToTheLeft", { "close_pinned": false }],
+      "space shift-b r": ["pane::CloseItemsToTheRight", { "close_pinned": false }],
+      "space shift-b o": ["pane::CloseOtherItems", { "close_pinned": false }],
     }
   },
   {
@@ -90,15 +97,15 @@
       "space space": "file_finder::Toggle",
       "space /": "pane::DeploySearch",
 
-      "space g f": "git::Fetch",
-      "space g P": "git::Push",
-      "space g p": "git::Pull",
-      "ctrl-g shift-up": "git::ForcePush",
-      "space g d": "git::Diff",
-      "ctrl-g backspace": "git::RestoreTrackedFiles",
-      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
-      "space ga": "git::StageAll",
-      "ctrl-shift-space": "git::UnstageAll"
+//      "space g f": "git::Fetch",
+//      "space g P": "git::Push",
+//      "space g p": "git::Pull",
+//      "ctrl-g shift-up": "git::ForcePush",
+//      "space g d": "git::Diff",
+//      "ctrl-g backspace": "git::RestoreTrackedFiles",
+//      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
+//      "space ga": "git::StageAll",
+//      "ctrl-shift-space": "git::UnstageAll"
     }
   },
   {
@@ -143,16 +150,16 @@
     "context": "GitPanel",
     "use_key_equivalents": true,
     "bindings": {
-      "esc": "workspace::ToggleRightDock",
-      "space gf": "git::Fetch",
-      "space P": "git::Push",
-      "space gp": "git::Pull",
-      "ctrl-g shift-up": "git::ForcePush",
-      "space gd": "git::Diff",
-      "ctrl-g backspace": "git::RestoreTrackedFiles",
-      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
-      "space ga": "git::StageAll",
-      "ctrl-shift-space": "git::UnstageAll"
+//      "esc": "workspace::ToggleRightDock",
+//      "space gf": "git::Fetch",
+//      "space P": "git::Push",
+//      "space gp": "git::Pull",
+//      "ctrl-g shift-up": "git::ForcePush",
+//      "space gd": "git::Diff",
+//      "ctrl-g backspace": "git::RestoreTrackedFiles",
+//      "ctrl-g shift-backspace": "git::TrashUntrackedFiles",
+//      "space ga": "git::StageAll",
+//      "ctrl-shift-space": "git::UnstageAll"
     }
   },
   {
@@ -160,7 +167,7 @@
     "bindings": {
       "q": "workspace::ToggleLeftDock",
       //"space e": "workspace::ToggleLeftDock",
-      "space g": "workspace::ToggleRightDock",
+      //"space g": "workspace::ToggleRightDock",
     },
   },
   {
@@ -185,12 +192,6 @@
     "context": "Editor",
     "bindings": {
       "ctrl-v": "editor::Paste",
-      "g d": "editor::GoToDefinition",
-      "g i": "editor::GoToImplementation",
-      "g h": "editor::Hover",
-      "g t": "editor::GoToTypeDefinition",
-      "g r": "editor::FindAllReferences",
-      "g s": "editor::ShowSignatureHelp",
     }
   }
 ]

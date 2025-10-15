@@ -146,6 +146,8 @@
     '(markdown-code-face             :inherit default :foreground nil :background nil)
     '(markdown-inline-code-face      :inherit default :foreground nil :background nil)
     '(markdown-metadata-key-face     :inherit default :foreground nil :background nil)
+    '(hl-line     :inherit default :foreground nil :background nil)
+    '(markdown-line-break-face     :inherit default :foreground nil :background nil)
     '(markdown-blockquote-face       :inherit default)
     '(markdown-header-delimiter-face :inherit default :foreground nil :background nil :weight bold)
     '((markdown-language-keyword-face markdown-code-face) :inherit default :foreground nil :background nil)
@@ -227,13 +229,9 @@
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "/etc/profiles/per-user/katob/bin/librewolf")
 
-;; Key binding
-
-(after! evil-exchange
-  (map! :nv "gx" nil
-        :nv "gX" nil))
-(map! :n
-      :desc "browse url" "gx" #'markdown-follow-link-at-point)
+(after! evil
+  (map! :n "g x" #'markdown-follow-link-at-point
+        :n "g X" #'markdown-follow-link-at-point))
 
 (map! :leader
       :desc "Deft" "n s" #'deft)

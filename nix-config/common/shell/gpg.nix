@@ -11,19 +11,19 @@ in
     publicKeys = [
     {
       text = ''
-        -----BEGIN PGP PUBLIC KEY BLOCK-----
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
 
-        mDMEZHbekxYJKwYBBAHaRw8BAQdAnOTNVsyuAhCd2CBPK+br0hlIFtt57C4kRuTJ
-        BjOti5e0H2tpeWluZ2kgPGthdG9ieUBwcm90b25tYWlsLmNvbT6IkwQTFgoAOwIb
-        AwULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgBYhBL5XGeyblDvEPpH/JLbPy/+d
-        Q4ohBQJkdt75AAoJELbPy/+dQ4ohuKoBAI/cwcZT9NhyWRFFEDp3Qicemsx8Rr0E
-        aoRr6YeSCeEFAP9gsBm+6ACKHWAbj+uB+sU9IQc9gTGrQRIu0n9lF5cLBLg4BGR2
-        3pMSCisGAQQBl1UBBQEBB0CZANFWlAHW+YitvTZ5v+VM4yvrUarg5sc40qqQ8CHY
-        QgMBCAeIfgQYFgoAJhYhBL5XGeyblDvEPpH/JLbPy/+dQ4ohBQJkdt6TAhsMBQkD
-        wmcAAAoJELbPy/+dQ4ohRR0A/iSCqtBE0Ty0Eq7CTqj9cJCkUR+KSQ54WW6fiWUx
-        P3k7AP47Hqj3tui0Z7NIp1jlC9nR8dbkaKD7lhKbsIqvMh3tDw==
-        =WZSg
-        -----END PGP PUBLIC KEY BLOCK-----
+      mDMEaO1rLhYJKwYBBAHaRw8BAQdA7CKocUYhZdCH1ALT3UOMGGH5bJezkFIxHX/7
+      uAU5i460L2thdG8gKGZvciBtdXR0IHdpemFyZCkgPGRuc19pc3N1ZUB0dXRhbWFp
+      bC5jb20+iI4EExYKADYWIQQG32rUW8qKENeZfNwiYXkmCeXQlQUCaO1rLgIbAwQL
+      CQgHBBUKCQgFFgIDAQACHgECF4AACgkQImF5Jgnl0JWkqQEAo3UDVoYMxG0MANsz
+      4L0HYwsa/7HhIMkMZ+89t6iJHOUA/jsR/PrWNPeJyI4PdzpVMaXZDpASNxofSIxP
+      g7h6s8YJuDgEaO1rLhIKKwYBBAGXVQEFAQEHQE4psI6gF7EKWpZ2vMqR1UeaUgO0
+      aMSlIcYzMgYelhB0AwEIB4h4BBgWCgAgFiEEBt9q1FvKihDXmXzcImF5Jgnl0JUF
+      Amjtay4CGwwACgkQImF5Jgnl0JXQxAEA4ei8Pmyg+dRzKdfadXYwwJckUSl5gCJU
+      rU/gcNE3eRABAPeVuQsHj/oVbvRP4yzAIfBV+l0ufOZecUtJHTFsiY8O
+      =nbJH
+      -----END PGP PUBLIC KEY BLOCK-----
         '';
       trust = "ultimate";
     }
@@ -43,18 +43,19 @@ in
     pinentryPackage = pkgs.pinentry-gtk2;
     enableExtraSocket = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
     maxCacheTtl = 86400; 
     extraConfig = ''
       allow-loopback-pinentry
       '';
   };
 
-  home.activation.importGpgKeys = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" "installPackages" "linkGeneration" "onFilesChange" "setupLaunchAgents" "sops-nix" ] ''
-
-      run sleep 1
-      run cat ${config.home.homeDirectory}/.funentry | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
-      run rm ${config.home.homeDirectory}/.funentry
-    '');
+  # home.activation.importGpgKeys = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" "installPackages" "linkGeneration" "onFilesChange" "setupLaunchAgents" "sops-nix" ] ''
+  #
+  #     run sleep 1
+  #     run cat ${config.home.homeDirectory}/.funentry | ${pkgs.gnupg}/bin/gpg --import ${keysLocation}/subkey
+  #     run rm ${config.home.homeDirectory}/.funentry
+  #   '');
 
 
 }

@@ -35,7 +35,24 @@
           "variable": { "color": "#cecece" },
           "operator": { "color": "#708b8d" },
           "punctuation": { "color": "#bababa" },
-          "property": { "color": "#cecece" }
+          "property": { "color": "#cecece" },
+          //"function": { "color": "#cecece" },
+
+
+//          "constructor": { "color": "#88C0D0" },
+//          "function": { "color": "#88C0D0" },
+//          "keyword": { "color": "#81A1C1" },
+//          "number": { "color": "#B48EAD" },
+//          "property": { "color": "#8FBCBB" },
+//          "punctuation": { "color": "#ECEFF4" },
+//          "string": { "color": "#A3BE8C" },
+//          "string.escape": { "color": "#EBCB8B" },
+//          "tag": { "color": "#81A1C1" },
+//          "variable": { "color": "#d8dee9ff" },
+//          "variable.special": { "color": "#81A1C1" },
+//          "emphasis": { "font_style": "italic" },
+//          "emphasis.strong": { "font_weight": 800 },
+//          "link_uri": { "color": "#A3BE8C", "underline": true }
         }
       }
     }
