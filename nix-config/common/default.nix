@@ -9,5 +9,6 @@
     ./editors
     ./lsp
     ./neovim
+    ./email
   ];
 }
