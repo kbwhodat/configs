@@ -3,6 +3,7 @@
 {
 	imports = [
     ./emacs.nix
+    ./jujutsu.nix
     ./repos.nix
     ./bash.nix
     ./zsh.nix
