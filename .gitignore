@@ -10,7 +10,6 @@ chawan/
 ghostty/
 kmonad/
 pulse/
-wezterm/
 .gsd-keyboard.settings-ported
 BraveSoftware/
 Electron/
@@ -117,3 +116,16 @@ vivaldi-snapshot/
 vlc/
 xsettingsd/
 zsh/
+zen/
+RSS\ Guard\ 4/
+Typora/
+fluent-reader/
+news-flash/
+nom/
+pavucontrol.ini
+protonvpn/
+terminology/
+tiny/
+user-dirs.dirs.backup
+wezterm/
+yarr/
