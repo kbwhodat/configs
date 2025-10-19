@@ -25,8 +25,8 @@
 	home.sessionVariables = {
 
 		EDITOR = "nvim";
-		BROWSER = "librewolf";
-		TERMINAL = "kitty";
+		BROWSER = "firefox";
+		TERMINAL = "wezterm";
 	};
 
 	home.shellAliases = {

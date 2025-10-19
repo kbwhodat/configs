@@ -22,63 +22,60 @@ in
       pkgs.firefox.override {
          # enableTridactylNative = true;
         nativeMessagingHosts = [
-          pkgs.tridactyl-native
-          
+          pkgs.firefoxpwa
         ];
       };
 
   programs.firefox.profiles =
     let
-    userChrome = builtins.readFile ../../../chrome/myuserchrome.css;
+    userChrome = builtins.readFile ../../../chrome/darkchrome.css;
 
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-    browserpass
-    consent-o-matic
-    sponsorblock
-    leechblock-ng
-    df-youtube
-    kagi-search
-    darkreader
-    auto-tab-discard
-    browserpass
-    privacy-badger
-    ublock-origin
-    tridactyl
+      pwas-for-firefox
+      sponsorblock
+      proton-pass
+      df-youtube
+      kagi-search
+      vimium-c
+      clearurls
   ];
   
   settings = {
-# Settings for tabsleep, good for memory optimization
-    "floorp.tabsleep.enabled" = true;
-    "floorp.tabsleep.tabTimeoutMinutes" = 30;
+    "extensions.webextensions.restrictedDomains" = "";
+      
+    # This will enable firefox sync
+    "identity.fxaccounts.enabled" = if isDarwin then false else true;
 
-# Setting for ui browser
-    "floorp.delete.browser.border" = true;
-    "floorp.chrome.theme.mode" = 1;
+    "security.cert_pinning.enforcement_level" = 1;
 
-#Handle the vertical tabs
-    "floorp.browser.tabs.verticaltab.enabled" = true;
-    "floorp.tabbar.style" = 2;
-    "floorp.browser.tabbar.settings" = 2;
-    "floorp.browser.sidebae.is.displayed" = 2;
-    "floorp.browser.tabs.verticaltab" = true;
-    "floorp.verticaltab.hover.enabled" = true;
-    "floorp.verticaltab.show.newtab.button" = true;
+    # Disabling hardware acceleration
+    "browser.preferences.defaultPerformanceSettings.enabled" = false;
+    "layers.acceleration.disabled" = true;
 
-# Disabling sidebar for now, I don't see the benefit
-    "floorp.browser.sidebar.enable" = false;
-    "floorp.browser.sidebar.is.displayed" = false;
-    "floorp.browser.sidebar.right" = false;
-
-# Makes some website dark
+    "browser.tabs.hoverPreview.enabled" = true;
+    "sidebar.verticalTabs" = true;
+    # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
-# browser/ui theme is not effective in Floorp - should use floorp.chrome.theme.mode
     "browser.theme.toolbar-theme" = 0;
     "browser.theme.content-theme" = 0;
     "ui.systemUsesDarkTheme" = 1;
 
+    "extension.activeThemeID" = "firefox-compact-dark@mozilla.org";
 # setting up kagi
     "extensions.webextensions.ExtensionStorageIDB.migrated.search@kagi.com" = true;
+
+# Prevents the alt/command key from showing the menu bar. Gets annoying at time.
+    "ui.key.menuAccessKeyFocuses" = false;
+
+# fonts
+    "browser.display.use_document_fonts" = 1;
+    "font.default.x-western" = "sans-serif";
+    "font.size.variable.x-western" = 17;
+    "font.name.monospace.x-western" = "ComicShannsMono Nerd Font Mono";
+    "font.name.sans-serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
+    "layout.css.devPixelsPerPx" = 1.0;
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "newtab";
@@ -88,13 +85,14 @@ in
     "browser.newtabpage.pinned" = "[{'url':'https://kagi.com','label':'@kagi','searchTopSite':true}]";
     "browser.bookmarks.addedImportButton" = true;
     "browser.startup.homepage" = "about:blank";
+    "browser.startup.page" = 3;
     "browser.search.region" = "US";
-    "network.http.http3.enabled" = true;
+    "network.http.http3.enabled" = false;
     "dom.image-lazy-loading.enabled" = true;
 # "network.prefetch-next" = false;
     "general.smoothScroll" = true;
     "media.autoplay.default" = 1;
-    "browser.cache.disk.enable" = false;
+    "browser.cache.disk.enable" = true;
     "broswer.cache.memory.enable" = true;
     "broswer.sessionstore.resume_from_crash" = false;
     "browser.search.countryCode" = "US";
@@ -104,7 +102,7 @@ in
     "browser.newtabpage.enabled" = false;
     "browser.bookmarks.showMobileBookmarks" = true;
     "browser.uidensity" = 1;
-    "browser.urlbar.placeholderName" = "Help me...";
+    "browser.urlbar.placeholderName" = "search for something man";
     "browser.urlbar.update1" = true;
     "extensions.pocket.enable" = false;
     "extensions.pocket.showHome" = false;
@@ -127,9 +125,10 @@ in
      * SECTION: FASTFOX                                                         *
      ****************************************************************************/
     /** GENERAL ***/
-    "content.notify.interval" = 100000;
+    "content.notify.interval" = 200000;
 
     /** GFX ***/
+    "layers.acceleration.enabled" = true;
     "gfx.canvas.accelerated.cache-items" = 4096;
     "gfx.canvas.accelerated.cache-size" = 512;
     "gfx.content.skia-font-cache-size" = 20;
@@ -156,7 +155,7 @@ in
     /** SPECULATIVE LOADING ***/
     "network.dns.disablePrefetch" = true;
     "network.dns.disablePrefetchFromHTTPS" = true;
-    "network.prefetch-next" = false;
+    "network.prefetch-next" = true;
     "network.predictor.enabled" = false;
     "network.predictor.enable-prefetch" = false;
 
@@ -294,6 +293,8 @@ in
 
     /** THEME ADJUSTMENTS ***/
     "browser.compactmode.show" = true;
+    "browser.tabs.groups.enabled" = true;
+    "browser.tabs.groups.smart.enabled" = true;
     "browser.display.focus_ring_on_anything" = true;
     "browser.display.focus_ring_style" = 0;
     "browser.display.focus_ring_width" = 0;
@@ -333,6 +334,8 @@ in
     "browser.menu.showViewImageInfo" = true;
     "findbar.highlightAll" = true;
     "layout.word_select.eat_space_to_next_word" = false;
+
+
   };
   in
   {
