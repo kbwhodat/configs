@@ -30,16 +30,12 @@ in
         }}";
         version = "1.66.4";
       }
-      { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } #privacy badger
       { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
-      { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } #dark reader
       { id = "cdglnehniifkbagbbombnjghhcihifij"; } #kagi search
       { id = "egpjdkipkomnmjhjmdamaniclmdlobbo"; } #firenvim
-      { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } #1password
-      { id = "mdjildafknihdffpkfmmpnpoiajfjnjd"; } #consent-o-matic
-      { id = "edibdbjcniadpccecjdfdjjppcpchdlm"; } #dontcareaboutcookies
+      { id = "ghmbeldphafepmbegfdlkpapadhbakde"; } #protonpass
+      { id = "jchobbjgibcahbheicfocecmhocglkco"; } #neat url
       { id = "pfdeiaeaofodcolaiadjdflpejkofhpf"; } #simple adblocker - use it for camel.live
-      { id = "nomnklagbgmgghhjidfhnoelnjfndfpd"; } #canvas blocker
     ];
   };
 }
