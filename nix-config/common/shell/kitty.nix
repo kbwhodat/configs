@@ -7,7 +7,7 @@ in
 	home.sessionVariables.KITTY_CONFIG_DIRECTORY = "${config.home.homeDirectory}/.config/kitty";
 
 	programs.kitty = {
-		enable = true;
+		enable = false;
     # package = pkgs.writeShellScriptBin "kitty" ''
     #   exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.kitty}/bin/kitty "$@"
     # '';

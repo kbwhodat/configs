@@ -19,11 +19,6 @@ in
     ];
 
   services.lorri.enable = true;
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "katob" ];
-  };
 
   environment = {
     etc.".secrets".source = "${myrepo}";

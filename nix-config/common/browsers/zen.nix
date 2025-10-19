@@ -12,7 +12,7 @@ in
     if isDarwin then
       true
     else
-      true;
+      false;
 
   programs.zen-browser.package =
     if isDarwin then
@@ -50,13 +50,9 @@ in
       darkreader
       # browserpass
       privacy-badger
-      onepassword-password-manager
       ublock-origin
       vimium-c
       clearurls
-      istilldontcareaboutcookies
-      firenvim
-      keepassxc-browser
   ];
 
   settings = {

@@ -28,17 +28,13 @@ in
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-      consent-o-matic
+      browserpass
       sponsorblock
       df-youtube
       kagi-search
-      darkreader
-      onepassword-password-manager
       ublock-origin
       vimium-c
       clearurls
-      istilldontcareaboutcookies
-      firenvim
   ];
 
   settings = {

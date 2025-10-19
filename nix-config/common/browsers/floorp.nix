@@ -18,9 +18,10 @@ in
     if isDarwin then
       pkgs.floorp-bin
     else
-      pkgs.floorp.override {
+      pkgs.floorp-bin.override {
         nativeMessagingHosts = [
           pkgs.firefoxpwa
+          pkgs.browserpass
       ];
       };
 
@@ -38,19 +39,14 @@ in
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       pwas-for-firefox
-      onepassword-password-manager
+      browserpass
       consent-o-matic
       sponsorblock
       df-youtube
       kagi-search
-      darkreader
-      auto-tab-discard
-      privacy-badger
-      ublock-origin
+      vimium-c
       clearurls
       istilldontcareaboutcookies
-      vimium-c
-      firenvim
   ];
 
   settings = {

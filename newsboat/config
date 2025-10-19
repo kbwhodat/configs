@@ -24,4 +24,4 @@ reload-threads 150
 
 articlelist-format "%D %t"
 
-browser "librewolf %u"
+browser "firefox %u"

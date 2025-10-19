@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     _7zz
-    _1password-gui
     openssl_legacy
     yarn
     duckdb
