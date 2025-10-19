@@ -87,6 +87,7 @@ in
 
   networking.networkmanager.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
+  networking.nameservers = ["127.0.0.1"];
 
   # networking.wireless.iwd.enable = true;
 
@@ -213,16 +214,30 @@ in
   services.smartdns = {
     enable = true;
     bindPort = 53;
+
     settings = {
-      speed-check-mode = "ping";
+      # --- Performance & caching ---
+      speed-check-mode = "ping,tcp:80";
       cache-size = 4096;
       serve-expired = "yes";
       prefetch-domain = true;
+
+      server = [
+        "185.228.168.168 -group family"
+        "185.228.169.168 -group family"
+        "208.67.222.123 -group family"
+        "208.67.220.123 -group family"
+        "1.1.1.3 -group family"
+        "1.0.0.3 -group family"
+      ];
+
+      # --- Default group ---
+      bind = ":53 -group family";
     };
   };
 
   services.resolved = {
-    enable = true;
+    enable = false;
     extraConfig = "
       nameserver 127.0.0.1
     ";
