@@ -34,6 +34,7 @@ in
       pwas-for-firefox
       sponsorblock
       proton-pass
+      ublock-origin
       df-youtube
       kagi-search
       vimium-c
