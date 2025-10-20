@@ -10,7 +10,7 @@ in
 
   programs.zen-browser.enable =
     if isDarwin then
-      true
+      false
     else
       false;
 
