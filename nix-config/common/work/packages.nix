@@ -9,14 +9,12 @@
     skopeo
     terraform
     act
-    putty
     #jp
     # terragrunt
     sshuttle
     openconnect
     postman
-    bruno
-    bruno-cli
+    # bruno
     tcptraceroute
     # ansible_2_16
     util-linux

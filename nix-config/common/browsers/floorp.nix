@@ -10,7 +10,7 @@ in
 
   programs.myfloorp.enable =
     if isDarwin then
-      true
+      false
     else
       false;
 
@@ -23,7 +23,7 @@ in
           pkgs.firefoxpwa
           pkgs.browserpass
       ];
-      };
+    };
 
   programs.myfloorp.profiles =
     let

@@ -15,9 +15,7 @@ in
 
   programs.firefox.package =
     if isDarwin then
-# Handled by the Homebrew module
-# This populates a dummy package to satsify the requirement
-      pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
+      pkgs.firefox-bin
     else
       pkgs.firefox.override {
          # enableTridactylNative = true;
