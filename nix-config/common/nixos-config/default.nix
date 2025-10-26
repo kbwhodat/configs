@@ -303,6 +303,7 @@ in
     configDir = "/home/katob/.config/syncthing";
     key = "/home/katob/.config/syncthing-keys/key.pem";
     cert = "/home/katob/.config/syncthing-keys/cert.pem";
+    extraFlags = [ "--allow-newer-config" ];
     settings.gui = {
       theme = "black";
     };
