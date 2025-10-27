@@ -148,3 +148,4 @@ wireshark/
 zed/.tmp*
 zed/prompts/*
 zed/embeddings/*
+configstore/

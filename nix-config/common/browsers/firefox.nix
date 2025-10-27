@@ -37,6 +37,7 @@ in
       kagi-search
       vimium-c
       clearurls
+      dark-background-light-text
   ];
   
   settings = {
