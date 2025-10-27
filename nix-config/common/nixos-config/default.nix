@@ -218,8 +218,9 @@ in
       prefetch-domain = true;
 
       server = [
-        "185.228.168.168 -group family"
-        "185.228.169.168 -group family"
+        # "185.228.168.168 -group family"
+        # "185.228.169.168 -group family"
+        "9.9.9.9 -group family"
         "208.67.222.123 -group family"
         "208.67.220.123 -group family"
         "1.1.1.3 -group family"

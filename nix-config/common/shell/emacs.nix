@@ -7,32 +7,51 @@ let
   emacsDir = if useXDG then "${config.home.homeDirectory}/.config/emacs"
                         else "${config.home.homeDirectory}/.emacs.d";
 
-  doomDir  = if useXDG then "${config.home.homeDirectory}/.config/doom"
-                        else "${config.home.homeDirectory}/.doom.d";
 in {
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs; # or pkgs.emacs29-pgtk, pkgs.emacs-30, etc.
+    package = pkgs.emacs; 
+    extraPackages = epkgs: [
+      epkgs.evil
+      epkgs.evil-collection
+      epkgs.which-key
+      epkgs.general
+      epkgs.persistent-scratch
+
+      epkgs.evil-surround         
+      epkgs.evil-markdown         
+      epkgs.markup         
+      epkgs.evil-nerd-commenter  
+      epkgs.evil-exchange       
+      epkgs.evil-matchit       
+      epkgs.evil-args         
+      epkgs.evil-easymotion  
+      epkgs.avy             
+      epkgs.evil-anzu      
+      epkgs.undo-fu epkgs.undo-fu-session
+      epkgs.deft
+      epkgs.persp-mode
+      epkgs.minions
+
+      epkgs.vertico
+      epkgs.orderless
+      epkgs.marginalia
+      epkgs.ewal-doom-themes
+      epkgs.consult
+      epkgs.ripgrep               
+      epkgs.project              
+    ];
   };
 
-  home.file."${doomDir}/config.el".source = ./doom/config.el;
-  home.file."${doomDir}/init.el".source = ./doom/init.el;
-  home.file."${doomDir}/packages.el".source = ./doom/packages.el;
+  home.file."${emacsDir}/early-init.el".source = ./doom/early-init.el;
+  home.file."${emacsDir}/init.el".source = ./doom/init.el;
 
-  # Bootstrap + sync Doom at activation time
-  home.activation.installDoomEmacs =
-    lib.hm.dag.entryAfter [ "writeBoundary" "installPackages" "linkGeneration" "onFilesChange" "setupLaunchAgents" "sops-nix" ] ''
-      export HOME="${config.home.homeDirectory}"
-      export PATH="${pkgs.git}/bin:${pkgs.ripgrep}/bin:${pkgs.fd}/bin:${pkgs.gcc}/bin:${pkgs.unzip}/bin:/run/current-system/sw/bin:${pkgs.emacs}/bin:$PATH"
-
-      ${lib.optionalString useXDG ''export DOOMDIR="${doomDir}"''}
-
-      if [ ! -d "${emacsDir}" ]; then
-        git clone https://github.com/hlissner/doom-emacs "${emacsDir}"
-      fi
-
-      "${emacsDir}"/bin/doom sync
-
-    '';
+  home.file."${emacsDir}/themes/doom-alabaster-theme".source = 
+    pkgs.fetchFromGitHub {
+      owner = "kbwhodat";
+      repo = "doom-alabaster-theme";
+      rev = "master";           # or a pinned commit hash if you prefer
+      sha256 = "sha256-FrREa0leAqOqC50hAH1uY8VMy+CMmsSjwPN9KJ5cuPo=";
+    };
 }
