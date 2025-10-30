@@ -76,7 +76,11 @@ in
 
   # Setting up env variables for image.nvim
   environment.variables.LD_LIBRARY_PATH = [ "${pkgs.imagemagick}/lib" ];
-  environment.variables.PKG_CONFIG_PATH = [ "${pkgs.imagemagick.dev}/lib/pkgconfig" "${pkgs.openssl.dev}/lib/pkgconfig" ];
+  environment.sessionVariables.PKG_CONFIG_PATH =
+    lib.makeSearchPath "lib/pkgconfig" [
+      pkgs.imagemagick.dev
+      pkgs.openssl.dev
+    ];
 
   services.logind.lidSwitchExternalPower = lib.mkForce "ignore";
 
@@ -220,7 +224,8 @@ in
       server = [
         # "185.228.168.168 -group family"
         # "185.228.169.168 -group family"
-        "9.9.9.9 -group family"
+        "94.130.180.225 -group family"
+        "78.47.64.161 -group family"
         "208.67.222.123 -group family"
         "208.67.220.123 -group family"
         "1.1.1.3 -group family"

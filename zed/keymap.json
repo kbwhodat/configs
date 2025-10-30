@@ -31,11 +31,11 @@
       "space g": "search::FocusSearch",
       "space shift-b l": ["pane::CloseItemsToTheLeft", { "close_pinned": false }],
       "space shift-b r": ["pane::CloseItemsToTheRight", { "close_pinned": false }],
-      "space shift-b o": ["pane::CloseOtherItems", { "close_pinned": false }],
+      "space shift-b o": ["pane::CloseInactiveItems", { "close_pinned": false }],
     }
   },
   {
-    "context": "Editor && mode == full",
+    "context": "Editor",
     "bindings": {
       "ctrl-enter": [
         "assistant::InlineAssist",
