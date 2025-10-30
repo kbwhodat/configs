@@ -1,10 +1,38 @@
 ;; ~/.emacs.d/init.el
 
+(setq-default
+ mode-line-format
+ '((:eval
+    (concat
+     (if (buffer-modified-p)
+         ;; unsaved: filled dot, bold buffer name
+         (concat
+          (propertize "   ● " 'face '(:foreground "#ffffff" :weight bold))
+          (propertize "%b" 'face '(:foreground "#ffffff" :weight bold)))
+       ;; saved: hollow dot, regular weight
+       (concat
+        (propertize "   ○ " 'face '(:weight bold))
+        (propertize "%b" 'face '(:weight bold))))))))
+
 (require 'doom-themes)
+
+;; Remove messages from the *Messages* buffer.
+(setq-default message-log-max nil)
+
+;; Kill both buffers on startup.
+(kill-buffer "*Messages*")
+(kill-buffer "*scratch*")
+
+(defun buffer-change-hook (frame)
+  (unless
+      (seq-every-p
+       (lambda (elt) (string-match "^ *\\*" (buffer-name elt)))
+       (buffer-list))
+    (kill-buffer "*scratch*")))
 
 (set-face-attribute 'default nil
   :family "ComicShannsMono Nerd Font Mono"
-  :height 130)
+  :height 120)
 
 ;; point Emacs to the folder Home-Manager created
 (add-to-list 'custom-theme-load-path
@@ -194,15 +222,16 @@
 ;; Match your Doom settings
 (setq persp-autosave-fname "autosave"                 ; session filename
       persp-save-dir my/persp-save-dir                ; where to save
-      persp-autosave-default t                        ; autosave on exit
-      persp-set-last-persp-for-new-frames t)
+      persp-autosave-default t)                        ; autosave on exit
+      
 
 (require 'persp-mode)
+(setq persp-auto-resume-time -1)
 (persp-mode 1)
 
 ;; Restore the last session on startup (if it exists)
 (let ((autosave-file (expand-file-name persp-autosave-fname persp-save-dir)))
-  (when (file-exists-p autosave-file)
+  (when (file-readable-p autosave-file)
     (ignore-errors
       (persp-load-state-from-file autosave-file))))
 
@@ -213,7 +242,7 @@
               (persp-save-state-to-file
                (expand-file-name persp-autosave-fname persp-save-dir)))))
 
-(auto-save-visited-mode 1)
+(auto-save-visited-mode -1)
 
 (require 'markup)
 
@@ -335,6 +364,7 @@
 
 (when (fboundp 'my/leader)
   (my/leader "m" '(markdown-toggle-markup-hiding :which-key "toggle markup")))
+
 
 ;; Keep GUI customizations separate
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))

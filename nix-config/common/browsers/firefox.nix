@@ -151,6 +151,7 @@ in
     "network.http.pacing.requests.enabled" = false;
     "network.dnsCacheExpiration" = 3600;
     "network.ssl_tokens_cache_capacity" = 10240;
+    "network.trr.mode" = 5;
 
     /** SPECULATIVE LOADING ***/
     "network.dns.disablePrefetch" = true;
