@@ -149,3 +149,4 @@ zed/.tmp*
 zed/prompts/*
 zed/embeddings/*
 configstore/
+sc-im/

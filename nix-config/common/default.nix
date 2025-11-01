@@ -3,6 +3,7 @@
 {
 	imports = [
     ./shell
+    ./vms
     ./packages
     ./browsers
     ./keyboard

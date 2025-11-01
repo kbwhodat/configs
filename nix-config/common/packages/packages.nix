@@ -29,7 +29,7 @@
     fira-code
     mononoki
     roboto
-    roboto-mono
+    # roboto-mono
     roboto-serif
     hack-font
     unzip
