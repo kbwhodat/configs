@@ -42,7 +42,7 @@ in
   users.users.katob = {
     isNormalUser = true;
     description = "kato";
-    extraGroups = [ "taskchampion" "audio" "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "libvirtd" "taskchampion" "audio" "docker" "networkmanager" "wheel" ];
     ignoreShellProgramCheck = true;
 		shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
@@ -233,7 +233,7 @@ in
       ];
 
       # --- Default group ---
-      bind = ":53 -group family";
+      bind = "127.0.0.1:53 -group family";
     };
   };
 
@@ -298,6 +298,11 @@ in
         enable = true;
       };
     };
+  };
+
+  virtualisation.libvirtd = {
+    enable = true;
+    onBoot = "start";
   };
 
   services.syncthing = {

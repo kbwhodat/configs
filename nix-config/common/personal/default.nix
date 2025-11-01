@@ -17,7 +17,7 @@
     ruby
     php
     pinentry-gtk2
-    gh
+    # gh
     conda
     anki
     texliveFull

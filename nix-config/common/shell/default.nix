@@ -12,11 +12,11 @@
     ./kitty.nix
     ./rio.nix
     ./tmux.nix
-    ./neovim.nix
     ./password-store.nix
     ./gpg.nix
     ./wezterm.nix
     ./alacritty.nix
+    ./sc-im.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix
