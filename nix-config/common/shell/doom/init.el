@@ -32,7 +32,7 @@
 
 (set-face-attribute 'default nil
   :family "ComicShannsMono Nerd Font Mono"
-  :height 120)
+  :height 135)
 
 ;; point Emacs to the folder Home-Manager created
 (add-to-list 'custom-theme-load-path
