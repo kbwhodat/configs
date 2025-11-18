@@ -222,14 +222,102 @@ in
       prefetch-domain = true;
 
       server = [
-        # "185.228.168.168 -group family"
-        # "185.228.169.168 -group family"
-        "94.130.180.225 -group family"
-        "78.47.64.161 -group family"
-        "208.67.222.123 -group family"
-        "208.67.220.123 -group family"
-        "1.1.1.3 -group family"
-        "1.0.0.3 -group family"
+        # verisign us
+        "64.6.64.6 -group family"
+        # opendns us
+        "208.67.222.222 -group family"
+        # neustar ulstra dns
+        "156.154.70.1 -group family"
+        # quad9
+        "9.9.9.10 -group family"
+
+        # germany
+        # "84.200.69.80 -group family"
+        # "116.203.32.217 -group family"
+        # "88.198.92.222 -group family"
+        "159.69.114.157 -group family"
+        # uk
+        "217.169.20.23 -group family"
+        # "194.168.8.123 -group family"
+        # "194.168.4.123 -group family"
+        # "195.27.1.1 -group family"
+        # "194.145.240.6 -group family"
+
+        # sweden
+        "95.215.19.53 -group family"
+        # "88.80.161.132 -group family"
+
+        # spain
+        "74.82.42.42 -group family"
+        # "84.236.142.130 -group family"
+        # "195.219.98.4 -group family"
+        # "92.43.224.1 -group family"
+        # "80.67.98.226 -group family"
+
+        # dubai
+        "94.206.40.206 -group family"
+        # "5.32.55.10 -group family"
+        # "94.200.80.94 -group family"
+
+        # singapore
+        "165.21.13.90 -group family"
+
+        # south africa
+        "154.0.172.204 -group family"
+        # "196.21.186.253 -group family"
+        # "41.185.21.252 -group family"
+
+        # Ghana
+        "212.96.1.70 -group family"
+
+        # Kenya
+        "41.139.202.86 -group family"
+        # "197.248.0.34 -group family"
+        # "197.232.21.96 -group family"
+        # "41.72.216.234 -group family"
+
+        # Uganda
+        "81.199.137.188 -group family"
+
+        # Egypt
+        "41.33.166.19 -group family"
+        # "193.227.29.32 -group family"
+        # "193.227.29.241 -group family"
+
+        # alidns china
+        "223.5.5.5 -group family"
+        # "114.114.114.114 -group family"
+        # "211.136.20.203 -group family"
+        # dnspod asia mainland
+        "119.29.29.29 -group family"
+        # gmo japan
+        "202.248.37.74 -group family"
+        # jpix japan
+        "202.248.20.133 -group family"
+
+        # hong kong
+        "210.0.255.251 -group family"
+        # "210.0.128.250 -group family"
+        # "210.0.128.241 -group family"
+
+        # brasil
+        "200.221.11.100 -group family"
+
+        # argentina
+        "168.205.92.166 -group family"
+        # "200.89.142.74 -group family"
+        # "45.65.225.220 -group family"
+
+        # uruguay
+        "190.64.72.234 -group family"
+        # "179.27.64.34 -group family"
+        # "201.217.129.253 -group family"
+        # "200.40.48.254 -group family"
+
+        # aussie broadband melberne
+        "139.130.4.4 -group family"
+
+
       ];
 
       # --- Default group ---
@@ -239,8 +327,15 @@ in
 
   services.resolved = {
     enable = false;
+    # extraConfig = ''
+    #   [Resolve]
+    #   DNS=1.1.1.1
+    #   FallbackDNS=
+    #   DNSSEC=allow-downgrade
+    #   Domains=~.
+    # '';
     extraConfig = "
-      nameserver 127.0.0.1
+      nameserver 127.0.0.l
     ";
   };
 
