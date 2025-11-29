@@ -12,6 +12,7 @@
       "space v": "pane::SplitRight",
       "space H": "pane::SplitDown",
       "space d": "pane::CloseActiveItem",
+      "space D": ["pane::CloseOtherItems", { "close_pinned": false }],
       "space m": "markdown::OpenPreview",
       "space M": "markdown::OpenPreviewToTheSide",
       "shift-k": "editor::Hover",
@@ -31,7 +32,6 @@
       "space g": "search::FocusSearch",
       "space shift-b l": ["pane::CloseItemsToTheLeft", { "close_pinned": false }],
       "space shift-b r": ["pane::CloseItemsToTheRight", { "close_pinned": false }],
-      "space shift-b o": ["pane::CloseInactiveItems", { "close_pinned": false }],
     }
   },
   {

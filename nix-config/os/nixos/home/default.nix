@@ -110,7 +110,7 @@ in
   home.enableNixpkgsReleaseCheck = false;
 
   home.sessionVariables = {
-    EDITOR = "nvim";
+    # EDITOR = "nvim";
     BROWSER = "firefox";
 
     LD_LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LD_LIBRARY_PATH" != "") (builtins.getEnv "LD_LIBRARY_PATH" + ":")}${ldLibraryPath}";

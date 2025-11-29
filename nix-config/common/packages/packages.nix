@@ -54,5 +54,6 @@
     taskwarrior3
     sqlite
     newsboat
+    streamlink
   ];
 }

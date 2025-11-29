@@ -159,7 +159,7 @@ in
     };
   };
 
-  services.xserver.windowManager.i3.package = pkgs.i3-gaps;
+  services.xserver.windowManager.i3.package = pkgs.i3;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
