@@ -115,16 +115,16 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1761016216,
-        "narHash": "sha256-G/iC4t/9j/52i/nm+0/4ybBmAF4hzR8CNHC75qEhjHo=",
+        "lastModified": 1764517877,
+        "narHash": "sha256-pp3uT4hHijIC8JUK5MEqeAWmParJrgBVzHLNfJDZxg4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "481cf557888e05d3128a76f14c76397b7d7cc869",
+        "rev": "2d293cbfa5a793b4c50d17c05ef9e385b90edf6c",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-25.05",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -192,7 +192,8 @@
         "nur": "nur",
         "sops-nix": "sops-nix",
         "undetected-chromedriver": "undetected-chromedriver",
-        "zen-browser": "zen-browser"
+        "zen-browser": "zen-browser",
+        "zsh-helix-mode": "zsh-helix-mode"
       }
     },
     "sops-nix": {
@@ -248,6 +249,27 @@
       "original": {
         "owner": "kbwhodat",
         "repo": "zen-browser-flake",
+        "type": "github"
+      }
+    },
+    "zsh-helix-mode": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1758445842,
+        "narHash": "sha256-wiUocowz3uL3fTAxTfG3URhOwB2RrFWEmUnW4k0ETJ4=",
+        "owner": "multirious",
+        "repo": "zsh-helix-mode",
+        "rev": "f9d72d23f5ce12da31967a6ecd15dcafa1355fa7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "multirious",
+        "ref": "main",
+        "repo": "zsh-helix-mode",
         "type": "github"
       }
     }

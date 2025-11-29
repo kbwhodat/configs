@@ -11,7 +11,7 @@ in
     historyIgnore = [ "ls" "cd" "exit" ];
 
 		sessionVariables = {
-			EDITOR = "nvim";
+			# EDITOR = "nvim";
       VISUAL= "vim";
       TERM = "xterm-256color";
 			COLORTERM = "truecolor";
@@ -32,7 +32,7 @@ eval "$(direnv hook bash)"
 
 export PATH="/run/wrappers/bin:/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.local/share/tridactyl:/usr/local/bin":$PATH
 
-export EDITOR="nvim"
+# export EDITOR="nvim"
 export VISUAL="vim"
 export TMUX_CONF="~/.config/tmux/tmux.conf"
 export ${ if isDarwin then "DRI_PRIME=0" else "DRI_PRIME=1" }

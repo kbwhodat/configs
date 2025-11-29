@@ -138,7 +138,6 @@
         "scrollbar.track.border": "#2e333cff",
         "editor.foreground": "#FFFFFF",
         "editor.background": "#000000",
-        "search.match_background": "#39bae53d",
         "editor.document_highlight.bracket_background": "#ffffff00",
         "editor.gutter.background": "#000000",
         "editor.subheader.background": "#2f343eff",

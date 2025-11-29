@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
 in
@@ -14,7 +14,7 @@ in
 				src = pkgs.zsh-vi-mode;
 				file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
 			}
-		];
+  	];
 
 		history = {
 			expireDuplicatesFirst = true;

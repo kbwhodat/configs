@@ -96,6 +96,12 @@ local plugins = {
     end,
   },
   {
+    "nicolasgb/jj.nvim",
+    config = function()
+      require("jj").setup({})
+    end,
+  },
+  {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,

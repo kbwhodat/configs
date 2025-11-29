@@ -21,7 +21,7 @@
 
   #home.file."/Users/katob/.katotoken".source = config.sops.secrets."github-token".path;
   home.sessionVariables = {
-    EDITOR = "nvim";
+    # EDITOR = "nvim";
   };
 
   programs = {

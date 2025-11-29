@@ -6,14 +6,13 @@
   # Using Lix -- which essentially a nix upgrade with extra features and optimizations
   # inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.93.0.tar.gz";
   # inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
-
   #inputs.nil.url = "github:oxalica/nil";
 
   #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
   inputs.home-manager.url = "github:nix-community/home-manager";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   # inputs.nixpkgs.url = "github:matteo-pacini/nixpkgs/gtk3-clang-fixes-2";
 
   inputs.nur.url = "github:nix-community/NUR";

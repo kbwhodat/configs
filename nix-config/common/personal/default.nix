@@ -13,7 +13,7 @@
     #clang
     perl
     nodejs_22
-    nodePackages.peerflix
+    #nodePackages.peerflix
     ruby
     php
     pinentry-gtk2
