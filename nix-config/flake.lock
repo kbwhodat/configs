@@ -192,8 +192,7 @@
         "nur": "nur",
         "sops-nix": "sops-nix",
         "undetected-chromedriver": "undetected-chromedriver",
-        "zen-browser": "zen-browser",
-        "zsh-helix-mode": "zsh-helix-mode"
+        "zen-browser": "zen-browser"
       }
     },
     "sops-nix": {
@@ -249,27 +248,6 @@
       "original": {
         "owner": "kbwhodat",
         "repo": "zen-browser-flake",
-        "type": "github"
-      }
-    },
-    "zsh-helix-mode": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1758445842,
-        "narHash": "sha256-wiUocowz3uL3fTAxTfG3URhOwB2RrFWEmUnW4k0ETJ4=",
-        "owner": "multirious",
-        "repo": "zsh-helix-mode",
-        "rev": "f9d72d23f5ce12da31967a6ecd15dcafa1355fa7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "multirious",
-        "ref": "main",
-        "repo": "zsh-helix-mode",
         "type": "github"
       }
     }

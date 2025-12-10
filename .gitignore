@@ -150,3 +150,4 @@ zed/prompts/*
 zed/embeddings/*
 configstore/
 sc-im/
+glib-2.0/

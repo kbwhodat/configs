@@ -210,6 +210,9 @@ in
     package = pkgs.nix-direnv;
   };
 
+  virtualisation.vmware.host.enable = true;
+  programs.nix-ld.enable = true;
+
   services.smartdns = {
     enable = true;
     bindPort = 53;

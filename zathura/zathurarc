@@ -2,3 +2,12 @@ set recolor
 set recolor-lightcolor \#000000
 set recolor-keephue
 set default-bg \#000000
+
+# Always scale pages/images to fit width
+set adjust-open "width"
+
+# Make Zathura scale oversized images
+set adjust-mode "best-fit"
+
+# If using the plugin for EPUB (zathura-epub), ensure image scaling is allowed
+set render-loading true
