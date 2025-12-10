@@ -16,6 +16,8 @@ let
     pkgs.nspr
     pkgs.mesa
     pkgs.libGL
+    pkgs.stdenv.cc.cc.lib
+    pkgs.zlib
   ];
 in
 {

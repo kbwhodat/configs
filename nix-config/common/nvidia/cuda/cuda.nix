@@ -3,7 +3,7 @@
 {
 
   # Enable CUDA support
-  nixpkgs.config.cudaSupport = false;
+  nixpkgs.config.cudaSupport = if config.networking.hostName == "nixos-server" then true else false;
 
   # nix.settings.substituters = [
   #   "https://cuda-maintainers.cachix.org"

@@ -52,7 +52,7 @@
     "show": true,
     "show_nav_history_buttons": false
   },
-  "relative_line_numbers": true,
+  "relative_line_numbers": "enabled",
   "terminal": {
     "button": true,
   },

@@ -19,20 +19,23 @@
   },
   "auto_update": false,
   "buffer_font_family": "ComicShannsMono Nerd Font Mono",
-  "buffer_font_size": 14.5,
+  "buffer_font_size": 15.5,
   "hour_format": "hour24",
-  "cursor_blink": false,
+  "cursor_blink": true,
   "unnecessary_code_fade": 0.5,
   "notification_panel": {
     "button": false,
   },
   "agent": {
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
+    },
     "default_model": {
-      "provider": "ollama",
-      "model": "deepseek-r1:7b"
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
     },
     "provider": null,
-    "version": "2",
     "enabled": true
   },
   "outline_panel": {
@@ -76,7 +79,7 @@
     "git_status": true
   },
   "ui_font_family": "ComicShannsMono Nerd Font Mono",
-  "ui_font_size": 16,
+  "ui_font_size": 18,
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always"
@@ -135,7 +138,6 @@
         "scrollbar.track.border": "#2e333cff",
         "editor.foreground": "#FFFFFF",
         "editor.background": "#000000",
-        "search.match_background": "#39bae53d",
         "editor.document_highlight.bracket_background": "#ffffff00",
         "editor.gutter.background": "#000000",
         "editor.subheader.background": "#2f343eff",
@@ -149,7 +151,7 @@
         "editor.active_wrap_guide": "#c8ccd41a",
         "editor.document_highlight.read_background": "#74ade81a",
         "editor.document_highlight.write_background": "#555a6366",
-        "terminal.background": "#282c33ff",
+        "terminal.background": "#000000",
         "terminal.foreground": "#dce0e5ff",
         "terminal.bright_foreground": "#dce0e5ff",
         "terminal.dim_foreground": "#282c33ff",
@@ -222,7 +224,9 @@
         "warning.border": "#5d4c2fff",
     "players": [
       {
-        "cursor": "#DCDCCC"
+        "cursor": "#DCDCCC",
+// used for vim highlight selection
+        "selection": "#808080"
       }
     ],
     "syntax": {
