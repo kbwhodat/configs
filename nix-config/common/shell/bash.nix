@@ -41,7 +41,7 @@ alias clear="tput reset"
 
 if [[ ''${uname} == "Darwin" ]]; then
   export DOCKER_HOST="unix://${config.home.homeDirectory}/.colima/default/docker.sock"
-  export LIBRARY_PATH="${if isDarwin then pkgs.libiconv-darwin else pkgs.libiconv}/lib"
+  export LIBRARY_PATH="${if isDarwin then pkgs.darwin.libiconv else pkgs.libiconv}/lib"
 fi
 
     shopt -s histappend

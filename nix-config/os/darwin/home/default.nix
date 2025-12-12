@@ -17,7 +17,7 @@
 	manual.json.enable = false;
   home.enableNixpkgsReleaseCheck = false;
 
-  home.stateVersion = "25.05"; # Please read the comment before changing.
+  home.stateVersion = "25.11"; # Please read the comment before changing.
 
   #home.file."/Users/katob/.katotoken".source = config.sops.secrets."github-token".path;
   home.sessionVariables = {
