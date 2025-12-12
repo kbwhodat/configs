@@ -9,16 +9,16 @@
   #inputs.nil.url = "github:oxalica/nil";
 
   #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
-  inputs.home-manager.url = "github:nix-community/home-manager";
+  inputs.home-manager.url = "github:nix-community/home-manager/release-25.11";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   # inputs.nixpkgs.url = "github:matteo-pacini/nixpkgs/gtk3-clang-fixes-2";
 
   inputs.nur.url = "github:nix-community/NUR";
   inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
 
-  inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+  inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
   # inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";

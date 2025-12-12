@@ -39,8 +39,8 @@ in
     iina
     colima
     lima
-    libiconv-darwin
-    python312
+    darwin.libiconv
+    python313
   ];
 
   launchd.user.agents.kanata = {
@@ -80,12 +80,12 @@ in
   ];
 
   homebrew = {
-    # enable = true;
-    # onActivation.cleanup = "uninstall";
+    enable = true;
+    onActivation.cleanup = "uninstall";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "kanata" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
-    casks = [ "helium-browser" "karabiner-elements" "clocker" "aerospace" "zed" "dbeaver-community" "obsidian" "vlc" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
+    casks = [ "mitmproxy" "helium-browser" "karabiner-elements" "clocker" "aerospace" "zed" "dbeaver-community" "obsidian" "vlc" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;

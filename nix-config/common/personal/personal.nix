@@ -5,23 +5,22 @@
     _7zz
     openssl_legacy
     yarn
-    duckdb
+    # duckdb
     gnome-keyring
     gonchill
     undetected-chromedriver
     libsixel
     #clang
     perl
-    nodejs_22
     #nodePackages.peerflix
     ruby
-    php
+    # php
     pinentry-gtk2
     zip
     # gh
     conda
     anki
-    texliveFull
+    # texliveFull
     bruno
     rlama
     uv
