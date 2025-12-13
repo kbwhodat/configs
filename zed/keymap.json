@@ -193,5 +193,11 @@
     "bindings": {
       "ctrl-v": "editor::Paste",
     }
+  },
+  {
+    "context": "ContextEditor > Editor",
+    "bindings": {
+      "ctrl-shift-enter": "assistant::Assist"
+    }
   }
 ]

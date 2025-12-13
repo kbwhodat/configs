@@ -41,10 +41,11 @@ in
   ];
   
   settings = {
-    "extensions.webextensions.restrictedDomains" = "";
       
     # This will enable firefox sync
     "identity.fxaccounts.enabled" = if isDarwin then false else true;
+
+    "extensions.webextensions.restrictedDomains" = "";
 
     "security.cert_pinning.enforcement_level" = 1;
 

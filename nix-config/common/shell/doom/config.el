@@ -85,56 +85,6 @@
 (setq doom-theme 'doom-alabaster)
 (setq doom-font (font-spec :family "ComicShannsMono Nerd Font Mono" :size 17))
 
-(defvar nb/current-line '(0 . 0)
-  "(start . end) of current line in current buffer")
-(make-variable-buffer-local 'nb/current-line)
-
-(defun nb/unhide-current-line (limit)
-  "Font-lock function"
-  (let ((start (max (point) (car nb/current-line)))
-        (end (min limit (cdr nb/current-line))))
-    (when (< start end)
-      (remove-text-properties start end
-                              '(invisible t display "" composition ""))
-      (goto-char limit)
-      t)))
-
-(defun nb/refontify-on-linemove ()
-  "Post-command-hook"
-  (let* ((start (line-beginning-position))
-         (end   (line-beginning-position 2))
-         (needs-update (not (equal start (car-safe nb/current-line)))))
-    (setq nb/current-line (cons start end))
-    (when needs-update
-      (font-lock-flush start end)
-      (ignore-errors (font-lock-ensure start end)))))
-
-(defun nb/markdown-unhighlight ()
-  "Enable markdown concealing with live unhide on current line."
-  (interactive)
-  (setq-local font-lock-verbose nil)
-  (markdown-toggle-markup-hiding 'toggle)
-  (font-lock-add-keywords nil '((nb/unhide-current-line)) t)
-  (add-hook 'post-command-hook #'nb/refontify-on-linemove nil t))
-
-(add-hook 'markdown-mode-hook (lambda ()
-  ;; calm things down
-  (setq-local font-lock-verbose nil
-              markdown-fontify-code-blocks-natively nil)))
-
-(after! markdown-mode
-  (setq markdown-hide-markup t
-        markdown-fontify-code-blocks-natively nil
-        markdown-list-item-bullets (make-list 6 "-")
-        markdown-header-scaling nil)
-
-  (map! :map markdown-mode-map
-        :i "RET" #'newline
-        :n "RET"  nil)
-
-  ; (add-hook 'markdown-mode-hook #'markdown-toggle-markup-hiding)
-  (add-hook 'markdown-mode-hook #'nb/markdown-unhighlight)
-
   (custom-set-faces!
     '(markdown-bold-face             :weight bold :foreground nil)
     '(markdown-italic-face           :slant italic :foreground nil)

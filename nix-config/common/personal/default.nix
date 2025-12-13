@@ -2,5 +2,6 @@
 {
   imports = [
     ./personal.nix
+    ./ai.nix
   ];
 }
