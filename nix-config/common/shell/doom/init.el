@@ -23,12 +23,19 @@
 (kill-buffer "*Messages*")
 (kill-buffer "*scratch*")
 
-(defun buffer-change-hook (frame)
-  (unless
-      (seq-every-p
-       (lambda (elt) (string-match "^ *\\*" (buffer-name elt)))
-       (buffer-list))
-    (kill-buffer "*scratch*")))
+;; Startup hook to clean up buffers only once - this ensures it runs after Doom initialization
+(defun my-initial-buffer-setup ()
+  "Clean up buffers only once on startup."
+  ;; Kill scratch buffer if needed (this runs once after Emacs is fully initialized)
+  (when (and (get-buffer "*scratch*")
+             (not (eq (length (buffer-list)) 1))) ; unless it's the only buffer
+    (kill-buffer "*scratch*"))
+  ;; Also kill messages buffer if it's still around
+  (when (get-buffer "*Messages*")
+    (kill-buffer "*Messages*")))
+
+;; Run this hook only once after Doom initialization
+(add-hook 'after-init-hook #'my-initial-buffer-setup)
 
 (set-face-attribute 'default nil
   :family "ComicShannsMono Nerd Font Mono"

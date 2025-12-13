@@ -5,25 +5,20 @@
     _7zz
     openssl_legacy
     yarn
-    # duckdb
     gnome-keyring
     gonchill
     undetected-chromedriver
     libsixel
     #clang
     perl
-    #nodePackages.peerflix
     ruby
-    # php
     pinentry-gtk2
     zip
-    # gh
     conda
     anki
-    # texliveFull
     bruno
-    rlama
     uv
+    bun
 
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {

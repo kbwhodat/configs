@@ -2,11 +2,6 @@
 {
   home.packages = with pkgs; [
     zathura
-    skim
-    rubber
-    # texliveBookPub
-		#texliveFull
-    taskwarrior3
     taskwarrior-tui
     vim
     markdown-oxide
