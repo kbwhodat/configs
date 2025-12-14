@@ -40,6 +40,8 @@
     mesa.drivers
   ];
 
+  nix.settings.download-buffer-size = 524288000;
+
   virtualisation.docker.enable = true;
 
   services.xserver.displayManager.sessionCommands = ''
