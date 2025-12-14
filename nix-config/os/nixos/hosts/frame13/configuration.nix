@@ -38,7 +38,6 @@
   hardware.graphics.extraPackages = with pkgs; [
     rocmPackages.clr.icd
     mesa.drivers
-    amdvlk
   ];
 
   virtualisation.docker.enable = true;
