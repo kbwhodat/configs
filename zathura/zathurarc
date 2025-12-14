@@ -11,3 +11,4 @@ set adjust-mode "best-fit"
 
 # If using the plugin for EPUB (zathura-epub), ensure image scaling is allowed
 set render-loading true
+set selection-clipboard clipboard
