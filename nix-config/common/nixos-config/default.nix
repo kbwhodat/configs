@@ -214,7 +214,7 @@ in
   programs.nix-ld.enable = true;
 
   services.smartdns = {
-    enable = true;
+    enable = false;
     bindPort = 53;
 
     settings = {
@@ -328,17 +328,20 @@ in
     };
   };
 
+  services.nextdns = {
+    enable = true;
+    arguments = [
+      "-config"
+      "66f183"
+    ];
+  };
+
   services.resolved = {
     enable = false;
-    # extraConfig = ''
-    #   [Resolve]
-    #   DNS=1.1.1.1
-    #   FallbackDNS=
-    #   DNSSEC=allow-downgrade
-    #   Domains=~.
-    # '';
     extraConfig = "
       nameserver 127.0.0.l
+      nameserver 9.9.9.10
+      nameserver 64.6.64.6
     ";
   };
 
