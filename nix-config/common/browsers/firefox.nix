@@ -1,4 +1,4 @@
-{ config, pkgs, inputs,  ... }:
+{ config, pkgs, inputs, lib,  ... }:
 
 let
 inherit (pkgs.stdenv) isDarwin;
@@ -15,7 +15,7 @@ in
 
   programs.firefox.package =
     if isDarwin then
-      pkgs.firefox-bin
+      pkgs.firefox
     else
       pkgs.firefox.override {
          # enableTridactylNative = true;
@@ -37,8 +37,14 @@ in
       kagi-search
       vimium-c
       clearurls
-      dark-background-light-text
-  ];
+    ];
+      #   ++ [
+      # (pkgs.fetchFirefoxAddon {
+      #   name = "ultimadark";
+      #   url = "https://addons.mozilla.org/firefox/downloads/file/4648219/ultimadark-1.6.51.xpi";
+      #   sha256 = "sha256:3c81dcec2b326a4ce0d7c3273c3b28c03f9a5cf4d7019354ebd59dbf431f9d01";
+      # })
+    # ];
   
   settings = {
       
