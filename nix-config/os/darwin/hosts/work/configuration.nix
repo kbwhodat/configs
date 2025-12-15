@@ -81,14 +81,15 @@ in
 
   homebrew = {
     enable = true;
-    onActivation.cleanup = "uninstall";
+    # onActivation.cleanup = "uninstall";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "kanata" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
-    casks = [ "mitmproxy" "helium-browser" "karabiner-elements" "clocker" "aerospace" "zed" "dbeaver-community" "obsidian" "vlc" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
+    brews = [ "opencode" "kanata" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
+    casks = [ "freetube" "mitmproxy" "helium-browser" "karabiner-elements" "clocker" "aerospace" "zed" "dbeaver-community" "obsidian" "vlc" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;
+  nix.settings.ssl-cert-file = "/etc/nix/cache-nixos-org.pem";
   nix.settings.allowed-users = ["root" "katob"];
   nix.settings.trusted-users = ["root" "katob"];
 
