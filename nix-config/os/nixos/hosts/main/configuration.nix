@@ -34,6 +34,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    discord
     usbutils
     displaylink
     # zulu17

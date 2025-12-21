@@ -110,6 +110,30 @@ in
         };
       };
       agent = {
+        perftutor = {
+          mode = "primary";
+          description = "Perf Tutor Agent";
+          prompt = builtins.readFile ./prompts/perftutor.txt;
+          tools = {
+            write = true;
+            read = true;
+            edit = true;
+            bash = true;
+          };
+          temperature = 0.25;
+        };
+        perfguru = {
+          mode = "primary";
+          description = "Perf Guru Agent";
+          prompt = builtins.readFile ./prompts/perfguru.txt;
+          tools = {
+            write = true;
+            read = true;
+            edit = true;
+            bash = true;
+          };
+          temperature = 0.25;
+        };
         debug = {
           mode = "primary";
           description = "Code Debugging Agent";
@@ -148,19 +172,22 @@ in
             "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
           };
         };
-        claude = {
+        glm = {
           npm = "@ai-sdk/openai-compatible";
-          name = "Claude (work)";
+          name = "nemotron-3-nano";
           options = {
             baseURL = "http://10.0.0.122:11434/v1";
           };
 
           models = {
-            "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
+            "nemotron-3-nano" = { 
+              name = "nemotron-3-nano (local)"; 
+              tool_call = true;
+            };
           };
         };
       };
-      model = "qwen3-coder:30b-32k";
+      model = "glm-4.7-flash:32b-32k";
     };
   };
 }

@@ -116,7 +116,7 @@
       "space r": "workspace::ToggleRightDock",
       "space l": "workspace::ActivatePaneRight",
       "y": "project_panel::Copy",
-      "p": "project_panel::Paste",
+//      "p": "project_panel::Paste",
       "ctrl-v": "project_panel::Paste",
       "shift-y": "workspace::CopyPath",
     }

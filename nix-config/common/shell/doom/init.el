@@ -80,9 +80,9 @@
     :keymaps 'override 
     :prefix "SPC" :non-normal-prefix "M-SPC")
   (my/leader
-    "f"  '(:ignore t :which-key "files")
-    "ff" '(find-file :which-key "find file")
-    "fs" '(save-buffer :which-key "save")
+    ; "f"  '(:ignore t :which-key "files")
+    ; "ff" '(find-file :which-key "find file")
+    ; "fs" '(save-buffer :which-key "save")
     "b"  '(:ignore t :which-key "buffers")
     "bb" '(switch-to-buffer :which-key "switch")
     "bd" '(kill-this-buffer :which-key "kill")
@@ -156,7 +156,11 @@
 
 (when (fboundp 'my/leader)
   (my/leader
-    "ns" '(deft  :which-key "search")))
+    "e" '(deft  :which-key "search")
+    "nd" '(deft-delete-file  :which-key "delete file")
+    "nf" '(deft-filter  :which-key "filter for files")
+    "f" '(deft-find-file  :which-key "find files")
+    "nr" '(deft-refresh  :which-key "refresh")))
 
 ;;; --- Minimal completion/search (lightweight, Doom-like flow) ---
 ;; Vertico completion UI

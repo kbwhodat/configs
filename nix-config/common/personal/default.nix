@@ -4,5 +4,6 @@
     ./personal.nix
     ./ai.nix
     ./openvpn.nix
+    ./agenticseek.nix
   ];
 }

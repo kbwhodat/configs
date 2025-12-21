@@ -704,10 +704,10 @@ in {
 
     home.file = mkMerge ([
         {
-            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiless.ini"}" =
+            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiles.ini"}" =
                 mkIf (cfg.profiles != {}) {text = profilesIni;};
 
-            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installss.ini"}" =
+            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installs.ini"}" =
                 {text = installsIni;};
         }
       ]
@@ -912,17 +912,17 @@ in {
           force = true;
         };
 
-        "${zenConfigPath}/profiles.ini" = if !isDarwin then {
-          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiles.ini";
-        } else {
-          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiles.ini";
-        };
-
-        "${zenConfigPath}/installs.ini" = if !isDarwin then {
-          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installs.ini";
-        } else {
-          source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installs.ini";
-        };
+        # "${zenConfigPath}/profiless.ini" = if !isDarwin then {
+        #   source = config.lib.filemkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiless.ini";
+        # } else {
+        #   source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiless.ini";
+        # };
+        #
+        # "${zenConfigPath}/installss.ini" = if !isDarwin then {
+        #   source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installss.ini";
+        # } else {
+        #   source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installss.ini";
+        # };
       }));
   };
 }
