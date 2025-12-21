@@ -10,6 +10,7 @@ in
     yarn
     (if isDarwin then nil else gnome-keyring)
     gonchill
+    gonwatch
     undetected-chromedriver
     libsixel
     #clang
@@ -21,6 +22,8 @@ in
     bruno
     uv
     bun
+    ffmpeg
+    freetube
 
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {

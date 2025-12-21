@@ -16,7 +16,7 @@
   # inputs.nixpkgs.url = "github:matteo-pacini/nixpkgs/gtk3-clang-fixes-2";
 
   inputs.mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
-  inputs.llm-agents.url = "github:numtide/llm-agents.nix";
+  inputs.llm-agents.url = "github:numtide/llm-agents.nix/main";
 
   inputs.nur.url = "github:nix-community/NUR";
   inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
@@ -32,9 +32,10 @@
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.1";
+  inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
   # inputs.gonchill.url = "github:kbwhodat/gonchill/2607f4315c455d6303afb8b20d9ee9cbe694686e";
 
-  outputs = inputs@{ self, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, zen-browser, ... }:
+  outputs = inputs@{ self, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
@@ -42,6 +43,7 @@
       overlays = [
         nur.overlays.default
         gonchill.overlay
+        gonwatch.overlay
         # firefox-darwin.overlay
         undetected-chromedriver.overlay
         (import ./pkgs/overlay.nix)

@@ -43,15 +43,14 @@ in
 
   isDefault = true;
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-      consent-o-matic
+      pwas-for-firefox
       sponsorblock
+      proton-pass
+      ublock-origin
       df-youtube
       kagi-search
-      darkreader
-      # browserpass
-      privacy-badger
-      ublock-origin
       vimium-c
+      dark-background-light-text
       clearurls
   ];
 

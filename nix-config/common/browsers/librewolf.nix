@@ -7,9 +7,9 @@ in
 
   programs.librewolf.enable =
     if isDarwin then
-      true
+      false
     else
-      true;
+      false;
 
   programs.librewolf.package =
     if isDarwin then

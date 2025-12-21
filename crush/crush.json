@@ -1,0 +1,43 @@
+{
+    "$schema": "https://charm.land/crush.json",
+    "providers": {
+        "ollama": {
+            "name": "ollama",
+            "base_url": "http://10.0.0.122:11434/v1/",
+            "type": "openai-compat",
+            "models": [
+                {
+                    "name": "glm-4.7-flash:q8_0",
+                    "id": "glm-4.7-flash:q8_0",
+                    "context_window": 65000,
+                    "default_max_tokens": 20000
+                }
+            ]
+        }
+    },
+    "lsp": {
+        "go": {
+            "command": "gopls",
+            "env": {
+                "GOTOOLCHAIN": "go1.24.5"
+            }
+        },
+        "lua_ls": {
+            "command": "lua-language-server"
+        },
+        "typescript": {
+            "command": "typescript-language-server",
+            "args": [
+                "--stdio"
+            ]
+        }
+    },
+    "options": {
+        "disable_metrics": true
+    },
+    "allowed_tools": [
+        "ls",
+        "cat",
+        "grep"
+    ]
+}
