@@ -17,6 +17,7 @@
     ./wezterm.nix
     ./alacritty.nix
     ./sc-im.nix
+    ./syncthing.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix

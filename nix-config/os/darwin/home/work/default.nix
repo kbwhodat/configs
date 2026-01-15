@@ -4,9 +4,8 @@
 	imports = [
     ../../../common/sops
 	../../../common
+    ../../../common/work
     ../../../pkgs
-    ../../../common/personal
-    ../../../common/macos
 	];
 
   # Home Manager needs a bit of information about you and the paths it should

@@ -102,7 +102,6 @@ in
     }
 
 
-
     if [[ ''${uname} == "Darwin" ]]; then
       if [ ! -f /usr/local/bin/pinentry-mac ]; then
         ln -s /run/current-system/sw/bin/pinentry-mac /usr/local/bin/pinentry-mac

@@ -167,7 +167,7 @@ local plugins = {
       highlight = { enable = true },
     },
     config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+      require("nvim-treesitter").setup(opts)
     end,
   },
   {
@@ -197,15 +197,15 @@ local plugins = {
 		lazy = true,
 		event = "BufReadPre *.md",
 	},
-	{'epwalsh/obsidian.nvim',
-		version = "*",
-		lazy = true,
-		event = "BufReadPre *.md",
-		ft = "markdown",
-		dependencies = {
-			"nvim-lua/plenary.nvim"
-		},
-	},
+	-- {'epwalsh/obsidian.nvim',
+	-- 	version = "*",
+	-- 	lazy = true,
+	-- 	event = "BufReadPre *.md",
+	-- 	ft = "markdown",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim"
+	-- 	},
+	-- },
 	 'christoomey/vim-tmux-navigator',
 	 "petertriho/cmp-git",
 	 dependencies = { 'hrsh7th/nvim-cmp' },

@@ -1,0 +1,6 @@
+mkdir -p ~/.local/bin
+cat > ~/.local/bin/kanata-wrapper <<'EOF'
+#!/bin/sh
+/etc/profiles/per-user/katob/bin/kanata -c "$HOME/.config/kanata/kanata.kbd"
+EOF
+chmod +x ~/.local/bin/kanata-wrapper

@@ -95,9 +95,7 @@ in
     ueberzug
     pulseaudio
     autorandr
-    mpv
     vlc
-    openvpn
     yaegi # go interpreter
     dunst
     clang
