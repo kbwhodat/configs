@@ -1,11 +1,14 @@
 { pkgs, config, inputs, lib, ... }:
-
+let
+  inherit (pkgs.stdenv) isDarwin;
+in
 {
   home.packages = with pkgs; [
+    mpv
     _7zz
     openssl_legacy
     yarn
-    gnome-keyring
+    (if isDarwin then nil else gnome-keyring)
     gonchill
     undetected-chromedriver
     libsixel
@@ -14,7 +17,6 @@
     ruby
     pinentry-gtk2
     zip
-    conda
     anki
     bruno
     uv
@@ -81,8 +83,9 @@
       selenium
       cdp-socket
       seleniuim_driverless
+      conda
       ipvanish
-      
+
       #for gonwatch
       langdetect
     ]))

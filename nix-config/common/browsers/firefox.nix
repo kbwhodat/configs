@@ -37,7 +37,6 @@ in
       kagi-search
       vimium-c
       clearurls
-    ];
       #   ++ [
       # (pkgs.fetchFirefoxAddon {
       #   name = "ultimadark";
@@ -45,11 +44,12 @@ in
       #   sha256 = "sha256:3c81dcec2b326a4ce0d7c3273c3b28c03f9a5cf4d7019354ebd59dbf431f9d01";
       # })
     # ];
+  ];
   
   settings = {
       
     # This will enable firefox sync
-    "identity.fxaccounts.enabled" = if isDarwin then false else true;
+    "identity.fxaccounts.enabled" = if isDarwin then true else true;
 
     "extensions.webextensions.restrictedDomains" = "";
 
@@ -208,6 +208,9 @@ in
     "browser.search.suggest.enabled" = false;
     "browser.urlbar.suggest.quicksuggest.sponsored" = false;
     "browser.urlbar.suggest.quicksuggest.nonsponsored" = false;
+    "browser.newtabpage.activity-stream.showSponsored" = false;
+    "browser.newtabpage.activity-stream.showSponsoredCheckboxes" = false;
+    "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
     "browser.formfill.enable" = false;
     "security.insecure_connection_text.enabled" = true;
     "security.insecure_connection_text.pbmode.enabled" = true;
@@ -267,6 +270,12 @@ in
     "toolkit.coverage.endpoint.base" = "";
     "browser.newtabpage.activity-stream.feeds.telemetry" = false;
     "browser.newtabpage.activity-stream.telemetry" = false;
+    "browser.search.serpEventTelemetryCategorization.enabled" = false;
+    "browser.search.serpEventTelemetryCategorization.regionEnabled" = false;
+    "network.trr.confirmation_telemetry_enabled" = false;
+    "nimbus.telemetry.targetingContextEnabled" = false;
+    "dentity.fxaccounts.telemetry.clientAssociationPing.enabled" = false;
+
 
     /** EXPERIMENTS ***/
     "app.shield.optoutstudies.enabled" = false;

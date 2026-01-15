@@ -1,6 +1,6 @@
 require("kato")
-require("kato.obsidian")
-require("kato.obsidian_functions")
+-- require("kato.obsidian")
+-- require("kato.obsidian_functions")
 require("kato.lsp")
 
 local vim = vim

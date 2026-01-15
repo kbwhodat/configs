@@ -47,9 +47,7 @@ in
     xdotool
     ueberzug
     pulseaudio
-    mpv
     vlc
-    openvpn
     yaegi # go interpreter
     dunst
     clang-tools
