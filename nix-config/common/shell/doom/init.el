@@ -16,6 +16,9 @@
 
 (require 'doom-themes)
 
+;; remove the window decoration
+(add-to-list 'default-frame-alist '(undecorated . t))
+
 ;; Remove messages from the *Messages* buffer.
 (setq-default message-log-max nil)
 
