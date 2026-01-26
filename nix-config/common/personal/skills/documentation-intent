@@ -1,0 +1,47 @@
+name: documentation-intent
+description: Write concise, high-signal documentation explaining intent, decisions, and usage
+
+# Purpose
+Leave future-you (and teammates) enough context to maintain code without re-deriving intent.
+
+# When to use
+Use this skill when:
+- Adding non-obvious logic
+- Introducing a new module/service
+- Adding configuration
+- Making tradeoffs (performance, security, UX)
+- Creating public APIs or reusable components
+
+# Inputs
+- Code/diff and what it accomplishes
+- Any constraints, tradeoffs, or decisions made
+
+# Output Format (required)
+1) One-paragraph overview
+2) Key decisions (and why)
+3) How to use (quick start)
+4) Gotchas / non-obvious behaviors
+5) Extension points / future improvements (optional)
+
+# Documentation Rules
+- Prefer “why” over “what” (code shows what)
+- Use concrete examples
+- Avoid long walls of text
+- Keep docs close to code: README for modules, doc comments for APIs
+- Document invariants and contracts explicitly
+
+# Where to Document
+- Public functions/classes: doc comments with inputs/outputs/failures
+- Feature modules: README.md with flows and boundaries
+- Config: inline comments + example config snippet
+- Complex algorithms: short design note with assumptions and complexity
+
+# Required Content for Non-Obvious Logic
+- What problem is being solved
+- Constraints (latency, memory, UX)
+- Invariants (must always be true)
+- Failure modes and how they surface
+
+# What NOT to do
+- Don’t restate obvious code line-by-line
+- Don’t add docs that will drift; keep them minimal and essential

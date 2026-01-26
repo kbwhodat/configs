@@ -1,0 +1,33 @@
+name: flutter-ui-design
+description: Visual design system and UI rules for polished Flutter apps
+
+# Purpose
+Ensure the app looks modern, consistent, and visually appealing.
+
+# When to use
+Use this skill whenever generating screens, widgets, or layouts.
+
+# Design System
+- Material 3
+- Single global ThemeData
+- 8pt spacing grid only
+- Rounded corners: 12–16dp
+- Elevation used sparingly
+- Consistent typography scale
+
+# UI Rules
+- Prefer composition over custom painting
+- Use AnimatedContainer / AnimatedSwitcher for transitions
+- No visual clutter: whitespace is intentional
+- Buttons and cards must follow the same style everywhere
+
+# Widget Guidelines
+- Prefer const constructors
+- Extract reusable widgets early
+- Avoid deeply nested layouts
+- Use LayoutBuilder for responsiveness
+
+# Output Expectations
+- UI must look intentional, not demo-like
+- Reuse existing components instead of creating new ones
+- Favor clarity over cleverness

@@ -1,0 +1,73 @@
+name: performance-sanity-check
+description: Catch obvious performance traps early without premature optimization
+
+# Purpose
+Prevent the most common performance regressions: accidental N+1, repeated work, excessive allocations, hot-path I/O, and UI jank.
+
+# When to use
+Use this skill when:
+- Adding loops over data sets
+- Rendering UI lists/grids
+- Adding network calls, DB queries, or file I/O
+- Introducing caching, batching, pagination, streaming
+- Working with images/media
+- Any code that runs frequently (hot paths)
+
+# Inputs
+- Code/diff
+- Expected data sizes (even rough): small/medium/large
+- Platform constraints (mobile/desktop/server), target device class
+
+# Output Format (required)
+1) Hot path identification
+2) Big-O and “real-world” cost estimate
+3) Likely bottlenecks
+4) Fixes (ranked by effort/impact)
+5) Verification plan (how to measure)
+
+# Sanity Checklist
+Algorithmic
+- Avoid nested loops over unbounded lists (N^2) unless N is tiny
+- Watch for repeated searches in lists; use maps/sets where needed
+- Avoid sorting repeatedly inside render/handlers
+
+I/O
+- No network calls in render/build loops
+- Batch requests; add pagination
+- Add timeouts; avoid unlimited retries
+- Cache responses where safe
+
+Memory/Allocations
+- Avoid allocating in tight loops when avoidable
+- Prefer streaming/chunking over loading entire files
+- Beware of copying large buffers repeatedly
+
+Concurrency
+- Ensure CPU-heavy work doesn’t block main/UI thread
+- Use isolates/worker threads for expensive transforms if needed
+- Limit parallelism to avoid resource thrash
+
+UI-specific (Flutter-friendly guidance)
+- Prefer const widgets where possible
+- Avoid rebuilding large trees unnecessarily
+- Use ListView.builder for long lists
+- Avoid expensive work in build(); move to providers/controllers
+- Use RepaintBoundary or caching for expensive subtrees if needed
+- Prefer sized images and caching for image-heavy screens
+
+# “Red Flag” Patterns (must call out)
+- N+1 queries/requests
+- Doing expensive parsing/JSON decode repeatedly
+- Recomputing derived data on every render without memoization
+- Logging in tight loops in production
+- Unbounded caches (memory leak risk)
+
+# Verification Plan
+- Define one metric: latency, fps/jank, memory, cpu
+- Add a micro-benchmark or timing logs around the suspect area
+- Compare before/after with the same input size
+- For UI: use frame timing/jank stats; for backend: p95/p99 latency
+
+# What NOT to do
+- Don’t propose micro-optimizations unless a hot path is identified
+- Don’t add complex caching unless necessary; prefer simple fixes first

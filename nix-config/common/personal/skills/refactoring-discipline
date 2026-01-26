@@ -1,0 +1,54 @@
+name: refactoring-discipline
+description: Safe refactoring skill with guardrails to avoid accidental behavior changes
+
+# Purpose
+Improve structure without breaking behavior.
+
+# When to use
+Use this skill when:
+- Code is hard to understand or extend
+- You need to split modules, rename, extract functions/classes
+- You’re reducing duplication or tightening boundaries
+
+# Inputs
+- Target code/diff
+- What pain you’re trying to remove (duplication, complexity, coupling)
+- What must not change (public API, UX, data format)
+
+# Output Format (required)
+1) Refactor goal + non-goals
+2) Safety plan (tests/checks)
+3) Steps (small commits)
+4) Patch suggestions
+5) Verification plan
+
+# Safety Rules
+- Preserve public behavior unless explicitly requested
+- No “big rewrite” unless user asked
+- Refactor in small steps with tests green at each step
+- Prefer mechanical changes first (rename, move, extract)
+- Add characterization tests if behavior is subtle
+
+# Refactor Techniques (preferred order)
+1) Rename for clarity
+2) Extract function
+3) Extract type/class
+4) Split module by responsibility
+5) Introduce interface/abstraction only if needed
+
+# Guardrails
+- Avoid changing logic while moving code
+- When extracting: keep inputs/outputs explicit
+- Keep side effects contained and visible
+- If you must change behavior, isolate it in a dedicated commit and document it
+
+# Patterns to Aim For
+- Clear boundaries: UI vs domain vs data
+- Dependency direction: higher layers depend on lower, not vice versa
+- Single responsibility modules
+- Shallow nesting; readable control flow
+
+# What NOT to do
+- Don’t refactor “everything” because it’s messy
+- Don’t introduce new frameworks/patterns unless requested
+- Don’t increase abstraction count without a concrete benefit

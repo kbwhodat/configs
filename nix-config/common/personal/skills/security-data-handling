@@ -1,0 +1,79 @@
+name: security-data-handling
+description: Practical security and data-handling guardrails for everyday development
+
+# Purpose
+Prevent common security mistakes without slowing development.
+
+# When to use
+Use this skill when:
+- Handling auth/session tokens
+- Storing user data
+- Calling external APIs
+- Accepting user input
+- Building client apps (mobile/web)
+- Implementing permissions/roles
+
+# Inputs
+- Code/diff
+- Threat level (consumer app, internal tool, regulated)
+- Storage choices (client storage, server DB, logs)
+
+# Output Format (required)
+1) Data inventory (what data exists, where it flows)
+2) Threats (top risks only)
+3) Must-do mitigations
+4) Code changes (minimal)
+5) Verification steps
+
+# Core Rules (must follow)
+Secrets
+- Never hardcode secrets in client apps or repos
+- Use environment/config injection on server
+- Rotate leaked secrets immediately
+
+Auth
+- Tokens must be stored securely (platform secure storage where applicable)
+- Never log tokens, passwords, OTPs, or sensitive identifiers
+- Validate auth server-side; client checks are UX only
+
+Input Validation
+- Treat all external input as untrusted
+- Validate types, sizes, formats
+- Escape/encode where required (HTML/SQL/command contexts)
+
+Permissions
+- Enforce authorization on the server for sensitive actions
+- Use least privilege
+- Explicit deny is safer than implicit allow
+
+Data Storage
+- Store minimum necessary data
+- Avoid sensitive data in analytics by default
+- Encrypt at rest if available; always use TLS in transit
+
+Logging
+- No PII in logs unless required; redact by default
+- Use structured logs with ids, not raw payload dumps
+
+# Common App Mistakes to Flag
+- Client-side “security” relying on hidden endpoints
+- Debug logs containing user messages/emails/phones
+- Insecure random for tokens/ids
+- Missing rate limiting on auth-related endpoints (server)
+- Accepting uploaded files without type/size checks
+
+# Mobile-Specific Notes
+- Use secure storage for tokens
+- Assume device can be compromised; never trust client-only enforcement
+- Avoid storing private data unencrypted in local files
+
+# Verification
+- Search logs for sensitive fields
+- Add tests for permission checks
+- Confirm TLS usage
+- Attempt basic abuse cases (unauthorized access, oversized inputs)
+
+# What NOT to do
+- Don’t add heavy security frameworks unless requested
+- Don’t invent compliance requirements
+- Don’t block shipping; prioritize the high-risk fixes first

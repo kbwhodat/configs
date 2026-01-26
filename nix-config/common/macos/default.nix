@@ -5,7 +5,7 @@
     ./aerospace.nix
     # ./karabiner.nix
     # ./colima.nix
-    ./kanata.nix
+    # ./kanata.nix
     ./xcode.nix
   ];
 

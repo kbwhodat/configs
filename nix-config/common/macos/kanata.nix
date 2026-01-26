@@ -1,6 +1,6 @@
 {pkgs, ...}:
 {
-  home.packages = with pkgs; [
-    kanata
-  ];
+  # home.packages = with pkgs; [
+  #   kanata
+  # ];
 }

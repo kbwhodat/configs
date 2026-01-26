@@ -45,7 +45,24 @@ in
         Usage: /rebuild-switch
       '';
     };
+
+    skills = {
+      code-quality-review      = builtins.readFile ./skills/code-quality-review;
+      dating-app-mvp           = builtins.readFile ./skills/dating-app-mvp;
+      debugging-root-cause     = builtins.readFile ./skills/debugging-root-cause;
+      documentation-intent     = builtins.readFile ./skills/documentation-intent;
+      flutter-ui-design        = builtins.readFile ./skills/flutter-ui-design;
+      performance-sanity-check = builtins.readFile ./skills/performance-sanity-check;
+      refactoring-discipline   = builtins.readFile ./skills/refactoring-discipline;
+      security-data-handling   = builtins.readFile ./skills/security-data-handling;
+      task-breakdown-planning  = builtins.readFile ./skills/task-breakdown-planning;
+    };
     settings = {
+      keybinds = {
+        messages_half_page_up = "ctrl+k";
+        messages_half_page_down = "ctrl+j";
+      };
+
       mcp = {
         context7 = {
           type = "remote";

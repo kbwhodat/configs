@@ -9,7 +9,7 @@
   #inputs.nil.url = "github:oxalica/nil";
 
   #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
-  inputs.home-manager.url = "github:nix-community/home-manager/release-25.11";
+  inputs.home-manager.url = "github:nix-community/home-manager/master";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
   # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -21,6 +21,7 @@
   inputs.nur.url = "github:nix-community/NUR";
   inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
 
+  # inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
   inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 

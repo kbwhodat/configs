@@ -1,0 +1,79 @@
+name: code-quality-review
+description: Deep code review skill focused on correctness, readability, maintainability, and consistency
+
+# Purpose
+Review code changes like a strict senior engineer: spot bugs, sharp edges, confusing design, missing tests, and maintainability traps.
+
+# When to use
+Use this skill after writing or modifying code, or when reviewing a PR/diff.
+Use it before merging, shipping, or refactoring.
+
+# Inputs
+- The diff OR the full file(s)
+- Any constraints: language, framework, style guide, performance requirements
+- Expected behavior (if known)
+
+# Output Format (required)
+Return sections in this order:
+1) Summary (2–4 sentences)
+2) Must-fix issues (blocking)
+3) Should-fix issues (important)
+4) Nice-to-have improvements
+5) Suggested patch snippets (only where it matters)
+6) Missing tests checklist
+
+# Review Checklist (blocking if violated)
+Correctness
+- Edge cases: null/empty, bounds, error paths, retries/timeouts
+- Data invariants are stated and enforced
+- Concurrency: races, shared mutable state, ordering, double-execution
+- Resource handling: file/network handles closed, cancellation honored
+- No undefined behavior / UB / panics from untrusted input
+
+Maintainability
+- Function size: prefer small, single-purpose functions
+- Naming: self-explanatory, avoids ambiguity (do not use “data”, “info”, “tmp”)
+- Avoid hidden coupling: no magic globals, implicit singletons, or side effects
+- Reduce cyclomatic complexity; prefer early returns and clear branching
+- Keep modules cohesive; avoid “misc” dumping grounds
+
+Consistency
+- Follow project conventions over personal preference
+- Keep patterns consistent with nearby code (error handling, logging, structure)
+- Use existing helpers/utilities rather than re-inventing
+
+Reliability
+- Failures produce actionable error messages
+- Errors include context (what failed + key identifiers)
+- Retries are bounded; exponential backoff when appropriate
+- Timeouts exist for network calls
+- Idempotency considered when operations can be re-run
+
+API / Contracts
+- Public functions validate inputs and define outputs clearly
+- Return types communicate failure modes explicitly
+- Avoid breaking changes unless explicitly requested
+
+# Smell Detection (flag with explanation)
+- “Boolean parameter” smell: replace with enums/options when meaningful
+- “Stringly-typed” APIs where structured types make sense
+- Too many responsibilities in one class/module
+- Tight coupling to concrete implementations (missing interfaces/abstractions)
+- Excessive nesting / deeply chained calls
+- Hidden performance traps (see performance skill, but flag obvious ones here)
+
+# Patch Guidance Rules
+- Prefer minimal, safe changes
+- Never rewrite entire modules unless requested
+- Provide code snippets only for the top issues, not everything
+
+# Test Expectations
+- For every behavior change: at least 1 happy-path test
+- For every bug fix: regression test reproducing the bug
+- For risky logic: add one failure-path test
+- For parsing/validation: add fuzz/property tests if applicable (optional)
+
+# What NOT to do
+- Do not invent requirements
+- Do not propose broad rewrites for small problems
+- Do not add new dependencies unless clearly beneficial
