@@ -1,6 +1,7 @@
 { pkgs, config, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
+  isAarch64 = pkgs.stdenv.hostPlatform.system;
 in
 {
 	programs.zsh = {
@@ -59,6 +60,9 @@ in
 
 		export PATH=$PATH:"/run/current-system/sw/bin:/etc/profiles/per-user/katob/bin:${config.home.homeDirectory}/.emacs.d/bin"
 
+  
+
+
     export ${ if isDarwin then "DRI_PRIME=0" else "DRI_PRIME=1" }
 
 		alias ls='ls --color'
@@ -101,6 +105,7 @@ in
       direnv allow
     }
 
+    export PATH=$PATH:"${if isAarch64 == "aarch64-darwin" then "/opt/homebrew/bin" else ""}"
 
     if [[ ''${uname} == "Darwin" ]]; then
       if [ ! -f /usr/local/bin/pinentry-mac ]; then

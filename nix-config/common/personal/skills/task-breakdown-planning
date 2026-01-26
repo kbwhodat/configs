@@ -1,0 +1,51 @@
+name: task-breakdown-planning
+description: Break work into shippable chunks with clear acceptance criteria and minimal blockers
+
+# Purpose
+Convert vague goals into executable steps that finish on time.
+
+# When to use
+Use this skill when:
+- Starting a feature
+- You feel stuck or overwhelmed
+- Planning a milestone or release
+- You need to estimate scope
+
+# Inputs
+- Goal statement
+- Deadline (if any)
+- Existing codebase context (if available)
+- Constraints: tech stack, backend readiness, team size
+
+# Output Format (required)
+1) Goal re-statement (one sentence)
+2) Definition of Done (acceptance criteria)
+3) MVP slice (smallest shippable)
+4) Task breakdown (ordered steps)
+5) Risks/unknowns + how to de-risk
+6) Timeboxing suggestion (optional)
+
+# Rules
+- Always start with MVP slice
+- Each task should be independently testable
+- Prefer vertical slices (UI + logic + data) over horizontal layers
+- Call out dependencies explicitly
+- Avoid tasks longer than one work session; split them
+
+# Acceptance Criteria Template
+- User action:
+- Expected outcome:
+- Error handling:
+- Performance/UX bar:
+- Test coverage:
+
+# De-risking Playbook
+- Unknown API: mock interface first
+- Unknown UI: build static screen first
+- Unknown data model: draft minimal schema and validate with one flow
+- Unknown performance: add measurement early
+
+# What NOT to do
+- Don’t plan “perfect architecture” first
+- Don’t include optional nice-to-haves in MVP
+- Don’t leave tasks vague (“implement backend”); specify endpoints/data

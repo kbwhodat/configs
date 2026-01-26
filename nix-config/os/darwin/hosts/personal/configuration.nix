@@ -41,24 +41,25 @@ in
     colima
     lima
     darwin.libiconv
+    cocoapods
     # ollama
   ];
 
-  launchd.daemons."org.pqrs.vhid-daemon" = {
-    serviceConfig = {
-      ProgramArguments = [ vhidDaemon ];
-      RunAtLoad = true;
-      KeepAlive = true;
-    };
-  };
-
-  launchd.daemons."org.pqrs.vhid-manager" = {
-    serviceConfig = {
-      ProgramArguments = [ vhidManager "activate" ];
-      RunAtLoad = true;
-      KeepAlive = false;
-    };
-  };
+  # launchd.daemons."org.pqrs.vhid-daemon" = {
+  #   serviceConfig = {
+  #     ProgramArguments = [ vhidDaemon ];
+  #     RunAtLoad = false;
+  #     KeepAlive = false;
+  #   };
+  # };
+  #
+  # launchd.daemons."org.pqrs.vhid-manager" = {
+  #   serviceConfig = {
+  #     ProgramArguments = [ vhidManager "activate" ];
+  #     RunAtLoad = false;
+  #     KeepAlive = false;
+  #   };
+  # };
 
   launchd.daemons.kanata = {
     serviceConfig.ProgramArguments = [
@@ -94,6 +95,7 @@ in
   nixpkgs.config.allowUnsupportedSystem = true; 
 
   # networking.dns = [ "208.67.222.123" ];
+  networking.hostName = "macos-studio";
 
   services.nextdns = {
     enable = true;
@@ -112,12 +114,11 @@ in
 
   homebrew = {
     enable = true;
-    onActivation.cleanup = "uninstall";
+    onActivation.cleanup = "zap";
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "firefoxpwa"];
-    casks = [ "karabiner-elements" "ungoogled-chromium" "freetube" "dbeaver-community" "hammerspoon" "gcloud-cli"];
-
+    casks = [ "flutter" "karabiner-elements" "ungoogled-chromium" "freetube" "dbeaver-community" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;

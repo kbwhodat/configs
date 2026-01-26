@@ -18,6 +18,7 @@
     ./alacritty.nix
     ./sc-im.nix
     ./syncthing.nix
+    ./flutter.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix
