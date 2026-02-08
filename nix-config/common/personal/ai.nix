@@ -18,6 +18,16 @@ let
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
 
+  opencodeDir = "${config.home.homeDirectory}/.config/opencode";
+
+  packageJson = builtins.toJSON {
+    dependencies = {
+      "oh-my-opencode" = "^3.9.0";
+    };
+  };
+
+  packageJsonFile = pkgs.writeText "opencode-package.json" packageJson;
+
 in
 {
   home = {
@@ -31,6 +41,15 @@ in
       ++ mcpServers
       ++ llmAgents;
   };
+
+  # Declaratively manage opencode plugins via package.json
+  # This ensures oh-my-opencode is installed on all machines
+  home.activation.opencodeDeps = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "${opencodeDir}"
+    cp -f "${packageJsonFile}" "${opencodeDir}/package.json"
+    chmod u+w "${opencodeDir}/package.json" || true
+    ${pkgs.bun}/bin/bun install --cwd "${opencodeDir}"
+    '';
 
   programs.opencode = {
     enable = true;
@@ -47,17 +66,21 @@ in
     };
 
     skills = {
-      code-quality-review      = builtins.readFile ./skills/code-quality-review;
-      dating-app-mvp           = builtins.readFile ./skills/dating-app-mvp;
-      debugging-root-cause     = builtins.readFile ./skills/debugging-root-cause;
-      documentation-intent     = builtins.readFile ./skills/documentation-intent;
-      flutter-ui-design        = builtins.readFile ./skills/flutter-ui-design;
-      performance-sanity-check = builtins.readFile ./skills/performance-sanity-check;
-      refactoring-discipline   = builtins.readFile ./skills/refactoring-discipline;
-      security-data-handling   = builtins.readFile ./skills/security-data-handling;
-      task-breakdown-planning  = builtins.readFile ./skills/task-breakdown-planning;
+      # Core engineering skills
+      architecture-decisions      = builtins.readFile ./skills/architecture-decisions;
+      complexity-taming           = builtins.readFile ./skills/complexity-taming;
+      debugging-root-cause        = builtins.readFile ./skills/debugging-root-cause;
+      performance-engineering     = builtins.readFile ./skills/performance-engineering;
+      security-data-handling      = builtins.readFile ./skills/security-data-handling;
+      ship-it-checklist           = builtins.readFile ./skills/ship-it-checklist;
+      supabase-database-mastery   = builtins.readFile ./skills/supabase-database-mastery;
+      testing-verification        = builtins.readFile ./skills/testing-verification;
+      # Mobile/project-specific skills
+      dating-app-mvp              = builtins.readFile ./skills/dating-app-mvp;
+      flutter-ui-design           = builtins.readFile ./skills/flutter-ui-design;
     };
     settings = {
+      plugin = [ "oh-my-opencode" ];
       keybinds = {
         messages_half_page_up = "ctrl+alt+u";
         messages_half_page_down = "ctrl+alt+d";
@@ -109,11 +132,19 @@ in
         grep = "allow";
         read = "allow";
         zsh = {
-          "*" = "ask";
+          "*" = "allow";
+          "rm*" = "ask";
+          "rmdir*" = "ask";
+          "unlink*" = "ask";
+          "mv*" = "ask";
           "sudo*" = "deny";
         };
         bash = {
-          "*" = "ask";
+          "*" = "allow";
+          "rm*" = "ask";
+          "rmdir*" = "ask";
+          "unlink*" = "ask";
+          "mv*" = "ask";
           "sudo*" = "deny";
         };
       };
@@ -166,6 +197,30 @@ in
         };
          temperature = 0.3;
        };
+        # debug = {
+        #   mode = "primary";
+        #   description = "Code Debugging Agent";
+        #   prompt = builtins.readFile ./prompts/debug.txt;
+        #   tools = {
+        #     write = true;
+        #     read = true;
+        #     edit = true;
+        #     bash = true;
+        #   };
+        #   temperature = 0.35;
+        # };
+      # sensei = {
+      #   mode = "primary";
+      #   description = "Sensei Agent";
+      #   prompt = builtins.readFile ./prompts/sensei.txt;
+      #   tools = {
+      #     read = true;
+      #     bash = true;
+      #     edit = false;
+      #     write = false;
+      #   };
+      #    temperature = 0.3;
+      #  };
     };
 
       provider = {
@@ -196,6 +251,31 @@ in
         };
       };
       model = "glm-4.7-flash:32b-32k";
+      # provider = {
+      #   ollama = {
+      #     npm = "@ai-sdk/openai-compatible";
+      #     name = "Ollama (local)";
+      #     options = {
+      #       baseURL = "http://10.0.0.122:11434/v1";
+      #     };
+      #
+      #     models = {
+      #       "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
+      #     };
+      #   };
+      #   claude = {
+      #     npm = "@ai-sdk/openai-compatible";
+      #     name = "Claude (work)";
+      #     options = {
+      #       baseURL = "http://10.0.0.122:11434/v1";
+      #     };
+
+          # models = {
+          #   "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
+          # };
+      #   };
+      # };
+      # model = "qwen3-coder:30b-32k";
     };
   };
 }

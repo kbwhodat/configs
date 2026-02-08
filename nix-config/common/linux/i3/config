@@ -35,9 +35,10 @@ bindsym --release Control+v exec --no-startup-id xdotool key Control+Shift+v
 bindsym --release Control+$mod+4 exec --no-startup-id /home/katob/Documents/scripts/screenshot.sh
 
 
-#To open firefox
-# bindsym $mod+Shift+F exec --no-startup-id firefox
-bindsym $mod+Shift+F exec --no-startup-id librewolf
+# Browser focus shortcuts
+bindsym $mod+Shift+F exec --no-startup-id bash -c 'pgrep -fi "zen|zen-browser" >/dev/null && i3-msg "[class=\"(?i).*zen.*\"] focus" || zen-browser &'
+bindsym $mod+Shift+G exec --no-startup-id bash -c 'pgrep -fi "thorium|thorium-browser" >/dev/null && i3-msg "[class=\"(?i).*thorium.*\"] focus" || thorium-browser &'
+bindsym $mod+Shift+Y exec --no-startup-id bash -c 'pgrep -fi "freetube" >/dev/null && i3-msg "[class=\"(?i).*freetube.*\"] focus" || freetube &'
 
 #to lock screen
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
@@ -125,6 +126,8 @@ bindsym Ctrl+space exec --no-startup-id bash -c 'pgrep -x wezterm-gui >/dev/null
 bindsym Ctrl+Shift+space exec --no-startup-id bash -c 'pgrep -x emacs >/dev/null && i3-msg "[class=\"Emacs\"] focus" || emacs &'
 
 bindsym Ctrl+Mod4+space exec --no-startup-id bash -c 'pgrep -f zed-editor >/dev/null && i3-msg "[class=\"dev.zed.Zed\"] focus" || zed-editor &'
+
+bindsym Ctrl+Mod1+space exec --no-startup-id bash -c 'pgrep -fi "sublime_text|sublime" >/dev/null && i3-msg "[class=\"(?i).*sublime.*\"] focus" || sublime_text &'
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"

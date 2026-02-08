@@ -27,12 +27,12 @@ with lib; let
     };
 
     Install0 = {
-       Default =  "${zenConfigPath}/Profiles/main";
+       Default = "${zenConfigPath}/Profiles/main";
        Locked = 1;
     };
 
     Profile0 = {
-      Name = "Default";
+      Name = "main";
       Path = "${zenConfigPath}/Profiles/main";
       IsRelative = 0;
       ZenAvatarPath = "chrome://browser/content/zen-avatars/avatar-32.svg";
@@ -746,11 +746,14 @@ in {
 
     home.file = mkMerge ([
         {
-            "${zenConfigPath}/${ if isDarwin then "profiless.ini" else "profiles.ini"}" =
-                mkIf (cfg.profiles != {}) {text = profilesIni;};
-
-            "${zenConfigPath}/${ if isDarwin then "installss.ini" else "installs.ini"}" =
-                {text = installsIni;};
+            "${zenConfigPath}/profiles.ini" =
+                mkIf (!isDarwin && cfg.profiles != {}) {
+                  text = profilesIni;
+                };
+            "${zenConfigPath}/installs.ini" =
+                mkIf (!isDarwin) {
+                  text = installsIni;
+                };
         }
       ]
       ++ flip mapAttrsToList cfg.profiles (_: profile: {
@@ -989,19 +992,6 @@ in {
       // (mapAttrs' (name: path: nameValuePair
         "${profilesPath}/${profile.path}/chrome/${name}"
         { source = path; }
-      ) profile.chromeCSS) // {
-
-        # "${zenConfigPath}/profiless.ini" = if !isDarwin then {
-        #   source = config.lib.filemkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiless.ini";
-        # } else {
-        #   source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiless.ini";
-        # };
-        #
-        # "${zenConfigPath}/installss.ini" = if !isDarwin then {
-        #   source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installss.ini";
-        # } else {
-        #   source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/installss.ini";
-        # };
-      }));
+      ) profile.chromeCSS) // {}));
   };
 }

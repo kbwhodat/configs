@@ -12,8 +12,9 @@ in
 
   programs.zen-browser.package =
     if isDarwin then
-        # Wrap macOS Zen Browser with fx-autoconfig for ZenLeap support
-        pkgs.wrapZenBrowserWithFxAutoconfig pkgs.zen-browser-bin-darwin
+        # macOS: enable ZenLeap/fx-autoconfig via wrapper.
+        # The wrapper re-signs the app bundle after injection.
+        pkgs.wrapZenBrowserWithFxAutoconfig inputs.zen-browser.packages.${pkgs.system}.default
     else
         # Wrap the zen-browser with fx-autoconfig for ZenLeap support
         pkgs.wrapZenBrowserWithFxAutoconfig inputs.zen-browser.packages.x86_64-linux.default;
@@ -66,6 +67,7 @@ in
     "zen.splitView.change-on-hover" = true;
     "zen.tab-unloader.timeout-minutes" = 35;
     "zen.view.compact.toolbar-flash-popup" = false;
+    "zen.workspaces.continue-where-left-off" = true;
 
     "zen.view.compact.hide-tabbar" = true;
     "zen.view.compact.hide-toolbar" = false;
@@ -101,6 +103,9 @@ in
     "browser.bookmarks.addedImportButton" = true;
     "browser.startup.homepage" = "about:blank";
     "browser.startup.page" = 3;
+    "browser.privatebrowsing.autostart" = false;
+    "privacy.sanitize.sanitizeOnShutdown" = false;
+    "privacy.clearOnShutdown.history" = false;
     "browser.search.region" = "US";
     "network.http.http3.enabled" = false;
     "dom.image-lazy-loading.enabled" = true;
@@ -405,7 +410,8 @@ in
     # ZenLeap configuration
     chromeJS = {
       "zenleap.uc.js" = "${pkgs.zenleap}/js/zenleap.uc.js";
-      "zenleap-unsplit.uc.js" = ./zenleap-unsplit.uc.js;
+      "zenleap-unsplit.uc.js" = ./zen-userscripts/zenleap-unsplit.uc.js;
+      "zen-workspace-shortcuts.uc.js" = ./zen-userscripts/zen-workspace-shortcuts.uc.js;
     };
 
     chromeCSS = {

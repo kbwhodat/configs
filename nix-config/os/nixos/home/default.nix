@@ -14,7 +14,7 @@ let
     pkgs.nss_latest
     pkgs.xorg.libxcb
     pkgs.nspr
-    pkgs.mesa
+    # pkgs.mesa
     pkgs.libGL
     pkgs.stdenv.cc.cc.lib
     pkgs.zlib

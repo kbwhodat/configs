@@ -1,0 +1,280 @@
+name: ship-it-checklist
+description: Pre-release verification checklist for mobile apps - never forget rollback plans, monitoring, or app store requirements
+
+# Purpose
+Systematically verify everything before shipping. Prevent "oh no, I forgot X" moments. Ship with confidence.
+
+# When to use
+Use this skill when:
+- Preparing a release (any environment)
+- Deploying new features
+- Making database migrations
+- Updating third-party dependencies
+- Before app store submissions
+- After hotfixes
+
+# Inputs
+- What's being shipped (features, fixes, changes)
+- Target environment (staging, production)
+- Release type (major, minor, patch, hotfix)
+- Timeline constraints
+
+# Output Format (required)
+1) Release summary (what's shipping)
+2) Pre-flight checklist (by category)
+3) Rollback plan
+4) Monitoring plan
+5) Communication plan
+6) Post-release verification
+
+# Pre-Flight Checklist
+
+## Code Quality
+- [ ] All tests passing (unit, integration, e2e)
+- [ ] No new warnings/lints introduced
+- [ ] Code reviewed and approved
+- [ ] No debug code left in (print statements, TODO hacks)
+- [ ] No hardcoded test credentials or URLs
+- [ ] Feature flags configured correctly
+
+## Database/Backend (Supabase)
+- [ ] Migrations tested on staging
+- [ ] Migrations are backwards-compatible (or coordinated)
+- [ ] RLS policies reviewed for new tables
+- [ ] Indexes added for new query patterns
+- [ ] Edge functions deployed and tested
+- [ ] Realtime subscriptions verified
+- [ ] No breaking API changes (or versioned)
+
+## Mobile App Specific
+- [ ] Tested on both iOS and Android
+- [ ] Tested on minimum supported OS versions
+- [ ] Tested on low-end device (or emulator)
+- [ ] Offline behavior verified
+- [ ] Deep links working
+- [ ] Push notifications working
+- [ ] Permissions requested appropriately
+
+## Performance
+- [ ] No obvious performance regressions
+- [ ] Startup time acceptable
+- [ ] Memory usage stable
+- [ ] No new ANRs or jank
+
+## Security
+- [ ] No secrets in code or logs
+- [ ] Auth flows tested
+- [ ] Sensitive data handling reviewed
+- [ ] New endpoints have proper authorization
+
+# Environment-Specific Checklists
+
+## Staging Release
+- [ ] Staging environment matches production config
+- [ ] Test accounts available
+- [ ] Staging data is realistic
+- [ ] QA sign-off (if applicable)
+
+## Production Release
+- [ ] Staging release verified
+- [ ] Version number incremented
+- [ ] Changelog updated
+- [ ] Release notes prepared
+- [ ] Support team informed
+- [ ] Rollback plan documented
+- [ ] Monitoring dashboards ready
+
+## App Store Release (iOS/Android)
+- [ ] Version/build numbers correct
+- [ ] App store metadata updated
+- [ ] Screenshots current
+- [ ] Privacy policy updated (if needed)
+- [ ] New permissions explained
+- [ ] Compliance requirements met (GDPR, etc.)
+- [ ] Phased rollout configured (recommended)
+- [ ] Previous version still available (staged rollout)
+
+# Rollback Plan Template
+
+```markdown
+## Rollback Plan for v{X.Y.Z}
+
+### Triggers for Rollback
+- Crash rate > {X}%
+- Error rate > {X}%
+- Critical user flow broken
+- Security vulnerability discovered
+
+### Mobile App Rollback
+1. Halt staged rollout in App Store Connect / Play Console
+2. If critical: Request expedited review for hotfix
+3. Communicate with affected users
+4. Document incident
+
+### Backend Rollback (Supabase)
+1. Revert edge function: `supabase functions deploy {name} --version {prev}`
+2. Revert migration (if safe): Run down migration
+3. If data corrupted: Restore from backup
+4. Update app to handle both states
+
+### Database Migration Rollback
+- Migration reversible: Yes/No
+- If No: Forward-fix plan: {describe}
+- Backup timestamp: {time}
+- Restore procedure: {link or steps}
+
+### Point of No Return
+- After {X hours/days} with no issues, rollback becomes complex
+- Data migrations may not be reversible after {condition}
+```
+
+# Monitoring Plan
+
+## What to Watch (First 24 Hours)
+
+### Crash Monitoring
+- Firebase Crashlytics / Sentry
+- Alert threshold: > {X} crashes per hour
+- Compare to previous version baseline
+
+### Error Rates
+- API error rates (Supabase dashboard)
+- Client-side errors (logging service)
+- Alert threshold: > {X}% error rate
+
+### Performance
+- App startup time
+- API response times (p50, p95, p99)
+- Frame rate / jank metrics
+
+### Business Metrics
+- User signups/logins
+- Core action completion rate
+- Revenue (if applicable)
+
+## Monitoring Checklist
+- [ ] Dashboards created/updated
+- [ ] Alerts configured
+- [ ] On-call person identified
+- [ ] Escalation path clear
+
+# Communication Plan
+
+## Internal Communication
+- [ ] Team notified of release time
+- [ ] Release notes shared internally
+- [ ] Known issues documented
+- [ ] Support team briefed
+
+## External Communication (if needed)
+- [ ] Changelog published
+- [ ] Social media post (if major release)
+- [ ] Email to users (if major changes)
+- [ ] In-app announcement (if needed)
+
+# Post-Release Verification
+
+## Immediate (0-1 hour)
+- [ ] App downloadable from store
+- [ ] Core flows working (login, main features)
+- [ ] No spike in crashes
+- [ ] Backend healthy
+
+## Short-term (1-24 hours)
+- [ ] Error rates stable
+- [ ] Performance metrics normal
+- [ ] User feedback reviewed
+- [ ] No critical issues reported
+
+## Medium-term (1-7 days)
+- [ ] Staged rollout progressing
+- [ ] Metrics trending positively
+- [ ] No delayed-onset issues
+- [ ] Full rollout decision made
+
+# Release Types Quick Reference
+
+## Hotfix (Critical Bug)
+| Step | Time |
+|------|------|
+| Identify and fix | ASAP |
+| Minimal testing | 1-2 hours |
+| Deploy to production | Immediate |
+| Monitor closely | 24 hours |
+
+## Patch (Bug Fixes)
+| Step | Time |
+|------|------|
+| Accumulate fixes | 1-2 weeks |
+| Full test cycle | 1-2 days |
+| Staged rollout | 3-7 days |
+| Full rollout | After verification |
+
+## Minor (New Features)
+| Step | Time |
+|------|------|
+| Feature complete | Sprint end |
+| QA and testing | 1 week |
+| Staged rollout (10%) | 2-3 days |
+| Increase rollout | Gradual |
+| Full rollout | After 1-2 weeks |
+
+## Major (Breaking Changes)
+| Step | Time |
+|------|------|
+| Migration planning | 2-4 weeks before |
+| Beta testing | 1-2 weeks |
+| Staged rollout (1%) | 1 week |
+| Gradual increase | 2-4 weeks |
+| Full rollout | After thorough verification |
+
+# Feature Flags Checklist
+
+## Before Release
+- [ ] Flag created and named clearly
+- [ ] Default value is safe (usually off)
+- [ ] Flag documented
+- [ ] Kill switch tested
+
+## During Rollout
+- [ ] Enable for internal users first
+- [ ] Enable for beta users
+- [ ] Gradual percentage rollout
+- [ ] Monitor metrics at each stage
+
+## After Successful Rollout
+- [ ] Flag set to 100%
+- [ ] Flag removal scheduled
+- [ ] Code cleanup ticket created
+
+# Common Mistakes to Avoid
+
+- Skipping staging (even for "small" changes)
+- No rollback plan for database migrations
+- Releasing on Friday afternoon
+- Not monitoring after release
+- Forgetting to update version numbers
+- Leaving feature flags on forever
+- Not testing on real devices
+- Ignoring app store review guidelines
+- Releasing without changelog
+- No communication to support team
+
+# Emergency Release Protocol
+
+1. **Assess severity** (P0-P3)
+2. **Notify stakeholders** immediately for P0/P1
+3. **Fix in isolation** (branch from production)
+4. **Minimal testing** (affected flow only)
+5. **Deploy with monitoring**
+6. **Post-incident review** within 48 hours
+7. **Document lessons learned**
+
+# Release Confidence Levels
+
+| Level | Criteria | Action |
+|-------|----------|--------|
+| High | All checks pass, tested thoroughly | Full rollout |
+| Medium | Minor concerns, no blockers | Staged rollout, close monitoring |
+| Low | Known issues, time pressure | Small percentage, ready to halt |
+| None | Critical issues found | Do not release |

@@ -6,6 +6,6 @@ in
 {
   home.packages = with pkgs; [
     # (if hostname == "macos-studo.local" then flutter else null)
-    (if isDarwin then null else flutter)
+    (if isDarwin then nil else flutter)
   ];
 }

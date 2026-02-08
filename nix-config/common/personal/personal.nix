@@ -24,7 +24,7 @@ in
     bun
     ffmpeg
 
-    (python313.withPackages (ps: with ps; let
+    (python312.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
         pname = "selenium-driverless";
         version = "1.9.4";
@@ -86,7 +86,7 @@ in
       cdp-socket
       seleniuim_driverless
       conda
-      ipvanish
+      # ipvanish
 
       #for gonwatch
       langdetect

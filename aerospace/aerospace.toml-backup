@@ -30,7 +30,7 @@ default-root-container-layout = 'accordion'
 # Possible values: horizontal|vertical|auto
 # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
 #               tall monitor (anything higher than wide) gets vertical orientation
-default-root-container-orientation = 'auto'
+default-root-container-orientation = 'vertical'
 
 # Mouse follows focus when focused monitor changes
 # Drop it from your config, if you don't like this behavior
@@ -105,11 +105,11 @@ automatically-unhide-macos-hidden-apps = true
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
     cmd-slash = 'layout tiles horizontal vertical'
-    cmd-comma = 'layout accordion horizontal vertical'
+    cmd-comma = 'layout accordion vertical'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
     cmd-h = "focus left --boundaries all-monitors-outer-frame --ignore-floating"
-    cmd-l = "focus right --boundaries all-monitors-outer-frame --ignore-floating"
+    # cmd-l = "focus right --boundaries all-monitors-outer-frame --ignore-floating"
     cmd-j = 'focus down --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors'
     cmd-k = 'focus up --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors'
 
@@ -148,7 +148,7 @@ automatically-unhide-macos-hidden-apps = true
     # ctrl-alt-cmd-shift-f = "fullscreen"
     alt-f = 'fullscreen'
     alt-s = 'layout v_accordion'
-    alt-w = 'layout h_accordion'
+    alt-w = 'layout v_accordion'
     alt-e = 'layout tiles vertical horizontal'
 
     # alt-h = 'split horizontal'
