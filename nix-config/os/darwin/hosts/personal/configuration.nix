@@ -61,13 +61,19 @@ in
   #   };
   # };
 
+  environment.etc."sudoers.d/kanata".text = ''
+    katob ALL=(root) NOPASSWD: ${pkgs.kanata}/bin/kanata
+  '';
+
   launchd.daemons.kanata = {
     serviceConfig.ProgramArguments = [
-      "${pkgs.kanata}/bin/kanata"
-      "-c"
-      "/Users/katob/.config/kanata/kanata.kbd"
+      "/usr/bin/sudo"
+        "-n"
+        "${pkgs.kanata}/bin/kanata"
+        "-c"
+        "/Users/katob/.config/kanata/kanata.kbd"
     ];
-    serviceConfig.RunAtLoad = true;
+    serviceConfig.RunAtLoad = false;
     serviceConfig.KeepAlive = false;
     serviceConfig.StandardOutPath = "/tmp/kanata.out";
     serviceConfig.StandardErrorPath = "/tmp/kanata.err";
@@ -75,7 +81,7 @@ in
 
   launchd.user.agents.docker = {
     serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/os/darwin/scripts/start_colima.sh" ];
-    serviceConfig.RunAtLoad = true;
+    serviceConfig.RunAtLoad = false;
     serviceConfig.KeepAlive = false;
     serviceConfig.StandardOutPath = "/tmp/colima.out";
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
@@ -114,11 +120,13 @@ in
 
   homebrew = {
     enable = true;
+    onActivation.upgrade = true;
+    onActivation.autoUpdate = true;
     onActivation.cleanup = "zap";
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "firefoxpwa"];
-    casks = [ "flutter" "karabiner-elements" "ungoogled-chromium" "freetube" "dbeaver-community" "hammerspoon" "gcloud-cli"];
+    casks = [ "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "ungoogled-chromium" "freetube" "dbeaver-community" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings.download-buffer-size = 524288000;

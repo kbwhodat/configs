@@ -60,6 +60,17 @@ in
       set -g @yank_selection_mouse 'clipboard'
       set -g cursor-color white
 
+      # Minimal pane borders: neutral inactive + dim active
+      set -g pane-border-style 'fg=colour239'
+      set -g pane-active-border-style 'fg=colour255,bold'
+      set -g pane-border-lines simple
+      set -g pane-border-status off
+
+      # Keep pane-number overlay visible and high contrast when needed
+      set -g display-panes-time 1500
+      set -g display-panes-colour colour250
+      set -g display-panes-active-colour colour45
+
       set -g default-command "/etc/profiles/per-user/katob/bin/zsh"
       set -g default-shell   "/etc/profiles/per-user/katob/bin/zsh"
 
@@ -109,6 +120,7 @@ in
       bind-key -T copy-mode-vi C-j select-pane -D
       bind-key -T copy-mode-vi C-k select-pane -U
       bind-key -T copy-mode-vi C-l select-pane -R
+      bind-key q display-panes
       bind-key -T copy-mode-vi v send-keys -X begin-selection
       bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
 

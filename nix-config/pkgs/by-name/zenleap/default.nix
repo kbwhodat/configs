@@ -17,7 +17,7 @@ stdenvNoCC.mkDerivation {
     owner = "yashas-salankimatt";
     repo = "ZenLeap";
     rev = "main";
-    sha256 = "sha256-SWrT1m6WB2oSNY2lSBoC8scixAJnLjyZIa+flZ8HPQk=";
+    sha256 = "sha256-w/aMguDbmFx4zhPF/u8Jw3xhufwZIDGgRyM24XgMj0Q=";
   };
 
   dontBuild = true;

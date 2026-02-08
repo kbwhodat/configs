@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, config, lib, pkgs, ... }:
 
 {
 	imports = [
@@ -36,4 +36,46 @@
   };
 
   programs.home-manager.enable = true;
+
+  targets.darwin.copyApps.enable = true;
+  targets.darwin.copyApps.enableChecks = false;
+
+  home.activation.repairZenProfile = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # Zen profile repair on macOS:
+    # Home Manager writes INI files as read-only symlinks, but Zen/Firefox-style
+    # profile selection expects writable install/profile metadata.
+    zen_dir="$HOME/Library/Application Support/zen"
+    profiles_dir="$zen_dir/Profiles"
+    main_profile="$profiles_dir/main"
+    profiles_ini="$zen_dir/profiles.ini"
+    installs_ini="$zen_dir/installs.ini"
+
+    mkdir -p "$main_profile"
+
+    if [ -L "$profiles_ini" ]; then
+      rm -f "$profiles_ini"
+    fi
+
+    cat > "$profiles_ini" <<'EOF'
+[General]
+StartWithLastProfile=1
+Version=2
+
+[Profile0]
+Name=main
+IsRelative=1
+Path=Profiles/main
+Default=1
+EOF
+
+    # Remove stale Install0 mapping and let Zen write install-hash mapping.
+    rm -f "$installs_ini"
+
+    # Cleanup old malformed Home Manager Apps entry created from DMG convenience
+    # symlink named as a single space (" ") that points to /Applications.
+    hm_apps="$HOME/Applications/Home Manager Apps"
+    if [ -e "$hm_apps/ " ]; then
+      rm -rf "$hm_apps/ "
+    fi
+  '';
 }

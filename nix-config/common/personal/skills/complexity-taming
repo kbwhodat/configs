@@ -1,0 +1,275 @@
+name: complexity-taming
+description: Manage growing codebase complexity through boundaries, dependency control, and strategic refactoring
+
+# Purpose
+Keep your codebase navigable and maintainable as it grows. Establish clear boundaries, control dependencies, and know when to split or merge.
+
+# When to use
+Use this skill when:
+- "Where does this code go?" becomes hard to answer
+- Changes in one area break unrelated features
+- New team members struggle to understand the code
+- You're afraid to touch certain parts
+- Features take longer to implement than expected
+- You're planning a refactor
+
+# Inputs
+- Current pain points (what feels hard?)
+- Codebase structure overview
+- Growth trajectory (what's coming next?)
+- Team size and experience
+
+# Output Format (required)
+1) Complexity diagnosis (where is the pain?)
+2) Boundary analysis (current vs ideal)
+3) Dependency map (what depends on what?)
+4) Refactoring plan (prioritized)
+5) Prevention rules (how to stay clean)
+6) Verification (how to know it's better)
+
+# Complexity Symptoms
+
+## Code Navigation Issues
+| Symptom | Likely Cause |
+|---------|--------------|
+| Can't find where X happens | Poor module boundaries |
+| Same logic in multiple places | Missing shared abstraction |
+| Files with 1000+ lines | God objects, no separation |
+| Deep folder nesting | Over-engineering |
+| Circular imports | Wrong dependency direction |
+
+## Change Impact Issues
+| Symptom | Likely Cause |
+|---------|--------------|
+| Small change breaks many things | Tight coupling |
+| Must update 10 files for one feature | Scattered responsibility |
+| Tests break constantly | Testing implementation, not behavior |
+| Merge conflicts everywhere | Poor ownership boundaries |
+
+## Understanding Issues
+| Symptom | Likely Cause |
+|---------|--------------|
+| Need to read entire codebase | No clear entry points |
+| Comments say "don't touch" | Hidden complexity, fear |
+| Business logic buried in UI | Layer violations |
+| Magic numbers/strings everywhere | Missing domain modeling |
+
+# Module Boundary Design
+
+## Principles
+1. **Single Responsibility**: One reason to change
+2. **Information Hiding**: Internal details stay internal
+3. **Explicit Dependencies**: Import what you need, no globals
+4. **Stable Interfaces**: Change internals, not contracts
+
+## Good Boundary Characteristics
+- Clear public API (what can others use?)
+- Internal implementation hidden
+- Dependencies point inward (toward stable core)
+- Can be understood without reading internals
+- Can be tested in isolation
+
+## Flutter/Dart Module Structure
+```
+lib/
+├── core/                    # Shared utilities, no business logic
+│   ├── extensions/
+│   ├── constants/
+│   └── utils/
+├── features/                # Feature modules (vertical slices)
+│   ├── auth/
+│   │   ├── data/           # Repository implementations, DTOs
+│   │   ├── domain/         # Entities, repository interfaces
+│   │   └── presentation/   # Widgets, state management
+│   ├── profile/
+│   └── messaging/
+├── shared/                  # Shared widgets, themes
+│   ├── widgets/
+│   └── theme/
+└── main.dart
+```
+
+## Feature Module Template
+```
+feature_name/
+├── data/
+│   ├── repositories/       # Implementation
+│   ├── data_sources/       # Remote/local sources
+│   └── models/             # DTOs, JSON serialization
+├── domain/
+│   ├── entities/           # Core business objects
+│   ├── repositories/       # Abstract interfaces
+│   └── usecases/           # Business logic (optional)
+└── presentation/
+    ├── screens/            # Full screens
+    ├── widgets/            # Feature-specific widgets
+    └── state/              # Riverpod/Bloc/etc
+```
+
+# Dependency Management
+
+## Dependency Direction Rules
+```
+presentation → domain ← data
+     ↓            ↑        ↓
+   shared      core    external
+```
+
+- **Domain depends on nothing** (pure business logic)
+- **Presentation depends on domain** (not data)
+- **Data depends on domain** (implements interfaces)
+- **Never**: presentation → data directly
+
+## Import Rules
+```dart
+// GOOD: Feature imports from core
+import 'package:app/core/utils/date_utils.dart';
+
+// GOOD: Feature imports shared widgets
+import 'package:app/shared/widgets/loading.dart';
+
+// BAD: Feature A imports Feature B internals
+import 'package:app/features/auth/data/auth_repository_impl.dart';
+
+// GOOD: Feature A imports Feature B's public API
+import 'package:app/features/auth/auth.dart'; // barrel file
+```
+
+## Detecting Bad Dependencies
+- Circular imports (A → B → A)
+- Reaching across features (auth → profile/data)
+- UI importing data layer directly
+- Core depending on features
+
+# State Management Boundaries
+
+## Where State Lives
+| State Type | Location | Example |
+|------------|----------|---------|
+| UI state | Widget/local | Form inputs, animations |
+| Feature state | Feature provider | User profile, messages |
+| App state | Root provider | Auth status, theme |
+| Server state | Cache/repository | API responses |
+
+## Avoid State Sprawl
+- One source of truth per data type
+- Derive computed state, don't duplicate
+- Clear ownership (who updates this?)
+- Explicit dependencies between providers
+
+# Refactoring Strategies
+
+## When to Split
+- Module has multiple unrelated responsibilities
+- Different change frequencies (UI vs logic)
+- Different teams need to own parts
+- Testing requires too much setup
+
+## When to Merge
+- Artificial separation (data + domain too thin)
+- Always changed together
+- Circular dependencies
+- Over-abstraction (interfaces with one implementation)
+
+## Safe Refactoring Steps
+1. **Characterization tests**: Capture current behavior
+2. **Extract**: Move code to new location, keep old as delegate
+3. **Migrate callers**: Update imports one by one
+4. **Remove old**: Delete the original once all migrated
+5. **Verify**: Run tests, check no regressions
+
+## Strangler Fig Pattern (for large refactors)
+1. Build new module alongside old
+2. Route new features to new module
+3. Gradually migrate existing features
+4. Remove old module when empty
+
+# Complexity Prevention Rules
+
+## File Size Limits
+- Widget files: < 200 lines
+- Logic files: < 300 lines
+- If larger, split by responsibility
+
+## Nesting Limits
+- Max folder depth: 4 levels
+- Max callback nesting: 3 levels
+- Max class inheritance: 2 levels (prefer composition)
+
+## Naming Conventions
+- Folders: feature or responsibility
+- Files: one primary export per file
+- Classes: noun describing what it is
+- Functions: verb describing what it does
+
+## Code Review Checklist
+- [ ] Does this belong in this module?
+- [ ] Are dependencies pointing the right direction?
+- [ ] Is the public API minimal?
+- [ ] Can this be understood without reading everything?
+- [ ] Will this be easy to change later?
+
+# Measuring Complexity
+
+## Quantitative Signals
+- File count per feature (< 20 ideal)
+- Import depth (< 4 hops)
+- Cyclomatic complexity (< 10 per function)
+- Change coupling (files changed together)
+
+## Qualitative Signals
+- Time to find where to make a change
+- Confidence when making changes
+- Onboarding time for new developers
+- Fear factor ("don't touch this")
+
+# Common Patterns to Apply
+
+## Facade Pattern
+Hide complex subsystem behind simple interface:
+```dart
+// Instead of clients knowing all the pieces
+class AuthFacade {
+  final AuthRepository _repo;
+  final TokenStorage _tokens;
+  final Analytics _analytics;
+  
+  Future<User> login(String email, String password) async {
+    // Coordinate all the pieces
+  }
+}
+```
+
+## Repository Pattern
+Abstract data access:
+```dart
+abstract class UserRepository {
+  Future<User> getById(String id);
+  Future<void> save(User user);
+}
+// Implementation details hidden in data layer
+```
+
+## Feature Flags for Migration
+```dart
+if (FeatureFlags.useNewProfileScreen) {
+  return NewProfileScreen();
+} else {
+  return OldProfileScreen();
+}
+```
+
+# Anti-Patterns to Avoid
+
+- **God Object**: One class that does everything
+- **Shotgun Surgery**: One change requires many file edits
+- **Feature Envy**: Code that uses another module's data more than its own
+- **Primitive Obsession**: Using strings/ints instead of domain types
+- **Speculative Generality**: Abstractions for features that don't exist
+
+# When Things Are Getting Better
+- New features require fewer file changes
+- Bug fixes are localized
+- Onboarding is faster
+- Tests are easier to write
+- You can explain the architecture in 2 minutes

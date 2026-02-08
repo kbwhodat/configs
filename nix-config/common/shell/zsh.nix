@@ -105,6 +105,14 @@ in
       direnv allow
     }
 
+    ${if isDarwin then ''
+    if ! pgrep -x kanata >/dev/null;then
+      (nohup sudo -n ${pkgs.kanata}/bin/kanata -c"$HOME/.config/kanata/kanata.kbd" \
+       >/tmp/kanata.out 2>/tmp/kanata.err &disown
+      ) >/dev/null 2>&1
+    fi
+    '' else ""}
+
     export PATH=$PATH:"${if isAarch64 == "aarch64-darwin" then "/opt/homebrew/bin" else ""}"
 
     if [[ ''${uname} == "Darwin" ]]; then

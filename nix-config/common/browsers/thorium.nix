@@ -1,6 +1,7 @@
 { config, inputs, lib, pkgs, ... }:
 let
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 
   thoriumExtensions = [
     { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
@@ -10,11 +11,14 @@ let
     { id = "pfdeiaeaofodcolaiadjdflpejkofhpf"; } #simple adblocker - use it for camel.live
   ];
 
-  thoriumConfigDirs = [
-    "${config.xdg.configHome}/thorium"
-    "${config.xdg.configHome}/Thorium"
-    "${config.xdg.configHome}/chromium"
-  ];
+  thoriumConfigDirs =
+    if isLinux then [
+      "${config.xdg.configHome}/thorium"
+      "${config.xdg.configHome}/Thorium"
+      "${config.xdg.configHome}/chromium"
+    ] else if isDarwin then [
+      "${config.home.homeDirectory}/Library/Application Support/Thorium"
+    ] else [ ];
 
   mkExtensionEntry = configDir: ext:
     lib.nameValuePair "${configDir}/External Extensions/${ext.id}.json" {
@@ -52,5 +56,5 @@ in {
     };
   };
 
-  home.file = lib.mkIf isLinux extensionFiles;
+  home.file = lib.mkIf (thoriumConfigDirs != [ ]) extensionFiles;
 }
