@@ -435,15 +435,18 @@ in
       "nixos-server" = {
         id = "SHP6VHK-GAS77UE-YTPE4XN-VJREHJA-62GGVJ5-CFWYAAJ-WWHUSSL-EWABPQ6";
       };
+      "mac-studio" = {
+        id = "BOVCXJY-FCRVFJS-DFJ667E-ICJHPSR-U5K7YQI-M4Q6NEW-6NTLGWB-EE2BSAE";
+      };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "iphone" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
+        devices = [ "mac-studio" "iphone" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
       };
       "/home/katob/Documents" = {
         id = "documents";
-        devices = [ "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
+        devices = [ "mac-studio" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
       };
     };
   };

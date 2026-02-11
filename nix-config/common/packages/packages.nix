@@ -37,7 +37,7 @@
     nix-prefetch-git
     rustup
     nodejs_22
-    php83Packages.composer
+    # php83Packages.composer
     tree-sitter
     zlib
     gnused

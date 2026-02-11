@@ -13,7 +13,7 @@ let
       mcp-nixos
       terraform-mcp-server
       # mcp-grafana
-      # playwright-mcp
+      playwright-mcp
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
@@ -85,6 +85,12 @@ in
         fetch = {
           type = "local";
           command = [ "mcp-server-fetch" ];
+          enabled = true;
+        };
+
+        playwright = {
+          type = "local";
+          command = [ "mcp-server-playwright" "--no-sandbox" ];
           enabled = true;
         };
 
