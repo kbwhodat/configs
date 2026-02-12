@@ -203,6 +203,7 @@ in
     exercism
     firefoxpwa
     unixtools.netstat
+    freetube
   ];
 
   programs.direnv.nix-direnv = {
@@ -329,7 +330,7 @@ in
   };
 
   services.nextdns = {
-    enable = true;
+    enable = false;
     arguments = [
       "-config"
       "66f183"
@@ -337,11 +338,12 @@ in
   };
 
   services.resolved = {
-    enable = false;
+    enable = true;
     extraConfig = "
-      nameserver 127.0.0.l
-      nameserver 9.9.9.10
-      nameserver 64.6.64.6
+      [Resolve]
+      DNS=45.90.28.0#66f183.dns.nextdns.io
+      DNS=45.90.30.0#66f183.dns.nextdns.io
+      DNSOverTLS=no
     ";
   };
 
