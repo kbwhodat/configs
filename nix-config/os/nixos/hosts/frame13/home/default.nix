@@ -46,7 +46,6 @@ in
     xdotool
     ueberzug
     pulseaudio
-    vlc
     yaegi # go interpreter
     dunst
     clang-tools
