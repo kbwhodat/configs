@@ -94,14 +94,11 @@ in
     ueberzug
     pulseaudio
     autorandr
-    vlc
     yaegi # go interpreter
     dunst
     clang
     clang-tools
     transmission_4-qt
-    tor
-    tor-browser
     bluez
   ];
 

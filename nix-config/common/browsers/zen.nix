@@ -12,25 +12,13 @@ in
     if isDarwin then
       false
     else
-      false;
+      true;
 
   programs.zen-browser.package =
     if isDarwin then
-        pkgs.zen-browser-bin-darwin.override {
-        nativeMessagingHosts = [
-            # Tridactyl native connector
-            pkgs.tridactyl-native
-        ];
-        }
+        pkgs.zen-browser-bin-darwin
     else
-        inputs.zen-browser.packages.x86_64-linux.default.override {
-        nativeMessagingHosts = [
-            # Gnome shell native connector
-            pkgs.gnome-browser-connector
-            # Tridactyl native connector
-            pkgs.tridactyl-native
-        ];
-        };
+        inputs.zen-browser.packages.x86_64-linux.default;
 
   programs.zen-browser.profiles =
     let
@@ -50,7 +38,6 @@ in
       df-youtube
       kagi-search
       vimium-c
-      dark-background-light-text
       clearurls
   ];
 
