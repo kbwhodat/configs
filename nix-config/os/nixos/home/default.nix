@@ -86,7 +86,6 @@ in
     obsidian
     maven
     vulkan-tools
-    picom
 		nmap
     pciutils
     xclip

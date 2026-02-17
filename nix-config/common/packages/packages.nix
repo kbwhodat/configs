@@ -2,6 +2,7 @@
 {
   home.packages = with pkgs; [
     kanata
+    glow
     zathura
     taskwarrior-tui
     vim
@@ -11,7 +12,6 @@
     lsof
     htop
     curl
-    tmux
     git
     bat
     dig
@@ -22,8 +22,6 @@
     luarocks
     fd
     ripgrep
-    fira-code
-    mononoki
     roboto
     # roboto-mono
     roboto-serif
@@ -50,6 +48,5 @@
     taskwarrior3
     sqlite
     newsboat
-    streamlink
   ];
 }

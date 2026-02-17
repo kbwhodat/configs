@@ -88,11 +88,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1770931799,
-        "narHash": "sha256-3L4HJHC3LI7FlVvw54YJIKhlkEXZSsC3GGRNjip4vck=",
+        "lastModified": 1771087513,
+        "narHash": "sha256-fL4fGwBZlXj5A3XVJZYhCojNw2Fe7qH+IHfieiuaBx8=",
         "owner": "kbwhodat",
         "repo": "gonwatch",
-        "rev": "1b1974df6d34a92a026e5af6f7d7cd576eca2836",
+        "rev": "39c69ef406d5bd8f23081c1bef82277b24f88378",
         "type": "github"
       },
       "original": {

@@ -25,7 +25,6 @@ in
     pathsToLink = [ "/libexec" ];
   };
 
-
   system.stateVersion = "25.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -177,7 +176,8 @@ in
   programs.kdeconnect.enable = true;
 
   # A window compistor for X11
-  services.picom.enable = true;
+  # Disabled - using custom script with greyscale shader instead
+  # services.picom.enable = true;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.login.enableGnomeKeyring = true;
 
@@ -343,7 +343,7 @@ in
       [Resolve]
       DNS=45.90.28.0#66f183.dns.nextdns.io
       DNS=45.90.30.0#66f183.dns.nextdns.io
-      DNSOverTLS=no
+      DNSOverTLS=yes
     ";
   };
 
