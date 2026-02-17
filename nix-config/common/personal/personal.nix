@@ -62,7 +62,7 @@ in
           owner = "kbwhodat";
           repo = "ipvanish";
           rev = "master";
-          sha256 = "66CJKEe/45hYEZaeCTsPVvU7KqyDErXfdSVL68xwyTc=";
+          sha256 = "sha256-OzKUCE+dOn216CW4Kq/G+B1RUmrXP6KIUWV1PB42+bo=";
         };
         doCheck = false;
       };

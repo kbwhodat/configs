@@ -20,8 +20,12 @@ show-title-bar no
 
 cleanup-on-quit yes
 
+keep-articles-days 30
+
 reload-threads 150
 
 articlelist-format "%D %t"
+
+
 
 browser "cha %u"
