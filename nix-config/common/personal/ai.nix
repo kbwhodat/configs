@@ -59,8 +59,10 @@ in
     };
     settings = {
       keybinds = {
-        messages_half_page_up = "ctrl+k";
-        messages_half_page_down = "ctrl+j";
+        messages_half_page_up = "ctrl+alt+u";
+        messages_half_page_down = "ctrl+alt+d";
+        messages_line_up = "ctrl+alt+y";
+        messages_line_down = "ctrl+alt+e";
       };
 
       mcp = {

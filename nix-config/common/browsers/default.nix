@@ -10,6 +10,7 @@
     ./librewolf.nix
     ./chrome.nix
     ./helium.nix
+    ./thorium.nix
     # ./ladybird.nix
   ];
 }

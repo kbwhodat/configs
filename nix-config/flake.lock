@@ -88,13 +88,10 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1771087513,
-        "narHash": "sha256-fL4fGwBZlXj5A3XVJZYhCojNw2Fe7qH+IHfieiuaBx8=",
         "lastModified": 1771994041,
         "narHash": "sha256-4Ywvw22onFBSjXt4CS9AF2B1jzTZu9ZjmQZt7cCyUD8=",
         "owner": "kbwhodat",
         "repo": "gonwatch",
-        "rev": "39c69ef406d5bd8f23081c1bef82277b24f88378",
         "rev": "522a3953904dd3649e1c270cf0164b3292badbf6",
         "type": "github"
       },
@@ -326,6 +323,7 @@
         "nixpkgs": "nixpkgs_5",
         "nur": "nur",
         "sops-nix": "sops-nix",
+        "thorium-browser": "thorium-browser",
         "undetected-chromedriver": "undetected-chromedriver",
         "zen-browser": "zen-browser"
       }
@@ -359,6 +357,26 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "thorium-browser": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772180697,
+        "narHash": "sha256-6uAk8Q29/rWDrHOw+18zv/h+IEcQFStVUZ5AGBpdHYU=",
+        "owner": "kbwhodat",
+        "repo": "thorium-browser-flake",
+        "rev": "f95a63b0eec8f40fdfdeef8e6928eade580eaa73",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kbwhodat",
+        "repo": "thorium-browser-flake",
         "type": "github"
       }
     },

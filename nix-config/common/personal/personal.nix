@@ -23,7 +23,6 @@ in
     uv
     bun
     ffmpeg
-    freetube
 
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
