@@ -182,6 +182,9 @@ with lib; let
     then null
     else if isDarwin
     then package
+    # If the package doesn't have .override (e.g., our fx-autoconfig wrapper), just use it as-is
+    else if !(package ? override)
+    then package
     else if versionAtLeast config.home.stateVersion "19.09"
     then
       package.override (old: {
@@ -651,6 +654,45 @@ in {
                 inside Zen after the first installation.
               '';
             };
+
+            chromeJS = mkOption {
+              type = types.attrsOf types.path;
+              default = {};
+              example = literalExpression ''
+                {
+                  "zenleap.uc.js" = "''${pkgs.zenleap}/js/zenleap.uc.js";
+                }
+              '';
+              description = ''
+                Attribute set of JavaScript files to place in chrome/JS/ directory.
+                These are userscripts loaded by fx-autoconfig.
+              '';
+            };
+
+            chromeCSS = mkOption {
+              type = types.attrsOf types.path;
+              default = {};
+              example = literalExpression ''
+                {
+                  "zenleap.css" = "''${pkgs.zenleap}/css/zenleap.css";
+                }
+              '';
+              description = ''
+                Attribute set of CSS files to place in chrome/ directory.
+                These can be imported via @import in userChrome.css.
+              '';
+            };
+
+            fxAutoconfig = mkOption {
+              type = types.nullOr types.package;
+              default = null;
+              example = literalExpression "pkgs.zenleap";
+              description = ''
+                Package containing fx-autoconfig profile files.
+                The package should have fxautoconfig-profile/ directory
+                with the chrome utils files.
+              '';
+            };
           };
         }));
         default = {};
@@ -911,6 +953,43 @@ in {
           recursive = true;
           force = true;
         };
+
+        # fx-autoconfig profile files (chrome/utils/)
+        "${profilesPath}/${profile.path}/chrome/utils" = mkIf (profile.fxAutoconfig != null) {
+          source = "${profile.fxAutoconfig}/fxautoconfig-profile/utils";
+          recursive = true;
+        };
+
+        # fx-autoconfig CSS directory (required by chrome.manifest)
+        "${profilesPath}/${profile.path}/chrome/CSS" = mkIf (profile.fxAutoconfig != null) {
+          source = "${profile.fxAutoconfig}/fxautoconfig-profile/CSS";
+          recursive = true;
+        };
+
+        # fx-autoconfig resources directory (required by chrome.manifest)
+        "${profilesPath}/${profile.path}/chrome/resources" = mkIf (profile.fxAutoconfig != null) {
+          source = "${profile.fxAutoconfig}/fxautoconfig-profile/resources";
+          recursive = true;
+        };
+
+        # fx-autoconfig JS helper files (required for fx-autoconfig to work)
+        "${profilesPath}/${profile.path}/chrome/JS/userChrome_ag_css.sys.mjs" = mkIf (profile.fxAutoconfig != null) {
+          source = "${profile.fxAutoconfig}/fxautoconfig-profile/JS/userChrome_ag_css.sys.mjs";
+        };
+
+        "${profilesPath}/${profile.path}/chrome/JS/userChrome_au_css.uc.js" = mkIf (profile.fxAutoconfig != null) {
+          source = "${profile.fxAutoconfig}/fxautoconfig-profile/JS/userChrome_au_css.uc.js";
+        };
+
+        # Additional userscripts in chrome/JS/
+      } // (mapAttrs' (name: path: nameValuePair
+        "${profilesPath}/${profile.path}/chrome/JS/${name}"
+        { source = path; }
+      ) profile.chromeJS)
+      // (mapAttrs' (name: path: nameValuePair
+        "${profilesPath}/${profile.path}/chrome/${name}"
+        { source = path; }
+      ) profile.chromeCSS) // {
 
         # "${zenConfigPath}/profiless.ini" = if !isDarwin then {
         #   source = config.lib.filemkOutOfStoreSymlink "${config.home.homeDirectory}/.config/zen/profiless.ini";
