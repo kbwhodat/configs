@@ -5,7 +5,7 @@ let
   # Import unstable nixpkgs
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-    sha256 = "1664s8ffaa3hcvz4d4hwca2l6xl25j8dvzxwmd2ckcskcncq1zc1";
+    sha256 = "sha256:15bmq6yx1sjjhlwq4b6sqzdifnsghwvh22fg6szp57xf97xivh6h";
   }) {
     system = pkgs.system;
     config.allowUnfree = true;

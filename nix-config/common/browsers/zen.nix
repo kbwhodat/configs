@@ -1,6 +1,6 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, config, lib, pkgs, ... }:
 let
-inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv) isDarwin;
 in
 {
 
@@ -8,22 +8,20 @@ in
     ../../modules/zen.nix
   ];
 
-  programs.zen-browser.enable =
-    if isDarwin then
-      false
-    else
-      true;
+  programs.zen-browser.enable = true;
 
   programs.zen-browser.package =
     if isDarwin then
-        pkgs.zen-browser-bin-darwin
+        # Wrap macOS Zen Browser with fx-autoconfig for ZenLeap support
+        pkgs.wrapZenBrowserWithFxAutoconfig pkgs.zen-browser-bin-darwin
     else
-        inputs.zen-browser.packages.x86_64-linux.default;
+        # Wrap the zen-browser with fx-autoconfig for ZenLeap support
+        pkgs.wrapZenBrowserWithFxAutoconfig inputs.zen-browser.packages.x86_64-linux.default;
 
   programs.zen-browser.profiles =
     let
 
-# Using my own custom chrome.css
+# Keep only custom browser chrome theme (preserve all-black styling)
     userChrome = builtins.readFile ../../../chrome/zen-browser-theme.css;
 
     name = "kato";
@@ -102,6 +100,7 @@ in
     "browser.newtabpage.pinned" = "[{'url':'https://kagi.com','label':'@kagi','searchTopSite':true}]";
     "browser.bookmarks.addedImportButton" = true;
     "browser.startup.homepage" = "about:blank";
+    "browser.startup.page" = 3;
     "browser.search.region" = "US";
     "network.http.http3.enabled" = false;
     "dom.image-lazy-loading.enabled" = true;
@@ -109,8 +108,8 @@ in
     "general.smoothScroll" = true;
     "media.autoplay.default" = 1;
     "browser.cache.disk.enable" = true;
-    "broswer.cache.memory.enable" = true;
-    "broswer.sessionstore.resume_from_crash" = false;
+    "browser.cache.memory.enable" = true;
+    "browser.sessionstore.resume_from_crash" = false;
     "browser.search.countryCode" = "US";
     "browser.search.isUS" = true;
     "browser.ctrlTab.recentlyUsedOrder" = true;
@@ -137,6 +136,56 @@ in
     "services.sync.engineStatusChanged.prefs" = true;
     "signon.rememberSignons" = true;
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+    "uc.zenleap.settings" = builtins.toJSON {
+      "keys.global.leapMode" = {
+        key = ";";
+        code = "Semicolon";
+        ctrl = true;
+        shift = false;
+        alt = false;
+        meta = false;
+      };
+      "keys.global.splitFocusLeft" = {
+        key = "h";
+        code = "KeyH";
+        ctrl = false;
+        shift = false;
+        alt = isDarwin;
+        meta = !isDarwin;
+      };
+      "keys.global.splitFocusDown" = {
+        key = "j";
+        code = "KeyJ";
+        ctrl = false;
+        shift = false;
+        alt = isDarwin;
+        meta = !isDarwin;
+      };
+      "keys.global.splitFocusUp" = {
+        key = "k";
+        code = "KeyK";
+        ctrl = false;
+        shift = false;
+        alt = isDarwin;
+        meta = !isDarwin;
+      };
+      "keys.global.splitFocusRight" = {
+        key = "l";
+        code = "KeyL";
+        ctrl = false;
+        shift = false;
+        alt = isDarwin;
+        meta = !isDarwin;
+      };
+      "keys.global.splitResize" = {
+        key = " ";
+        code = "Space";
+        ctrl = false;
+        shift = false;
+        alt = isDarwin;
+        meta = !isDarwin;
+      };
+    };
     /****************************************************************************
      * SECTION: FASTFOX                                                         *
      ****************************************************************************/
@@ -353,10 +402,22 @@ in
 
 
   };
+    # ZenLeap configuration
+    chromeJS = {
+      "zenleap.uc.js" = "${pkgs.zenleap}/js/zenleap.uc.js";
+      "zenleap-unsplit.uc.js" = ./zenleap-unsplit.uc.js;
+    };
+
+    chromeCSS = {
+      "zenleap.css" = "${pkgs.zenleap}/css/zenleap.css";
+    };
+
+    fxAutoconfig = pkgs.zenleap;
+
   in
   {
     home = {
-      inherit isDefault userChrome settings path extensions name;
+      inherit isDefault userChrome settings path extensions name chromeJS chromeCSS fxAutoconfig;
       id = 0;
     };
   };
