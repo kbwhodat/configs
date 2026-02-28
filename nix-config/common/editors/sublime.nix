@@ -35,6 +35,7 @@ in {
     inverse_caret_state = false;
     caret_style = "blink";
     vintage_start_in_command_mode = true;
+    vintageous_use_sys_clipboard = true;
     ignored_packages = [ "Vintage" ];
     hot_exit = true;
     remember_open_files = true;
