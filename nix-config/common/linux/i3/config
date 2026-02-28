@@ -24,6 +24,9 @@ exec_always --no-startup-id dunst
 # Will hide the titlebar
 for_window [class="^.*"] border pixel 1
 
+# Remove all i3 window decorations for Sublime Text on Linux
+for_window [class="(?i).*sublime.*"] border none
+
 #Set gaps
 gaps inner 2
 gaps outer 2
@@ -36,9 +39,6 @@ bindsym --release Control+$mod+4 exec --no-startup-id /home/katob/Documents/scri
 
 
 # Browser focus shortcuts
-bindsym $mod+Shift+F exec --no-startup-id bash -c 'pgrep -fi "zen|zen-browser" >/dev/null && i3-msg "[class=\"(?i).*zen.*\"] focus" || zen-browser &'
-bindsym $mod+Shift+G exec --no-startup-id bash -c 'pgrep -fi "thorium|thorium-browser" >/dev/null && i3-msg "[class=\"(?i).*thorium.*\"] focus" || thorium-browser &'
-bindsym $mod+Shift+Y exec --no-startup-id bash -c 'pgrep -fi "freetube" >/dev/null && i3-msg "[class=\"(?i).*freetube.*\"] focus" || freetube &'
 
 #to lock screen
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "systemctl suspend" "" &
@@ -127,7 +127,13 @@ bindsym Ctrl+Shift+space exec --no-startup-id bash -c 'pgrep -x emacs >/dev/null
 
 bindsym Ctrl+Mod4+space exec --no-startup-id bash -c 'pgrep -f zed-editor >/dev/null && i3-msg "[class=\"dev.zed.Zed\"] focus" || zed-editor &'
 
-bindsym Ctrl+Mod1+space exec --no-startup-id bash -c 'pgrep -fi "sublime_text|sublime" >/dev/null && i3-msg "[class=\"(?i).*sublime.*\"] focus" || sublime_text &'
+bindsym Ctrl+Mod1+space exec --no-startup-id bash -c 'pgrep -f "[s]ublime_text" >/dev/null && i3-msg "[class=Sublime_text] focus" || sublime_text &'
+
+bindsym $mod+Shift+F exec --no-startup-id bash -c 'pgrep -f "[z]en" >/dev/null && i3-msg "[class=zen] focus" || zen &'
+
+bindsym $mod+Shift+G exec --no-startup-id bash -c 'pgrep -f "[t]horium" >/dev/null && i3-msg "[class=Thorium-browser] focus" || thorium-browser &'
+
+bindsym $mod+Shift+Y exec --no-startup-id bash -c 'pgrep -f "[f]reetube" >/dev/null && i3-msg "[class=FreeTube] focus" || freetube &'
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"

@@ -11,7 +11,7 @@ in
     if isDarwin then
       true
     else
-      true;
+      false;
 
   programs.firefox.package =
     if isDarwin then

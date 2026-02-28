@@ -19,6 +19,7 @@
     ./sc-im.nix
     ./syncthing.nix
     ./flutter.nix
+    ./bookokrat.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix

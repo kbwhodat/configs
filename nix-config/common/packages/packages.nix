@@ -21,6 +21,7 @@
     luajit
     luarocks
     fd
+    dict
     ripgrep
     roboto
     # roboto-mono
