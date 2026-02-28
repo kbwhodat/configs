@@ -54,6 +54,9 @@ in
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "openssl-1.1.1w"
+  ];
   nixpkgs.config.input-fonts.acceptLicense = true;
 
 
@@ -78,7 +81,7 @@ in
   environment.sessionVariables.PKG_CONFIG_PATH =
     lib.makeSearchPath "lib/pkgconfig" [
       pkgs.imagemagick.dev
-      pkgs.openssl.dev
+      # pkgs.openssl.dev
     ];
 
   services.logind.lidSwitchExternalPower = lib.mkForce "ignore";

@@ -28,6 +28,7 @@ in {
   home.file."${sublimeUserDir}/Preferences.sublime-settings".text = builtins.toJSON {
     theme = "Adaptive.sublime-theme";
     themed_title_bar = true;
+    update_check = false;
     color_scheme = "Packages/User/PureBlack.sublime-color-scheme";
     font_size = 14.5;
     block_caret = false;

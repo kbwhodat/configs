@@ -6,7 +6,7 @@ in
   home.packages = with pkgs; [
     mpv
     _7zz
-    openssl_legacy
+    # openssl
     yarn
     (if isDarwin then nil else gnome-keyring)
     gonchill

@@ -5,4 +5,5 @@ in {
   zen-browser-unwrapped = callPackage ./zen-browser-bin {};
   zenleap = callPackage ./zenleap {};
   wrapZenBrowserWithFxAutoconfig = callPackage ./zen-browser-with-fx-autoconfig {};
+  bookokrat = callPackage ./bookokrat {};
 }
