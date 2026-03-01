@@ -39,6 +39,8 @@ in
       vimium-c
       clearurls
   ];
+  
+
 
   settings = {
       

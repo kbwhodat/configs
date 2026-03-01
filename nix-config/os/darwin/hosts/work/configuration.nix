@@ -21,6 +21,21 @@ in
     system = {
       defaults = {
         menuExtraClock.Show24Hour = true;
+        # Disable press-and-hold accent menu for Sublime Text (enable key repeat)
+        CustomUserPreferences."com.sublimetext.4".ApplePressAndHoldEnabled = false;
+        # Disable macOS screenshot shortcuts (Cmd+Shift+3/4/5) - used by Aerospace
+        # Disable Spotlight shortcut (Cmd+Space) - used by Raycast
+        CustomUserPreferences."com.apple.symbolichotkeys" = {
+          AppleSymbolicHotKeys = {
+            "28" = { enabled = false; };  # Cmd+Shift+3 screenshot to file
+            "29" = { enabled = false; };  # Cmd+Ctrl+Shift+3 screenshot to clipboard
+            "30" = { enabled = false; };  # Cmd+Shift+4 selection to file
+            "31" = { enabled = false; };  # Cmd+Ctrl+Shift+4 selection to clipboard
+            "64" = { enabled = false; };  # Cmd+Space Spotlight search
+            "65" = { enabled = false; };  # Cmd+Option+Space Finder search
+            "184" = { enabled = false; }; # Cmd+Shift+5 screenshot/recording options
+          };
+        };
       };
     };
 
