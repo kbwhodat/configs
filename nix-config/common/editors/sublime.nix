@@ -36,6 +36,9 @@ in {
     caret_style = "blink";
     vintage_start_in_command_mode = true;
     vintageous_use_sys_clipboard = true;
+    vintageous_reset_mode_when_switching_tabs = false;
+    vintageous_highlighted_yank = false;
+    vintageous_enable_commentary = true;
     ignored_packages = [ "Vintage" ];
     hot_exit = true;
     remember_open_files = true;
@@ -76,11 +79,11 @@ in {
     let mapleader="<space>"
     set timeout
     set timeoutlen=1000
-    set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr-o:hor20
     set incsearch
     set hlsearch
     set ignorecase
     set smartcase
+    set relativenumber
 
     nnoremap <leader>; gT
     nnoremap <leader>' gt
@@ -98,11 +101,11 @@ in {
     let mapleader="<space>"
     set timeout
     set timeoutlen=1000
-    set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr-o:hor20
     set incsearch
     set hlsearch
     set ignorecase
     set smartcase
+    set relativenumber
 
     nnoremap <leader>; gT
     nnoremap <leader>' gt

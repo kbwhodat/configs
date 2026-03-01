@@ -8,7 +8,7 @@ pdf_render_mode: page
 pdf_enabled: true
 pdf_settings_configured: true
 book_sort_order: by_name
-lookup_command: "dict -h dict.org -d foldoc -C '{}' 2>/dev/null | tail -n +4 || dict -h dict.org -d gcide -s lev -C '{}' | tail -n +4"
+lookup_command: "techdict '{}'"
 lookup_display: popup
 
 # ============================================================================

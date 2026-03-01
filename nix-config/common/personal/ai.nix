@@ -20,13 +20,13 @@ let
 
   opencodeDir = "${config.home.homeDirectory}/.config/opencode";
 
-  packageJson = builtins.toJSON {
-    dependencies = {
-      "oh-my-opencode" = "^3.9.0";
-    };
-  };
-
-  packageJsonFile = pkgs.writeText "opencode-package.json" packageJson;
+  # packageJson = builtins.toJSON {
+  #   dependencies = {
+  #     "oh-my-opencode" = "^3.9.0";
+  #   };
+  # };
+  #
+  # packageJsonFile = pkgs.writeText "opencode-package.json" packageJson;
 
 in
 {
@@ -44,12 +44,12 @@ in
 
   # Declaratively manage opencode plugins via package.json
   # This ensures oh-my-opencode is installed on all machines
-  home.activation.opencodeDeps = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "${opencodeDir}"
-    cp -f "${packageJsonFile}" "${opencodeDir}/package.json"
-    chmod u+w "${opencodeDir}/package.json" || true
-    ${pkgs.bun}/bin/bun install --cwd "${opencodeDir}"
-    '';
+  # home.activation.opencodeDeps = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  #   mkdir -p "${opencodeDir}"
+  #   cp -f "${packageJsonFile}" "${opencodeDir}/package.json"
+  #   chmod u+w "${opencodeDir}/package.json" || true
+  #   ${pkgs.bun}/bin/bun install --cwd "${opencodeDir}"
+  #   '';
 
   programs.opencode = {
     enable = true;
@@ -80,7 +80,7 @@ in
       flutter-ui-design           = builtins.readFile ./skills/flutter-ui-design;
     };
     settings = {
-      plugin = [ "oh-my-opencode" ];
+      # plugin = [ "oh-my-opencode" ];
       keybinds = {
         messages_half_page_up = "ctrl+alt+u";
         messages_half_page_down = "ctrl+alt+d";
@@ -89,22 +89,24 @@ in
       };
 
       mcp = {
+        # Disabled by default - enable with "use context7" in prompt
         context7 = {
           type = "remote";
           url = "https://mcp.context7.com/mcp";
-          enabled = true;
+          enabled = false;
         };
 
         mcp_nixos = {
           type = "local";
           command = [ "mcp-nixos" ];
-          enabled = true;
+          enabled = false;
         };
 
+        # Disabled by default - enable with "use terraform" in prompt
         terraform = {
           type = "local";
           command = [ "terraform-mcp-server" ];
-          enabled = true;
+          enabled = false;
         };
 
         fetch = {
@@ -116,13 +118,14 @@ in
         playwright = {
           type = "local";
           command = [ "mcp-server-playwright" "--no-sandbox" ];
-          enabled = true;
+          enabled = false;
         };
 
+        # Disabled by default - enable with "use sequential_thinking" in prompt  
         sequential_thinking = {
           type = "local";
           command = [ "mcp-server-sequential-thinking" ];
-          enabled = true;
+          enabled = false;
         };
       };
       autoshare = false;
