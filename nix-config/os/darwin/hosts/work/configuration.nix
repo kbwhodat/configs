@@ -20,6 +20,7 @@ in
   nix.enable = true; # auto upgrade nix package and daemon service
     system = {
       defaults = {
+        NSGlobalDomain.AppleICUForce24HourTime = true;
         menuExtraClock.Show24Hour = true;
         # Disable press-and-hold accent menu for Sublime Text (enable key repeat)
         CustomUserPreferences."com.sublimetext.4".ApplePressAndHoldEnabled = false;
@@ -58,21 +59,9 @@ in
     python313
   ];
 
-  launchd.user.agents.kanata = {
-    serviceConfig.ProgramArguments = [
-      "${pkgs.kanata}/bin/kanata"
-      "-c"
-      "/Users/katob/.config/kanata/kanata.kbd"
-    ];
-    serviceConfig.RunAtLoad = true;
-    serviceConfig.KeepAlive = false;
-    serviceConfig.StandardOutPath = "/tmp/kanata.out";
-    serviceConfig.StandardErrorPath = "/tmp/kanata.err";
-  };
-
   launchd.user.agents.docker = {
     serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/os/darwin/scripts/start_colima.sh" ];
-    serviceConfig.RunAtLoad = true;
+    serviceConfig.RunAtLoad = false;
     serviceConfig.KeepAlive = false;
     serviceConfig.StandardOutPath = "/tmp/colima.out";
     serviceConfig.StandardErrorPath = "/tmp/colima.err";
@@ -95,18 +84,67 @@ in
   ];
 
   homebrew = {
-    enable = true;
-    # onActivation.cleanup = "uninstall";
+    # enable = true;
+    # onActivation.upgrade = true;
+    # onActivation.autoUpdate = true;
+    onActivation.cleanup = "zap";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "opencode" "kanata" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl"];
-    casks = [ "freetube" "mitmproxy" "helium-browser" "karabiner-elements" "clocker" "aerospace" "zed" "dbeaver-community" "obsidian" "vlc" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
+    brews = [ "opencode" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl" "chawan"];
+    casks = [ "sublime-text" "freetube" "mitmproxy" "karabiner-elements" "clocker" "zed" "dbeaver-community" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 
-  nix.settings.download-buffer-size = 524288000;
-  nix.settings.ssl-cert-file = "/etc/nix/cache-nixos-org.pem";
-  nix.settings.allowed-users = ["root" "katob"];
-  nix.settings.trusted-users = ["root" "katob"];
+  nix.settings = {
+    download-buffer-size = 524288000;
+    ssl-cert-file = "/etc/nix/ca-bundle.pem";
+    allowed-users = ["root" "katob"];
+    trusted-users = ["root" "katob"];
+    
+    # Performance optimizations
+    max-jobs = "auto";                    # Parallel build jobs (already set)
+    cores = 0;                            # Use all cores per job (0 = auto)
+    http-connections = 50;                # More parallel downloads (default is 25)
+    max-substitution-jobs = 16;           # More parallel binary cache fetches
+    
+    # Additional caches for faster binary fetches
+    substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
+  };
+
+  # Increase system-wide file descriptor and process limits
+  launchd.daemons.limit-maxfiles = {
+    serviceConfig = {
+      Label = "org.nixos.limit-maxfiles";
+      ProgramArguments = [
+        "launchctl"
+        "limit"
+        "maxfiles"
+        "524288"
+        "524288"
+      ];
+      RunAtLoad = true;
+    };
+  };
+
+  launchd.daemons.limit-maxproc = {
+    serviceConfig = {
+      Label = "org.nixos.limit-maxproc";
+      ProgramArguments = [
+        "launchctl"
+        "limit"
+        "maxproc"
+        "2048"
+        "2048"
+      ];
+      RunAtLoad = true;
+    };
+  };
 
   system.stateVersion = 4;
 }
