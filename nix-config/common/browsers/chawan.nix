@@ -2,10 +2,10 @@
 let
   inherit (pkgs.stdenv) isDarwin;
   
-  # Import unstable nixpkgs
+  # Import unstable nixpkgs for Linux (chawan 0.3.3)
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-    sha256 = "sha256:15bmq6yx1sjjhlwq4b6sqzdifnsghwvh22fg6szp57xf97xivh6h";
+    sha256 = "sha256:00a3mfk96r00j26mnblm6rlimrfl35sjrq4zy94mpc5c2jqmx3i3";
   }) {
     system = pkgs.system;
     config.allowUnfree = true;
@@ -14,7 +14,8 @@ let
 in
 {
   programs.chawan = {
-    enable = if isDarwin then true else true;
+    # Only enable on Linux - use Homebrew on Darwin (avoids gdb/nim build)
+    enable = !isDarwin;
     package = unstable.chawan;
     settings = {
       buffer = {

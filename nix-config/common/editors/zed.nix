@@ -4,7 +4,8 @@ let
 in
 {
   programs.zed-editor = {
-    enable = if isDarwin then true else true;
+    # On macOS, use Homebrew cask instead (much faster, pre-built binary)
+    enable = if isDarwin then false else true;
     package = if isDarwin then 
       pkgs.zed-editor
     else

@@ -1,10 +1,13 @@
 {pkgs, config, ...}:
 let
   inherit (pkgs.stdenv) isDarwin;
+  # Marker file to indicate personal mac - create this file only on mac-studio
+  # Work mac won't have this file, so syncthing stays disabled
+  isPersonalMac = builtins.pathExists /Users/katob/.config/syncthing-keys/personal-mac;
 in
 {
   services.syncthing = {
-    enable = if isDarwin then true else false;
+    enable = isDarwin && isPersonalMac;
     key = "/Users/katob/.config/syncthing-keys/key.pem";
     cert = "/Users/katob/.config/syncthing-keys/cert.pem";
     settings.gui = {

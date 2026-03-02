@@ -26,15 +26,10 @@ with lib; let
       Version = 2;
     };
 
-    Install0 = {
-       Default = "${zenConfigPath}/Profiles/main";
-       Locked = 1;
-    };
-
     Profile0 = {
       Name = "main";
-      Path = "${zenConfigPath}/Profiles/main";
-      IsRelative = 0;
+      Path = "Profiles/main";
+      IsRelative = 1;
       ZenAvatarPath = "chrome://browser/content/zen-avatars/avatar-32.svg";
       Default = 1;
     };
@@ -44,8 +39,8 @@ with lib; let
 
   installs =
     flip mapAttrs' cfg.profiles (_: install:
-        nameValuePair "Install${toString install.id}" {
-            Default = "${zenConfigPath}/Profiles/main";
+        nameValuePair "Install420005322CCEE14A" {
+            Default = "Profiles/main";
             Locked  = 1;
         });
 
@@ -746,14 +741,8 @@ in {
 
     home.file = mkMerge ([
         {
-            "${zenConfigPath}/profiles.ini" =
-                mkIf (!isDarwin && cfg.profiles != {}) {
-                  text = profilesIni;
-                };
-            "${zenConfigPath}/installs.ini" =
-                mkIf (!isDarwin) {
-                  text = installsIni;
-                };
+            # Don't manage profiles.ini - Zen needs to write its own Install ID
+            # The profile directory structure is created below
         }
       ]
       ++ flip mapAttrsToList cfg.profiles (_: profile: {
