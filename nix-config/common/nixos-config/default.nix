@@ -28,6 +28,14 @@ in
   system.stateVersion = "25.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.substituters = [
+    "https://cache.nixos.org"
+    "https://chawan-nix-flake.cachix.org"
+  ];
+  nix.settings.trusted-public-keys = [
+    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    "chawan-nix-flake.cachix.org-1:guW77ag6Q9K4NVJ3gh5H4jsT4QlKfYAVooSFbDXAxD4="
+  ];
 
   nix.settings.trusted-users = [
 		"root"

@@ -57,6 +57,8 @@ in
       set -g status-interval 5
 
       set -g mouse on
+      set -g window-size latest
+      set -g aggressive-resize on
       set -g @yank_selection_mouse 'clipboard'
       set -g cursor-color white
 

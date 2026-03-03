@@ -4,8 +4,11 @@ ssl-verifypeer no
 
 bind-key j down
 bind-key k up
+bind-key h quit
+bind-key LEFT quit
 bind-key - quit
 bind-key l open
+bind-key RIGHT open
 bind-key G end
 bind-key gg home
 bind-key d pagedown
@@ -28,4 +31,4 @@ articlelist-format "%D %t"
 
 
 
-browser "cha %u"
+browser "sh -c 'exec tmux new-window -n reader \"cha -o \\\"display.image-mode=sixel\\\" \\\"$1\\\"\"' _ %u"

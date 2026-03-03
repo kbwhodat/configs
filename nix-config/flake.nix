@@ -32,6 +32,8 @@
   inputs.thorium-browser.url = "github:kbwhodat/thorium-browser-flake";
   inputs.thorium-browser.inputs.nixpkgs.follows = "nixpkgs";
 
+  inputs.chawan-flake.url = "github:kbwhodat/chawan-nix-flake";
+
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.1";
