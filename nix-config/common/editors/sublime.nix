@@ -67,6 +67,39 @@ in {
     }
   ];
 
+  home.file."${sublimeUserDir}/Default (Linux).sublime-keymap".text = builtins.toJSON [
+    {
+      keys = [ "ctrl+n" ];
+      command = "new_file";
+    }
+    {
+      keys = [ "ctrl+q" ];
+      command = "exit";
+    }
+    {
+      keys = [ "ctrl+s" ];
+      command = "save";
+    }
+    {
+      keys = [ "ctrl+shift+s" ];
+      command = "prompt_save_as";
+    }
+    {
+      keys = [ "ctrl+w" ];
+      command = "close";
+    }
+  ];
+
+  # NeoVintageous settings - pass through Ctrl+N to Sublime
+  home.file."${sublimeUserDir}/NeoVintageous.sublime-settings".text = builtins.toJSON {
+    vintageous_handle_keys = {
+      "<C-n>" = false;
+      "<C-s>" = false;
+      "<C-w>" = false;
+      "<C-q>" = false;
+    };
+  };
+
   # Install NeoVintageous declaratively for full Vim motions/operators
   # including surround mappings like ysiw and visual S".
   home.file."${sublimePackagesDir}/NeoVintageous" = {

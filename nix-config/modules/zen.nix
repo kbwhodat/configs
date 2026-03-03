@@ -20,32 +20,6 @@ with lib; let
 
   extensionPath = "extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
 
-  profilesIni = lib.generators.toINI {} {
-    General = {
-      StartWithLastProfile = 1;
-      Version = 2;
-    };
-
-    Profile0 = {
-      Name = "main";
-      Path = "Profiles/main";
-      IsRelative = 1;
-      ZenAvatarPath = "chrome://browser/content/zen-avatars/avatar-32.svg";
-      Default = 1;
-    };
-  };
-
-  # profilesIni = generators.toINI {} profiles;
-
-  installs =
-    flip mapAttrs' cfg.profiles (_: install:
-        nameValuePair "Install420005322CCEE14A" {
-            Default = "Profiles/main";
-            Locked  = 1;
-        });
-
-  installsIni = generators.toINI {} installs;
-
   userPrefValue = pref:
     builtins.toJSON (
       if isBool pref || isInt pref || isString pref
@@ -738,6 +712,34 @@ in {
     programs.zen-browser.finalPackage = wrapPackage cfg.package;
 
     home.packages = lib.optional (cfg.finalPackage != null) cfg.finalPackage;
+
+    home.activation.repairZenProfile = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      zen_dir="${zenConfigPath}"
+      profiles_dir="$zen_dir/Profiles"
+      main_profile="$profiles_dir/main"
+      profiles_ini="$zen_dir/profiles.ini"
+      installs_ini="$zen_dir/installs.ini"
+
+      mkdir -p "$main_profile"
+
+      if [ -L "$profiles_ini" ]; then
+        rm -f "$profiles_ini"
+      fi
+
+      cat > "$profiles_ini" <<'EOF'
+[General]
+StartWithLastProfile=1
+Version=2
+
+[Profile0]
+Name=main
+IsRelative=1
+Path=Profiles/main
+Default=1
+EOF
+
+      rm -f "$installs_ini"
+    '';
 
     home.file = mkMerge ([
         {
