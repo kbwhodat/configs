@@ -41,6 +41,9 @@ in
     };
 
   security.pam.services.sudo_local.touchIdAuth = true;
+  security.sudo.extraConfig = ''
+    katob ALL=(root) NOPASSWD: /etc/profiles/per-user/katob/bin/kanata
+  '';
 
   # ids.uids.nixbld = 301;
   nix.extraOptions = ''
@@ -70,7 +73,7 @@ in
   services.yabai.enable = false;
   services.yabai.enableScriptingAddition = true;
   services.skhd.enable = false;
-  services.lorri.enable = true;
+  services.lorri.enable = false;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
