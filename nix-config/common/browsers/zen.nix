@@ -414,6 +414,7 @@ in
       "zenleap.uc.js" = "${pkgs.zenleap}/js/zenleap.uc.js";
       "zenleap-unsplit.uc.js" = ./zen-userscripts/zenleap-unsplit.uc.js;
       "zen-workspace-shortcuts.uc.js" = ./zen-userscripts/zen-workspace-shortcuts.uc.js;
+      "reddit-to-redlib.uc.js" = ./zen-userscripts/reddit-to-redlib.uc.js;
     };
 
     chromeCSS = {
