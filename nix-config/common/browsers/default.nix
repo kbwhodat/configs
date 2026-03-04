@@ -9,7 +9,7 @@
     ./zen.nix
     ./librewolf.nix
     ./chrome.nix
-    ./helium.nix
+    # ./helium.nix
     ./thorium.nix
     # ./ladybird.nix
   ];

@@ -32,10 +32,32 @@
             "184" = { enabled = false; }; # Cmd+Shift+5 screenshot/recording options
           };
         };
+        # Block redlib settings page in Chromium-based browsers
+        CustomUserPreferences."org.chromium.Thorium" = {
+          URLBlocklist = [
+            "https://redlib.kylrth.com/settings"
+            "https://redlib.kylrth.com/settings/*"
+          ];
+        };
+        CustomUserPreferences."org.chromium.Chromium" = {
+          URLBlocklist = [
+            "https://redlib.kylrth.com/settings"
+            "https://redlib.kylrth.com/settings/*"
+          ];
+        };
+        CustomUserPreferences."com.google.Chrome" = {
+          URLBlocklist = [
+            "https://redlib.kylrth.com/settings"
+            "https://redlib.kylrth.com/settings/*"
+          ];
+        };
       };
     };
 
   security.pam.services.sudo_local.touchIdAuth = true;
+  security.sudo.extraConfig = ''
+    katob ALL=(root) NOPASSWD: /etc/profiles/per-user/katob/bin/kanata
+  '';
 
   nix.extraOptions = ''
     experimental-features = nix-command flakes
@@ -71,17 +93,18 @@
   services.yabai.enable = false;
   services.yabai.enableScriptingAddition = false;
   services.skhd.enable = false;
-  services.lorri.enable = true;
+  services.lorri.enable = false;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true; 
 
-  # networking.dns = [ "208.67.222.123" ];
+  networking.knownNetworkServices = [ "Wi-Fi" ];
+  networking.dns = [ "45.90.28.210" "45.90.30.210" ];
   networking.hostName = "macos-studio";
 
   services.nextdns = {
-    enable = true;
+    enable = false;
     arguments = [
       "-config"
       "66f183"

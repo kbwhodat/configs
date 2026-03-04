@@ -23,6 +23,20 @@ in
   environment = {
     etc.".secrets".source = "${myrepo}";
     pathsToLink = [ "/libexec" ];
+
+    # Block redlib settings page in Thorium/Chromium browsers
+    etc."chromium/policies/managed/redlib-block.json".text = builtins.toJSON {
+      URLBlocklist = [
+        "https://redlib.kylrth.com/settings"
+        "https://redlib.kylrth.com/settings/*"
+      ];
+    };
+    etc."opt/chromium/policies/managed/redlib-block.json".text = builtins.toJSON {
+      URLBlocklist = [
+        "https://redlib.kylrth.com/settings"
+        "https://redlib.kylrth.com/settings/*"
+      ];
+    };
   };
 
   system.stateVersion = "25.11";
