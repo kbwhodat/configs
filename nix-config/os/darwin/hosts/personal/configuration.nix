@@ -101,7 +101,6 @@
 
   networking.knownNetworkServices = [ "Wi-Fi" ];
   networking.dns = [ "45.90.28.210" "45.90.30.210" ];
-  networking.hostName = "macos-studio";
 
   services.nextdns = {
     enable = false;
