@@ -48,7 +48,7 @@
 
       overlays = [
         nur.overlays.default
-        gonchill.overlay
+        # gonchill.overlay
         gonwatch.overlay
         # firefox-darwin.overlay
         undetected-chromedriver.overlay

@@ -1,15 +1,21 @@
-{ config, pkgs, ...}:
+{ config, pkgs, inputs, ...}:
+let
+  unstable = import inputs.unstable {
+    system = pkgs.system;
+    config = pkgs.config;
+  };
+in
 {
-
   programs = {
     direnv = {
       enable = true;
-      enableBashIntegration = true; # see note on other shells below
-      enableZshIntegration = true; # see note on other shells below
+      package = unstable.direnv;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
       nix-direnv.enable = true;
     };
 
-    bash.enable = true; # see note on other shells below
-    zsh.enable = true; # see note on other shells below
+    bash.enable = true;
+    zsh.enable = true;
   };
 }

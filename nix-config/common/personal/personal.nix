@@ -8,13 +8,13 @@ let
 in
 {
   home.packages = with pkgs; [
-    mpv
+    unstable.mpv
     _7zz
     # openssl
     yarn
     (if isDarwin then nil else gnome-keyring)
     #gonchill
-    gonwatch
+    # gonwatch
     #undetected-chromedriver
     libsixel
     #clang
@@ -22,12 +22,11 @@ in
     ruby
     pinentry-gtk2
     zip
-    anki
+    # anki
     bruno
     uv
     bun
     ffmpeg
-    pipe-viewer
     openjdk17
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
