@@ -18,12 +18,13 @@ let
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
-  ocvNodeModules = inputs.ocv.packages.${system}.node_modules_updater.override {
-    hash = "sha256-CxWH3vnbxRY6vfkAbpvgqtCaV6Krb4Dq2Rq7HHInIXo=";
-  };
-  ocv = inputs.ocv.packages.${system}.opencode.override {
-    node_modules = ocvNodeModules;
-  };
+  # ocvNodeModules = inputs.ocv.packages.${system}.node_modules_updater.override {
+  #   hash = "sha256-HXblriXCInJJl7oMFVJVrNJrTAzW9cWPIiN4C21VAVE=";
+  # };
+  # ocv = inputs.ocv.packages.${system}.opencode.override {
+  #   node_modules = ocvNodeModules;
+  # };
+
 
   unstable = import inputs.unstable {
     system = pkgs.system;
@@ -51,9 +52,9 @@ in
         (if builtins.getEnv "HOST" == "nixos-server" then mistral-rs else nil)
         (if builtins.getEnv "HOST" == "nixos-server" then rlama else nil)
         (if builtins.getEnv "HOST" == "nixos-server" then python313Packages.huggingface-hub else nil)
-        (pkgs.writeShellScriptBin "ocv" ''
-          exec ${ocv}/bin/opencode "$@"
-        '')
+        # (pkgs.writeShellScriptBin "ocv" ''
+        #   exec ${ocv}/bin/opencode "$@"
+        # '')
       ]
       ++ mcpServers
       ++ llmAgents;
@@ -163,8 +164,8 @@ if d.get('main') != 'ecc-opencode-shim.js':
   '';
 
   programs.opencode = {
-    enable = true;
-    package = ocv;
+    enable = false;
+    # package = opencode;
     enableMcpIntegration = true;
     rules = ''
       Do not use AskUserQuestion — that tool does not exist here. To ask the user a question, use the "question" tool instead.
@@ -332,6 +333,37 @@ if d.get('main') != 'ecc-opencode-shim.js':
   programs.claude-code = {
     enable = true;
     package = unstable.claude-code;
+
+    marketplaces = {
+      ecc = pkgs.fetchFromGitHub {
+        owner = "affaan-m";
+        repo = "everything-claude-code";
+        rev = "main";
+        sha256 = "sha256-FEqDiGcXgbi1UJNpbYlYS1EdlI83ksR66u5F0EKZncs=";
+      };
+      superpowers = pkgs.fetchFromGitHub {
+        owner = "obra";
+        repo = "superpowers";
+        rev = "main";
+        sha256 = "sha256-cobQloF7Y6K0IC0/6xSnA2Io+fKgk2SRmCwoZZtVCco=";
+      };
+    };
+
+    plugins = [
+      (pkgs.fetchFromGitHub {
+        owner = "affaan-m";
+        repo = "everything-claude-code";
+        rev = "main";
+        sha256 = "sha256-FEqDiGcXgbi1UJNpbYlYS1EdlI83ksR66u5F0EKZncs=";
+      })
+      (pkgs.fetchFromGitHub {
+        owner = "obra";
+        repo = "superpowers";
+        rev = "main";
+        sha256 = "sha256-cobQloF7Y6K0IC0/6xSnA2Io+fKgk2SRmCwoZZtVCco=";
+      })
+    ];
+
     mcpServers = {
       context7 = {
         url = "https://mcp.context7.com/mcp";
@@ -380,26 +412,6 @@ if d.get('main') != 'ecc-opencode-shim.js':
     };
 
     settings = {
-      extraKnownMarketplaces = {
-        ecc = {
-          source = {
-            source = "github";
-            repo = "affaan-m/everything-claude-code";
-          };
-        };
-        superpowers = {
-          source = {
-            source = "github";
-            repo = "obra/superpowers";
-          };
-        };
-      };
-
-      enabledPlugins = {
-        "ecc@ecc" = true;
-        "superpowers@superpowers" = true;
-      };
-
       hooks = {
         PreToolUse = [
           {
