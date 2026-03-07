@@ -9,9 +9,9 @@ in
     # openssl
     yarn
     (if isDarwin then nil else gnome-keyring)
-    gonchill
+    #gonchill
     gonwatch
-    undetected-chromedriver
+    #undetected-chromedriver
     libsixel
     #clang
     perl
@@ -24,7 +24,7 @@ in
     bun
     ffmpeg
 
-    (python312.withPackages (ps: with ps; let
+    (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
         pname = "selenium-driverless";
         version = "1.9.4";
