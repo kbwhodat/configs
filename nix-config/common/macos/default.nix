@@ -7,6 +7,7 @@
     # ./colima.nix
     # ./kanata.nix
     ./xcode.nix
+    ./hammerspoon.nix
   ];
 
 }

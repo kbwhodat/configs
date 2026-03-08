@@ -4,6 +4,13 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 
   thoriumExtensions = [
+    { id = "blockjmkbacgjkknlgpkjjiijinjdanf"; #ublock origin
+      crxPath = pkgs.fetchurl {
+        url = "https://github.com/imputnet/ublock-origin-crx/releases/download/1.69.0/uBlock0_1.69.0.crx";
+        sha256 = "sha256-cU7T6eHfihXmuec+jKtCCIfsdKxKjHotW5oMy3euP34=";
+      };
+      version = "1.69.0";
+    }
     { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
     { id = "cdglnehniifkbagbbombnjghhcihifij"; } #kagi search
     { id = "ghmbeldphafepmbegfdlkpapadhbakde"; } #protonpass

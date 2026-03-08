@@ -12,7 +12,7 @@
   inputs.home-manager.url = "github:nix-community/home-manager/master";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
   # inputs.nixpkgs.url = "github:matteo-pacini/nixpkgs/gtk3-clang-fixes-2";
 
   inputs.mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
@@ -40,7 +40,7 @@
   inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
   # inputs.gonchill.url = "github:kbwhodat/gonchill/2607f4315c455d6303afb8b20d9ee9cbe694686e";
 
-  outputs = inputs@{ self, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
+  outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
@@ -181,9 +181,13 @@
         mac-studio = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = { inherit inputs; };
+
           modules = [
-            ./os/darwin/hosts/personal/configuration.nix
-            home-manager.darwinModules.home-manager {
+          ./os/darwin/hosts/personal/configuration.nix
+
+            home-manager.darwinModules.home-manager
+
+            {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };

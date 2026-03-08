@@ -1,0 +1,90 @@
+{
+  lib,
+  stdenvNoCC,
+  fetchFromGitHub,
+  fetchPnpmDeps,
+  pnpmConfigHook,
+  pnpm_10,
+  nodejs_22,
+  makeWrapper,
+  rolldown,
+}:
+stdenvNoCC.mkDerivation (finalAttrs: {
+  pname = "openclaw";
+  version = "2026.3.2";
+
+  src = fetchFromGitHub {
+    owner = "openclaw";
+    repo = "openclaw";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-4WfyeBoeFufhzD4MI+z8lhQk+9/ST4UNOmQvQjo+I9c=";
+  };
+
+  pnpmDeps = fetchPnpmDeps {
+    inherit (finalAttrs) pname version src;
+    pnpm = pnpm_10;
+    fetcherVersion = 3;
+    hash = "sha256-QnKPVUPgy3znCQRmfqiIPtRLgZ0SPwWqUsJ4USF2LJE=";
+  };
+
+  buildInputs = [ rolldown ];
+
+  nativeBuildInputs = [
+    pnpmConfigHook
+    pnpm_10
+    nodejs_22
+    makeWrapper
+  ];
+
+  preBuild = ''
+    rm -rf node_modules/rolldown node_modules/@rolldown/pluginutils
+    mkdir -p node_modules/@rolldown
+    cp -r ${rolldown}/lib/node_modules/rolldown node_modules/rolldown
+    cp -r ${rolldown}/lib/node_modules/@rolldown/pluginutils node_modules/@rolldown/pluginutils
+    chmod -R u+w node_modules/rolldown node_modules/@rolldown/pluginutils
+  '';
+
+  buildPhase = ''
+    runHook preBuild
+
+    pnpm install --frozen-lockfile
+    pnpm build
+    pnpm ui:build
+
+    runHook postBuild
+  '';
+
+  installPhase = ''
+    runHook preInstall
+
+    libdir=$out/lib/openclaw
+    mkdir -p $libdir $out/bin
+
+    cp --reflink=auto -r package.json dist node_modules $libdir/
+    cp --reflink=auto -r assets docs skills patches extensions $libdir/ 2>/dev/null || true
+
+    rm -f $libdir/node_modules/.pnpm/node_modules/clawdbot \
+      $libdir/node_modules/.pnpm/node_modules/moltbot \
+      $libdir/node_modules/.pnpm/node_modules/openclaw-control-ui
+
+    makeWrapper ${lib.getExe nodejs_22} $out/bin/openclaw \
+      --add-flags "$libdir/dist/index.js" \
+      --set NODE_PATH "$libdir/node_modules"
+    ln -s $out/bin/openclaw $out/bin/moltbot
+    ln -s $out/bin/openclaw $out/bin/clawdbot
+
+    runHook postInstall
+  '';
+
+  # upstream version check is broken - binary reports older version than tag
+  doInstallCheck = false;
+
+  meta = {
+    description = "Self-hosted, open-source AI assistant/agent";
+    homepage = "https://openclaw.ai";
+    changelog = "https://github.com/openclaw/openclaw/releases/tag/${finalAttrs.src.tag}";
+    license = lib.licenses.mit;
+    mainProgram = "openclaw";
+    platforms = with lib.platforms; linux ++ darwin;
+  };
+})

@@ -49,5 +49,6 @@
     taskwarrior3
     sqlite
     newsboat
+    gh
   ];
 }
