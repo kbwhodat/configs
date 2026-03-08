@@ -105,6 +105,19 @@ in
   services.skhd.enable = false;
   services.lorri.enable = false;
 
+  users.users.katob.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBg9pgGGGQebQRNWGf13JgnAMhai5K0n7MUbk52iU11W katob@macos-mini"
+  ];
+
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+    '';
+  };
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true; 
