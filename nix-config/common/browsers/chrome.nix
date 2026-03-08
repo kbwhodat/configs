@@ -24,11 +24,10 @@ in
       {
         id = "blockjmkbacgjkknlgpkjjiijinjdanf";
         crxPath = "${pkgs.fetchurl {
-          url = "https://github.com/imputnet/ublock-origin-crx/releases/download/1.66.4/uBlock0_1.66.4.crx";
-          # use correct sha256
-          sha256 = "sha256-woCbtM0vOmud38XhZcunSiAM2AymkVIfc9mL9atavO8=";
+          url = "https://github.com/imputnet/ublock-origin-crx/releases/download/1.69.0/uBlock0_1.69.0.crx";
+          sha256 = "sha256-cU7T6eHfihXmuec+jKtCCIfsdKxKjHotW5oMy3euP34=";
         }}";
-        version = "1.66.4";
+        version = "1.69.0";
       }
       { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } #vimium c
       { id = "cdglnehniifkbagbbombnjghhcihifij"; } #kagi search

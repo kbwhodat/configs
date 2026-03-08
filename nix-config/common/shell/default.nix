@@ -20,6 +20,7 @@
     ./syncthing.nix
     ./flutter.nix
     ./bookokrat.nix
+    ./openclaw.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix
@@ -28,7 +29,7 @@
 	home.sessionVariables = {
 
 		# EDITOR = "nvim";
-		BROWSER = "firefox";
+		BROWSER = "zen";
 		TERMINAL = "wezterm";
 	};
 

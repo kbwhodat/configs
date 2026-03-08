@@ -20,10 +20,12 @@ in
       if [ ! -f "/Users/katob/.config/syncthing-keys/key.pem" ] || \
          [ ! -f "/Users/katob/.config/syncthing-keys/cert.pem" ]; then
         mkdir -p /Users/katob/.config/syncthing-keys
-        openssl req -x509 -newkey rsa:4096 \
+        ${pkgs.openssl}/bin/openssl req -x509 -newkey rsa:2048 -nodes \
           -keyout /Users/katob/.config/syncthing-keys/key.pem \
           -out /Users/katob/.config/syncthing-keys/cert.pem \
-          -days 3650 -nodes -subj "/CN=Syncthing"
+          -days 36500 \
+          -subj "/CN=syncthing" \
+          -addext "subjectAltName=DNS:${hostName}"
       fi
     '';
 
@@ -51,7 +53,7 @@ in
         id = "BOVCXJY-FCRVFJS-DFJ667E-ICJHPSR-U5K7YQI-M4Q6NEW-6NTLGWB-EE2BSAE";
       };
       "mac-mini" = {
-        id = "H7W24KI-NCXB5V3-DKB63K7-ZMJVQ6Y-AOD5C4Q-C5JQMVL-A5BMX54-4RPRAAF";
+        id = "OOK3VYM-25VUHTR-B4EWV5T-47DWZKB-X5K2RVK-Z667LTT-P2Z6DZ2-FWJLVAO";
       };
     };
     settings.folders = {
@@ -62,6 +64,10 @@ in
       "/Users/katob/Documents" = {
         id = "documents";
         devices = ["mac-mini" "mac-studio" "nixos-main" "nixos-frame13" "nixos-util"];
+      };
+      "/Users/katob/quant" = {
+        id = "quant";
+        devices = ["mac-mini" "mac-studio"];
       };
     };
   };

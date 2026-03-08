@@ -2,8 +2,13 @@
     pkgs,
     inputs,
     config,
+    lib,
     ...
 }: 
+
+let
+  ompLibPath = lib.makeLibraryPath [ pkgs.llvmPackages.openmp ];
+in
 {
 # nix configuration
 # reference: https://daiderd.com/nix-darwin/manual/index.html#sec-options
@@ -73,8 +78,13 @@
     lima
     darwin.libiconv
     cocoapods
-    # ollama
+    lightgbm
+    llvmPackages.openmp
   ];
+
+  environment.variables = {
+    DYLD_LIBRARY_PATH = ompLibPath;
+  };
 
   launchd.user.agents.docker = {
     serviceConfig.ProgramArguments = [ "/Users/katob/.config/nix-config/os/darwin/scripts/start_colima.sh" ];
@@ -180,6 +190,8 @@
       RunAtLoad = true;
     };
   };
+
+
 
   system.stateVersion = 4;
 }
