@@ -6,4 +6,5 @@ in {
   zenleap = callPackage ./zenleap {};
   wrapZenBrowserWithFxAutoconfig = callPackage ./zen-browser-with-fx-autoconfig {};
   bookokrat = callPackage ./bookokrat {};
+  jcodemunch = callPackage ./jcodemunch {};
 }
