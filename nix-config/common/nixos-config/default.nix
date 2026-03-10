@@ -27,14 +27,14 @@ in
     # Block redlib settings page in Thorium/Chromium browsers
     etc."chromium/policies/managed/redlib-block.json".text = builtins.toJSON {
       URLBlocklist = [
-        "https://redlib.kylrth.com/settings"
-        "https://redlib.kylrth.com/settings/*"
+        "https://redlib.catsarch.com/settings"
+        "https://redlib.catsarch.com/settings/*"
       ];
     };
     etc."opt/chromium/policies/managed/redlib-block.json".text = builtins.toJSON {
       URLBlocklist = [
-        "https://redlib.kylrth.com/settings"
-        "https://redlib.kylrth.com/settings/*"
+        "https://redlib.catsarch.com/settings"
+        "https://redlib.catsarch.com/settings/*"
       ];
     };
   };

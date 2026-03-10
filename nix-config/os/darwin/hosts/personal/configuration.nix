@@ -40,20 +40,20 @@ in
         # Block redlib settings page in Chromium-based browsers
         CustomUserPreferences."org.chromium.Thorium" = {
           URLBlocklist = [
-            "https://redlib.kylrth.com/settings"
-            "https://redlib.kylrth.com/settings/*"
+            "https://redlib.catsarch.com/settings"
+            "https://redlib.catsarch.com/settings/*"
           ];
         };
         CustomUserPreferences."org.chromium.Chromium" = {
           URLBlocklist = [
-            "https://redlib.kylrth.com/settings"
-            "https://redlib.kylrth.com/settings/*"
+            "https://redlib.catsarch.com/settings"
+            "https://redlib.catsarch.com/settings/*"
           ];
         };
         CustomUserPreferences."com.google.Chrome" = {
           URLBlocklist = [
-            "https://redlib.kylrth.com/settings"
-            "https://redlib.kylrth.com/settings/*"
+            "https://redlib.catsarch.com/settings"
+            "https://redlib.catsarch.com/settings/*"
           ];
         };
       };
@@ -68,6 +68,10 @@ in
     experimental-features = nix-command flakes
   '';
 
+  services.postgresql = {
+    enable = if config.networking.hostName == "nixos-server" then true else false;
+  };
+
   environment.systemPackages = with pkgs; [ 
     pinentry_mac
     # yabai
@@ -80,6 +84,9 @@ in
     cocoapods
     lightgbm
     llvmPackages.openmp
+    maturin
+    (if config.networking.hostName == "macos-mini" then postgresql else postgresql)
+    (if config.networking.hostName == "macos-mini" then postgresql16Packages.timescaledb else postgresql16Packages.timescaledb)
   ];
 
   environment.variables = {
@@ -148,7 +155,7 @@ in
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "firefoxpwa"];
-    casks = [ "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "ungoogled-chromium" "freetube" "dbeaver-community" "hammerspoon" "gcloud-cli"];
+    casks = [ "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "ungoogled-chromium" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings = {

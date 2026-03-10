@@ -10,7 +10,7 @@
   }
   window.__redditToRedlibLoaded = true;
 
-  const REDLIB_HOST = "redlib.kylrth.com";
+  const REDLIB_HOST = "redlib.catsarch.com/";
   const REDLIB_SETTINGS_PATH = "/settings";
   const OBSERVER_TOPIC = "http-on-modify-request";
 

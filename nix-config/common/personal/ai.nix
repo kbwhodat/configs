@@ -8,12 +8,14 @@ let
       context7-mcp
       mcp-server-fetch
       mcp-server-sequential-thinking
+      serena
     ])
     ++ (with pkgs; [
       mcp-nixos
       terraform-mcp-server
       # mcp-grafana
       playwright-mcp
+      # jcodemunch
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
@@ -55,8 +57,21 @@ in
     enable = true;
     package = inputs.llm-agents.packages.${system}.opencode;
     enableMcpIntegration = true;
-    rules = '' 
+    rules = ''
       NEVER include your own emotes in your response
+
+      In this repository, optimize hard for token efficiency.
+
+      Rules:
+      - Never read full files unless strictly necessary.
+      - Use the smallest possible span for reasoning and edits.
+      - Do not re-read code already retrieved.
+      - Expand context gradually, not all at once.
+      - Full-file reads need strong justification.
+      - Prefer multiple small tool calls over one giant read.
+      - Treat token budget as scarce.
+      - Focus on using Serena mcp for everything
+
     '';
     commands = {
       rebuild-switch = ''
@@ -127,6 +142,21 @@ in
           command = [ "mcp-server-sequential-thinking" ];
           enabled = false;
         };
+
+        # Enabled by default for token-efficient code navigation
+        serena = {
+          type = "local";
+          command = [ "serena" "start-mcp-server" "--context" "claude-code" ];
+          enabled = true;
+        };
+
+        # Enabled by default for narrow code retrieval
+        jcodemunch = {
+          type = "local";
+          command = [ "jcodemunch" ];
+          enabled = true;
+        };
+
       };
       autoshare = false;
       autoupdate = false;
@@ -200,30 +230,42 @@ in
         };
          temperature = 0.3;
        };
-        # debug = {
-        #   mode = "primary";
-        #   description = "Code Debugging Agent";
-        #   prompt = builtins.readFile ./prompts/debug.txt;
-        #   tools = {
-        #     write = true;
-        #     read = true;
-        #     edit = true;
-        #     bash = true;
-        #   };
-        #   temperature = 0.35;
-        # };
-      # sensei = {
-      #   mode = "primary";
-      #   description = "Sensei Agent";
-      #   prompt = builtins.readFile ./prompts/sensei.txt;
-      #   tools = {
-      #     read = true;
-      #     bash = true;
-      #     edit = false;
-      #     write = false;
-      #   };
-      #    temperature = 0.3;
-      #  };
+        risk-destroyer = {
+          mode = "primary";
+          description = "Risk Destroyer";
+          prompt = builtins.readFile ./prompts/risk-destroyer.txt;
+          tools = {
+            write = false;
+            read = true;
+            edit = false;
+            bash = true;
+          };
+          temperature = 0.2;
+        };
+      quant-planner = {
+        mode = "primary";
+        description = "Quant Planner";
+        prompt = builtins.readFile ./prompts/quant-research-planner.txt;
+        tools = {
+          read = true;
+          bash = true;
+          edit = false;
+          write = false;
+        };
+         temperature = 0.2;
+       };
+      quant-builder = {
+        mode = "primary";
+        description = "Quant Builder";
+        prompt = builtins.readFile ./prompts/quant-strategy-builder.txt;
+        tools = {
+          read = true;
+          bash = true;
+          edit = true;
+          write = true;
+        };
+         temperature = 0.25;
+       };
     };
 
       provider = {

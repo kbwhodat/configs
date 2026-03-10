@@ -11,20 +11,20 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "openclaw";
-  version = "2026.3.2";
+  version = "2026.3.8";
 
   src = fetchFromGitHub {
     owner = "openclaw";
     repo = "openclaw";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-4WfyeBoeFufhzD4MI+z8lhQk+9/ST4UNOmQvQjo+I9c=";
+    hash = "sha256-PeNbusrYqB0yn+t8BERFr9E1YYpuWaw0w+YTzPFQgo8=";
   };
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     pnpm = pnpm_10;
     fetcherVersion = 3;
-    hash = "sha256-QnKPVUPgy3znCQRmfqiIPtRLgZ0SPwWqUsJ4USF2LJE=";
+    hash = "sha256-CpgulfZfN1yHXpXBR1wvsSaME8y9ZX+dQQ4JJjp3PRs=";
   };
 
   buildInputs = [ rolldown ];
