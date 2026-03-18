@@ -148,6 +148,7 @@ in
 
     zvm_after_init_commands+=("bindkey '^[[1;5C' forward-word")
     zvm_after_init_commands+=("bindkey '^[[1;5D' backward-word")
+    zvm_after_init_commands+=("bindkey '^U' backward-kill-line")
 
 		stty -ixon
 

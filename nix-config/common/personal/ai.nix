@@ -15,7 +15,6 @@ let
       terraform-mcp-server
       # mcp-grafana
       playwright-mcp
-      # jcodemunch
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
@@ -95,7 +94,7 @@ in
       flutter-ui-design           = builtins.readFile ./skills/flutter-ui-design;
     };
     settings = {
-      # plugin = [ "oh-my-opencode" ];
+      plugin = [ "superpowers@git+https://github.com/obra/superpowers.git" ];
       keybinds = {
         messages_half_page_up = "ctrl+alt+u";
         messages_half_page_down = "ctrl+alt+d";
@@ -146,7 +145,7 @@ in
         # Enabled by default for token-efficient code navigation
         serena = {
           type = "local";
-          command = [ "serena" "start-mcp-server" "--context" "claude-code" ];
+          command = [ "serena" "start-mcp-server" "--context" "claude-code" "--open-web-dashboard" "false" "--mode" "editing" "--mode" "interactive" ];
           enabled = true;
         };
 
@@ -154,7 +153,7 @@ in
         jcodemunch = {
           type = "local";
           command = [ "jcodemunch" ];
-          enabled = true;
+          enabled = false;
         };
 
       };
@@ -268,59 +267,7 @@ in
        };
     };
 
-      provider = {
-        ollama = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "Ollama (local)";
-          options = {
-            baseURL = "http://10.0.0.122:11434/v1";
-          };
 
-          models = {
-            "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
-          };
-        };
-        glm = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "nemotron-3-nano";
-          options = {
-            baseURL = "http://10.0.0.122:11434/v1";
-          };
-
-          models = {
-            "nemotron-3-nano" = { 
-              name = "nemotron-3-nano (local)"; 
-              tool_call = true;
-            };
-          };
-        };
-      };
-      model = "glm-4.7-flash:32b-32k";
-      # provider = {
-      #   ollama = {
-      #     npm = "@ai-sdk/openai-compatible";
-      #     name = "Ollama (local)";
-      #     options = {
-      #       baseURL = "http://10.0.0.122:11434/v1";
-      #     };
-      #
-      #     models = {
-      #       "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
-      #     };
-      #   };
-      #   claude = {
-      #     npm = "@ai-sdk/openai-compatible";
-      #     name = "Claude (work)";
-      #     options = {
-      #       baseURL = "http://10.0.0.122:11434/v1";
-      #     };
-
-          # models = {
-          #   "qwen3-coder:30b-32k" = { name = "Qwen3-coder 30B-32k (local)"; tool_call = true; };
-          # };
-      #   };
-      # };
-      # model = "qwen3-coder:30b-32k";
     };
   };
 }
