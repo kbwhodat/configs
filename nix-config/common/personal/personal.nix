@@ -23,6 +23,8 @@ in
     uv
     bun
     ffmpeg
+    pipe-viewer
+    openjdk21
 
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
