@@ -50,5 +50,6 @@
     sqlite
     newsboat
     gh
+    python313Packages.firecrawl-py
   ];
 }

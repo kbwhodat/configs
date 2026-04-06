@@ -20,7 +20,7 @@
     ./syncthing.nix
     ./flutter.nix
     ./bookokrat.nix
-    ./openclaw.nix
+    # ./openclaw.nix
     # ./ghostty.nix
     # ./python.nix
     # ./ghostty-hm.nix

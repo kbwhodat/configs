@@ -93,7 +93,7 @@ in
     onActivation.cleanup = "zap";
 
     taps = ["homebrew/services" "FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "opencode" "firefoxpwa" "colima" "terragrunt" "helm" "kubectl" "chawan"];
+    brews = [ "firefoxpwa" "colima" "terragrunt" "helm" "kubectl" "chawan"];
     casks = [ "sublime-text" "freetube" "mitmproxy" "karabiner-elements" "clocker" "zed" "dbeaver-community" "hammerspoon" "raycast" "ungoogled-chromium" "gcloud-cli"];
   };
 

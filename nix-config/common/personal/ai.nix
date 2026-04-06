@@ -18,6 +18,7 @@ let
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
+  ocv = inputs.ocv.packages.${system}.opencode;
 
   opencodeDir = "${config.home.homeDirectory}/.config/opencode";
 
@@ -38,39 +39,104 @@ in
         (if builtins.getEnv "HOST" == "nixos-server" then mistral-rs else nil)
         (if builtins.getEnv "HOST" == "nixos-server" then rlama else nil)
         (if builtins.getEnv "HOST" == "nixos-server" then python313Packages.huggingface-hub else nil)
+        (pkgs.writeShellScriptBin "ocv" ''
+          exec ${ocv}/bin/opencode "$@"
+        '')
       ]
       ++ mcpServers
       ++ llmAgents;
   };
 
-  # Declaratively manage opencode plugins via package.json
-  # This ensures oh-my-opencode is installed on all machines
-  # home.activation.opencodeDeps = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-  #   mkdir -p "${opencodeDir}"
-  #   cp -f "${packageJsonFile}" "${opencodeDir}/package.json"
-  #   chmod u+w "${opencodeDir}/package.json" || true
-  #   ${pkgs.bun}/bin/bun install --cwd "${opencodeDir}"
-  #   '';
+  # ecc-universal ships uncompiled TypeScript and no main field in package.json.
+  # This activation hook drops a plain JS shim that registers skills + commands,
+  # and sets main so opencode can load the plugin.
+  home.activation.patchEccPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ECC_DIR="${config.home.homeDirectory}/.cache/opencode/node_modules/ecc-universal"
+    if [ -d "$ECC_DIR" ]; then
+      cat > "$ECC_DIR/ecc-opencode-shim.js" << 'SHIMEOF'
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const eccSkillsDir = path.resolve(__dirname, "skills");
+const eccOpenCodeDir = path.resolve(__dirname, ".opencode");
+
+function loadEccConfig() {
+  const configPath = path.join(eccOpenCodeDir, "opencode.json");
+  if (!fs.existsSync(configPath)) return null;
+  return JSON.parse(fs.readFileSync(configPath, "utf8"));
+}
+
+function resolveFileRefs(obj, baseDir) {
+  if (typeof obj === "string") {
+    const match = obj.match(/^\{file:(.+)\}$/);
+    if (match) {
+      const filePath = path.join(baseDir, match[1]);
+      if (fs.existsSync(filePath)) return fs.readFileSync(filePath, "utf8");
+    }
+    return obj;
+  }
+  if (Array.isArray(obj)) return obj.map(v => resolveFileRefs(v, baseDir));
+  if (obj && typeof obj === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) out[k] = resolveFileRefs(v, baseDir);
+    return out;
+  }
+  return obj;
+}
+
+export default async ({ client, directory }) => {
+  return {
+    config: async (config) => {
+      config.skills = config.skills || {};
+      config.skills.paths = config.skills.paths || [];
+      if (fs.existsSync(eccSkillsDir) && !config.skills.paths.includes(eccSkillsDir)) {
+        config.skills.paths.push(eccSkillsDir);
+      }
+
+      const ecc = loadEccConfig();
+      if (!ecc) return;
+
+      if (ecc.agent) {
+        config.agent = config.agent || {};
+        for (const [name, def] of Object.entries(ecc.agent)) {
+          if (name === "build") {
+            config.agent["ecc-build"] = resolveFileRefs(def, eccOpenCodeDir);
+          } else if (!config.agent[name]) {
+            config.agent[name] = resolveFileRefs(def, eccOpenCodeDir);
+          }
+        }
+      }
+
+      if (ecc.command) {
+        config.command = config.command || {};
+        for (const [name, def] of Object.entries(ecc.command)) {
+          if (!config.command[name]) {
+            config.command[name] = resolveFileRefs(def, eccOpenCodeDir);
+          }
+        }
+      }
+    },
+  };
+};
+SHIMEOF
+
+      ${pkgs.python3}/bin/python3 -c "
+import json
+p = '$ECC_DIR/package.json'
+with open(p) as f: d = json.load(f)
+if d.get('main') != 'ecc-opencode-shim.js':
+    d['main'] = 'ecc-opencode-shim.js'
+    with open(p, 'w') as f: json.dump(d, f, indent=2)
+"
+    fi
+  '';
 
   programs.opencode = {
     enable = true;
-    package = inputs.llm-agents.packages.${system}.opencode;
+    package = ocv;
     enableMcpIntegration = true;
     rules = ''
-      NEVER include your own emotes in your response
-
-      In this repository, optimize hard for token efficiency.
-
-      Rules:
-      - Never read full files unless strictly necessary.
-      - Use the smallest possible span for reasoning and edits.
-      - Do not re-read code already retrieved.
-      - Expand context gradually, not all at once.
-      - Full-file reads need strong justification.
-      - Prefer multiple small tool calls over one giant read.
-      - Treat token budget as scarce.
-      - Focus on using Serena mcp for everything
-
     '';
     commands = {
       rebuild-switch = ''
@@ -81,20 +147,12 @@ in
 
     skills = {
       # Core engineering skills
-      architecture-decisions      = builtins.readFile ./skills/architecture-decisions;
-      complexity-taming           = builtins.readFile ./skills/complexity-taming;
-      debugging-root-cause        = builtins.readFile ./skills/debugging-root-cause;
-      performance-engineering     = builtins.readFile ./skills/performance-engineering;
-      security-data-handling      = builtins.readFile ./skills/security-data-handling;
-      ship-it-checklist           = builtins.readFile ./skills/ship-it-checklist;
-      supabase-database-mastery   = builtins.readFile ./skills/supabase-database-mastery;
-      testing-verification        = builtins.readFile ./skills/testing-verification;
+      # debugging-root-cause        = builtins.readFile ./skills/debugging-root-cause;
+      # performance-engineering     = builtins.readFile ./skills/performance-engineering;
       # Mobile/project-specific skills
-      dating-app-mvp              = builtins.readFile ./skills/dating-app-mvp;
-      flutter-ui-design           = builtins.readFile ./skills/flutter-ui-design;
     };
     settings = {
-      plugin = [ "superpowers@git+https://github.com/obra/superpowers.git" ];
+      plugin = [ "superpowers@git+https://github.com/obra/superpowers.git" "ecc-universal@git+https://github.com/affaan-m/everything-claude-code.git" ];
       keybinds = {
         messages_half_page_up = "ctrl+alt+u";
         messages_half_page_down = "ctrl+alt+d";
@@ -126,13 +184,13 @@ in
         fetch = {
           type = "local";
           command = [ "mcp-server-fetch" ];
-          enabled = true;
+          enabled = false;
         };
 
         playwright = {
           type = "local";
           command = [ "mcp-server-playwright" "--no-sandbox" ];
-          enabled = false;
+          enabled = true;
         };
 
         # Disabled by default - enable with "use sequential_thinking" in prompt  
@@ -205,66 +263,26 @@ in
           };
           temperature = 0.25;
         };
-        debug = {
-          mode = "primary";
-          description = "Code Debugging Agent";
-          prompt = builtins.readFile ./prompts/debug.txt;
+        planner = {
+          mode = "subagent";
+          description = "Expert planning specialist for complex features and refactoring";
+          prompt = builtins.readFile ./prompts/planner.txt;
+          tools = {
+            read = true;
+            bash = true;
+          };
+        };
+        tdd-guide = {
+          mode = "subagent";
+          description = "TDD specialist enforcing test-first development with Red-Green-Refactor";
+          prompt = builtins.readFile ./prompts/tdd-guide.txt;
           tools = {
             write = true;
             read = true;
             edit = true;
             bash = true;
           };
-          temperature = 0.35;
         };
-      sensei = {
-        mode = "primary";
-        description = "Sensei Agent";
-        prompt = builtins.readFile ./prompts/sensei.txt;
-        tools = {
-          read = true;
-          bash = true;
-          edit = false;
-          write = false;
-        };
-         temperature = 0.3;
-       };
-        risk-destroyer = {
-          mode = "primary";
-          description = "Risk Destroyer";
-          prompt = builtins.readFile ./prompts/risk-destroyer.txt;
-          tools = {
-            write = false;
-            read = true;
-            edit = false;
-            bash = true;
-          };
-          temperature = 0.2;
-        };
-      quant-planner = {
-        mode = "primary";
-        description = "Quant Planner";
-        prompt = builtins.readFile ./prompts/quant-research-planner.txt;
-        tools = {
-          read = true;
-          bash = true;
-          edit = false;
-          write = false;
-        };
-         temperature = 0.2;
-       };
-      quant-builder = {
-        mode = "primary";
-        description = "Quant Builder";
-        prompt = builtins.readFile ./prompts/quant-strategy-builder.txt;
-        tools = {
-          read = true;
-          bash = true;
-          edit = true;
-          write = true;
-        };
-         temperature = 0.25;
-       };
     };
 
 
