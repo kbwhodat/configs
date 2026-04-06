@@ -5,6 +5,7 @@ let
     ${pkgs.toybox}/bin/toybox hostname > "$out"
   '');
   hostName = lib.strings.removeSuffix "\n" rawHostName;
+
   isPersonalMac =
     isDarwin &&
     builtins.elem hostName [

@@ -78,8 +78,8 @@ in
     docker-client
     # skhd
     iina
-    colima
-    lima
+    # colima
+    # lima
     darwin.libiconv
     cocoapods
     lightgbm
