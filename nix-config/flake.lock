@@ -442,17 +442,17 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1774506313,
-        "narHash": "sha256-mg4CaOQBkFuC9qZbwTZfVscr5MVc0xdiGcDiykC6kwQ=",
+        "lastModified": 1775802992,
+        "narHash": "sha256-7YSRCn8Pc/pxUULy8I9vUqlpMOiURou88UDivbl1f7M=",
         "owner": "leohenon",
-        "repo": "opencode",
-        "rev": "8095ff26ee1b1ac9d3d901e9b54eb4fff421e0b2",
+        "repo": "opencode-vim",
+        "rev": "80b13f3d843dc38fa3223da077178e426ea6fde7",
         "type": "github"
       },
       "original": {
         "owner": "leohenon",
-        "ref": "vim",
-        "repo": "opencode",
+        "ref": "ocv",
+        "repo": "opencode-vim",
         "type": "github"
       }
     },

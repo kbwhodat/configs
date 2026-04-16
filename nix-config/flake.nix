@@ -17,7 +17,7 @@
 
   inputs.mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
   inputs.llm-agents.url = "github:numtide/llm-agents.nix/main";
-  inputs.ocv.url = "github:leohenon/opencode/vim";
+  inputs.ocv.url = "github:leohenon/opencode-vim/ocv";
 
   inputs.nur.url = "github:nix-community/NUR";
   inputs.nur.inputs.nixpkgs.follows = "nixpkgs";

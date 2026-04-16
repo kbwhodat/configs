@@ -1,6 +1,10 @@
 { pkgs, config, inputs, lib, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
+  unstable = import inputs.unstable {
+    system = pkgs.system;
+    config = pkgs.config;
+  };
 in
 {
   home.packages = with pkgs; [
@@ -24,9 +28,7 @@ in
     bun
     ffmpeg
     pipe-viewer
-    openjdk21
-    claude-code
-
+    openjdk17
     (python313.withPackages (ps: with ps; let
       seleniuim_driverless = ps.buildPythonPackage rec {
         pname = "selenium-driverless";
