@@ -18,9 +18,20 @@ let
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
-  ocv = inputs.ocv.packages.${system}.opencode;
+  ocvNodeModules = inputs.ocv.packages.${system}.node_modules_updater.override {
+    hash = "sha256-CxWH3vnbxRY6vfkAbpvgqtCaV6Krb4Dq2Rq7HHInIXo=";
+  };
+  ocv = inputs.ocv.packages.${system}.opencode.override {
+    node_modules = ocvNodeModules;
+  };
+
+  unstable = import inputs.unstable {
+    system = pkgs.system;
+    config = pkgs.config;
+  };
 
   opencodeDir = "${config.home.homeDirectory}/.config/opencode";
+  claudeHookPath = "${config.home.homeDirectory}/.claude/hooks/rtk-rewrite.sh";
 
   # packageJson = builtins.toJSON {
   #   dependencies = {
@@ -36,6 +47,7 @@ in
     packages =
       with pkgs;
       [
+        unstable.rtk # CLI proxy that reduces LLM token consumption by 60-90% on common dev commands
         (if builtins.getEnv "HOST" == "nixos-server" then mistral-rs else nil)
         (if builtins.getEnv "HOST" == "nixos-server" then rlama else nil)
         (if builtins.getEnv "HOST" == "nixos-server" then python313Packages.huggingface-hub else nil)
@@ -45,13 +57,30 @@ in
       ]
       ++ mcpServers
       ++ llmAgents;
+
   };
+
+  # RTK OpenCode plugin — install hook for token-compressed bash output
+  home.activation.installRtk = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -f "${opencodeDir}/plugins/rtk.ts" ]; then
+      ${unstable.rtk}/bin/rtk init -g --opencode --auto-patch 2>/dev/null || true
+    fi
+  '';
+
+  # RTK Claude Code hook — hook-only install because settings are managed in Nix.
+  home.activation.installRtkClaudeHook = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -x "${claudeHookPath}" ]; then
+      ${unstable.rtk}/bin/rtk init -g --hook-only --no-patch 2>/dev/null || true
+    fi
+  '';
 
   # ecc-universal ships uncompiled TypeScript and no main field in package.json.
   # This activation hook drops a plain JS shim that registers skills + commands,
   # and sets main so opencode can load the plugin.
   home.activation.patchEccPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ECC_DIR="${config.home.homeDirectory}/.cache/opencode/node_modules/ecc-universal"
+    ECC_PKG_DIR="${config.home.homeDirectory}/.cache/opencode/packages/ecc-universal@git+https:/github.com/affaan-m/everything-claude-code.git/node_modules/ecc-universal"
+    ECC_HOISTED_DIR="${config.home.homeDirectory}/.cache/opencode/node_modules/ecc-universal"
+    for ECC_DIR in "$ECC_PKG_DIR" "$ECC_HOISTED_DIR"; do
     if [ -d "$ECC_DIR" ]; then
       cat > "$ECC_DIR/ecc-opencode-shim.js" << 'SHIMEOF'
 import path from "path";
@@ -130,6 +159,7 @@ if d.get('main') != 'ecc-opencode-shim.js':
     with open(p, 'w') as f: json.dump(d, f, indent=2)
 "
     fi
+    done
   '';
 
   programs.opencode = {
@@ -137,6 +167,7 @@ if d.get('main') != 'ecc-opencode-shim.js':
     package = ocv;
     enableMcpIntegration = true;
     rules = ''
+      Do not use AskUserQuestion — that tool does not exist here. To ask the user a question, use the "question" tool instead.
     '';
     commands = {
       rebuild-switch = ''
@@ -152,7 +183,10 @@ if d.get('main') != 'ecc-opencode-shim.js':
       # Mobile/project-specific skills
     };
     settings = {
-      plugin = [ "superpowers@git+https://github.com/obra/superpowers.git" "ecc-universal@git+https://github.com/affaan-m/everything-claude-code.git" ];
+      plugin = [
+        # "superpowers@git+https://github.com/obra/superpowers.git"
+        "ecc-universal@git+https://github.com/affaan-m/everything-claude-code.git"
+      ];
       keybinds = {
         messages_half_page_up = "ctrl+alt+u";
         messages_half_page_down = "ctrl+alt+d";
@@ -185,6 +219,12 @@ if d.get('main') != 'ecc-opencode-shim.js':
           type = "local";
           command = [ "mcp-server-fetch" ];
           enabled = false;
+        };
+
+        firecrawl = {
+          type = "local";
+          command = [ "env" "FIRECRAWL_API_KEY=fc-b5db7738ea3843dd86181be770891120" "npx" "-y" "firecrawl-mcp" ];
+          enabled = true;
         };
 
         playwright = {
@@ -286,6 +326,117 @@ if d.get('main') != 'ecc-opencode-shim.js':
     };
 
 
+    };
+  };
+
+  programs.claude-code = {
+    enable = true;
+    package = unstable.claude-code;
+    mcpServers = {
+      context7 = {
+        url = "https://mcp.context7.com/mcp";
+        disabled = true;
+      };
+
+      mcp_nixos = {
+        command = "mcp-nixos";
+        disabled = true;
+      };
+
+      terraform = {
+        command = "terraform-mcp-server";
+        disabled = true;
+      };
+
+      fetch = {
+        command = "mcp-server-fetch";
+        disabled = true;
+      };
+
+      firecrawl = {
+        command = "env";
+        args = [ "FIRECRAWL_API_KEY=fc-b5db7738ea3843dd86181be770891120" "npx" "-y" "firecrawl-mcp" ];
+      };
+
+      playwright = {
+        command = "mcp-server-playwright";
+        args = [ "--no-sandbox" ];
+      };
+
+      sequential_thinking = {
+        command = "mcp-server-sequential-thinking";
+        disabled = true;
+      };
+
+      serena = {
+        command = "serena";
+        args = [ "start-mcp-server" "--context" "claude-code" "--open-web-dashboard" "false" "--mode" "editing" "--mode" "interactive" ];
+      };
+
+      jcodemunch = {
+        command = "jcodemunch";
+        disabled = true;
+      };
+    };
+
+    settings = {
+      extraKnownMarketplaces = {
+        ecc = {
+          source = {
+            source = "github";
+            repo = "affaan-m/everything-claude-code";
+          };
+        };
+        superpowers = {
+          source = {
+            source = "github";
+            repo = "obra/superpowers";
+          };
+        };
+      };
+
+      enabledPlugins = {
+        "ecc@ecc" = true;
+        "superpowers@superpowers" = true;
+      };
+
+      hooks = {
+        PreToolUse = [
+          {
+            matcher = "Bash";
+            hooks = [
+              {
+                type = "command";
+                command = claudeHookPath;
+              }
+            ];
+          }
+        ];
+      };
+
+      permissions = {
+        allow = [
+          "WebFetch"
+          "Read"
+          "Grep"
+          "Bash"
+          "Zsh"
+        ];
+        deny = [
+          "Bash(sudo*)"
+          "Zsh(sudo*)"
+        ];
+        ask = [
+          "Bash(rm*)"
+          "Bash(rmdir*)"
+          "Bash(unlink*)"
+          "Bash(mv*)"
+          "Zsh(rm*)"
+          "Zsh(rmdir*)"
+          "Zsh(unlink*)"
+          "Zsh(mv*)"
+        ];
+      };
     };
   };
 }
