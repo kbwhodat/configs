@@ -2,7 +2,7 @@
 let
   inherit (pkgs.stdenv) isDarwin;
   unstable = import inputs.unstable {
-    system = pkgs.system;
+    system = pkgs.stdenv.hostPlatform.system;
     config = pkgs.config;
   };
 in

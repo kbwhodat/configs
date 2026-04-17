@@ -34,6 +34,7 @@ in
     extraConfig = ''
 
       set -g set-clipboard on
+      set -g focus-events on
       setw -g mode-keys vi
       set -sg escape-time 0
 

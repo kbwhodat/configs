@@ -4,7 +4,6 @@
 	imports = [
     ../../../common/sops
 	../../../common
-    ../../../pkgs
     ../../../common/personal
     ../../../common/macos
 	];

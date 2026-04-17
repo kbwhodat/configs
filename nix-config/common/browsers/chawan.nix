@@ -6,7 +6,7 @@ in
   programs.chawan = {
     # Only enable on Linux - use Homebrew on Darwin (avoids gdb/nim build)
     enable = !isDarwin;
-    package = inputs.chawan-flake.packages.${pkgs.system}.default;
+    package = inputs.chawan-flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
     settings = {
       buffer = {
         images = true;

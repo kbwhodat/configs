@@ -1,7 +1,7 @@
 {pkgs, ...}:
 {
   imports = [
-    ./raycast.nix
+    # ./raycast.nix
     ./aerospace.nix
     # ./karabiner.nix
     # ./colima.nix
