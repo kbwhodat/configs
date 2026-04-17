@@ -8,6 +8,7 @@
 
 let
   ompLibPath = lib.makeLibraryPath [ pkgs.llvmPackages.openmp ];
+
 in
 {
 # nix configuration
@@ -154,8 +155,8 @@ in
     onActivation.cleanup = "zap";
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "firefoxpwa" "cliproxyapi" ];
-    casks = [ "mitmproxy" "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "ungoogled-chromium" "freetube" "hammerspoon" "gcloud-cli"];
+    brews = [ "firefoxpwa" ];
+    casks = [ "wox" "mitmproxy" "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings = {

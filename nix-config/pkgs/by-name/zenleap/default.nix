@@ -5,19 +5,19 @@ let
   fxAutoconfig = fetchFromGitHub {
     owner = "MrOtherGuy";
     repo = "fx-autoconfig";
-    rev = "master";
-    sha256 = "sha256-xiCikg8c855w+PCy7Wmc3kPwIHr80pMkkK7mFQbPCs4=";
+    rev = "d469a80";
+    sha256 = "sha256-czNgt62fofg3hXw7F4wXSv/+ZAsGtO6bg3sUOiUXcu4=";
   };
 in
 stdenvNoCC.mkDerivation {
   pname = "zenleap";
-  version = "unstable-2026-02-26";
+  version = "unstable-2026-03-23";
 
   src = fetchFromGitHub {
     owner = "yashas-salankimatt";
     repo = "ZenLeap";
-    rev = "main";
-    sha256 = "sha256-w/aMguDbmFx4zhPF/u8Jw3xhufwZIDGgRyM24XgMj0Q=";
+    rev = "916de28";
+    sha256 = "sha256-AHtuIzkxJr9RR9x46nCKlvOktw+O+BaIN7DXs0JsgAk=";
   };
 
   dontBuild = true;

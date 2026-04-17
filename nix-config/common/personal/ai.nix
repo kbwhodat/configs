@@ -1,7 +1,7 @@
 { inputs, config, lib, pkgs, ...}:
 let
 
-  system = pkgs.system;
+  system = pkgs.stdenv.hostPlatform.system;
 
   mcpServers =
     (with inputs.mcp-servers-nix.packages.${system}; [
@@ -18,16 +18,51 @@ let
     ]);
 
   llmAgents = with inputs.llm-agents.packages.${system}; [];
-  # ocvNodeModules = inputs.ocv.packages.${system}.node_modules_updater.override {
-  #   hash = "sha256-HXblriXCInJJl7oMFVJVrNJrTAzW9cWPIiN4C21VAVE=";
-  # };
-  # ocv = inputs.ocv.packages.${system}.opencode.override {
-  #   node_modules = ocvNodeModules;
-  # };
+
+  # Prebuilt ocv binary from upstream releases — bypasses the broken FOD
+  # node_modules hash in upstream's flake. Bump version + sha256s when
+  # moving to a new release tag.
+  ocvRelease = "v1.14.25-ocv.3.28";
+  ocvAssets = {
+    "aarch64-darwin" = {
+      asset = "ocv-darwin-arm64";
+      sha256 = "d81f5a159dffc5126aa861385ed105adf7420f1e299ca32529c4a33d06d448a8";
+    };
+    "x86_64-darwin" = {
+      asset = "ocv-darwin-x64";
+      sha256 = "72a78491aaa621f6ef47d09a6a8f9d322e69a5dab505250246a4354b00d8cb1a";
+    };
+    "aarch64-linux" = {
+      asset = "ocv-linux-arm64";
+      sha256 = "b3f6bbe99d6fb9c5a74c76f6489dea8636e3b8c07826956469c2580494eb56d0";
+    };
+    "x86_64-linux" = {
+      asset = "ocv-linux-x64";
+      sha256 = "338c89d95bada61965fed79099360ce853b8875522805c0bbe19f20beff152e7";
+    };
+  };
+  ocvBinary = let
+    a = ocvAssets.${system};
+    src = pkgs.fetchurl {
+      url = "https://github.com/leohenon/opencode-vim/releases/download/${ocvRelease}/${a.asset}";
+      sha256 = a.sha256;
+    };
+  in pkgs.stdenvNoCC.mkDerivation {
+    pname = "opencode";
+    version = lib.removePrefix "v" ocvRelease;
+    inherit src;
+    dontUnpack = true;
+    nativeBuildInputs = lib.optionals pkgs.stdenv.isLinux [ pkgs.autoPatchelfHook ];
+    buildInputs = lib.optionals pkgs.stdenv.isLinux [ pkgs.stdenv.cc.cc.lib ];
+    installPhase = ''
+      mkdir -p $out/bin
+      install -m755 $src $out/bin/opencode
+    '';
+  };
 
 
   unstable = import inputs.unstable {
-    system = pkgs.system;
+    system = pkgs.stdenv.hostPlatform.system;
     config = pkgs.config;
   };
 
@@ -164,10 +199,10 @@ if d.get('main') != 'ecc-opencode-shim.js':
   '';
 
   programs.opencode = {
-    enable = false;
-    # package = opencode;
+    enable = true;
+    package = ocvBinary;
     enableMcpIntegration = true;
-    rules = ''
+    context = ''
       Do not use AskUserQuestion — that tool does not exist here. To ask the user a question, use the "question" tool instead.
     '';
     commands = {
@@ -183,17 +218,19 @@ if d.get('main') != 'ecc-opencode-shim.js':
       # performance-engineering     = builtins.readFile ./skills/performance-engineering;
       # Mobile/project-specific skills
     };
-    settings = {
-      plugin = [
-        # "superpowers@git+https://github.com/obra/superpowers.git"
-        "ecc-universal@git+https://github.com/affaan-m/everything-claude-code.git"
-      ];
+    tui = {
       keybinds = {
         messages_half_page_up = "ctrl+alt+u";
         messages_half_page_down = "ctrl+alt+d";
         messages_line_up = "ctrl+alt+y";
         messages_line_down = "ctrl+alt+e";
       };
+    };
+    settings = {
+      plugin = [
+        "superpowers@git+https://github.com/obra/superpowers.git"
+        "ecc-universal@git+https://github.com/affaan-m/everything-claude-code.git"
+      ];
 
       mcp = {
         # Disabled by default - enable with "use context7" in prompt
@@ -253,6 +290,17 @@ if d.get('main') != 'ecc-opencode-shim.js':
           type = "local";
           command = [ "jcodemunch" ];
           enabled = false;
+        };
+
+        # Multi-board job search (20 sources). Direct binary launch matches
+        # the proven serena/mcp-nixos pattern (single fork+exec, no uvx
+        # wrapper). Binary installed by home.activation.installJobdrop below.
+        jobdrop = {
+          type = "local";
+          command = [
+            "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"
+          ];
+          enabled = true;
         };
 
       };
@@ -408,6 +456,15 @@ if d.get('main') != 'ecc-opencode-shim.js':
       jcodemunch = {
         command = "jcodemunch";
         disabled = true;
+      };
+
+      # Multi-board job search (20 sources). Direct binary launch matches
+      # the proven serena/mcp-nixos pattern (single fork+exec, no uvx
+      # wrapper). Binary installed by home.activation.installJobdrop below.
+      # Camoufox's Firefox binary is cached at ~/.cache/camoufox after
+      # first call.
+      jobdrop = {
+        command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server";
       };
     };
 

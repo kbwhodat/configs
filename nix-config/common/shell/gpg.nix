@@ -40,7 +40,7 @@ in
         false
       else
         true;
-    pinentryPackage = pkgs.pinentry-gtk2;
+    pinentry.package = pkgs.pinentry-gtk2;
     enableExtraSocket = true;
     enableBashIntegration = true;
     enableZshIntegration = true;

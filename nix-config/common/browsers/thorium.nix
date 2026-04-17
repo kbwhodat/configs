@@ -49,7 +49,7 @@ let
 
 in {
   home.packages = [
-    inputs.thorium-browser.packages.${pkgs.system}.default
+    inputs.thorium-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   xdg.desktopEntries = lib.mkIf isLinux {

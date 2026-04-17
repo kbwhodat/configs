@@ -50,7 +50,5 @@
     sqlite
     newsboat
     gh
-    goose-cli
-
   ];
 }

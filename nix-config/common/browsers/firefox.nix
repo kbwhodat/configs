@@ -352,7 +352,8 @@ in
   in
   {
     home = {
-      inherit userChrome settings extensions;
+      inherit userChrome settings;
+      extensions.packages = extensions;
       id = 0;
     };
 

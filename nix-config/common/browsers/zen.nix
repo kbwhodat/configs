@@ -14,7 +14,7 @@ in
     if isDarwin then
         # macOS: enable ZenLeap/fx-autoconfig via wrapper.
         # The wrapper re-signs the app bundle after injection.
-        pkgs.wrapZenBrowserWithFxAutoconfig inputs.zen-browser.packages.${pkgs.system}.default
+        pkgs.wrapZenBrowserWithFxAutoconfig inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     else
         # Wrap the zen-browser with fx-autoconfig for ZenLeap support
         pkgs.wrapZenBrowserWithFxAutoconfig inputs.zen-browser.packages.x86_64-linux.default;
