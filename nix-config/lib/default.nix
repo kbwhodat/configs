@@ -16,13 +16,14 @@ let
     system,
     profiles ? [],
     extraModules ? [],
+    systemPath ? ../hosts + "/${hostname}/system.nix",
     homePath ? ../hosts + "/${hostname}/home.nix",
   }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit inputs hostname; };
       modules = [
-        (../hosts + "/${hostname}/system.nix")
+        systemPath
         inputs.home-manager.nixosModules.home-manager
         {
           networking.hostName = hostname;
