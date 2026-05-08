@@ -107,7 +107,8 @@ in
 
   home.sessionVariables = {
     # EDITOR = "nvim";
-    BROWSER = "firefox";
+    # BROWSER intentionally not set here — common/shell/default.nix sets it
+    # to "zen". Defining it again here would conflict at evaluation time.
 
     LD_LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LD_LIBRARY_PATH" != "") (builtins.getEnv "LD_LIBRARY_PATH" + ":")}${ldLibraryPath}";
     LIBRARY_PATH = "${pkgs.lib.optionalString (builtins.getEnv "LIBRARY_PATH" != "") (builtins.getEnv "LIBRARY_PATH" + ":")}${libraryPath}";
