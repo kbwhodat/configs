@@ -21,18 +21,17 @@ let
   }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit inputs hostname; };
+      specialArgs = { inherit inputs; };
       modules = [
         systemPath
         inputs.home-manager.nixosModules.home-manager
         {
-          networking.hostName = hostname;
           nixpkgs.overlays = overlays;
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            extraSpecialArgs = { inherit inputs hostname; };
-            users.katob.imports = [ homePath ] ++ resolveProfiles "home" profiles;
+            extraSpecialArgs = { inherit inputs; };
+            users.katob = import homePath;
             backupFileExtension = "backup";
           };
         }
