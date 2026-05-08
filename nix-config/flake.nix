@@ -62,6 +62,9 @@
           allowUnfree = true;
         };
       };
+
+      lib = import ./lib { inherit inputs overlays; };
+      inherit (lib) mkHost mkDarwin;
     in {
       homeConfigurations = {
         linux = home-manager.lib.homeManagerConfiguration {
@@ -179,27 +182,11 @@
           ];
         };
 
-        mac-studio = darwin.lib.darwinSystem {
+        mac-studio = mkDarwin {
+          hostname = "mac-studio";
           system = "aarch64-darwin";
-          specialArgs = { inherit inputs; };
-
-          modules = [
-          ./os/darwin/hosts/personal/configuration.nix
-
-            home-manager.darwinModules.home-manager
-
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.katob = import ./os/darwin/home;
-              nixpkgs.overlays = overlays;
-              home-manager.backupFileExtension = "backup";
-
-              users.users."katob".name = "katob";
-              users.users."katob".home = "/Users/katob";
-            }
-          ];
+          systemPath = ./os/darwin/hosts/personal/configuration.nix;
+          homePath = ./os/darwin/home/default.nix;
         };
 
         mac-personal = darwin.lib.darwinSystem {

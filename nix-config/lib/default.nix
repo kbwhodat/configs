@@ -44,13 +44,14 @@ let
     system,
     profiles ? [],
     extraModules ? [],
+    systemPath ? ../hosts + "/${hostname}/system.nix",
     homePath ? ../hosts + "/${hostname}/home.nix",
   }:
     inputs.darwin.lib.darwinSystem {
       inherit system;
       specialArgs = { inherit inputs hostname; };
       modules = [
-        (../hosts + "/${hostname}/system.nix")
+        systemPath
         inputs.home-manager.darwinModules.home-manager
         {
           nixpkgs.overlays = overlays;
