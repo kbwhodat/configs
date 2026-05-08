@@ -93,21 +93,12 @@
           ];
         };
 
-        frame16 = nixpkgs.lib.nixosSystem {
+        frame16 = mkHost {
+          hostname = "frame16";
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./os/nixos/hosts/frame16/configuration.nix
-            inputs.nixos-hardware.nixosModules.framework-16-7040-amd
-            home-manager.nixosModules.home-manager {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.katob = import ./os/nixos/home;
-              home-manager.backupFileExtension = "backup";
-              nixpkgs.overlays = overlays;
-            }
-          ];
+          systemPath = ./os/nixos/hosts/frame16/configuration.nix;
+          homePath = ./os/nixos/home/default.nix;
+          extraModules = [ inputs.nixos-hardware.nixosModules.framework-16-7040-amd ];
         };
 
         frame13 = mkHost {
