@@ -94,7 +94,7 @@ in
     "font.name.monospace.x-western" = "ComicShannsMono Nerd Font Mono";
     "font.name.sans-serif.x-western" = "ComicShannsMono Nerd Font Propo";
     "font.name.serif.x-western" = "ComicShannsMono Nerd Font Propo";
-    "layout.css.devPixelsPerPx" = 1.0;
+    "layout.css.devPixelsPerPx" = -1.0;
 
     "app.update.auto" = true;
     "browser.toolbars.bookmarks.visibility" = "newtab";
