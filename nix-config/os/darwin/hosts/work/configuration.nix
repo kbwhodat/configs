@@ -18,6 +18,14 @@ in
   system.primaryUser = "katob";
 
   nix.enable = true; # auto upgrade nix package and daemon service
+
+  # lima 1.2.2 is EOL/insecure but still in nixpkgs; allow it explicitly.
+  # Bump or remove once lima is upgraded upstream.
+  nixpkgs.config.permittedInsecurePackages = [
+    "lima-full-1.2.2"
+    "lima-additional-guestagents-1.2.2"
+    "lima-1.2.2"
+  ];
     system = {
       defaults = {
         NSGlobalDomain.AppleICUForce24HourTime = true;
