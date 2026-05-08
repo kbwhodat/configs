@@ -162,24 +162,11 @@
 
       darwinConfigurations = {
 
-        mac-work = darwin.lib.darwinSystem {
+        mac-work = mkDarwin {
+          hostname = "mac-work";
           system = "x86_64-darwin";
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./os/darwin/hosts/work/configuration.nix
-            home-manager.darwinModules.home-manager {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.katob = import ./os/darwin/home/work;
-              nixpkgs.overlays = overlays;
-
-              home-manager.backupFileExtension = "backup";
-
-              users.users."katob".name = "katob";
-              users.users."katob".home = "/Users/katob";
-            }
-          ];
+          systemPath = ./os/darwin/hosts/work/configuration.nix;
+          homePath = ./os/darwin/home/work/default.nix;
         };
 
         mac-studio = mkDarwin {
