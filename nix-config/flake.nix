@@ -137,6 +137,13 @@
           systemPath = ./os/darwin/hosts/personal/configuration.nix;
           homePath = ./os/darwin/home/default.nix;
         };
+
+        macbook-neo = mkDarwin {
+          hostname = "macbook-neo";
+          system = "aarch64-darwin";
+          systemPath = ./os/darwin/hosts/personal/configuration.nix;
+          homePath = ./os/darwin/home/default.nix;
+        };
       };
     };
 }
