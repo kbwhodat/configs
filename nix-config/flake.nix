@@ -109,20 +109,11 @@
           extraModules = [ inputs.nixos-hardware.nixosModules.framework-13-7040-amd ];
         };
 
-        server = nixpkgs.lib.nixosSystem {
+        server = mkHost {
+          hostname = "server";
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./os/nixos/hosts/server/configuration.nix
-            home-manager.nixosModules.home-manager {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.katob = import ./os/nixos/home;
-              home-manager.backupFileExtension = "backup";
-              nixpkgs.overlays = overlays;
-            }
-          ];
+          systemPath = ./os/nixos/hosts/server/configuration.nix;
+          homePath = ./os/nixos/home/default.nix;
         };
 
         main = mkHost {
