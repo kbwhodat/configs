@@ -198,6 +198,21 @@ if d.get('main') != 'ecc-opencode-shim.js':
     done
   '';
 
+  # Jobdrop MCP server (https://github.com/kbwhodat/jobdrop) — installs the
+  # `jobdrop[mcp]` package via `uv tool`, which deposits the
+  # jobdrop-mcp-server shim at ~/.local/bin (where the MCP configs above
+  # already point). uv manages an isolated venv with the heavy deps
+  # (camoufox, curl-cffi, tls-client) outside the nix store.
+  # To upgrade: `uv tool upgrade jobdrop`.
+  home.activation.installJobdrop = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -x "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server" ]; then
+      echo "[installJobdrop] installing jobdrop[mcp] via uv tool…"
+      if ! PATH="${pkgs.uv}/bin:$PATH" ${pkgs.uv}/bin/uv tool install "jobdrop[mcp]"; then
+        echo "[installJobdrop] WARNING: uv tool install failed — run manually: uv tool install 'jobdrop[mcp]'" >&2
+      fi
+    fi
+  '';
+
   programs.opencode = {
     enable = true;
     package = ocvBinary;
@@ -378,39 +393,29 @@ if d.get('main') != 'ecc-opencode-shim.js':
     };
   };
 
-  programs.claude-code = {
+  programs.claude-code = let
+    eccSrc = pkgs.fetchFromGitHub {
+      owner = "affaan-m";
+      repo = "everything-claude-code";
+      rev = "main";
+      sha256 = "sha256-R1LwfU8w4QJi69so+TG1BMVVH+zf9epsAmZPbw9mnYU=";
+    };
+    superpowersSrc = pkgs.fetchFromGitHub {
+      owner = "obra";
+      repo = "superpowers";
+      rev = "main";
+      sha256 = "sha256-3E3rO6hR87JUfS3XV1Eaoz6SDWOftleWvN9UPNFEMjw=";
+    };
+  in {
     enable = true;
     package = unstable.claude-code;
 
     marketplaces = {
-      ecc = pkgs.fetchFromGitHub {
-        owner = "affaan-m";
-        repo = "everything-claude-code";
-        rev = "main";
-        sha256 = "sha256-FEqDiGcXgbi1UJNpbYlYS1EdlI83ksR66u5F0EKZncs=";
-      };
-      superpowers = pkgs.fetchFromGitHub {
-        owner = "obra";
-        repo = "superpowers";
-        rev = "main";
-        sha256 = "sha256-cobQloF7Y6K0IC0/6xSnA2Io+fKgk2SRmCwoZZtVCco=";
-      };
+      ecc = eccSrc;
+      superpowers = superpowersSrc;
     };
 
-    plugins = [
-      (pkgs.fetchFromGitHub {
-        owner = "affaan-m";
-        repo = "everything-claude-code";
-        rev = "main";
-        sha256 = "sha256-FEqDiGcXgbi1UJNpbYlYS1EdlI83ksR66u5F0EKZncs=";
-      })
-      (pkgs.fetchFromGitHub {
-        owner = "obra";
-        repo = "superpowers";
-        rev = "main";
-        sha256 = "sha256-cobQloF7Y6K0IC0/6xSnA2Io+fKgk2SRmCwoZZtVCco=";
-      })
-    ];
+    plugins = [ eccSrc superpowersSrc ];
 
     mcpServers = {
       context7 = {
