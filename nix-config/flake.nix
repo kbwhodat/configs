@@ -203,7 +203,7 @@
         };
 
         mac-personal = darwin.lib.darwinSystem {
-          system = "x86_64-darwin";
+          system = "aarch64-darwin";
           specialArgs = { inherit inputs; };
           modules = [
             ./os/darwin/hosts/personal/configuration.nix
