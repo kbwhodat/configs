@@ -125,20 +125,11 @@
           ];
         };
 
-        main = nixpkgs.lib.nixosSystem {
+        main = mkHost {
+          hostname = "main";
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./os/nixos/hosts/main/configuration.nix
-            home-manager.nixosModules.home-manager {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.katob = import ./os/nixos/home;
-              home-manager.backupFileExtension = "backup";
-              nixpkgs.overlays = overlays;
-            }
-          ];
+          systemPath = ./os/nixos/hosts/main/configuration.nix;
+          homePath = ./os/nixos/home/default.nix;
         };
       };
 
