@@ -41,6 +41,9 @@
   inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
   # inputs.gonchill.url = "github:kbwhodat/gonchill/2607f4315c455d6303afb8b20d9ee9cbe694686e";
 
+  inputs.matcha.url = "github:floatpane/matcha";
+  inputs.matcha.inputs.nixpkgs.follows = "nixpkgs";
+
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
     let
