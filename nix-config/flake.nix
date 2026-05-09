@@ -80,16 +80,12 @@
         util = mkHost {
           hostname = "util";
           system = "x86_64-linux";
-          systemPath = ./os/nixos/hosts/util/configuration.nix;
-          homePath = ./os/nixos/home/default.nix;
           profiles = [ "base" "server" ];
         };
 
         frame16 = mkHost {
           hostname = "frame16";
           system = "x86_64-linux";
-          systemPath = ./os/nixos/hosts/frame16/configuration.nix;
-          homePath = ./os/nixos/home/default.nix;
           profiles = [ "base" "desktop" "laptop" "workstation" "gaming" ];
           extraModules = [ inputs.nixos-hardware.nixosModules.framework-16-7040-amd ];
         };
@@ -97,8 +93,6 @@
         frame13 = mkHost {
           hostname = "frame13";
           system = "x86_64-linux";
-          systemPath = ./os/nixos/hosts/frame13/configuration.nix;
-          homePath = ./os/nixos/hosts/frame13/home/default.nix;
           profiles = [ "base" "desktop" "laptop" "workstation" ];
           extraModules = [ inputs.nixos-hardware.nixosModules.framework-13-7040-amd ];
         };
@@ -106,16 +100,12 @@
         server = mkHost {
           hostname = "server";
           system = "x86_64-linux";
-          systemPath = ./os/nixos/hosts/server/configuration.nix;
-          homePath = ./os/nixos/home/default.nix;
           profiles = [ "base" "server" ];
         };
 
         main = mkHost {
           hostname = "main";
           system = "x86_64-linux";
-          systemPath = ./os/nixos/hosts/main/configuration.nix;
-          homePath = ./os/nixos/home/default.nix;
           profiles = [ "base" "desktop" "workstation" "gaming" ];
         };
       };
@@ -125,32 +115,24 @@
         mac-work = mkDarwin {
           hostname = "mac-work";
           system = "x86_64-darwin";
-          systemPath = ./os/darwin/hosts/work/configuration.nix;
-          homePath = ./os/darwin/home/work/default.nix;
           profiles = [ "base" "desktop" "workstation" "work" ];
         };
 
         mac-studio = mkDarwin {
           hostname = "mac-studio";
           system = "aarch64-darwin";
-          systemPath = ./os/darwin/hosts/personal/configuration.nix;
-          homePath = ./os/darwin/home/default.nix;
           profiles = [ "base" "desktop" "workstation" ];
         };
 
         mac-personal = mkDarwin {
           hostname = "mac-personal";
           system = "aarch64-darwin";
-          systemPath = ./os/darwin/hosts/personal/configuration.nix;
-          homePath = ./os/darwin/home/default.nix;
           profiles = [ "base" "desktop" "workstation" ];
         };
 
         macbook-neo = mkDarwin {
           hostname = "macbook-neo";
           system = "aarch64-darwin";
-          systemPath = ./os/darwin/hosts/personal/configuration.nix;
-          homePath = ./os/darwin/home/default.nix;
           profiles = [ "base" "desktop" "workstation" ];
         };
       };
