@@ -2,10 +2,19 @@
 
 {
 	imports = [
-    ../../../common/sops
-	../../../common
-    ../../../common/personal
-    ../../../common/macos
+    ../../../modules/home/sops
+    ../../../modules/home/shell
+    ../../../modules/home/vms
+    ../../../modules/home/packages
+    ../../../modules/home/browsers
+    ../../../modules/home/keyboard
+    ../../../modules/home/editors
+    ../../../modules/home/lsp
+    ../../../modules/home/neovim
+    ../../../modules/home/email
+    ../../../modules/home/personal
+    ../../../modules/home/macos
+    ../../../modules/home/ai
 	];
 
   # Home Manager needs a bit of information about you and the paths it should

@@ -19,14 +19,23 @@ let
 in
 {
 	imports = [
-		../../../../../common/linux/rofi
-		../../../../../common/linux/calibre
-		../../../../../common/linux/koreader
-		../../../../../common/linux/okular
-		../../../../../common/linux/i3
-		../../../../../common
-    ../../../../../common/sops
-    ../../../../../common/personal
+    ../../../../../modules/home/sops
+    ../../../../../modules/home/shell
+    ../../../../../modules/home/vms
+    ../../../../../modules/home/packages
+    ../../../../../modules/home/browsers
+    ../../../../../modules/home/keyboard
+    ../../../../../modules/home/editors
+    ../../../../../modules/home/lsp
+    ../../../../../modules/home/neovim
+    ../../../../../modules/home/email
+    ../../../../../modules/home/personal
+    ../../../../../modules/home/ai
+    ../../../../../modules/home/linux/rofi
+    ../../../../../modules/home/linux/calibre
+    ../../../../../modules/home/linux/koreader
+    ../../../../../modules/home/linux/okular
+    ../../../../../modules/home/linux/i3
 	];
 
   home.username = "katob";
