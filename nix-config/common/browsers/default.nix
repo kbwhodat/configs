@@ -1,16 +1,2 @@
-{ pkgs, ... }:
-
-{
-  imports = [
-    ./firefox.nix
-    ./floorp.nix
-    ./chawan.nix
-    ./browserpass.nix
-    ./zen.nix
-    ./librewolf.nix
-    ./chrome.nix
-    # ./helium.nix
-    ./thorium.nix
-    # ./ladybird.nix
-  ];
-}
+# Migration shim. Real config in modules/home/browsers/.
+{ ... }: { imports = [ ../../modules/home/browsers ]; }
