@@ -42,7 +42,10 @@
   # inputs.gonchill.url = "github:kbwhodat/gonchill/2607f4315c455d6303afb8b20d9ee9cbe694686e";
 
   inputs.matcha.url = "github:floatpane/matcha";
-  inputs.matcha.inputs.nixpkgs.follows = "nixpkgs";
+  # Follow `unstable` (not stable nixpkgs): matcha's go.mod requires
+  # Go ≥ 1.26.3; matcha's pinned nixpkgs has 1.26.2; our nixos-25.11
+  # is older still; only nixos-unstable has a recent enough go_1_26.
+  inputs.matcha.inputs.nixpkgs.follows = "unstable";
 
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
