@@ -5,7 +5,7 @@ in
 {
 
   imports = [
-    ../../floorp.nix
+    ./_extensions/floorp.nix
   ];
 
   programs.myfloorp.enable =

@@ -5,7 +5,7 @@ in
 {
 
   imports = [
-    ../../zen.nix
+    ./_extensions/zen.nix
   ];
 
   programs.zen-browser.enable = true;
