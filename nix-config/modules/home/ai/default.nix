@@ -22,5 +22,9 @@ let cfg = config.modules.ai; in {
     modules.ai.rtk.enable         = lib.mkDefault true;
     modules.ai.jobdrop.enable     = lib.mkDefault true;
     modules.ai.hermes.enable      = lib.mkDefault true;
+
+    # uv-tool installs (hermes, jobdrop, future agents) drop binaries
+    # into ~/.local/bin. Make sure interactive shells can find them.
+    home.sessionPath = [ "$HOME/.local/bin" ];
   };
 }
