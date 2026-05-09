@@ -1,0 +1,189 @@
+name: performance-engineering
+description: Systematic performance optimization for mobile apps - profiling, bottleneck identification, and measurable improvements
+
+# Purpose
+Find and fix performance problems through measurement, not guessing. Optimize what matters: startup time, frame rate, battery, memory, and network efficiency.
+
+# When to use
+Use this skill when:
+- App feels slow or janky
+- Users report performance issues
+- Battery drain complaints
+- Memory warnings or crashes
+- Before/after major features
+- Optimizing critical user journeys
+
+# Inputs
+- Symptom description (slow screen, jank, battery drain, etc.)
+- Device constraints (low-end targets?)
+- Current measurements if available
+- Code/screens involved
+
+# Output Format (required)
+1) Performance budget (targets)
+2) Measurement plan (what/how to measure)
+3) Bottleneck hypothesis (ranked)
+4) Profiling results analysis
+5) Optimization plan (ordered by impact/effort)
+6) Verification (before/after metrics)
+
+# Performance Budgets (Mobile)
+
+## Startup Time
+- Cold start: < 2s to interactive
+- Warm start: < 500ms
+- Measure: time from launch to first meaningful paint
+
+## Frame Rate
+- Target: 60fps (16.6ms per frame)
+- Acceptable: no frames > 32ms (drops below 30fps)
+- Jank budget: < 1% of frames dropped
+
+## Memory
+- Baseline: < 150MB for typical app
+- Peak: < 300MB during heavy operations
+- No unbounded growth (leaks)
+
+## Battery
+- Background: minimal wake-ups, no polling
+- Foreground: efficient network batching
+- Location: use significant-change only when possible
+
+## Network
+- API calls: < 500ms p95
+- Payload size: compress, paginate
+- Offline-first where possible
+
+# Profiling Methodology
+
+## Step 1: Reproduce with measurement
+- Use release/profile builds (debug hides real perf)
+- Profile on target devices (not just simulator)
+- Capture baseline metrics first
+
+## Step 2: Identify the bottleneck type
+| Symptom | Likely Bottleneck | Tool |
+|---------|-------------------|------|
+| Slow startup | Heavy init, sync I/O | Timeline, startup trace |
+| Jank/stutter | Main thread blocking | Frame timeline |
+| High memory | Leaks, large objects | Memory profiler |
+| Battery drain | Wake locks, polling | Battery profiler |
+| Slow screens | Expensive builds, N+1 | Network + timeline |
+
+## Step 3: Drill down
+- CPU: Which functions take time? Sampling profiler
+- Memory: What objects are retained? Heap snapshot
+- I/O: What's blocking? Async timeline
+- Network: What requests are slow? Network profiler
+
+## Step 4: Fix and verify
+- Change ONE thing at a time
+- Re-measure with same conditions
+- Document the improvement (before/after)
+
+# Common Bottlenecks & Fixes
+
+## Startup
+| Problem | Fix |
+|---------|-----|
+| Heavy initialization | Defer non-critical init, lazy load |
+| Sync network on start | Async + cached fallback |
+| Large asset loading | Lazy load, compress, cache |
+| Too many providers/services | Initialize on-demand |
+
+## UI/Rendering (Flutter-specific)
+| Problem | Fix |
+|---------|-----|
+| Expensive build() | Extract widgets, use const |
+| Rebuilding entire tree | Targeted rebuilds, selectors |
+| Large lists | ListView.builder, pagination |
+| Image jank | Cached images, sized placeholders |
+| Complex animations | RepaintBoundary, simpler curves |
+| Shader compilation jank | Warm up shaders, simplify effects |
+
+## Memory
+| Problem | Fix |
+|---------|-----|
+| Image caching unbounded | LRU cache with size limit |
+| Listeners not disposed | Proper dispose() in StatefulWidget |
+| Large objects in memory | Stream/chunk processing |
+| Retained references | Weak references, proper cleanup |
+
+## Network/Database
+| Problem | Fix |
+|---------|-----|
+| N+1 queries | Batch fetching, joins |
+| No pagination | Cursor/offset pagination |
+| Repeated identical requests | Request deduplication, caching |
+| Large payloads | Compression, partial responses |
+| Slow queries | Indexes, query optimization |
+
+## Battery
+| Problem | Fix |
+|---------|-----|
+| Polling | Push notifications, realtime subscriptions |
+| Frequent location updates | Significant-change monitoring |
+| Background work | Batch, defer to charging |
+| Wake locks held | Release promptly |
+
+# Supabase-Specific Performance
+
+## Query Optimization
+- Use select() to fetch only needed columns
+- Add .limit() to all list queries
+- Use range queries for pagination
+- Leverage Supabase's built-in caching headers
+
+## Realtime Efficiency
+- Subscribe to specific rows, not entire tables
+- Use filters in subscriptions
+- Unsubscribe when not needed
+- Batch updates on client side
+
+## Edge Functions
+- Keep cold start minimal (small bundles)
+- Cache expensive computations
+- Use connection pooling for DB
+
+# Measurement Tools
+
+## Flutter
+- DevTools Performance tab
+- DevTools Memory tab
+- flutter run --profile
+- Timeline events API
+
+## Mobile Platform
+- Xcode Instruments (iOS)
+- Android Studio Profiler
+- Firebase Performance Monitoring
+
+## Custom Metrics
+- Add timing logs around critical paths
+- Track custom events (startup phases, screen loads)
+- Monitor in production (percentiles, not averages)
+
+# Anti-Patterns (avoid)
+- Optimizing without measuring first
+- Optimizing on debug builds
+- Testing only on high-end devices
+- Using averages instead of percentiles
+- Premature optimization of cold paths
+- Adding complexity for marginal gains
+
+# Optimization Priority Matrix
+
+| Impact | Effort | Action |
+|--------|--------|--------|
+| High | Low | Do immediately |
+| High | High | Plan carefully |
+| Low | Low | Quick wins if time permits |
+| Low | High | Skip unless critical |
+
+# Verification Checklist
+- [ ] Measured on real device (not simulator)
+- [ ] Used release/profile build
+- [ ] Baseline captured before changes
+- [ ] Improvement measured (percentage)
+- [ ] No regression in other metrics
+- [ ] Tested on low-end device target

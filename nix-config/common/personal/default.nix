@@ -1,8 +1,8 @@
-{ config, ... }:
-{
+# Migration shim. Real config in modules/home/personal/.
+# ai.nix shim still imports modules/home/ai (Step 2).
+{ ... }: {
   imports = [
-    ./personal.nix
+    ../../modules/home/personal
     ./ai.nix
-    ./openvpn.nix
   ];
 }

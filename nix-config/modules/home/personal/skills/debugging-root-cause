@@ -1,0 +1,69 @@
+name: debugging-root-cause
+description: Systematic debugging skill to find root cause quickly and avoid guess-fixing
+
+# Purpose
+Fix bugs by proving the cause, not by patching symptoms.
+
+# When to use
+Use this skill when:
+- Something crashes or behaves incorrectly
+- Tests fail unexpectedly
+- Performance regresses
+- Intermittent/flaky issues occur
+
+# Inputs
+- Symptoms: error, logs, screenshots, reproduction steps
+- Environment: OS, version, device, config
+- Recent changes (diff/commit range) if available
+
+# Output Format (required)
+1) Restate problem + observed facts
+2) Hypotheses (ranked)
+3) Fastest experiments to confirm/deny
+4) Root cause statement
+5) Fix (minimal + safe)
+6) Regression test
+7) Prevention (optional)
+
+# Debugging Method
+Step 1: Reproduce reliably
+- If not reproducible: instrument first (logs/metrics), reduce variables
+- Capture exact inputs that trigger the bug
+
+Step 2: Reduce the problem
+- Create the smallest failing case
+- Binary search recent changes if needed
+- Disable subsystems to isolate boundaries
+
+Step 3: Observe the system
+- Add structured logs at boundaries (inputs/outputs, timing, ids)
+- Inspect state before/after the failing operation
+- Validate assumptions: “this is non-null”, “this file exists”, “this runs once”
+
+Step 4: Prove the root cause
+- A root cause is a specific mechanism, not a guess
+- Show why it fails for the failing input and why it doesn’t for a passing input
+
+Step 5: Fix with minimal blast radius
+- Prefer small changes
+- Avoid broad refactors during bug-fix unless necessary
+
+# Common Pitfalls to Check
+- Off-by-one and bounds
+- Null/empty handling
+- Async ordering, double-submits, race conditions
+- Caching stale data
+- Environment/config mismatch
+- Timezone/locale parsing
+- Floating point comparisons
+- Inconsistent ID types (string vs int)
+
+# Flaky/Intermittent Handling
+- Add correlation ids
+- Increase logging around the suspected region
+- Use retries only after identifying transient root causes
+- Reduce concurrency to test race hypotheses
+
+# What NOT to do
+- Don’t propose a fix before running at least one confirming experiment
+- Don’t add “try/catch and ignore” as a fix

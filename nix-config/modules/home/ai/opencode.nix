@@ -71,27 +71,27 @@ let cfg = config.modules.ai.opencode; in {
           perftutor = {
             mode = "primary";
             description = "Perf Tutor Agent";
-            prompt = builtins.readFile ../../../common/personal/prompts/perftutor.txt;
+            prompt = builtins.readFile ../personal/prompts/perftutor.txt;
             tools = { write = true; read = true; edit = true; bash = true; };
             temperature = 0.25;
           };
           perfguru = {
             mode = "primary";
             description = "Perf Guru Agent";
-            prompt = builtins.readFile ../../../common/personal/prompts/perfguru.txt;
+            prompt = builtins.readFile ../personal/prompts/perfguru.txt;
             tools = { write = true; read = true; edit = true; bash = true; };
             temperature = 0.25;
           };
           planner = {
             mode = "subagent";
             description = "Expert planning specialist for complex features and refactoring";
-            prompt = builtins.readFile ../../../common/personal/prompts/planner.txt;
+            prompt = builtins.readFile ../personal/prompts/planner.txt;
             tools = { read = true; bash = true; };
           };
           tdd-guide = {
             mode = "subagent";
             description = "TDD specialist enforcing test-first development with Red-Green-Refactor";
-            prompt = builtins.readFile ../../../common/personal/prompts/tdd-guide.txt;
+            prompt = builtins.readFile ../personal/prompts/tdd-guide.txt;
             tools = { write = true; read = true; edit = true; bash = true; };
           };
         };

@@ -1,0 +1,74 @@
+name: testing-verification
+description: Write and improve tests with strong verification habits (unit/integration/e2e), focusing on confidence per effort
+
+# Purpose
+Turn code changes into verified behavior. Prefer tests that catch regressions with minimal brittleness.
+
+# When to use
+Use this skill when:
+- Adding features
+- Fixing bugs
+- Refactoring
+- Touching complex logic, async flows, or data transformations
+
+# Inputs
+- What changed (diff) and expected behavior
+- Existing test framework/tooling
+- Any constraints: CI time, flakiness sensitivity, environment limits
+
+# Testing Strategy (choose in order)
+1) Unit tests for pure logic and edge cases
+2) Integration tests for boundaries (DB, HTTP, filesystem, queues)
+3) E2E tests only for the top critical user journeys
+
+# Principles
+- Tests should verify observable outcomes, not implementation details
+- Prefer deterministic tests; avoid sleeps and timing assumptions
+- Make failures readable: assertion messages should tell what broke and why
+- Keep tests isolated; reset state between tests
+
+# Required Output Structure
+1) What to test (scenarios)
+2) Which test level and why
+3) Concrete test cases (inputs/outputs)
+4) Test code (only for key cases)
+5) How to run locally + in CI
+6) Flakiness risks + mitigation
+
+# Scenario Selection Rules
+- Always include: happy path
+- Include: one important edge case
+- Include: one failure mode (validation, timeout, missing resource)
+- For bug fixes: include a regression test first, then fix
+
+# Patterns to Use
+For logic
+- Table-driven tests for multiple cases
+- Property tests for invariants (optional)
+- Golden tests only when output stability matters and is intended
+
+For async
+- Use fake clocks or controlled schedulers when available
+- Await completion explicitly; avoid arbitrary sleeps
+- Assert on final state/events, not intermediate timing
+
+For I/O boundaries
+- Mock only at process boundary; prefer real components for integration
+- Use test containers or in-memory DB when appropriate
+- Validate request/response contracts at edges
+
+# Anti-Patterns (avoid)
+- Tests that only assert “no exception”
+- Snapshot everything without intent
+- Over-mocking internal functions
+- Flaky tests that depend on network, time, or random order
+
+# Minimal “Done” Bar (per change)
+- Feature: 1 unit test + 1 integration test if any boundary touched
+- Bug: 1 regression test
+- Refactor: 1 characterization test if behavior is subtle
+
+# Verification Beyond Tests
+- Add assertions/invariants in code for impossible states
+- Add structured logging for critical flows
+- Add lightweight metrics for rate/error/latency when relevant

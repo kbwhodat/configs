@@ -1,0 +1,326 @@
+name: supabase-database-mastery
+description: Expert-level Supabase usage - schema design, RLS policies, query optimization, realtime, edge functions, and migrations
+
+# Purpose
+Design and optimize your Supabase backend for correctness, security, and performance. Make the database work for you, not against you.
+
+# When to use
+Use this skill when:
+- Designing new tables or relationships
+- Writing or debugging RLS policies
+- Queries are slow or inefficient
+- Setting up realtime subscriptions
+- Writing edge functions
+- Planning migrations
+- Debugging auth/permission issues
+
+# Inputs
+- Current schema (or requirements for new)
+- Query patterns (how data is accessed)
+- Security requirements (who can access what)
+- Scale expectations (rows, concurrent users)
+
+# Output Format (required)
+1) Schema design (or review)
+2) RLS policy design
+3) Index recommendations
+4) Query optimization
+5) Migration plan (if changes needed)
+6) Verification steps
+
+# Schema Design Principles
+
+## Normalization vs Denormalization
+| Use Case | Approach |
+|----------|----------|
+| Data integrity critical | Normalize (3NF) |
+| Read-heavy, write-light | Denormalize for reads |
+| Complex queries | Consider materialized views |
+| Mobile app | Cache-friendly schema |
+
+## Primary Keys
+- Use UUIDs for distributed safety: `id uuid default gen_random_uuid() primary key`
+- Or use identity: `id bigint generated always as identity primary key`
+- Never expose sequential IDs if security matters
+
+## Timestamps
+Always include:
+```sql
+created_at timestamptz default now() not null,
+updated_at timestamptz default now() not null
+```
+Add trigger for updated_at:
+```sql
+create trigger set_updated_at before update on table_name
+  for each row execute function moddatetime(updated_at);
+```
+
+## Foreign Keys
+- Always define with `references`
+- Choose ON DELETE behavior explicitly:
+  - `CASCADE` - delete children with parent
+  - `SET NULL` - orphan children (if nullable)
+  - `RESTRICT` - prevent deletion if children exist
+
+## Soft Deletes
+For recoverable data:
+```sql
+deleted_at timestamptz default null
+```
+Filter in RLS: `deleted_at is null`
+
+# Row Level Security (RLS)
+
+## Golden Rules
+1. ALWAYS enable RLS on tables with user data
+2. Default deny - no policy means no access
+3. Policies are additive (OR logic for same operation)
+4. Test policies thoroughly before production
+
+## Common Patterns
+
+### User owns their data
+```sql
+create policy "Users can CRUD own data"
+  on profiles for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+```
+
+### Public read, owner write
+```sql
+create policy "Anyone can read" on posts for select using (true);
+create policy "Owner can modify" on posts for all
+  using (auth.uid() = author_id)
+  with check (auth.uid() = author_id);
+```
+
+### Role-based access
+```sql
+create policy "Admins can do anything"
+  on sensitive_data for all
+  using (
+    exists (
+      select 1 from user_roles
+      where user_id = auth.uid() and role = 'admin'
+    )
+  );
+```
+
+### Team/organization access
+```sql
+create policy "Team members can access"
+  on team_data for select
+  using (
+    team_id in (
+      select team_id from team_members where user_id = auth.uid()
+    )
+  );
+```
+
+## RLS Performance Tips
+- Avoid expensive subqueries in policies
+- Use `security definer` functions for complex checks
+- Index columns used in policy conditions
+- Consider denormalizing permissions for hot paths
+
+## Debugging RLS
+```sql
+-- Check current user
+select auth.uid(), auth.role();
+
+-- Test policy as user (in Supabase SQL editor)
+set request.jwt.claim.sub = 'user-uuid-here';
+select * from your_table;
+```
+
+# Index Strategy
+
+## When to Add Indexes
+- Columns in WHERE clauses (frequent filters)
+- Columns in JOIN conditions
+- Columns in ORDER BY (for sorted queries)
+- Foreign keys (automatic in some DBs, explicit in Postgres)
+
+## Index Types
+| Type | Use Case |
+|------|----------|
+| B-tree (default) | Equality, range, sorting |
+| GIN | Full-text search, arrays, JSONB |
+| GiST | Geometric, full-text |
+| BRIN | Large tables, sequential data |
+
+## Common Indexes
+```sql
+-- Simple index
+create index idx_posts_author on posts(author_id);
+
+-- Composite index (order matters!)
+create index idx_posts_author_created on posts(author_id, created_at desc);
+
+-- Partial index (smaller, faster)
+create index idx_active_users on users(email) where deleted_at is null;
+
+-- GIN for JSONB
+create index idx_metadata on items using gin(metadata);
+```
+
+## Index Anti-Patterns
+- Indexing low-cardinality columns (boolean, status with few values)
+- Too many indexes (slows writes)
+- Not using composite indexes correctly (wrong column order)
+- Forgetting partial indexes for filtered queries
+
+# Query Optimization
+
+## Use EXPLAIN ANALYZE
+```sql
+explain analyze select * from posts where author_id = 'uuid';
+```
+Look for:
+- Seq Scan on large tables (needs index)
+- High "actual time"
+- Loops with high counts (N+1 smell)
+
+## Pagination
+Never use OFFSET for large datasets:
+```sql
+-- Bad: slow for large offsets
+select * from posts order by created_at desc limit 20 offset 1000;
+
+-- Good: cursor-based
+select * from posts
+  where created_at < '2024-01-01'
+  order by created_at desc
+  limit 20;
+```
+
+## Select Only What You Need
+```typescript
+// Bad
+const { data } = await supabase.from('posts').select('*');
+
+// Good
+const { data } = await supabase.from('posts').select('id, title, created_at');
+```
+
+## Batch Operations
+```typescript
+// Insert many
+const { data } = await supabase.from('items').insert(itemsArray);
+
+// Upsert
+const { data } = await supabase.from('items').upsert(itemsArray, {
+  onConflict: 'external_id'
+});
+```
+
+# Realtime Subscriptions
+
+## Best Practices
+```typescript
+// Subscribe to specific rows, not entire tables
+const subscription = supabase
+  .channel('user-messages')
+  .on('postgres_changes', {
+    event: '*',
+    schema: 'public',
+    table: 'messages',
+    filter: `recipient_id=eq.${userId}`
+  }, handleChange)
+  .subscribe();
+
+// Always unsubscribe
+subscription.unsubscribe();
+```
+
+## Performance Tips
+- Use filters to limit subscription scope
+- Batch UI updates (don't re-render on every event)
+- Consider polling for non-critical data
+- Unsubscribe when component unmounts
+
+# Edge Functions
+
+## When to Use
+- Complex business logic
+- Third-party API integrations
+- Scheduled tasks
+- Webhooks
+- Operations requiring secrets
+
+## Performance Tips
+```typescript
+// Keep cold start fast - minimal imports
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+
+// Reuse connections (connection pooling)
+const supabase = createClient(url, key, {
+  auth: { persistSession: false }
+});
+
+// Return early for health checks
+if (req.method === 'OPTIONS') {
+  return new Response(null, { status: 204 });
+}
+```
+
+# Migrations
+
+## Safe Migration Practices
+1. Always backup before migrations
+2. Test migrations on staging first
+3. Make backwards-compatible changes when possible
+4. Use transactions for multi-step changes
+
+## Backwards-Compatible Changes
+| Safe | Unsafe |
+|------|--------|
+| Add nullable column | Remove column |
+| Add table | Rename column |
+| Add index | Change column type |
+| Add RLS policy | Remove RLS policy |
+
+## Migration Pattern for Breaking Changes
+1. Add new column/table
+2. Deploy code that writes to both
+3. Backfill data
+4. Deploy code that reads from new
+5. Remove old column/table
+
+# Storage
+
+## Security
+```sql
+-- RLS for storage
+create policy "Users can upload own avatars"
+  on storage.objects for insert
+  with check (
+    bucket_id = 'avatars' and
+    auth.uid()::text = (storage.foldername(name))[1]
+  );
+```
+
+## Performance
+- Use signed URLs for private files
+- Set appropriate cache headers
+- Compress images before upload
+- Use CDN for public assets
+
+# Debugging Checklist
+- [ ] Check RLS policies with test user
+- [ ] Run EXPLAIN ANALYZE on slow queries
+- [ ] Verify indexes exist for filter columns
+- [ ] Check for N+1 query patterns
+- [ ] Monitor connection pool usage
+- [ ] Check realtime subscription count
+- [ ] Verify edge function cold start time
+
+# Common Mistakes to Avoid
+- Disabling RLS "temporarily" and forgetting
+- Not indexing foreign keys
+- Using OFFSET pagination at scale
+- Subscribing to entire tables in realtime
+- Storing large blobs in database instead of storage
+- Not setting up updated_at triggers
+- Complex logic in RLS policies (use functions)

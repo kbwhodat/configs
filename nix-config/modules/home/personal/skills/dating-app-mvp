@@ -1,0 +1,57 @@
+name: dating-app-mvp
+description: Build a dating app MVP in Flutter with clean flows, minimal scope, and safety basics
+
+# Purpose
+Ship a usable dating app MVP quickly while keeping scope under control.
+
+# When to use
+Use this skill when implementing any dating-app feature:
+profiles, swiping, matches, messaging, reporting, onboarding.
+
+# MVP Scope (must follow)
+MVP includes:
+- Auth: email/OTP (or simple email+password) + basic profile creation
+- Profile: photos (local mock or simple upload), bio, age, gender, location (optional)
+- Discovery: swipe deck (like/pass) with minimal filters
+- Match: mutual like creates a match record
+- Chat: 1:1 messaging for matched users only (text only)
+- Safety: block + report (simple reason list)
+
+Not in MVP unless requested:
+- subscriptions, boosts, super likes, read receipts
+- video, voice, stories, live location
+- complex ML ranking, advanced recommendations
+- complicated verification/KYC
+
+# Data Model (baseline)
+Entities:
+- User(id, createdAt, lastActiveAt)
+- Profile(userId, name, age, bio, photos[], gender, preferences, location?)
+- Swipe(fromUserId, toUserId, decision, createdAt)
+- Match(id, userA, userB, createdAt)
+- Message(id, matchId, fromUserId, text, createdAt, deliveredAt?, readAt?)
+- Block(blockerId, blockedId, createdAt)
+- Report(reporterId, reportedId, reason, details?, createdAt)
+
+Rules:
+- Chat only if match exists and neither user blocked the other
+- A match is created only on mutual "like"
+- Block removes user from discovery and prevents chat immediately
+
+# UI Flows (must be consistent)
+1) Onboarding -> Create Profile -> Discovery (Swipe)
+2) Discovery -> Match Screen (on match)
+3) Matches list -> Chat thread
+4) Profile view -> Report / Block actions
+
+# Implementation Rules
+- Implement happy-path first, then edge cases
+- Use mock repository interfaces first if backend is not ready
+- Keep UI responsive and polished (Material 3, spacing grid)
+- Never store secrets in the client
+- Keep safety actions (block/report) reachable from profile and chat
+
+# Output Expectations
+- Provide code that fits the existing app architecture skill
+- Be explicit about what is mocked vs real backend
+- Prefer simple, shippable implementations
