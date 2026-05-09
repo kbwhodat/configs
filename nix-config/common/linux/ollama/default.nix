@@ -1,10 +1,2 @@
-{ config, pkgs, ... }:
-
-{
-  home.packages = with pkgs; [
-    (ollama.override {
-     acceleration = "cuda";
-     })
-  ];
-
-}
+# Migration shim. Real config in modules/home/linux/ollama/.
+{ ... }: { imports = [ ../../../modules/home/linux/ollama ]; }
