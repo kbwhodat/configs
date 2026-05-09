@@ -4,11 +4,11 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../../../../common/nvidia/ollama/ollama.nix
-      ../../../../common/nvidia/cuda/cuda.nix
-      ../../../../common/ssh/ssh.nix
-      ../../../../common/nixos-config
-      ../../../../common/nixos-config/performance
+      ../../../../modules/system/nvidia/ollama/ollama.nix
+      ../../../../modules/system/nvidia/cuda/cuda.nix
+      ../../../../modules/system/ssh
+      ../../../../modules/system/nixos-config
+      ../../../../modules/system/nixos-config/performance
       # ../../../../pkgs
     ];
 

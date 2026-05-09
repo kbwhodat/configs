@@ -8,8 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../../../../common/ssh/ssh.nix
-      ../../../../common/nixos-config
+      ../../../../modules/system/ssh
+      ../../../../modules/system/nixos-config
     ];
 
 
