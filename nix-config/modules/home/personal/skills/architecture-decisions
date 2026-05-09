@@ -1,0 +1,305 @@
+name: architecture-decisions
+description: Document the "why" behind technical decisions using Architecture Decision Records (ADRs)
+
+# Purpose
+Create searchable, permanent records of significant technical decisions. Answer "why did we do this?" for your future self and team.
+
+# When to use
+Use this skill when:
+- Choosing between technologies or approaches
+- Making tradeoffs (performance vs simplicity, etc.)
+- Deviating from conventions
+- Making decisions that will be hard to reverse
+- Someone asks "why is it like this?"
+- Starting a new feature or system
+
+# Inputs
+- Decision context (what problem are you solving?)
+- Options considered
+- Constraints (time, resources, requirements)
+- Stakeholders affected
+
+# Output Format (ADR Template)
+
+```markdown
+# ADR-{number}: {Title}
+
+## Status
+{Proposed | Accepted | Deprecated | Superseded by ADR-X}
+
+## Date
+{YYYY-MM-DD}
+
+## Context
+{What is the issue? Why does this decision need to be made?}
+{What forces are at play? Technical, business, team constraints?}
+
+## Decision
+{What is the change that we're proposing and/or doing?}
+{State the decision clearly and definitively.}
+
+## Options Considered
+
+### Option 1: {Name}
+- Pros: 
+- Cons:
+- Effort:
+
+### Option 2: {Name}
+- Pros:
+- Cons:
+- Effort:
+
+## Consequences
+
+### Positive
+- {What becomes easier?}
+
+### Negative
+- {What becomes harder? What debt do we accept?}
+
+### Neutral
+- {What changes but is neither good nor bad?}
+
+## References
+- {Links to docs, discussions, related ADRs}
+```
+
+# When to Write an ADR
+
+## Always Document
+- Technology/framework choices
+- Database schema decisions
+- API design decisions
+- Authentication/security approach
+- State management architecture
+- Third-party service selections
+- Breaking changes to existing patterns
+
+## Consider Documenting
+- Significant refactoring approaches
+- Performance optimization strategies
+- Testing strategy decisions
+- Deployment/infrastructure choices
+- Code organization changes
+
+## Skip Documenting
+- Obvious choices (using Dart for Flutter)
+- Reversible decisions (variable naming)
+- Standard patterns (using async/await)
+
+# ADR Quality Checklist
+
+## Context Section
+- [ ] Problem statement is clear
+- [ ] Constraints are explicit
+- [ ] Assumptions are stated
+- [ ] Scope is defined
+
+## Decision Section
+- [ ] Decision is unambiguous
+- [ ] Rationale is explained
+- [ ] Connection to context is clear
+
+## Options Section
+- [ ] At least 2 options considered
+- [ ] "Do nothing" considered if applicable
+- [ ] Pros/cons are honest (not biased)
+- [ ] Effort/risk estimated
+
+## Consequences Section
+- [ ] Positive outcomes listed
+- [ ] Negative tradeoffs acknowledged
+- [ ] Impact on future decisions noted
+
+# ADR Storage and Organization
+
+## File Location
+```
+docs/
+└── adr/
+    ├── README.md           # Index of all ADRs
+    ├── 0001-use-supabase.md
+    ├── 0002-state-management-riverpod.md
+    ├── 0003-feature-module-structure.md
+    └── templates/
+        └── adr-template.md
+```
+
+## Naming Convention
+- `{NNNN}-{short-description}.md`
+- Use lowercase, hyphens
+- Sequential numbering
+- Keep titles short but descriptive
+
+## Index File (README.md)
+```markdown
+# Architecture Decision Records
+
+| Number | Title | Status | Date |
+|--------|-------|--------|------|
+| 0001 | Use Supabase for backend | Accepted | 2024-01-15 |
+| 0002 | Use Riverpod for state | Accepted | 2024-01-20 |
+| 0003 | Feature module structure | Accepted | 2024-02-01 |
+```
+
+# Example ADRs
+
+## Example 1: Technology Choice
+
+```markdown
+# ADR-0001: Use Supabase for Backend
+
+## Status
+Accepted
+
+## Date
+2024-01-15
+
+## Context
+We need a backend for our dating app MVP. Requirements:
+- Real-time messaging
+- User authentication
+- File storage (photos)
+- Fast time-to-market (solo developer)
+- Reasonable cost at scale
+
+## Decision
+Use Supabase as our backend-as-a-service platform.
+
+## Options Considered
+
+### Option 1: Supabase
+- Pros: Real-time built-in, Postgres (powerful), generous free tier, good Flutter SDK
+- Cons: Vendor lock-in, less control than self-hosted
+- Effort: Low (managed service)
+
+### Option 2: Firebase
+- Pros: Very mature, excellent docs, Google backing
+- Cons: NoSQL (Firestore) less flexible for complex queries, pricing unpredictable
+- Effort: Low
+
+### Option 3: Self-hosted (Postgres + custom API)
+- Pros: Full control, no vendor lock-in
+- Cons: Significant development time, must handle scaling
+- Effort: High
+
+## Consequences
+
+### Positive
+- Can focus on app features instead of backend infrastructure
+- Real-time subscriptions work out of the box
+- RLS provides security at database level
+
+### Negative
+- Tied to Supabase's roadmap and pricing
+- Some advanced Postgres features may not be exposed
+- Must work within their edge function constraints
+
+## References
+- https://supabase.com/docs
+- Comparison: https://supabase.com/alternatives/supabase-vs-firebase
+```
+
+## Example 2: Architecture Decision
+
+```markdown
+# ADR-0003: Feature Module Structure
+
+## Status
+Accepted
+
+## Date
+2024-02-01
+
+## Context
+As the app grows, we need a consistent way to organize code. Currently:
+- Some features are in `lib/screens/`
+- Some are in `lib/features/`
+- Business logic is mixed with UI
+- Hard to find where code lives
+
+## Decision
+Adopt a feature-first module structure with clean architecture layers:
+- `features/{name}/data/` - repositories, DTOs
+- `features/{name}/domain/` - entities, interfaces
+- `features/{name}/presentation/` - screens, widgets, state
+
+## Options Considered
+
+### Option 1: Feature modules (chosen)
+- Pros: Scalable, clear ownership, easy to find code
+- Cons: More files, some duplication possible
+- Effort: Medium (need to migrate existing code)
+
+### Option 2: Layer-first (screens/, services/, models/)
+- Pros: Simple, familiar
+- Cons: Doesn't scale, features spread across folders
+- Effort: Low
+
+### Option 3: Keep current (mixed)
+- Pros: No migration effort
+- Cons: Inconsistent, gets worse over time
+- Effort: None
+
+## Consequences
+
+### Positive
+- Clear place for new code
+- Features can be developed independently
+- Easier to test in isolation
+
+### Negative
+- Need to migrate existing code (2-3 days)
+- Team needs to learn the pattern
+- Some shared code needs careful placement
+
+## References
+- ADR-0002 (Riverpod - affects state layer)
+- Clean Architecture: https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
+```
+
+# Updating ADRs
+
+## When to Update
+- Status changes (Proposed → Accepted)
+- Decision is superseded by new ADR
+- Clarifications needed (not changing decision)
+
+## Never Change
+- Original decision text
+- Original date
+- Original reasoning
+
+## How to Supersede
+1. Create new ADR with new decision
+2. Update old ADR status: "Superseded by ADR-XXXX"
+3. Link new ADR to old for context
+
+# Team Practices
+
+## When to Discuss
+- Before major technology choices
+- Before irreversible decisions
+- When team disagrees on approach
+
+## Review Process
+1. Draft ADR with status "Proposed"
+2. Share with team for review
+3. Discuss tradeoffs
+4. Update and set status to "Accepted"
+5. Commit to repo
+
+## Lightweight Mode (Solo Dev)
+- Write shorter ADRs
+- Skip formal review
+- Focus on capturing "why" for future you
+- Still valuable for your future self
+
+# Anti-Patterns
+
+- Writing ADRs after the fact without honest tradeoffs
+- ADRs that justify pre-made decisions (fake options)
+- Too much detail (ADR should be < 1 page)
+- Never referencing ADRs when questions arise
+- Treating ADRs as unchangeable law (they're records, not rules)
