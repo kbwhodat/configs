@@ -79,13 +79,6 @@
           profiles = [ "base" "server" ];
         };
 
-        frame16 = mkHost {
-          hostname = "frame16";
-          system = "x86_64-linux";
-          profiles = [ "base" "desktop" "laptop" "workstation" "gaming" ];
-          extraModules = [ inputs.nixos-hardware.nixosModules.framework-16-7040-amd ];
-        };
-
         frame13 = mkHost {
           hostname = "frame13";
           system = "x86_64-linux";
