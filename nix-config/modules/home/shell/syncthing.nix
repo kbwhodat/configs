@@ -1,10 +1,12 @@
-{pkgs, lib, config, ...}:
+{pkgs, lib, config, hostname ? null, ...}:
 let
   inherit (pkgs.stdenv) isDarwin;
-  rawHostName = builtins.readFile (pkgs.runCommand "hostname" {} ''
-    ${pkgs.toybox}/bin/toybox hostname > "$out"
-  '');
-  hostName = lib.strings.removeSuffix "\n" rawHostName;
+
+  # Use the hostname passed in by mkDarwin's extraSpecialArgs, falling
+  # back to "" if (somehow) absent. The previous implementation invoked
+  # `toybox hostname` inside a Nix build derivation, which yields the
+  # build sandbox's hostname rather than the target host's — unreliable.
+  hostName = if hostname != null then hostname else "";
 
   isPersonalMac =
     isDarwin &&
@@ -13,6 +15,8 @@ let
       "mac-studio"
       "macos-mini"
       "macos-studio"
+      "mac-personal"
+      "macbook-neo"
     ];
 in
 {
