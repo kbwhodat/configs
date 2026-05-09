@@ -1,13 +1,2 @@
-{pkgs, ...}:
-{
-  imports = [
-    # ./raycast.nix
-    ./aerospace.nix
-    # ./karabiner.nix
-    # ./colima.nix
-    # ./kanata.nix
-    ./xcode.nix
-    ./hammerspoon.nix
-  ];
-
-}
+# Migration shim. Real config in modules/home/macos/.
+{ ... }: { imports = [ ../../modules/home/macos ]; }
