@@ -4,6 +4,7 @@ let cfg = config.modules.ai; in {
     ./mcp-servers.nix
     ./rtk.nix
     ./jobdrop.nix
+    ./hermes.nix
     ./claude-code.nix
     ./opencode.nix
   ];
@@ -16,5 +17,6 @@ let cfg = config.modules.ai; in {
     modules.ai.mcp-servers.enable = lib.mkDefault true;
     modules.ai.rtk.enable         = lib.mkDefault true;
     modules.ai.jobdrop.enable     = lib.mkDefault true;
+    modules.ai.hermes.enable      = lib.mkDefault true;
   };
 }
