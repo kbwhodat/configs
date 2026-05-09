@@ -66,16 +66,6 @@
       lib = import ./lib { inherit inputs overlays; };
       inherit (lib) mkHost mkDarwin;
     in {
-      homeConfigurations = {
-        linux = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgs;
-          extraSpecialArgs = { inherit inputs; };
-          modules = [
-            ./linux/home.nix
-          ];
-        };
-      };
-
       nixosConfigurations = {
         util = mkHost {
           hostname = "util";
