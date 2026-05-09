@@ -8,4 +8,5 @@ in {
   bookokrat = callPackage ./bookokrat {};
   jcodemunch = callPackage ./jcodemunch {};
   agent-zero = callPackage ./agent-zero {};
+  ocv = callPackage ./ocv {};
 }
