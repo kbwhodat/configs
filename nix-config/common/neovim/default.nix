@@ -1,7 +1,2 @@
-{ ... }:
-
-{
-  imports = [
-    ./packages.nix
-  ];
-}
+# Migration shim. Real config in modules/home/neovim/.
+{ ... }: { imports = [ ../../modules/home/neovim ]; }

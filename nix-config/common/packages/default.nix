@@ -1,5 +1,2 @@
-{ pkgs, config, inputs, ... }:
-
-{
-  imports = [ ./packages.nix ];
-}
+# Migration shim. Real config in modules/home/packages/.
+{ ... }: { imports = [ ../../modules/home/packages ]; }

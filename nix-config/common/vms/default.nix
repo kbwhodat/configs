@@ -1,6 +1,2 @@
-{ configs, pkgs, ...}:
-{
-  imports = [
-    ./virt-manager.nix
-  ];
-}
+# Migration shim. Real config in modules/home/vms/.
+{ ... }: { imports = [ ../../modules/home/vms ]; }
