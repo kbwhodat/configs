@@ -60,15 +60,18 @@ in
       "mac-mini" = {
         id = "OOK3VYM-25VUHTR-B4EWV5T-47DWZKB-X5K2RVK-Z667LTT-P2Z6DZ2-FWJLVAO";
       };
+      "mac-neo" = {
+        id = "BTCSTSR-IK5SIAR-WZDNOFS-RCLFYYH-ZGPTUYU-FTWRG2L-JRFLT2E-ZBCB6AX";
+      };
     };
     settings.folders = {
       "/Users/katob/vault" = {
         id = "notes";
-        devices = ["mac-mini" "mac-studio" "iphone" "nixos-main" "nixos-frame13" "nixos-util"];
+        devices = ["mac-neo" "mac-mini" "mac-studio" "iphone" "nixos-main" "nixos-frame13" "nixos-util"];
       };
       "/Users/katob/Documents" = {
         id = "documents";
-        devices = ["mac-mini" "mac-studio" "nixos-main" "nixos-frame13" "nixos-util"];
+        devices = ["mac-neo" "mac-mini" "mac-studio" "nixos-main" "nixos-frame13" "nixos-util"];
       };
       "/Users/katob/quant" = {
         id = "quant";

@@ -1,0 +1,29 @@
+{
+  "accounts": [
+    {
+      "id": "ac37add7-31ca-499e-b6c2-bc7c238ecd75",
+      "name": "kato",
+      "email": "wbtankeye@gmail.com",
+      "service_provider": "gmail",
+      "fetch_email": "wbtankeye@gmail.com",
+      "auth_method": "password",
+      "protocol": "imap",
+      "pop3_port": 995
+    },
+    {
+      "id": "0e4e53db-fff3-478f-909f-7299b7c2134c",
+      "name": "kato yahoo",
+      "email": "byantalok@yahoo.com",
+      "service_provider": "custom",
+      "fetch_email": "byantalok@yahoo.com",
+      "imap_server": "imap.mail.yahoo.com",
+      "imap_port": 993,
+      "smtp_server": "smtp.mail.yahoo.com",
+      "smtp_port": 587,
+      "auth_method": "password",
+      "protocol": "imap",
+      "pop3_port": 995
+    }
+  ],
+  "theme": "Peach"
+}
