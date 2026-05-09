@@ -9,7 +9,11 @@ let cfg = config.modules.ai; in {
     ./opencode.nix
   ];
 
-  options.modules.ai.enable = lib.mkEnableOption "AI tooling umbrella";
+  options.modules.ai.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "AI tooling umbrella (Claude Code, opencode, MCP servers, RTK, jobdrop, hermes)";
+  };
 
   config = lib.mkIf cfg.enable {
     modules.ai.claude-code.enable = lib.mkDefault true;
