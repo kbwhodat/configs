@@ -1,8 +1,2 @@
-{pkgs, ...}:
-{
-  imports = [
-    ./i3
-    ./rofi
-    ./tradingview
-  ];
-}
+# Migration shim. Real config in modules/home/linux/.
+{ ... }: { imports = [ ../../modules/home/linux ]; }

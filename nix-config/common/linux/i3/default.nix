@@ -1,14 +1,2 @@
-{
-	pkgs,
-	config,
-	...
-}: {
-
-
-  home.packages = with pkgs; [
-    i3-resurrect
-  ];
-
-	home.file.".config/i3/config".source = ./config;
-
-}
+# Migration shim. Real config in modules/home/linux/i3/.
+{ ... }: { imports = [ ../../../modules/home/linux/i3 ]; }
