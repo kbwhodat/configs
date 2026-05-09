@@ -1,3 +1,1 @@
-{ ... }: {
-  imports = [ ../../os/nixos/home/default.nix ];
-}
+{ ... }: { imports = [ ../_shared/nixos-home.nix ]; }

@@ -1,3 +1,1 @@
-{ ... }: {
-  imports = [ ../../os/darwin/hosts/personal/configuration.nix ];
-}
+{ ... }: { imports = [ ../_shared/darwin-personal-system.nix ]; }
