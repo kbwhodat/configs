@@ -26,6 +26,7 @@ let cfg = config.modules.shell; in {
     ./flutter.nix
     ./bookokrat.nix
     ./wox.nix
+    ./node.nix
     # ./openclaw.nix
     # ./ghostty.nix
     # ./python.nix

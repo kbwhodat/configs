@@ -169,3 +169,6 @@ sublime-text/
 nix-config/.serena/
 goose/
 kalshi/
+.claude/
+herbie/
+nix-config/.claude/
