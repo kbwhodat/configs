@@ -23,30 +23,115 @@ in {
   options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC + superpowers";
 
   config = lib.mkIf cfg.enable {
+    # Global ~/.claude/CLAUDE.md — auto-loaded at every Claude Code
+    # session start. Behavior + preferences, not project facts.
+    home.file.".claude/CLAUDE.md".text = ''
+      # Global Claude Preferences
+
+      ## Hard rules (non-negotiable)
+
+      - **No fabrication.** Never generate synthetic data, mock APIs, fake test results, or placeholder values that look real. If real data is unavailable, say so. If you must create example data, label it `EXAMPLE` / `SYNTHETIC` in every file and every reference.
+      - **No "should work" claims.** Don't say a fix is done, tests pass, or a build works unless you ran it AND showed the output. "Probably", "should", "I think" require evidence.
+      - **"I don't know" is acceptable.** When uncertain, say so. Never invent a function name, CLI flag, file path, or library that you haven't verified.
+      - **Quote my instruction verbatim** when you're about to do something non-trivial. (You have a gateguard hook that enforces this — work with it, not around it.)
+      - **Match existing conventions.** Find the nearest sibling file and copy its pattern before inventing something new.
+
+      ## Communication
+
+      - Terse. No preamble. No "Great question!", "Certainly!", "Of course!".
+      - Skip explanations of what you did — I read diffs.
+      - One-sentence acknowledgement, then the work. End-of-turn = 1-2 sentence summary, what changed and what's next.
+      - When asked a yes/no, answer yes/no first.
+      - Don't restate my question back to me.
+
+      ## Verification before completion
+
+      - After non-trivial code change: run the relevant test/typecheck/build and show output. If you can't run it, say so explicitly.
+      - After config change: eval / show effective state.
+      - Never report "fixed" without before/after evidence.
+      - For UI/frontend: open it in a browser and use the feature. Type checks ≠ feature correctness.
+
+      ## Anti-bullshit specifics
+
+      - No sycophancy. No filler. No "I hope this helps". No "Let me know if".
+      - Don't recommend from training memory without verifying it exists in the current environment.
+      - For library/API recommendations: check that the version installed actually has the function/method you're citing.
+      - Disagreement is fine. If I'm wrong, say so with evidence. Don't bend to my framing.
+
+      ## Code defaults
+
+      - Minimal diffs. Don't refactor unrelated code.
+      - No half-finished implementations, no TODOs left behind.
+      - Don't add error handling, fallbacks, or validation for scenarios that can't happen.
+      - No defensive try/except wrappers around internal calls. Validate at system boundaries only.
+      - Default to writing no comments. WHY-comments only when the reason is non-obvious.
+      - No backwards-compat shims for code that hasn't shipped.
+
+      ## Investigation discipline
+
+      Gateguard will enforce these before edits — pre-comply rather than fight it:
+
+      - Before editing: list importers (Grep), list public functions affected.
+      - Before creating new file: confirm no existing file serves the same purpose (Glob).
+      - Before destructive bash: list affected files/data + a one-line rollback.
+
+      ## Sessions / context
+
+      - One goal per session. When scope shifts, start a new session.
+      - For anything beyond a one-file change: `/superpowers:brainstorm` → `/superpowers:write-plan` → `/superpowers:execute-plan`. Plans live on disk, not in context.
+      - Compact at phase boundaries, not when context is already full.
+      - When you discover a recurring correction, write it to MEMORY.md so future sessions don't repeat it.
+
+      ## Tooling on this machine (already installed)
+
+      You operate inside a stack — use it, don't reinvent:
+
+      - **superpowers** (obra) — brainstorming, write-plan, execute-plan, TDD, systematic-debugging, verification-before-completion. Use the slash commands.
+      - **everything-claude-code** — gateguard (active), search-first, silent-failure-hunter, code-review, eval-harness.
+      - **no-hallucination** (AlethiaQuizForge) — tracker-ledger-guard hooks active. verify-guard, proof-guard, claim-guard, deliverable-guard run on every Stop.
+
+      ## Memory system
+
+      When you save something for future sessions:
+
+      - **user**: facts about me (role, preferences, knowledge)
+      - **feedback**: corrections + the WHY behind them
+      - **project**: ongoing work, decisions, deadlines
+      - **reference**: external systems / URLs / dashboards
+
+      Lead each entry with the rule/fact, then `Why:`, then `How to apply:`. No backstory.
+    '';
+
     programs.claude-code = {
       enable = true;
       package = unstable.claude-code;
       marketplaces = { ecc = eccSrc; superpowers = superpowersSrc; };
       plugins = [ eccSrc superpowersSrc ];
+      # All MCPs except `jobdrop` are shipped by the `claude-code-home-manager`
+      # plugin under its own namespace (mcp__plugin_claude-code-home-manager_*).
+      # User-level entries here were duplicate dead code (not loaded into
+      # ~/.claude.json anyway). Only `jobdrop` is unique to this machine
+      # (installed via uv-tool to ~/.local/bin/).
       mcpServers = {
-        context7 = { url = "https://mcp.context7.com/mcp"; disabled = true; };
-        mcp_nixos = { command = "mcp-nixos"; disabled = true; };
-        terraform = { command = "terraform-mcp-server"; disabled = true; };
-        fetch = { command = "mcp-server-fetch"; disabled = true; };
-        firecrawl = {
-          command = "env";
-          args = [ "FIRECRAWL_API_KEY=fc-b5db7738ea3843dd86181be770891120" "npx" "-y" "firecrawl-mcp" ];
-        };
-        playwright = { command = "mcp-server-playwright"; args = [ "--no-sandbox" ]; };
-        sequential_thinking = { command = "mcp-server-sequential-thinking"; disabled = true; };
-        serena = {
-          command = "serena";
-          args = [ "start-mcp-server" "--context" "claude-code" "--open-web-dashboard" "false" "--mode" "editing" "--mode" "interactive" ];
-        };
-        jcodemunch = { command = "jcodemunch"; disabled = true; };
-        jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; };
+        jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; disabled = true; };
       };
       settings = {
+        # Disable specific MCP servers from any installed plugin's
+        # `.mcp.json` without disabling the whole plugin. Heavy or
+        # redundant servers disabled by default; re-enable per-session
+        # via /mcp toggle.
+        #   - github                                      (~28 tools, ~14K tokens — gh CLI is enough)
+        #   - playwright                                  (~21 tools, ~10K tokens — only for UI/browser work)
+        #   - sequential-thinking / sequential_thinking   (~1 tool — modern Claude thinks natively)
+        #   - memory                                      (~9 tools, ~5K tokens — file-based memory in CLAUDE.md handles this)
+        disabledMcpjsonServers = [
+          "github"
+          "playwright"
+          "sequential-thinking"
+          "sequential_thinking"
+          "memory"
+        ];
+
         hooks.PreToolUse = [
           {
             matcher = "Bash";

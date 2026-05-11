@@ -47,6 +47,12 @@
   # is older still; only nixos-unstable has a recent enough go_1_26.
   inputs.matcha.inputs.nixpkgs.follows = "unstable";
 
+  # Pinned to b393ce8 (pi-coding-agent 0.73.0, 2026-05-04). HEAD on master
+  # ships pi 0.74.0 with a stale npmDepsHash that breaks the build (upstream
+  # CI is also failing). Bump this rev once upstream lands a fix.
+  inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
+  inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
+
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
     let

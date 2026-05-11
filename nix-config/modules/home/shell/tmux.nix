@@ -110,6 +110,11 @@ in
       set -as terminal-features 'xterm*:RGB'
       set -as terminal-features 'xterm-kitty:RGB'
 
+      # Forward modified Enter / Shift-Enter etc. — required by Pi (and other TUIs)
+      set -g extended-keys on
+      set -g extended-keys-format csi-u
+      set -as terminal-features 'xterm*:extkeys'
+
       set -ga allow-passthrough all
       set -g visual-activity off
 
