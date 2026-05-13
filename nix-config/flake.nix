@@ -9,7 +9,13 @@
   #inputs.nil.url = "github:oxalica/nil";
 
   #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
-  inputs.home-manager.url = "github:nix-community/home-manager/master";
+  # Pinned to 9c6f130 (2026-05-04) — last HM master commit before
+  # fb6a0c6 added modules/services-modular, which imports
+  # `pkgs.path + "/lib/services/lib.nix"`. That file landed only in
+  # nixpkgs-unstable; our nixpkgs follows nixos-25.11 (rev 8fd9daa)
+  # which lacks it. Bump this rev once we move nixpkgs to unstable
+  # or to a 25.11 backport that includes lib/services/lib.nix.
+  inputs.home-manager.url = "github:nix-community/home-manager/9c6f1307e1d76a2285d8001e1b8bc281bfe15dac";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
   inputs.unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -17,7 +23,7 @@
 
   inputs.mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
   inputs.llm-agents.url = "github:numtide/llm-agents.nix/main";
-  inputs.ocv.url = "github:leohenon/opencode-vim/v1.14.25-ocv.3.28";
+  # inputs.ocv.url = "github:leohenon/opencode-vim/v1.14.25-ocv.3.28";
 
   inputs.nur.url = "github:nix-community/NUR";
   inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
