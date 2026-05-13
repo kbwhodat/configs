@@ -60,6 +60,8 @@ in {
         "npm:@howaboua/pi-semantic-grep"
         "npm:@howaboua/pi-vent"
         "npm:pi-codex-goal"
+        "npm:pi-lean-ctx"
+        "npm:@baggiiiie/pi-no-ansi"
         # "npm:@howaboua/pi-codex-conversion" # tool "web_search" conflicts with pi-web-access; pick one
       ];
       example = [ "npm:pi-kimi-coder" "git:github.com/user/repo@v1" ];
@@ -91,6 +93,11 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # `lean-ctx` is the CLI that `pi-lean-ctx` (the npm extension) shells
+    # out to for 60–90% token-saving compression on bash/read/grep/find/ls.
+    # The npm extension alone doesn't install the binary.
+    home.packages = [ pkgs.lean-ctx ];
+
     # Skills live at ~/.pi/agent/skills/<name> as out-of-store symlinks
     # so upstream skill updates (after a flake bump) take effect without
     # rebuilding home-manager.

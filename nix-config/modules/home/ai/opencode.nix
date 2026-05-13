@@ -1,5 +1,8 @@
 { config, lib, pkgs, inputs, ... }:
-let cfg = config.modules.ai.opencode; in {
+let
+  cfg = config.modules.ai.opencode;
+  system = pkgs.stdenv.hostPlatform.system;
+in {
   options.modules.ai.opencode.enable = lib.mkEnableOption "opencode TUI + ECC patch hook";
 
   config = lib.mkIf cfg.enable {
@@ -23,7 +26,7 @@ let cfg = config.modules.ai.opencode; in {
 
     programs.opencode = {
       enable = true;
-      package = pkgs.ocv;
+      package = inputs.llm-agents.packages.${system}.opencode;
       enableMcpIntegration = true;
       context = ''
         Do not use AskUserQuestion — that tool does not exist here. To ask the user a question, use the "question" tool instead.
@@ -52,11 +55,10 @@ let cfg = config.modules.ai.opencode; in {
           terraform = { type = "local"; command = [ "terraform-mcp-server" ]; enabled = false; };
           fetch = { type = "local"; command = [ "mcp-server-fetch" ]; enabled = false; };
           firecrawl = { type = "local"; command = [ "env" "FIRECRAWL_API_KEY=fc-b5db7738ea3843dd86181be770891120" "npx" "-y" "firecrawl-mcp" ]; enabled = true; };
-          playwright = { type = "local"; command = [ "mcp-server-playwright" "--no-sandbox" ]; enabled = true; };
+          playwright = { type = "local"; command = [ "mcp-server-playwright" "--no-sandbox" ]; enabled = false; };
           sequential_thinking = { type = "local"; command = [ "mcp-server-sequential-thinking" ]; enabled = false; };
           serena = { type = "local"; command = [ "serena" "start-mcp-server" "--context" "claude-code" "--open-web-dashboard" "false" "--mode" "editing" "--mode" "interactive" ]; enabled = true; };
-          jcodemunch = { type = "local"; command = [ "jcodemunch" ]; enabled = false; };
-          jobdrop = { type = "local"; command = [ "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server" ]; enabled = true; };
+          jobdrop = { type = "local"; command = [ "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server" ]; enabled = false; };
         };
         autoshare = false;
         autoupdate = false;
