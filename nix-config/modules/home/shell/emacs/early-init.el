@@ -38,13 +38,16 @@
 ;; --- cheap rendering defaults ---
 (setq bidi-inhibit-bpa t
       inhibit-compacting-font-caches t
-      idle-update-delay 0.5)
+      idle-update-delay 0.5
+      frame-resize-pixelwise t)
 
 ;; --- undecorated frames (macOS) ---
 (add-to-list 'default-frame-alist '(undecorated . t))
 
-;; --- benchmark-init must load FIRST to capture everything below ---
+;; --- benchmark-init: load FIRST and ACTIVATE so it captures init ---
+;; (activate) hooks itself into (require) to time each load.
 (require 'benchmark-init)
+(benchmark-init/activate)
 (add-hook 'after-init-hook #'benchmark-init/deactivate)
 
 (provide 'early-init)
