@@ -67,40 +67,42 @@ in {
   programs.emacs = {
     enable = true;
     package = pkgs.emacs; 
-    extraPackages = epkgs: [
-      epkgs.evil
-      epkgs.evil-collection
-      epkgs.which-key
-      epkgs.general
-      epkgs.persistent-scratch
+    extraPackages = epkgs: with epkgs; [
+      # ---- core completion / minibuffer ----
+      vertico orderless marginalia consult
 
-      epkgs.evil-surround         
-      epkgs.evil-markdown         
-      epkgs.markup         
-      epkgs.evil-nerd-commenter  
-      epkgs.evil-exchange       
-      epkgs.evil-matchit       
-      epkgs.evil-args         
-      epkgs.evil-easymotion  
-      epkgs.avy             
-      epkgs.evil-anzu      
-      epkgs.undo-fu epkgs.undo-fu-session
-      epkgs.deft
-      epkgs.persp-mode
-      epkgs.minions
+      # ---- evil + leader ----
+      evil evil-collection evil-surround general which-key avy
 
-      epkgs.vertico
-      epkgs.orderless
-      epkgs.marginalia
-      epkgs.ewal-doom-themes
-      epkgs.consult
-      epkgs.ripgrep               
-      epkgs.project              
+      # ---- editing utilities ----
+      undo-fu undo-fu-session tempel
+
+      # ---- ui / theme ----
+      doom-themes      # bug fix: init.el (require 'doom-themes) was unmet
+      minions
+
+      # ---- languages (py/sh/json/yaml/go ts-modes are built-in to emacs 30) ----
+      nix-ts-mode markdown-mode
+
+      # ---- IDE (eglot is built-in; treesit grammars auto-wired by nix) ----
+
+      # ---- one-stop-shop additions ----
+      magit vterm gptel elfeed pdf-tools notdeft
+
+      # ---- workspaces / scratch ----
+      persp-mode persistent-scratch
+
+      # ---- perf measurement ----
+      benchmark-init
     ];
   };
 
-  home.file."${emacsDir}/early-init.el".source = ./doom/early-init.el;
-  home.file."${emacsDir}/init.el".source = ./doom/init.el;
+  home.file."${emacsDir}/early-init.el".source = ./emacs/early-init.el;
+  home.file."${emacsDir}/init.el".source       = ./emacs/init.el;
+  home.file."${emacsDir}/lisp" = {
+    source    = ./emacs/lisp;
+    recursive = true;
+  };
 
   home.file."${emacsDir}/themes/doom-alabaster-theme".source = 
     pkgs.fetchFromGitHub {
@@ -118,5 +120,18 @@ in {
   };
 
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
-  home.packages = lib.optionals isDarwin [ emacsClientApp ];
+  home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [
+    pkgs.pyright
+    pkgs.bash-language-server
+    pkgs.gopls
+    pkgs.nil
+    pkgs.ruff
+    pkgs.shfmt
+    pkgs.nixfmt-rfc-style
+    pkgs.xapian
+  ];
+
+  # Daemon-only flow: typing `emacs` in any shell goes through emacsclient.
+  # -a '' auto-starts the daemon if not already running. vi/vim left alone.
+  home.shellAliases.emacs = "emacsclient -c -a ''";
 }
