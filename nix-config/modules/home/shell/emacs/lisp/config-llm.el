@@ -10,9 +10,10 @@
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)
       (my/leader
-        "l l" '(gptel      :which-key "chat")
-        "l s" '(gptel-send :which-key "send")
-        "l m" '(gptel-menu :which-key "menu")))))
+        "a"   '(:ignore t :which-key "ai")
+        "a a" '(gptel      :which-key "chat")
+        "a s" '(gptel-send :which-key "send")
+        "a m" '(gptel-menu :which-key "menu")))))
 
 (provide 'config-llm)
 ;;; config-llm.el ends here

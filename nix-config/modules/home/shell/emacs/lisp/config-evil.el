@@ -70,13 +70,14 @@
     "ws" '(split-window-below :which-key "hsplit")
     "wd" '(delete-window      :which-key "close"))
 
-  ;; --- help under SPC h (in addition to windmove leaf) ---
+  ;; --- help under SPC ? (SPC h is windmove leaf — general rejects double-bind) ---
   (my/leader
-    "h k" '(describe-key      :which-key "describe key")
-    "h f" '(describe-function :which-key "describe func")
-    "h v" '(describe-variable :which-key "describe var")
-    "h m" '(describe-mode     :which-key "describe mode")
-    "h b" '(benchmark-init/show-durations-tabulated :which-key "bench report"))
+    "?"   '(:ignore t :which-key "help")
+    "? k" '(describe-key      :which-key "describe key")
+    "? f" '(describe-function :which-key "describe func")
+    "? v" '(describe-variable :which-key "describe var")
+    "? m" '(describe-mode     :which-key "describe mode")
+    "? b" '(benchmark-init/show-durations-tabulated :which-key "bench report"))
 
   ;; --- toggles ---
   (my/leader
@@ -84,7 +85,7 @@
     "tl" '(display-line-numbers-mode :which-key "line numbers")
     "tw" '(visual-line-mode          :which-key "wrap")))
 
-;; --- Avy (deferred until first SPC j sub-binding) ---
+;; --- Avy under SPC SPC (SPC j is windmove leaf — general rejects double-bind) ---
 (use-package avy
   :defer t
   :commands (avy-goto-word-1 avy-goto-line avy-goto-char-timer)
@@ -92,9 +93,10 @@
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)
       (my/leader
-        "j w" '(avy-goto-word-1     :which-key "word")
-        "j l" '(avy-goto-line       :which-key "line")
-        "j c" '(avy-goto-char-timer :which-key "char")))))
+        "SPC"   '(:ignore t :which-key "jump")
+        "SPC w" '(avy-goto-word-1     :which-key "word")
+        "SPC l" '(avy-goto-line       :which-key "line")
+        "SPC c" '(avy-goto-char-timer :which-key "char")))))
 
 (provide 'config-evil)
 ;;; config-evil.el ends here
