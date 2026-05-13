@@ -5,6 +5,7 @@
     [ # Include the results of the hardware scan.
       ./hardware.nix
       ../../modules/system/ssh
+      ../../modules/system/tailscale
       ../../modules/system/nixos-config/performance
       ../../modules/system/nixos-config
     ];

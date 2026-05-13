@@ -21,6 +21,7 @@ in {
       nixd
       rustc
       pyright
+      ruff
       ltex-ls-plus
       texlab
     ];

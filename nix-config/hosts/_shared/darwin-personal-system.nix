@@ -115,6 +115,7 @@ in
 
   users.users.katob.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBg9pgGGGQebQRNWGf13JgnAMhai5K0n7MUbk52iU11W katob@macos-mini"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEYQ8ND6g0vadPcOG0M0X5PbrNIf8xvNmwL59kX6HAYj iphone-termius@katob 2026-05-12"
   ];
 
   services.openssh = {
@@ -125,6 +126,8 @@ in
       PermitRootLogin no
     '';
   };
+
+  services.tailscale.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;

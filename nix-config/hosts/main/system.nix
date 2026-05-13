@@ -7,6 +7,7 @@
       ../../modules/system/nvidia/ollama/ollama.nix
       ../../modules/system/nvidia/cuda/cuda.nix
       ../../modules/system/ssh
+      ../../modules/system/tailscale
       ../../modules/system/nixos-config
       ../../modules/system/nixos-config/performance
       # ../../../../pkgs

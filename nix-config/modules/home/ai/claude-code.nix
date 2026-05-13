@@ -19,6 +19,12 @@ let
     rev = "main";
     sha256 = "sha256-3E3rO6hR87JUfS3XV1Eaoz6SDWOftleWvN9UPNFEMjw=";
   };
+  wshobsonAgentsSrc = pkgs.fetchFromGitHub {
+    owner = "wshobson";
+    repo = "agents";
+    rev = "main";
+    sha256 = "sha256-VIl3qp6wWCfZm+407cyr8/y4B6PelurQ4wvDEw4vfKo=";
+  };
 in {
   options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC + superpowers";
 
@@ -122,13 +128,24 @@ in {
     programs.claude-code = {
       enable = true;
       package = unstable.claude-code;
-      marketplaces = { ecc = eccSrc; superpowers = superpowersSrc; };
-      plugins = [ eccSrc superpowersSrc ];
       # All MCPs except `jobdrop` are shipped by the `claude-code-home-manager`
       # plugin under its own namespace (mcp__plugin_claude-code-home-manager_*).
       # User-level entries here were duplicate dead code (not loaded into
       # ~/.claude.json anyway). Only `jobdrop` is unique to this machine
       # (installed via uv-tool to ~/.local/bin/).
+      marketplaces = {
+        ecc = eccSrc;
+        superpowers = superpowersSrc;
+        wshobson-agents = wshobsonAgentsSrc;
+      };
+      plugins = [
+        eccSrc
+        superpowersSrc
+        "${wshobsonAgentsSrc}/plugins/quantitative-trading"
+        "${wshobsonAgentsSrc}/plugins/python-development"
+        "${wshobsonAgentsSrc}/plugins/data-engineering"
+        "${wshobsonAgentsSrc}/plugins/machine-learning-ops"
+      ];
       mcpServers = {
         jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; disabled = true; };
       };

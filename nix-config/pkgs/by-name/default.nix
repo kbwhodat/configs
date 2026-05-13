@@ -7,6 +7,6 @@ in {
   wrapZenBrowserWithFxAutoconfig = callPackage ./zen-browser-with-fx-autoconfig {};
   bookokrat = callPackage ./bookokrat {};
   jcodemunch = callPackage ./jcodemunch {};
-  agent-zero = callPackage ./agent-zero {};
   ocv = callPackage ./ocv {};
+  lean-ctx = callPackage ./lean-ctx {};
 }
