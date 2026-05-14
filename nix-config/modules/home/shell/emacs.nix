@@ -164,6 +164,22 @@ in {
       "/sbin"
     ];
 
+  # Auto-bounce the emacs daemon after every home-manager activation
+  # (i.e. every `darwin-rebuild switch`).  Without this, the running
+  # daemon retains its OLD environment + OLD config until the user
+  # manually runs:
+  #   launchctl bootout  "gui/<UID>/org.nix-community.home.emacs"
+  #   launchctl bootstrap "gui/<UID>" ~/Library/LaunchAgents/org.nix-community.home.emacs.plist
+  # which is exactly what this activation script does, automatically.
+  home.activation.bounceEmacsDaemon = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    PLIST="$HOME/Library/LaunchAgents/org.nix-community.home.emacs.plist"
+    if [ -f "$PLIST" ]; then
+      UID_NUM=$(id -u)
+      $DRY_RUN_CMD /bin/launchctl bootout "gui/$UID_NUM/org.nix-community.home.emacs" 2>/dev/null || true
+      $DRY_RUN_CMD /bin/launchctl bootstrap "gui/$UID_NUM" "$PLIST" 2>/dev/null || true
+    fi
+  '';
+
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
   home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [
     pkgs.pyright
