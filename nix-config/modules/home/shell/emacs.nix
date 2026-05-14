@@ -92,6 +92,7 @@ in {
       # ---- jujutsu (jj VCS) integration ----
       vc-jj           # emacs vc.el backend for jj repos (C-x v d/l/v work)
       jjdescription   # major mode for jj commit-message buffers
+      pkgs.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR)
 
       # ---- workspaces / scratch ----
       persp-mode persistent-scratch

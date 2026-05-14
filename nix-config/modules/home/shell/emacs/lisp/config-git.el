@@ -1,4 +1,7 @@
-;;; config-git.el --- Magit (deferred until first SPC g) -*- lexical-binding: t; -*-
+;;; config-git.el --- Magit + Majutsu (deferred) -*- lexical-binding: t; -*-
+;;; Commentary:
+;; magit on SPC g (git); majutsu on SPC G (jujutsu — capital);
+;; vc-jj is silent — registers jj as a vc.el backend (C-x v ...).
 ;;; Code:
 
 (use-package magit
@@ -15,6 +18,15 @@
         "gf" '(magit-file-dispatch    :which-key "file dispatch")
         "gb" '(magit-blame            :which-key "blame")
         "gl" '(magit-log-buffer-file  :which-key "log")))))
+
+(use-package majutsu
+  :defer t
+  :commands (majutsu majutsu-log)
+  :init
+  (with-eval-after-load 'general
+    (when (fboundp 'my/leader)
+      (my/leader
+        "G" '(majutsu-log :which-key "jujutsu (majutsu)")))))
 
 (provide 'config-git)
 ;;; config-git.el ends here
