@@ -34,6 +34,45 @@
 ;; Instant search-match highlighting (default delay was 0.25s).
 (setq lazy-highlight-initial-delay 0)
 
+;; --- MUST-HAVES: so-long, gcmh, vc trim ------------------------------
+
+;; so-long: built-in to emacs 27+. Protects against minified JSON,
+;; generated code, grep buffers with huge lines. Without this, opening
+;; one bad file can freeze emacs for minutes.
+(global-so-long-mode 1)
+
+;; gcmh: high GC threshold during foreground work, GC fires on idle.
+;; Eliminates the stutter that happens when our 64MB gc-cons-threshold
+;; trips mid-keystroke on large buffers. Doom uses this; widely
+;; recommended.  1 GiB high-threshold based on monkeynut.org report
+;; that 64 MiB still trips during typical scrolling.
+(use-package gcmh
+  :hook (after-init . gcmh-mode)
+  :init
+  (setq gcmh-idle-delay 'auto
+        gcmh-auto-idle-delay-factor 10
+        gcmh-high-cons-threshold (* 1024 1024 1024)))   ; 1 GiB
+
+;; Restrict VC backends to ones we actually use. Default has 8 entries
+;; (RCS CVS SVN SCCS SRC Bzr Git Hg); each costs a stat() per file
+;; open as VC sniffs for the backend.  Trim to Git + JJ (vc-jj).
+(setq vc-handled-backends '(Git JJ))
+
+;; --- TIER 2: smaller quality-of-life wins ---------------------------
+
+;; recentf default polls every 10s to clean dead entries — disable.
+(setq recentf-auto-cleanup 'never)
+
+;; auto-revert via filesystem notifications, not polling.
+(setq auto-revert-avoid-polling t)
+
+;; Follow symlinks into VC repos without prompting every time.
+(setq vc-follow-symlinks t)
+
+;; Default 10 MB threshold for "large file" warning is too low for
+;; modern data. 100 MB avoids prompts on logs / json / csv.
+(setq large-file-warning-threshold (* 100 1024 1024))
+
 ;; --- Idle preload (Doom-style incremental loading) -------------------
 ;;
 ;; First time you press SPC g s, emacs has to load magit + transient +

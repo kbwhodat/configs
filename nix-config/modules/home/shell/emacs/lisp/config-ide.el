@@ -53,5 +53,35 @@
   (setq tempel-path
         (expand-file-name "templates/*.eld" user-emacs-directory)))
 
+;; --- In-buffer completion (corfu + cape) -----------------------------
+;; corfu = popup-as-you-type. cape = extra completion-at-point sources.
+;; Before this we had NO popup completion — only manual M-TAB.
+
+(use-package corfu
+  :hook (after-init . global-corfu-mode)
+  :init
+  (setq corfu-cycle t                ; wrap around list
+        corfu-auto t                 ; popup automatically (no manual M-TAB)
+        corfu-auto-delay 0.1
+        corfu-auto-prefix 2
+        corfu-preselect 'prompt      ; preselect the input as a candidate
+        corfu-popupinfo-delay '(0.5 . 0.5)
+        corfu-quit-no-match 'separator))
+
+(use-package cape
+  :after corfu
+  :init
+  ;; Add extra capf sources: file paths, dabbrev (words from buffers),
+  ;; abbrevs.  These show up alongside language-specific (eglot) ones.
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-dabbrev))
+
+;; --- eglot-booster: 4x faster LSP JSON via Rust wrapper -------------
+;; Requires the emacs-lsp-booster binary on PATH (installed via
+;; emacs.nix home.packages).
+(use-package eglot-booster
+  :after eglot
+  :config (eglot-booster-mode))
+
 (provide 'config-ide)
 ;;; config-ide.el ends here

@@ -71,6 +71,15 @@ in {
       # ---- core completion / minibuffer ----
       vertico orderless marginalia consult
 
+      # ---- in-buffer completion (NEW — popup as you type) ----
+      corfu cape
+
+      # ---- GC pause elimination (NEW) ----
+      gcmh
+
+      # ---- eglot LSP performance booster (NEW) ----
+      eglot-booster
+
       # ---- evil + leader ----
       evil evil-collection evil-surround general which-key avy
 
@@ -158,6 +167,7 @@ in {
     pkgs.shfmt
     pkgs.nixfmt-rfc-style
     pkgs.xapian
+    pkgs.emacs-lsp-booster   # rust JSON bridge for eglot-booster
   ];
 
   # Daemon-only flow: typing `emacs` in any shell goes through emacsclient.
