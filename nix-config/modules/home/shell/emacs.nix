@@ -124,6 +124,12 @@ in {
     defaultEditor = false;
   };
 
+  # Override home-manager's default KeepAlive ({Crashed=true; SuccessfulExit=false;})
+  # with flat `true` — daemon ALWAYS restarts, including after a manual
+  # (kill-emacs).  Trade-off: SPC q cannot truly kill the daemon while logged
+  # in; launchctl bootout is the only escape hatch.
+  launchd.agents.emacs.config.KeepAlive = lib.mkForce true;
+
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
   home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [
     pkgs.pyright
