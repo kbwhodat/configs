@@ -13,6 +13,27 @@
 (setq recentf-max-saved-items 500)
 (recentf-mode 1)
 
+;; --- Underrated redisplay / scroll / completion perf ----------------
+;; Sources: jamescherti/minimal-emacs.d, port19.xyz, emacsredux.
+
+;; Skip syntax fontification while the user is typing. Reduces lag in
+;; large buffers. Brief inaccuracy self-corrects on idle.
+(setq redisplay-skip-fontification-on-input t)
+
+;; Faster scrolling at the cost of brief font-lock inaccuracy. Same idea.
+(setq fast-but-imprecise-scrolling t)
+
+;; Don't recenter when cursor moves past viewport edge. Default 0 is
+;; aggressive (always recenter); 20 is balanced; >100 disables.
+(setq scroll-conservatively 20)
+
+;; M-x: skip commands not applicable to current mode. Big win for
+;; M-x completion responsiveness as your package count grows.
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+
+;; Instant search-match highlighting (default delay was 0.25s).
+(setq lazy-highlight-initial-delay 0)
+
 ;; --- Idle preload (Doom-style incremental loading) -------------------
 ;;
 ;; First time you press SPC g s, emacs has to load magit + transient +
