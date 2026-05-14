@@ -137,10 +137,10 @@ in {
   # launchd layer so the daemon — and everything it spawns — sees them.
   launchd.agents.emacs.config.EnvironmentVariables.PATH =
     lib.concatStringsSep ":" [
-      "${config.home.homeDirectory}/.local/bin"        # uv-tool installs
-      "/etc/profiles/per-user/katob/bin"               # home-manager user profile
-      "/run/current-system/sw/bin"                     # nix-darwin system profile
-      "/nix/var/nix/profiles/default/bin"              # default nix profile (fallback)
+      "${config.home.homeDirectory}/.local/bin"                # uv-tool installs
+      "/etc/profiles/per-user/${config.home.username}/bin"     # home-manager user profile
+      "/run/current-system/sw/bin"                             # nix-darwin system profile
+      "/nix/var/nix/profiles/default/bin"                      # default nix profile (fallback)
       "/usr/local/bin"
       "/usr/bin"
       "/bin"
