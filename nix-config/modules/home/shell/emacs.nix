@@ -180,6 +180,19 @@ in {
     fi
   '';
 
+  # home-manager auto-trampolines Emacs.app from pkgs.emacs into
+  # ~/Applications/Home Manager Apps/Emacs.app, which makes it appear in
+  # Spotlight / Raycast / Hammerspoon alongside our EmacsClient.app.
+  # Clicking it cold-starts a standalone Emacs disconnected from the
+  # daemon — slow + confusing.  Remove it after every activation so
+  # only EmacsClient.app is visible to macOS launchers.
+  home.activation.hideStandaloneEmacsApp = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    EMACS_APP="$HOME/Applications/Home Manager Apps/Emacs.app"
+    if [ -e "$EMACS_APP" ]; then
+      $DRY_RUN_CMD rm -rf "$EMACS_APP"
+    fi
+  '';
+
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
   home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [
     pkgs.pyright
