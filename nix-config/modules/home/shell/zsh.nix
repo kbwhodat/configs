@@ -77,7 +77,11 @@ in
       ${pkgs.taskwarrior3}/bin/task "$@"
     }
 
-		if [ -z "$TMUX" ]; then  # Check if not already in a tmux session
+		# Skip tmux auto-launch when running inside emacs (vterm, eshell,
+		# ansi-term all set $INSIDE_EMACS). Three layers of terminal
+		# emulation (emacs > vterm > tmux > zsh) is wasted CPU when emacs
+		# already provides multiplexing.
+		if [ -z "$TMUX" ] && [ -z "$INSIDE_EMACS" ]; then  # Check if not already in a tmux session
 			TMUX_SESSION="genesis"
 			if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
 				tmux attach-session -t $TMUX_SESSION
