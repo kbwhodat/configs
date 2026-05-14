@@ -24,6 +24,16 @@
          (bash-ts-mode   . eglot-ensure)
          (go-ts-mode     . eglot-ensure)
          (nix-ts-mode    . eglot-ensure))
+  :init
+  ;; Perf tuning (source: jamescherti/minimal-emacs.d):
+  ;; - skip minibuffer progress spam from pyright/gopls
+  ;; - kill LSP server when last managed buffer closes (saves memory)
+  ;; - disable the events buffer (was a 2 MB ring buffer per server)
+  ;; - skip jsonrpc event hook overhead
+  (setq eglot-report-progress nil
+        eglot-autoshutdown t
+        eglot-events-buffer-config '(:size 0 :format short)
+        jsonrpc-event-hook nil)
   :config
   (add-to-list 'eglot-server-programs
                '(python-ts-mode . ("pyright-langserver" "--stdio")))

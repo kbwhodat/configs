@@ -35,11 +35,41 @@
 (when (boundp 'native-comp-async-report-warnings-errors)
   (setq native-comp-async-report-warnings-errors 'silent))
 
+;; --- native-comp tuning for runtime JIT compilation ---
+;; Most of our packages are AOT-compiled by nix at build time, so these
+;; flags only kick in for .el files loaded outside that scope. Cheap to
+;; set, real effect on packages installed/loaded post-build.
+;;
+;; -mcpu=apple-m1 is the lowest-common-denominator Apple Silicon target
+;; (works on M1-M4). libgccjit cannot resolve "-march=native" reliably,
+;; so we hard-code the CPU family. Speed 3 is max optimization (default
+;; is 2).
+(setq native-comp-speed 3
+      native-comp-compiler-options
+      '("-O2" "-g0" "-fno-omit-frame-pointer" "-fno-finite-math-only")
+      native-comp-driver-options
+      (if (eq system-type 'darwin)
+          '("-Wl,-w" "-mcpu=apple-m1")
+        '("-mcpu=apple-m1")))
+
 ;; --- cheap rendering defaults ---
 (setq bidi-inhibit-bpa t
       inhibit-compacting-font-caches t
       idle-update-delay 0.5
       frame-resize-pixelwise t)
+;; Stronger than bidi-inhibit-bpa alone — disables full bidirectional
+;; layout reordering. Acceptable cost on English/code content.
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+
+;; --- skip xrdb / X11 resource processing on startup ---
+;; No-op on macOS (Cocoa), but avoids a millisecond-scale stat() on Linux.
+(setq inhibit-x-resources t)
+
+;; --- skip case-insensitive second pass over auto-mode-alist ---
+;; Saves a small chunk on every file open. Cost: lowercase-only ext
+;; matching, which is what 99% of file names use.
+(setq auto-mode-case-fold nil)
 
 ;; --- undecorated frames (macOS) ---
 (add-to-list 'default-frame-alist '(undecorated . t))
