@@ -89,6 +89,10 @@ in {
       # ---- one-stop-shop additions ----
       magit vterm gptel elfeed pdf-tools notdeft
 
+      # ---- jujutsu (jj VCS) integration ----
+      vc-jj           # emacs vc.el backend for jj repos (C-x v d/l/v work)
+      jjdescription   # major mode for jj commit-message buffers
+
       # ---- workspaces / scratch ----
       persp-mode persistent-scratch
 
