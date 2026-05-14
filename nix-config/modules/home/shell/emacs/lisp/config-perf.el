@@ -24,6 +24,7 @@
 (defvar my/idle-preload-packages
   '(consult       ; SPC s g/s/b — usually first thing hit
     magit         ; SPC g s     — pulls ~30 sub-files
+    majutsu       ; SPC G       — magit-style jj UI; depends on magit
     vterm         ; SPC o t     — loads C dynamic module
     gptel         ; SPC a a     — loads provider backends
     notdeft       ; SPC n s     — Xapian binding load
