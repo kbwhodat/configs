@@ -90,6 +90,9 @@ in {
       doom-themes      # bug fix: init.el (require 'doom-themes) was unmet
       minions
 
+      # ---- file-tree sidebar (SPC e) ----
+      treemacs treemacs-evil treemacs-magit nerd-icons
+
       # ---- languages (py/sh/json/yaml/go ts-modes are built-in to emacs 30) ----
       nix-ts-mode markdown-mode
 
