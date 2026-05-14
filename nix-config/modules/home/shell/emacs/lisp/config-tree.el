@@ -13,8 +13,7 @@
         treemacs-width 30
         treemacs-position 'left
         treemacs-follow-after-init t
-        treemacs-is-never-other-window t    ; SPC h/l skips over it
-        treemacs-show-cursor nil
+        treemacs-show-cursor t              ; visible cursor when navigating
         treemacs-recenter-after-file-follow 'always
         treemacs-recenter-after-tag-follow 'always)
   (with-eval-after-load 'general
