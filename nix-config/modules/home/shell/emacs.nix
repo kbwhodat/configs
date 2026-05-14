@@ -93,6 +93,13 @@ in {
       # ---- languages (py/sh/json/yaml/go ts-modes are built-in to emacs 30) ----
       nix-ts-mode markdown-mode
 
+      # ---- tree-sitter grammars (.so files) — required by ts-modes ----
+      # Earlier I assumed the nix emacs wrapper bundles grammars
+      # automatically; it doesn't. Without this, opening a .sh / .py /
+      # .json buffer with a *-ts-mode major-mode-remap triggers a
+      # dlopen failure for libtree-sitter-bash.so etc.
+      treesit-grammars.with-all-grammars
+
       # ---- IDE (eglot is built-in; treesit grammars auto-wired by nix) ----
 
       # ---- one-stop-shop additions ----
