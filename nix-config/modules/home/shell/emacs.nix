@@ -130,6 +130,24 @@ in {
   # in; launchctl bootout is the only escape hatch.
   launchd.agents.emacs.config.KeepAlive = lib.mkForce true;
 
+  # launchd starts the daemon with a minimal PATH (/usr/bin:/bin:/usr/sbin:/sbin),
+  # so emacs subprocesses (jj via majutsu, ripgrep via consult-ripgrep, eglot
+  # talking to pyright/gopls/nil, vterm shells) can't find binaries that nix
+  # installed under the user / system profiles.  Inject the right PATH at the
+  # launchd layer so the daemon — and everything it spawns — sees them.
+  launchd.agents.emacs.config.EnvironmentVariables.PATH =
+    lib.concatStringsSep ":" [
+      "${config.home.homeDirectory}/.local/bin"        # uv-tool installs
+      "/etc/profiles/per-user/katob/bin"               # home-manager user profile
+      "/run/current-system/sw/bin"                     # nix-darwin system profile
+      "/nix/var/nix/profiles/default/bin"              # default nix profile (fallback)
+      "/usr/local/bin"
+      "/usr/bin"
+      "/bin"
+      "/usr/sbin"
+      "/sbin"
+    ];
+
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
   home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [
     pkgs.pyright
