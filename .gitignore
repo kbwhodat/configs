@@ -171,4 +171,12 @@ goose/
 kalshi/
 .claude/
 herbie/
+.pi/
+.serena/
 nix-config/.claude/
+lean-ctx/
+
+# Emacs runtime data that landed in the source dir
+nix-config/modules/home/shell/emacs/history
+nix-config/modules/home/shell/emacs/recentf
+nix-config/modules/home/shell/emacs/session-lite.el

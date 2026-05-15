@@ -25,6 +25,15 @@ let
     rev = "main";
     sha256 = "sha256-VIl3qp6wWCfZm+407cyr8/y4B6PelurQ4wvDEw4vfKo=";
   };
+  # Matt Pocock's skill collection — surfaced as a symlinked dir
+  # under ~/.claude/skills/mattpocock so Claude Code (and our gptel
+  # `M-x my/gptel-load-skill') can pick them up.
+  mattpocockSkillsSrc = pkgs.fetchFromGitHub {
+    owner = "mattpocock";
+    repo = "skills";
+    rev = "main";
+    sha256 = "sha256-5Rr5BQe8bdQXWt/H6QjYpoM4X+GuWPK26rU2VSqTZVI=";
+  };
 in {
   options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC + superpowers";
 
@@ -181,6 +190,30 @@ in {
           ];
         };
       };
+    };
+
+    # Surface mattpocock/skills under ~/.claude/skills/mattpocock.
+    # Out-of-store symlink: upstream updates after a flake-input bump
+    # appear without a full home-manager activation re-run.
+    home.file.".claude/skills/mattpocock" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${mattpocockSkillsSrc}/skills";
+    };
+
+    # Kill the slowness: ECC plugin runs 30+ hooks across PreToolUse,
+    # PostToolUse and Stop events. `ECC_HOOK_PROFILE=minimal` skips
+    # every hook whose declared profiles don't include "minimal" —
+    # which is all the reminder/observe/governance/quality-gate ones.
+    #
+    # `ECC_DISABLED_HOOKS` is an explicit kill-list for IDs that are
+    # tagged "minimal" but still annoying — currently both GateGuard
+    # variants ("Fact-Forcing Gate" interruptions before edits/bash).
+    #
+    # `ECC_GATEGUARD=off` is the belt-and-suspenders fallback the
+    # gate's own recovery message documents.
+    home.sessionVariables = {
+      ECC_HOOK_PROFILE = "minimal";
+      ECC_DISABLED_HOOKS = "pre:edit-write:gateguard-fact-force,pre:bash:gateguard-fact-force";
+      ECC_GATEGUARD = "off";
     };
   };
 }

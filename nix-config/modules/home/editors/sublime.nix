@@ -91,12 +91,13 @@ in {
   ];
 
   # NeoVintageous settings - pass through Ctrl+N to Sublime
+  # Ctrl+Q is captured by NeoVintageous so we can remap it to <C-v>
+  # (blockwise-visual) below in .neovintageousrc.
   home.file."${sublimeUserDir}/NeoVintageous.sublime-settings".text = builtins.toJSON {
     vintageous_handle_keys = {
       "<C-n>" = false;
       "<C-s>" = false;
       "<C-w>" = false;
-      "<C-q>" = false;
     };
   };
 
@@ -124,6 +125,10 @@ in {
     " Safe app quit path via Sublime command (preserves hot_exit flow)
     nnoremap <leader>q :Exit<CR>
 
+    " Ctrl-Q enters blockwise-visual (same as Ctrl-V in vanilla vim).
+    nnoremap <C-q> <C-v>
+    xnoremap <C-q> <C-v>
+
     " Keep : prompt responsive; normal-mode quick quit.
     nnoremap Q :Exit<CR>
 
@@ -142,6 +147,10 @@ in {
 
     nnoremap <leader>; gT
     nnoremap <leader>' gt
+
+    " Ctrl-Q enters blockwise-visual (same as Ctrl-V in vanilla vim).
+    nnoremap <C-q> <C-v>
+    xnoremap <C-q> <C-v>
 
     " Keep : prompt responsive; normal-mode quick quit.
     nnoremap Q :Exit<CR>

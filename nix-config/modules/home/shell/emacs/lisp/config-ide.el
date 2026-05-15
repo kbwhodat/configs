@@ -4,16 +4,18 @@
 ;; nix emacs wrapper via treesit-extra-load-path.
 ;;; Code:
 
-;; --- Built-in ts-modes for py/sh/json/yaml/go (no extra package) ---
+;; --- Explicit tree-sitter remaps -----------------------------------
+;; Keep startup predictable: remap only the languages this config uses
+;; instead of loading `treesit-auto' to discover every installed grammar.
 (setq major-mode-remap-alist
-      '((python-mode . python-ts-mode)
-        (bash-mode   . bash-ts-mode)
-        (sh-mode     . bash-ts-mode)
-        (json-mode   . json-ts-mode)
-        (yaml-mode   . yaml-ts-mode)
-        (go-mode     . go-ts-mode)))
+      '((python-mode     . python-ts-mode)
+        (sh-mode         . bash-ts-mode)
+        (js-mode         . js-ts-mode)
+        (typescript-mode . typescript-ts-mode)
+        (json-mode       . json-ts-mode)
+        (yaml-mode       . yaml-ts-mode)))
 
-;; --- nix-ts-mode for *.nix ---
+;; --- nix-ts-mode for *.nix (treesit-auto doesn't ship a nix recipe) ---
 (use-package nix-ts-mode
   :mode "\\.nix\\'")
 
@@ -62,8 +64,8 @@
   :init
   (setq corfu-cycle t                ; wrap around list
         corfu-auto t                 ; popup automatically (no manual M-TAB)
-        corfu-auto-delay 0.1
-        corfu-auto-prefix 2
+        corfu-auto-delay 0.2
+        corfu-auto-prefix 3
         corfu-preselect 'prompt      ; preselect the input as a candidate
         corfu-popupinfo-delay '(0.5 . 0.5)
         corfu-quit-no-match 'separator))
@@ -82,6 +84,47 @@
 (use-package eglot-booster
   :after eglot
   :config (eglot-booster-mode))
+
+;; --- envrc: project-local env vars via direnv -----------------------
+;; Without this, eglot-spawned LSPs and `M-x compile` see your login
+;; shell PATH/env — not the project's nix develop / virtualenv / etc.
+;; envrc consults the nearest .envrc and exports its variables into
+;; every subprocess emacs spawns from that buffer.
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
+;; --- Built-in compile/run --------------------------------------------
+;; `compile' is the native build runner: opens a *compilation* buffer,
+;; captures stdout+stderr, parses errors so RET / `next-error' jumps
+;; to the source line, and remembers the command for `recompile'.
+;;
+;; `project-compile' (built-in to emacs 28+) does the same but runs
+;; from the project root and caches the command per-project — preferred
+;; for repo work since you can ride the same SPC c c forever.
+(setq compilation-scroll-output 'first-error  ; auto-scroll, stop at first error
+      compilation-ask-about-save nil          ; auto-save buffers before compile
+      compilation-always-kill t               ; one compile at a time
+      compilation-environment '("TERM=dumb")) ; tell tools they're not in a tty
+
+;; ANSI color escape sequences (cargo, npm, go test, …) interpreted instead
+;; of rendered as literal "[0;31m".
+(add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
+
+;; Leader bindings under SPC c
+;; cc  compile (or recompile from project cache)   cr  recompile
+;; cC  re-prompt for compile command               ck  kill running compile
+;; cn  next error                                  cp  previous error
+(with-eval-after-load 'general
+  (when (fboundp 'my/leader)
+    (my/leader
+      "c"  '(:ignore t :which-key "compile/run")
+      "cc" '(project-compile     :which-key "compile (project)")
+      "cC" '(compile             :which-key "compile (prompt)")
+      "cr" '(recompile           :which-key "recompile last")
+      "ck" '(kill-compilation    :which-key "kill compile")
+      "cn" '(next-error          :which-key "next error")
+      "cp" '(previous-error      :which-key "prev error")
+      "c&" '(async-shell-command :which-key "background shell"))))
 
 (provide 'config-ide)
 ;;; config-ide.el ends here

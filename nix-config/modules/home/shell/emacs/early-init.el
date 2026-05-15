@@ -40,17 +40,19 @@
 ;; flags only kick in for .el files loaded outside that scope. Cheap to
 ;; set, real effect on packages installed/loaded post-build.
 ;;
-;; -mcpu=apple-m1 is the lowest-common-denominator Apple Silicon target
-;; (works on M1-M4). libgccjit cannot resolve "-march=native" reliably,
-;; so we hard-code the CPU family. Speed 3 is max optimization (default
-;; is 2).
+;; Only Apple Silicon gets `-mcpu=apple-m1'. Intel macs and Linux hosts
+;; must not inherit ARM CPU flags.
 (setq native-comp-speed 3
       native-comp-compiler-options
       '("-O2" "-g0" "-fno-omit-frame-pointer" "-fno-finite-math-only")
       native-comp-driver-options
-      (if (eq system-type 'darwin)
-          '("-Wl,-w" "-mcpu=apple-m1")
-        '("-mcpu=apple-m1")))
+      (cond
+       ((and (eq system-type 'darwin)
+             (string-match-p "^aarch64-" system-configuration))
+        '("-Wl,-w" "-mcpu=apple-m1"))
+       ((eq system-type 'darwin)
+        '("-Wl,-w"))
+       (t nil)))
 
 ;; --- cheap rendering defaults ---
 (setq bidi-inhibit-bpa t
@@ -74,11 +76,12 @@
 ;; --- undecorated frames (macOS) ---
 (add-to-list 'default-frame-alist '(undecorated . t))
 
-;; --- benchmark-init: load FIRST and ACTIVATE so it captures init ---
-;; (activate) hooks itself into (require) to time each load.
-(require 'benchmark-init)
-(benchmark-init/activate)
-(add-hook 'after-init-hook #'benchmark-init/deactivate)
+;; --- sensible default size for emacsclient -c new frames ---
+;; Without these, new frames open at emacs's built-in default of 80×24
+;; chars — the tiny square you saw on EmacsClient launch.
+;; ~140×45 chars ≈ 1100×850 px at 14pt mono.
+(add-to-list 'default-frame-alist '(width  . 140))
+(add-to-list 'default-frame-alist '(height . 45))
 
 (provide 'early-init)
 ;;; early-init.el ends here

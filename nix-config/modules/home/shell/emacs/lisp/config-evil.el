@@ -29,6 +29,14 @@
   :after evil
   :config (global-evil-surround-mode 1))
 
+;; --- Ctrl-Q = blockwise-visual (alias for vanilla evil's C-v) -------
+;; C-q stays as `quoted-insert' in insert state so you can still
+;; insert literal tabs / control chars there.
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map (kbd "C-q") #'evil-visual-block)
+  (define-key evil-motion-state-map (kbd "C-q") #'evil-visual-block)
+  (define-key evil-visual-state-map (kbd "C-q") #'evil-visual-block))
+
 (use-package undo-fu :after evil)
 (use-package undo-fu-session
   :after undo-fu
@@ -36,7 +44,7 @@
 
 (use-package which-key
   :config
-  (setq which-key-idle-delay 0.3)
+  (setq which-key-idle-delay 1.5)
   (which-key-mode 1))
 
 (use-package general
@@ -64,26 +72,50 @@
     "q"  '(save-buffers-kill-terminal :which-key "quit"))
 
   ;; --- windows ---
+  ;;   SPC -   split below  (key looks like a horizontal divider)
+  ;;   SPC \   split right  (key looks like a vertical divider)
+  ;; Both jump into the new window so you can start typing immediately.
+  (defun my/split-below ()
+    (interactive) (split-window-below) (other-window 1))
+  (defun my/split-right ()
+    (interactive) (split-window-right) (other-window 1))
   (my/leader
+    "-"  '(my/split-below     :which-key "split below")
+    "\\" '(my/split-right     :which-key "split right")
     "w"  '(:ignore t :which-key "windows")
     "wv" '(split-window-right :which-key "vsplit")
     "ws" '(split-window-below :which-key "hsplit")
-    "wd" '(delete-window      :which-key "close"))
+    "wd" '(delete-window      :which-key "close")
+    "wu" '(winner-undo        :which-key "layout undo")
+    "wr" '(winner-redo        :which-key "layout redo"))
 
   ;; --- help under SPC ? (SPC h is windmove leaf — general rejects double-bind) ---
+  ;; `helpful' replaces describe-* for function/var/key — adds callers,
+  ;; references, and source jump.  `describe-mode' has no helpful peer
+  ;; (mode docstrings come from the major mode object, not a symbol).
   (my/leader
     "?"   '(:ignore t :which-key "help")
-    "? k" '(describe-key      :which-key "describe key")
-    "? f" '(describe-function :which-key "describe func")
-    "? v" '(describe-variable :which-key "describe var")
-    "? m" '(describe-mode     :which-key "describe mode")
-    "? b" '(benchmark-init/show-durations-tabulated :which-key "bench report"))
+    "? k" '(helpful-key       :which-key "describe key")
+    "? f" '(helpful-callable  :which-key "describe func")
+    "? v" '(helpful-variable  :which-key "describe var")
+    "? m" '(describe-mode     :which-key "describe mode"))
 
   ;; --- toggles ---
   (my/leader
     "t"  '(:ignore t :which-key "toggle")
     "tl" '(display-line-numbers-mode :which-key "line numbers")
     "tw" '(visual-line-mode          :which-key "wrap")))
+
+;; --- helpful: also rebind the C-h prefix globally --------------------
+(use-package helpful
+  :defer t
+  :commands (helpful-callable helpful-variable helpful-key helpful-command
+             helpful-at-point)
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-h x" . helpful-command)
+         ("C-h o" . helpful-symbol)))
 
 ;; --- Avy under SPC SPC (SPC j is windmove leaf — general rejects double-bind) ---
 (use-package avy
