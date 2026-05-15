@@ -25,7 +25,6 @@ let cfg = config.modules.shell; in {
     ./syncthing.nix
     ./flutter.nix
     ./bookokrat.nix
-    ./wox.nix
     ./node.nix
     # ./openclaw.nix
     # ./ghostty.nix

@@ -1,6 +1,5 @@
 ;;; config-perf.el --- Persistence + cheap built-ins + idle preload -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; benchmark-init is loaded from early-init.el (must be first).
 ;; This file enables built-in modes that are cheap, and pre-loads heavy
 ;; packages on idle so first-use lag (SPC g s, SPC o t, SPC s g, ...)
 ;; is paid in the background instead of in front of the user.
@@ -58,6 +57,31 @@
 ;; open as VC sniffs for the backend.  Trim to Git + JJ (vc-jj).
 (setq vc-handled-backends '(Git JJ))
 
+;; --- Subprocess + LSP/eldoc/flymake latency knobs --------------------
+;; These four are the highest-impact remaining input-feel tweaks for an
+;; LSP/daemon workflow.  Defaults bias for correctness over latency.
+
+;; Default `t' uses adaptive read buffering on subprocess pipes — adds
+;; up to ~2 s of latency on LSP / vterm / magit / ripgrep output before
+;; emacs sees it.  Doom flips this off by default.
+(setq process-adaptive-read-buffering nil)
+
+;; eldoc fires textDocument/hover at the LSP every time the cursor
+;; rests for 0.5 s.  With slow servers (pyright, tsserver) that means
+;; the echo area flickers while you're trying to read it.  1 s gives
+;; you breathing room before the round-trip starts.
+(setq eldoc-idle-delay 1.0)
+
+;; flymake reruns diagnostics 0.5 s after every change — that triggers
+;; an LSP didChange + republish cycle on every keystroke pause.  1 s
+;; throttles it to the speed of human typing.
+(with-eval-after-load 'flymake
+  (setq flymake-no-changes-timeout 1.0))
+
+;; Faster mode-line / cursor-blink / which-key wake-up.  Marginal but
+;; free — default 0.5 s is conservative for terminal emacs from 1996.
+(setq idle-update-delay 0.1)
+
 ;; --- TIER 2: smaller quality-of-life wins ---------------------------
 
 ;; recentf default polls every 10s to clean dead entries — disable.
@@ -73,6 +97,43 @@
 ;; modern data. 100 MB avoids prompts on logs / json / csv.
 (setq large-file-warning-threshold (* 100 1024 1024))
 
+;; --- Crash safety: backup files + auto-save -------------------------
+;; By default emacs litters `file~' and `.#file' next to every save —
+;; pollutes git status and dired. Send them to a dedicated dir.
+(let ((backup-dir (expand-file-name "backups/" user-emacs-directory)))
+  (unless (file-directory-p backup-dir) (make-directory backup-dir t))
+  (setq backup-directory-alist        `(("." . ,backup-dir))
+        auto-save-file-name-transforms `((".*" ,backup-dir t))
+        backup-by-copying t            ; safer (preserves inode for watching tools)
+        version-control t              ; numbered backups
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2))
+
+;; auto-save-visited-mode: save the file you're editing every 30s.
+;; Pairs with undo-fu-session — worst-case data loss is ~30s.
+;; Bump interval to 60-120 if you run aggressive file-watchers.
+(setq auto-save-visited-interval 30)
+(auto-save-visited-mode 1)
+
+;; --- winner-mode: undo/redo window layout changes -------------------
+;; Bound to `SPC w u' / `SPC w r' in config-evil.el.
+(winner-mode 1)
+
+;; --- Tramp tuning for remote editing -------------------------------
+;; Open remote files via:  C-x C-f /ssh:HOST:/path
+;; Works with magit, dired, vterm, eshell.  Combine with ~/.ssh/config
+;; ControlMaster for instant repeat connections.
+(with-eval-after-load 'tramp
+  (setq tramp-default-method "ssh"               ; faster than scp default
+        tramp-verbose 1                          ; less log spam
+        tramp-use-ssh-controlmaster-options nil  ; honor ~/.ssh/config
+        tramp-completion-reread-directory-timeout nil
+        remote-file-name-inhibit-cache nil)      ; aggressive cache
+  ;; Don't probe VC backends on remote paths — huge speedup over SSH.
+  (setq vc-ignore-dir-regexp
+        (format "%s\\|%s" vc-ignore-dir-regexp tramp-file-name-regexp)))
+
 ;; --- Idle preload (Doom-style incremental loading) -------------------
 ;;
 ;; First time you press SPC g s, emacs has to load magit + transient +
@@ -86,7 +147,6 @@
     magit         ; SPC g s     — pulls ~30 sub-files
     majutsu       ; SPC G       — magit-style jj UI; depends on magit
     vterm         ; SPC o t     — loads C dynamic module
-    gptel         ; SPC a a     — loads provider backends
     notdeft       ; SPC n s     — Xapian binding load
     tempel        ; prog-mode hook
     elfeed        ; SPC o f

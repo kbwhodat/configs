@@ -25,8 +25,12 @@ let
       # Create the executable script
       cat > "$out/Applications/EmacsClient.app/Contents/MacOS/EmacsClient" << 'EOF'
 #!/bin/bash
-# Connect to emacs daemon, start one if not running
-${config.programs.emacs.finalPackage}/bin/emacsclient -c -a "" "$@" &
+# Idempotent: focus an existing GUI frame if one is open, else create one.
+# `-c -a ""' alone ALWAYS spawns a new frame — clicking the .app icon
+# (or hitting the Hammerspoon hotkey) twice piled up duplicate frames.
+# `my/raise-or-make-frame' is defined in config-ui.el.
+exec ${config.programs.emacs.finalPackage}/bin/emacsclient \
+     -n -a "" --eval "(my/raise-or-make-frame)" "$@"
 EOF
       chmod +x "$out/Applications/EmacsClient.app/Contents/MacOS/EmacsClient"
       
@@ -116,8 +120,13 @@ in {
       # ---- workspaces / scratch ----
       persp-mode persistent-scratch
 
-      # ---- perf measurement ----
-      benchmark-init
+      # ---- daily-driver additions ----
+      envrc            # direnv -> emacs subprocess env (LSP, compile, vterm)
+      embark           # actions on minibuffer candidates (C-. / C-;)
+      embark-consult   # bridges consult results into embark actions
+      wgrep            # batch-edit consult-ripgrep results via embark-export
+      helpful          # richer describe-* buffers (callers, refs, source)
+
     ];
   };
 
@@ -174,13 +183,81 @@ in {
   #   launchctl bootout  "gui/<UID>/org.nix-community.home.emacs"
   #   launchctl bootstrap "gui/<UID>" ~/Library/LaunchAgents/org.nix-community.home.emacs.plist
   # which is exactly what this activation script does, automatically.
-  home.activation.bounceEmacsDaemon = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  # --- Stable code-signing for TCC trust across rebuilds ---------------
+  # macOS TCC keys per-binary permissions on the binary's cdhash and
+  # csreq.  nix produces a NEW cdhash for emacs on every rebuild, so
+  # TCC keeps re-prompting "allow access to Documents" etc. on the
+  # first file open after each rebuild.
+  #
+  # Root cause: macOS TCC tracks consent by (binary path, cdhash) for
+  # non-.app binaries.  nix puts emacs at /nix/store/<hash>-emacs-*/
+  # bin/emacs — that path changes every rebuild, so TCC sees a "new"
+  # binary and re-prompts.
+  #
+  # Fix (cert-free): copy the nix emacs binary (and the wrapper script
+  # that sets EMACSLOADPATH) to a STABLE path in ~/.local/bin/, and
+  # point the launchd daemon at that path.  `cp` preserves the
+  # ad-hoc signature nix already applied, so the cdhash is identical
+  # to the source — TCC sees the same identity at a stable path.
+  #
+  # One-time setup: System Settings → Privacy & Security → Full Disk
+  # Access → +  → choose ~/.local/bin/emacs-stable (Shift+Cmd+. to
+  # show hidden dirs in the file picker).  That FDA grant persists
+  # across all future rebuilds — the only time it'll re-prompt is
+  # when emacs itself is upgraded to a new version (cdhash changes).
+  # Point the daemon at the stable-path wrapper instead of the
+  # nix-store path so the daemon's binary identity is stable across
+  # rebuilds and TCC consent persists.
+  launchd.agents.emacs.config.ProgramArguments = lib.mkForce [
+    "/bin/sh" "-c"
+    ''/bin/wait4path "$HOME/.local/bin/emacs-stable-launch" && exec "$HOME/.local/bin/emacs-stable-launch" --fg-daemon''
+  ];
+
+  # Combined TCC-stabilize + daemon-bounce activation.  Runs dead-last
+  # (after every HM phase we care about) and is fully fail-soft so a
+  # single broken step never aborts activation.
+  #
+  # Fail-soft pattern: each command is followed by `|| true`, and the
+  # whole block runs inside `set +e` so HM's outer `set -eu` doesn't
+  # halt on the first non-zero exit.
+  # All paths baked at eval time — no runtime path discovery needed.
+  # ${pkgs.emacs} = real emacs store; cp -L follows the bin/emacs -> emacs-XX.X symlink.
+  # native-lisp lives at <store>/lib/emacs/<version>/native-lisp — glob picks the version dir.
+  # The inner shell wrapper `.emacs-wrapped` lives in the wrapped (with-packages) derivation.
+  home.activation.stabilizeEmacsAndBounce = lib.hm.dag.entryAfter [
+    "writeBoundary" "linkGeneration" "setupLaunchAgents"
+    "reloadSystemd" "hideStandaloneEmacsApp"
+  ] ''
+    set +e
+    BIN="$HOME/.local/bin"
+    mkdir -p "$BIN"
+
+    /bin/cp -fL ${pkgs.emacs}/bin/emacs       "$BIN/emacs-stable"
+    /bin/cp -fL ${pkgs.emacs}/bin/emacsclient "$BIN/emacsclient-stable"
+    /bin/chmod u+rwx "$BIN/emacs-stable" "$BIN/emacsclient-stable"
+
+    NATIVE_LISP=$(ls -d ${pkgs.emacs}/lib/emacs/*/native-lisp 2>/dev/null | /usr/bin/head -1)
+    [ -n "$NATIVE_LISP" ] && /bin/ln -sfn "$NATIVE_LISP" "$HOME/.local/native-lisp"
+
+    /usr/bin/sed "s|exec ${pkgs.emacs}/bin/emacs |exec $BIN/emacs-stable |g" \
+      ${config.programs.emacs.finalPackage}/bin/.emacs-wrapped > "$BIN/emacs-stable-launch"
+    /bin/chmod u+rwx "$BIN/emacs-stable-launch"
+
+    # Atomic restart via kickstart -k (kill + relaunch from already-loaded
+    # plist).  If the service somehow isn't loaded (orphaned state after a
+    # prior failure), fall back to bootstrap.  No bootout/bootstrap race.
     PLIST="$HOME/Library/LaunchAgents/org.nix-community.home.emacs.plist"
     if [ -f "$PLIST" ]; then
       UID_NUM=$(id -u)
-      $DRY_RUN_CMD /bin/launchctl bootout "gui/$UID_NUM/org.nix-community.home.emacs" 2>/dev/null || true
-      $DRY_RUN_CMD /bin/launchctl bootstrap "gui/$UID_NUM" "$PLIST" 2>/dev/null || true
+      SVC="gui/$UID_NUM/org.nix-community.home.emacs"
+      if /bin/launchctl print "$SVC" >/dev/null 2>&1; then
+        /bin/launchctl kickstart -k "$SVC" >/dev/null 2>&1
+      else
+        /bin/launchctl bootstrap "gui/$UID_NUM" "$PLIST" >/dev/null 2>&1
+      fi
     fi
+    set -e
+    true
   '';
 
   # home-manager auto-trampolines Emacs.app from pkgs.emacs into

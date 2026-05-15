@@ -46,5 +46,31 @@
         "fr" '(recentf     :which-key "recent")
         "fd" '(dired       :which-key "dired")))))
 
+;; --- embark: actions on completion candidates ----------------------
+;; In any minibuffer (M-x, find-file, consult-*) press C-. for a menu
+;; of actions on the candidate (kill, rename, copy-path, etc.).
+;; embark-consult bridges consult results into embark — e.g. take a
+;; consult-grep result list and embark-export to a wgrep buffer for
+;; batch edit.
+(use-package embark
+  :defer t
+  :bind (("C-." . embark-act)
+         ("C-;" . embark-dwim)
+         ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult
+  :after (embark consult)
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+;; --- wgrep: batch-edit consult-ripgrep results -----------------------
+;; Flow:  SPC s g  →  results  →  C-. E  (embark-export to grep buffer)
+;; →  e (or C-x C-q) to enter wgrep-mode  →  edit anywhere
+;; →  C-c C-c to apply changes to every underlying file.
+(use-package wgrep
+  :defer t
+  :init (setq wgrep-auto-save-buffer t))
+
 (provide 'config-completion)
 ;;; config-completion.el ends here

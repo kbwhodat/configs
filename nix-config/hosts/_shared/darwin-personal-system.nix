@@ -159,7 +159,7 @@ in
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "firefoxpwa" ];
-    casks = [ "wox" "mitmproxy" "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
+    casks = [ "sol" "mitmproxy" "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings = {

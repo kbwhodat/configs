@@ -47,9 +47,17 @@ side-by-side with code."
   (let ((display-buffer-alist nil))
     (vterm)))
 
+(defun my/vterm-new ()
+  "Open a FRESH, independently-named vterm in the current window.
+Use after `SPC \\\\' / `SPC -' to get two parallel shells, tmux-pane style."
+  (interactive)
+  (let ((vterm-buffer-name (generate-new-buffer-name "*vterm*"))
+        (display-buffer-alist nil))
+    (vterm)))
+
 (use-package vterm
   :defer t
-  :commands (vterm vterm-other-window my/vterm-toggle my/vterm-fullscreen)
+  :commands (vterm vterm-other-window my/vterm-toggle my/vterm-fullscreen my/vterm-new)
   :init
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)
@@ -57,6 +65,7 @@ side-by-side with code."
         "o"  '(:ignore t :which-key "open")
         "ot" '(my/vterm-toggle     :which-key "vterm (half/toggle)")
         "oT" '(my/vterm-fullscreen :which-key "vterm (fullscreen)")
+        "on" '(my/vterm-new        :which-key "vterm (new shell)")
         "oe" '(eshell              :which-key "eshell")))))
 
 (provide 'config-term)

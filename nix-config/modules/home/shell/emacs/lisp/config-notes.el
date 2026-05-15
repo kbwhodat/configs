@@ -87,7 +87,81 @@
         "nn" '(my/new-markdown-note :which-key "new note")
         "nf" '(notdeft-filter      :which-key "filter")
         "nd" '(notdeft-delete-file :which-key "delete")
-        "nr" '(notdeft-refresh     :which-key "refresh")))))
+        "nr" '(notdeft-refresh     :which-key "refresh"))))
+  :config
+  ;; Fix title display: every note in ~/vault starts with `---\n...---'
+  ;; YAML frontmatter (from `my/markdown-template'), and notdeft's
+  ;; built-in parser takes the first non-empty line as the title — so
+  ;; every entry shows up as "---".  Strip the frontmatter and the
+  ;; leading `# ' off the markdown heading before notdeft parses.
+  (defun my/notdeft--clean-contents (contents)
+    "Strip YAML frontmatter + leading markdown header marker from CONTENTS.
+In-memory only; does not modify any file on disk."
+    (let ((c contents))
+      (when (string-match "\\`---[[:space:]]*\n\\(?:.*\n\\)*?---[[:space:]]*\n"
+                          c)
+        (setq c (substring c (match-end 0))))
+      (setq c (replace-regexp-in-string "\\`[[:space:]\n\r]+" "" c))
+      (setq c (replace-regexp-in-string "\\`#+[[:space:]]+" "" c))
+      c))
+  (advice-add 'notdeft-parse-title :filter-args
+              (lambda (args)
+                (list (my/notdeft--clean-contents (car args)))))
+
+  ;; --- Strip YAML frontmatter + leading `#' from BOTH title & summary -
+  ;; `notdeft-parse-title' advice above only fires in a few code paths.
+  ;; The actual listing buffer derives both title AND summary from
+  ;; `notdeft-parse-buffer', which sees the raw file — so without this
+  ;; advice the summary column shows `--- --- id: ... aliases: ...'.
+  ;; We narrow past the frontmatter (and the leading markdown header
+  ;; marker) so parse-buffer's "first non-whitespace line" picks the
+  ;; real title and the summary starts at body text.
+  (defun my/notdeft--skip-frontmatter (orig-fn &rest args)
+    (save-restriction
+      (widen)
+      (let ((body-start
+             (save-excursion
+               (goto-char (point-min))
+               (when (looking-at "\\`---[[:space:]]*\n")
+                 (forward-line 1)
+                 (when (re-search-forward "^---[[:space:]]*\n" nil t)
+                   (goto-char (match-end 0))))
+               (skip-chars-forward " \t\n\r")
+               (when (looking-at "#+[[:space:]]+")
+                 (goto-char (match-end 0)))
+               (point))))
+        (narrow-to-region body-start (point-max))
+        (apply orig-fn args))))
+  (advice-add 'notdeft-parse-buffer :around #'my/notdeft--skip-frontmatter)
+
+  ;; --- Faces: match the minimal markdown aesthetic ------------------
+  ;; Default notdeft inherits font-lock-* which colours everything in
+  ;; the doom-alabaster theme; clashes with the rest of the buffer.
+  (custom-theme-set-faces
+   'user
+   '(notdeft-header-face        ((t (:inherit default :weight bold))))
+   '(notdeft-filter-string-face ((t (:inherit default :slant italic))))
+   '(notdeft-title-face         ((t (:inherit default :weight bold))))
+   '(notdeft-separator-face     ((t (:inherit default :foreground "#666666"))))
+   '(notdeft-summary-face       ((t (:inherit default :foreground "#888888"))))
+   '(notdeft-time-face          ((t (:inherit default :foreground "#666666")))))
+
+  ;; Shorter timestamp — full datetime was line-noise.
+  (setq notdeft-time-format " %Y-%m-%d")
+
+  ;; --- Close the *NotDeft* buffer/window after picking a file -------
+  ;; Notdeft leaves its search buffer behind after RET on a result.
+  ;; Bury it and close the window so the picked file takes the full
+  ;; frame.  Killing would force a re-index next time; burying keeps
+  ;; the search state warm for instant reopen via SPC n s.
+  (defun my/notdeft--dismiss (&rest _)
+    (let ((buf (get-buffer notdeft-buffer)))
+      (when buf
+        (dolist (win (get-buffer-window-list buf nil t))
+          (when (window-deletable-p win)
+            (delete-window win)))
+        (bury-buffer buf))))
+  (advice-add 'notdeft-find-file :after #'my/notdeft--dismiss))
 
 ;; --- Persistent scratch ---
 (use-package persistent-scratch
@@ -113,9 +187,6 @@
 (with-eval-after-load 'general
   (when (fboundp 'my/leader)
     (my/leader "x" '(my/open-persistent-scratch :which-key "scratch"))))
-
-;; --- auto-save-visited explicitly OFF (user choice from prior config) ---
-(auto-save-visited-mode -1)
 
 (provide 'config-notes)
 ;;; config-notes.el ends here

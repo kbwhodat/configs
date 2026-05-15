@@ -17,6 +17,7 @@
 (require 'config-git)          ; magit (deferred)
 (require 'config-notes)        ; markdown, notdeft, persistent-scratch
 (require 'config-sessions)     ; persp-mode (no eager restore)
+(require 'config-session-lite) ; fast file/workspace snapshots
 (require 'config-tree)         ; treemacs sidebar (SPC e)
 (require 'config-term)         ; vterm (SPC o t half / SPC o T full)
 (require 'config-llm)          ; gptel
