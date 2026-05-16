@@ -1,22 +1,14 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 let
   cfg = config.modules.ai.pi-coding-agent;
 
-  # Plugin sources duplicated from claude-code.nix — keep revs/hashes in
-  # sync. Pi shares the Agent Skills standard with Claude Code, so we can
-  # symlink the same skill dirs into Pi's auto-discovery path.
-  eccSrc = pkgs.fetchFromGitHub {
-    owner = "affaan-m";
-    repo = "everything-claude-code";
-    rev = "main";
-    sha256 = "sha256-R1LwfU8w4QJi69so+TG1BMVVH+zf9epsAmZPbw9mnYU=";
-  };
-  superpowersSrc = pkgs.fetchFromGitHub {
-    owner = "obra";
-    repo = "superpowers";
-    rev = "main";
-    sha256 = "sha256-3E3rO6hR87JUfS3XV1Eaoz6SDWOftleWvN9UPNFEMjw=";
-  };
+  # Plugin sources come from flake inputs (see flake.nix) and are
+  # shared with claude-code.nix — Pi implements the same Agent Skills
+  # standard, so we can symlink the same skill dirs into Pi's
+  # auto-discovery path. Bumps happen via
+  # `nix flake update --update-input <name>`.
+  eccSrc         = inputs.everything-claude-code;
+  superpowersSrc = inputs.superpowers;
 in {
   options.modules.ai.pi-coding-agent = {
     enable = lib.mkEnableOption ''

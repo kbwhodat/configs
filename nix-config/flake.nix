@@ -59,6 +59,17 @@
   inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
   inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
 
+  # Claude Code plugin/skill source trees consumed by
+  # modules/home/ai/claude-code.nix. Declared as `flake = false` because
+  # these repos are plain content (skills, agents, marketplaces), not
+  # Nix flakes. Flake-lock pins them, so `main` no longer drifts under
+  # our pinned sha256 — bumps happen deliberately via
+  # `nix flake update --update-input <name>`.
+  inputs.everything-claude-code = { url = "github:affaan-m/everything-claude-code"; flake = false; };
+  inputs.superpowers           = { url = "github:obra/superpowers";                  flake = false; };
+  inputs.wshobson-agents       = { url = "github:wshobson/agents";                   flake = false; };
+  inputs.mattpocock-skills     = { url = "github:mattpocock/skills";                 flake = false; };
+
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
     let

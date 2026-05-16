@@ -37,7 +37,7 @@ let cfg = config.modules.ai; in {
     modules.ai.hermes-skillclaw.enable       = lib.mkDefault false;
     modules.ai.hermes-workspace.enable       = lib.mkDefault false;
     modules.ai.hermes-profiles.enable        = lib.mkDefault false;
-    modules.ai.pi-coding-agent.enable        = lib.mkDefault true;
+    modules.ai.pi-coding-agent.enable        = lib.mkDefault false;
     modules.ai.no-hallucination.enable       = lib.mkDefault false;
     modules.ai.hallucination-detector.enable = lib.mkDefault false;
 
