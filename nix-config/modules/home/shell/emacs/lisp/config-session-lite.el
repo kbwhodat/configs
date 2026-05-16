@@ -1,9 +1,9 @@
 ;;; config-session-lite.el --- Fast file/workspace session snapshots -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;; This is intentionally narrower than `desktop-save-mode'.  It persists
-;; file-backed buffers, plus lightweight persp-mode workspace membership
-;; when meaningful workspaces exist.  It avoids restoring processes,
-;; special buffers, TRAMP, window layouts, and other slow/brittle state.
+;; file-backed buffers, lightweight persp-mode workspace membership, and
+;; file-backed split layouts when meaningful workspaces exist.  It avoids
+;; restoring processes, special buffers, TRAMP, and other slow/brittle state.
 ;;; Code:
 
 (require 'cl-lib)
@@ -106,22 +106,69 @@
                              (car files))
             :files files))))
 
-(defun my/session-lite-build-snapshot ()
-  "Build the lightweight session snapshot."
-  (let* ((global-files (my/session-lite--global-files))
-         (selected-file (my/session-lite--selected-file))
-         (current-workspace (my/session-lite--current-workspace))
-         (workspaces (delq nil
-                           (mapcar (lambda (name)
-                                     (my/session-lite--workspace-snapshot
-                                      name current-workspace selected-file))
-                                   (my/session-lite--workspace-names)))))
-    (list :version 1
-          :saved-at (float-time)
-          :current-workspace current-workspace
-          :selected-file selected-file
-          :global-files global-files
-          :workspaces workspaces)))
+(defun my/session-lite--proper-list-p (value)
+  "Return non-nil when VALUE is a proper list."
+  (let ((tail value))
+    (while (consp tail)
+      (setq tail (cdr tail)))
+    (null tail)))
+
+(defun my/session-lite--window-state-buffer-names (state)
+  "Return buffer names referenced by writable window STATE."
+  (cond
+   ((and (consp state)
+         (eq (car state) 'buffer)
+         (stringp (cadr state)))
+    (list (cadr state)))
+   ((and (consp state)
+         (my/session-lite--proper-list-p state))
+    (cl-loop for item in state
+             append (my/session-lite--window-state-buffer-names item)))))
+
+(defun my/session-lite--window-layout-buffer-snapshot (name)
+  "Return a serializable file-backed snapshot for buffer NAME."
+  (let ((buffer (get-buffer name)))
+    (when buffer
+      (let ((file (my/session-lite--buffer-file buffer)))
+        (when file
+          (list :name name :file file))))))
+
+(defun my/session-lite--window-layout-snapshot (&optional frame)
+  "Return FRAME's file-backed split layout, or nil.
+Side windows are intentionally excluded by snapshotting the frame's main
+window only.  If any main-window leaf is not file-backed, no layout is
+saved; restore then falls back to the selected file."
+  (let* ((target (or frame (selected-frame)))
+         (state (window-state-get (window-main-window target) t))
+         (names (my/session-lite--window-state-buffer-names state))
+         (buffers (delq nil
+                        (mapcar #'my/session-lite--window-layout-buffer-snapshot
+                                names))))
+    (when (and (> (length names) 1)
+               (= (length names) (length buffers)))
+      (list :buffers buffers
+            :state state))))
+
+(defun my/session-lite-build-snapshot (&optional frame)
+  "Build the lightweight session snapshot from FRAME."
+  (let ((target (or frame (selected-frame))))
+    (with-selected-frame target
+      (let* ((global-files (my/session-lite--global-files))
+             (selected-file (my/session-lite--selected-file))
+             (current-workspace (my/session-lite--current-workspace))
+             (window-layout (my/session-lite--window-layout-snapshot target))
+             (workspaces (delq nil
+                                (mapcar (lambda (name)
+                                          (my/session-lite--workspace-snapshot
+                                           name current-workspace selected-file))
+                                        (my/session-lite--workspace-names)))))
+        (list :version 1
+              :saved-at (float-time)
+              :current-workspace current-workspace
+              :selected-file selected-file
+              :global-files global-files
+              :window-layout window-layout
+              :workspaces workspaces)))))
 
 (defun my/session-lite--snapshot-empty-p (snapshot)
   "Return non-nil when SNAPSHOT has no useful restore target."
@@ -129,13 +176,13 @@
        (null (plist-get snapshot :global-files))
        (null (plist-get snapshot :workspaces))))
 
-(defun my/session-lite-save (&optional force)
+(defun my/session-lite-save (&optional force frame)
   "Persist the current lightweight session snapshot.
 Automatic saves skip empty snapshots so a fresh daemon does not replace
 the last useful session with only `*scratch*'.  FORCE writes even when
 the snapshot is empty."
   (interactive "P")
-  (let ((snapshot (my/session-lite-build-snapshot))
+  (let ((snapshot (my/session-lite-build-snapshot frame))
         (dir (file-name-directory my/session-lite-file)))
     (unless (and (not force) (my/session-lite--snapshot-empty-p snapshot))
       (unless (file-directory-p dir)
@@ -176,6 +223,59 @@ the snapshot is empty."
     (persp-switch name)
     t))
 
+(defun my/session-lite--window-layout-buffer (saved-name buffers)
+  "Return the live buffer for SAVED-NAME described by BUFFERS."
+  (let* ((entry (seq-find (lambda (buffer)
+                            (equal (plist-get buffer :name) saved-name))
+                          buffers))
+         (file (plist-get entry :file)))
+    (when file
+      (my/session-lite--find-file file nil))))
+
+(defun my/session-lite--window-layout-open-buffers (buffers)
+  "Open every file-backed buffer required by BUFFERS."
+  (cl-every (lambda (buffer)
+              (my/session-lite--find-file (plist-get buffer :file) nil))
+            buffers))
+
+(defun my/session-lite--rewrite-window-layout-buffer-names (state buffers)
+  "Rewrite saved buffer names in STATE to the live names for BUFFERS."
+  (cond
+   ((and (consp state)
+         (eq (car state) 'buffer)
+         (stringp (cadr state)))
+    (let ((buffer (my/session-lite--window-layout-buffer (cadr state) buffers)))
+      (if buffer
+          (cons 'buffer (cons (buffer-name buffer) (cddr state)))
+        state)))
+   ((and (consp state)
+         (my/session-lite--proper-list-p state))
+    (mapcar (lambda (item)
+              (my/session-lite--rewrite-window-layout-buffer-names item buffers))
+            state))
+   (t state)))
+
+(defun my/session-lite--restore-window-layout (layout &optional frame)
+  "Restore file-backed window LAYOUT.
+Return non-nil on success.  Failures are soft so the caller can fall
+back to simple selected-file restore."
+  (let ((target (or frame (selected-frame)))
+        (state (plist-get layout :state))
+        (buffers (plist-get layout :buffers)))
+    (when (and state buffers)
+      (condition-case err
+          (when (my/session-lite--window-layout-open-buffers buffers)
+            (with-selected-frame target
+              (delete-other-windows)
+              (window-state-put
+               (my/session-lite--rewrite-window-layout-buffer-names state buffers)
+               (frame-root-window target)
+               'safe))
+            t)
+        (error
+         (message "session-lite window layout restore failed: %S" err)
+         nil)))))
+
 (defun my/session-lite--restore-files-lazily (files)
   "Restore FILES one per idle tick."
   (let ((delay my/session-lite-restore-idle-delay))
@@ -186,30 +286,35 @@ the snapshot is empty."
        file)
       (setq delay (+ delay my/session-lite-restore-idle-delay)))))
 
-(defun my/session-lite-restore ()
-  "Restore the lightweight session snapshot for the current GUI frame."
+(defun my/session-lite-restore (&optional frame)
+  "Restore the lightweight session snapshot into FRAME."
   (interactive)
-  (let* ((snapshot (my/session-lite-read))
-         (workspaces (plist-get snapshot :workspaces))
-         (current-workspace (plist-get snapshot :current-workspace))
-         (selected-file (plist-get snapshot :selected-file))
-         (global-files (plist-get snapshot :global-files)))
-    (when (and (listp snapshot)
-               (equal (plist-get snapshot :version) 1))
-      (if workspaces
-          (progn
-            (dolist (workspace workspaces)
-              (my/session-lite--ensure-workspace (plist-get workspace :name)))
-            (my/session-lite--ensure-workspace current-workspace)
-            (my/session-lite--find-file selected-file t)
+  (let ((target (or frame (selected-frame))))
+    (with-selected-frame target
+      (let* ((snapshot (my/session-lite-read))
+             (workspaces (plist-get snapshot :workspaces))
+             (current-workspace (plist-get snapshot :current-workspace))
+             (selected-file (plist-get snapshot :selected-file))
+             (global-files (plist-get snapshot :global-files))
+             (window-layout (plist-get snapshot :window-layout)))
+        (when (and (listp snapshot)
+                   (equal (plist-get snapshot :version) 1))
+          (if workspaces
+              (progn
+                (dolist (workspace workspaces)
+                  (my/session-lite--ensure-workspace (plist-get workspace :name)))
+                (my/session-lite--ensure-workspace current-workspace)
+                (unless (my/session-lite--restore-window-layout window-layout target)
+                  (my/session-lite--find-file selected-file t))
+                (my/session-lite--restore-files-lazily
+                 (seq-remove (lambda (file) (equal file selected-file))
+                             (cl-mapcan (lambda (workspace)
+                                          (copy-sequence (plist-get workspace :files)))
+                                        workspaces))))
+            (unless (my/session-lite--restore-window-layout window-layout target)
+              (my/session-lite--find-file selected-file t))
             (my/session-lite--restore-files-lazily
-             (seq-remove (lambda (file) (equal file selected-file))
-                         (cl-mapcan (lambda (workspace)
-                                      (copy-sequence (plist-get workspace :files)))
-                                    workspaces))))
-        (my/session-lite--find-file selected-file t)
-        (my/session-lite--restore-files-lazily
-         (seq-remove (lambda (file) (equal file selected-file)) global-files))))))
+             (seq-remove (lambda (file) (equal file selected-file)) global-files))))))))
 
 (defun my/session-lite-restore-on-gui-frame (&optional frame)
   "Restore session once when a graphical FRAME becomes available.
@@ -228,14 +333,14 @@ successful restore, and cleared on error so the next frame retries."
                (display-graphic-p target))
       (setq my/session-lite--restored t)
       (condition-case err
-          (my/session-lite-restore)
+          (my/session-lite-restore target)
         (error
          (setq my/session-lite--restored nil)
          (message "session-lite restore failed: %S" err))))))
 
-(defun my/session-lite-save-on-frame-close (_frame)
+(defun my/session-lite-save-on-frame-close (frame)
   "Save the session when a frame closes, covering Cmd+Q-style exits."
-  (my/session-lite-save))
+  (my/session-lite-save nil frame))
 
 (defun my/session-lite-save-before-kill ()
   "Save the session before Emacs confirms shutdown.

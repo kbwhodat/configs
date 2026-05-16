@@ -7,33 +7,17 @@ let
   };
   claudeHookPath = "${config.home.homeDirectory}/.claude/hooks/rtk-rewrite.sh";
 
-  eccSrc = pkgs.fetchFromGitHub {
-    owner = "affaan-m";
-    repo = "everything-claude-code";
-    rev = "main";
-    sha256 = "sha256-R1LwfU8w4QJi69so+TG1BMVVH+zf9epsAmZPbw9mnYU=";
-  };
-  superpowersSrc = pkgs.fetchFromGitHub {
-    owner = "obra";
-    repo = "superpowers";
-    rev = "main";
-    sha256 = "sha256-3E3rO6hR87JUfS3XV1Eaoz6SDWOftleWvN9UPNFEMjw=";
-  };
-  wshobsonAgentsSrc = pkgs.fetchFromGitHub {
-    owner = "wshobson";
-    repo = "agents";
-    rev = "main";
-    sha256 = "sha256-VIl3qp6wWCfZm+407cyr8/y4B6PelurQ4wvDEw4vfKo=";
-  };
+  # Plugin/skill source trees come from flake inputs (see flake.nix).
+  # `flake.lock` pins them, so a push to upstream `main` no longer
+  # invalidates a hard-coded sha256 here. Bump deliberately via
+  # `nix flake update --update-input <name>`.
+  eccSrc              = inputs.everything-claude-code;
+  superpowersSrc      = inputs.superpowers;
+  wshobsonAgentsSrc   = inputs.wshobson-agents;
   # Matt Pocock's skill collection — surfaced as a symlinked dir
   # under ~/.claude/skills/mattpocock so Claude Code (and our gptel
   # `M-x my/gptel-load-skill') can pick them up.
-  mattpocockSkillsSrc = pkgs.fetchFromGitHub {
-    owner = "mattpocock";
-    repo = "skills";
-    rev = "main";
-    sha256 = "sha256-5Rr5BQe8bdQXWt/H6QjYpoM4X+GuWPK26rU2VSqTZVI=";
-  };
+  mattpocockSkillsSrc = inputs.mattpocock-skills;
 in {
   options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC + superpowers";
 

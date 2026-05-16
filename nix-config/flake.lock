@@ -120,6 +120,22 @@
         "type": "github"
       }
     },
+    "everything-claude-code": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778917830,
+        "narHash": "sha256-4KTjFrX4BVyb4PPMvfMKhic4XRgqUjEX1+C1xTU+wtw=",
+        "owner": "affaan-m",
+        "repo": "everything-claude-code",
+        "rev": "aaabe5949edea987f8f8497232f62545ca72bc55",
+        "type": "github"
+      },
+      "original": {
+        "owner": "affaan-m",
+        "repo": "everything-claude-code",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -371,6 +387,22 @@
       "original": {
         "owner": "floatpane",
         "repo": "matcha",
+        "type": "github"
+      }
+    },
+    "mattpocock-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778677518,
+        "narHash": "sha256-5Rr5BQe8bdQXWt/H6QjYpoM4X+GuWPK26rU2VSqTZVI=",
+        "owner": "mattpocock",
+        "repo": "skills",
+        "rev": "e74f0061bb67222181640effa98c675bdb2fdaa7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattpocock",
+        "repo": "skills",
         "type": "github"
       }
     },
@@ -676,19 +708,23 @@
         "chawan-flake": "chawan-flake",
         "coding-agents": "coding-agents",
         "darwin": "darwin",
+        "everything-claude-code": "everything-claude-code",
         "gonchill": "gonchill",
         "gonwatch": "gonwatch",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "matcha": "matcha",
+        "mattpocock-skills": "mattpocock-skills",
         "mcp-servers-nix": "mcp-servers-nix",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_6",
         "nur": "nur",
         "sops-nix": "sops-nix",
+        "superpowers": "superpowers",
         "thorium-browser": "thorium-browser",
         "undetected-chromedriver": "undetected-chromedriver",
         "unstable": "unstable",
+        "wshobson-agents": "wshobson-agents",
         "zen-browser": "zen-browser"
       }
     },
@@ -707,6 +743,22 @@
       "original": {
         "id": "sops-nix",
         "type": "indirect"
+      }
+    },
+    "superpowers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777932301,
+        "narHash": "sha256-3E3rO6hR87JUfS3XV1Eaoz6SDWOftleWvN9UPNFEMjw=",
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "obra",
+        "repo": "superpowers",
+        "type": "github"
       }
     },
     "systems": {
@@ -879,6 +931,22 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "uv2nix",
+        "type": "github"
+      }
+    },
+    "wshobson-agents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778763874,
+        "narHash": "sha256-ylBQIJqAC/H9tW38AszKovzN6dn4+vwub5X4nFW82ug=",
+        "owner": "wshobson",
+        "repo": "agents",
+        "rev": "112197c6bfd0a1ab10d374e85a2f5efa4757b77d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wshobson",
+        "repo": "agents",
         "type": "github"
       }
     },

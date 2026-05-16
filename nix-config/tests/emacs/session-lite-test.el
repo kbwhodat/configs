@@ -102,4 +102,59 @@
               (should (equal (plist-get notes :selected-file) notes-file))))
         (mapc #'kill-buffer (list work-buffer notes-buffer global-buffer))))))
 
+(ert-deftest my/session-lite-restores-file-backed-window-splits ()
+  (my/session-lite-test-with-temp-files ((left-file "session-lite-left")
+                                         (right-file "session-lite-right")
+                                         (snapshot-file "session-lite-snapshot"))
+    (let ((my/session-lite-file snapshot-file)
+          (my/session-lite-restore-idle-delay 100)
+          (left-buffer (find-file-noselect left-file))
+          (right-buffer (find-file-noselect right-file)))
+      (unwind-protect
+          (progn
+            (delete-other-windows)
+            (switch-to-buffer left-buffer)
+            (set-window-buffer (split-window-right) right-buffer)
+            (select-window (frame-first-window))
+            (my/session-lite-save t)
+            (delete-other-windows)
+            (switch-to-buffer (get-buffer-create "*session-lite-restore-test*"))
+
+            (my/session-lite-restore)
+
+            (should (= (length (window-list nil 'no-minibuf)) 2))
+            (should (equal (buffer-local-value 'buffer-file-name
+                                               (window-buffer (selected-window)))
+                           left-file))
+            (should (equal (buffer-local-value 'buffer-file-name
+                                               (window-buffer (next-window)))
+                           right-file)))
+        (delete-other-windows)
+        (mapc #'kill-buffer
+              (delq nil (list left-buffer right-buffer
+                              (get-buffer "*session-lite-restore-test*"))))))))
+
+(ert-deftest my/session-lite-gui-frame-restore-targets-hook-frame ()
+  (let ((my/session-lite--restored nil)
+        (restored-frame :not-called)
+        (target-frame (selected-frame)))
+    (cl-letf (((symbol-function 'display-graphic-p) (lambda (_frame) t))
+              ((symbol-function 'my/session-lite-restore)
+               (lambda (&optional frame)
+                 (setq restored-frame frame))))
+      (my/session-lite-restore-on-gui-frame target-frame)
+      (should (eq restored-frame target-frame)))))
+
+(ert-deftest my/session-lite-frame-close-save-targets-closing-frame ()
+  (let ((saved-force :not-called)
+        (saved-frame :not-called)
+        (target-frame (selected-frame)))
+    (cl-letf (((symbol-function 'my/session-lite-save)
+               (lambda (&optional force frame)
+                 (setq saved-force force
+                       saved-frame frame))))
+      (my/session-lite-save-on-frame-close target-frame)
+      (should-not saved-force)
+      (should (eq saved-frame target-frame)))))
+
 ;;; session-lite-test.el ends here
