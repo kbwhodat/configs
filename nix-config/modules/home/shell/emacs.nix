@@ -1,8 +1,27 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 let
   inherit (pkgs.stdenv) isDarwin;
-  
+
+  # We use the entire emacs binary + package set from `unstable' so
+  # native-comp .eln files in `emacsPackages' match the running emacs
+  # build hash exactly.  Stable nixos-25.11 also ships emacs 30.2,
+  # but with a different build hash — when stable emacs tries to load
+  # an .eln compiled against unstable's emacs, the hash check fails,
+  # JIT-recompile triggers, libgccjit can't find a gcc driver in the
+  # daemon's PATH, and we get a wall of warnings on every package load.
+  # Pulling both from the same channel eliminates the mismatch.
+  unstable = import inputs.unstable {
+    system = pkgs.stdenv.hostPlatform.system;
+    config.allowUnfree = true;
+    # Apply the NUR overlay so unstable.nur.repos.* exists and any
+    # NUR emacs package (e.g. majutsu) is built against unstable.emacs,
+    # not stable.  Without this overlay, `pkgs.nur.repos.X' uses stable
+    # epkgs and JIT-fails to recompile against our unstable emacs.
+    overlays = [ inputs.nur.overlays.default ];
+  };
+  emacsPkg = unstable.emacs;
+
   # pick ONE: classic (~/.emacs.d) or XDG (~/.config/emacs)
   useXDG = false;
 
@@ -70,7 +89,15 @@ in {
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs; 
+    package = emacsPkg;
+    # home-manager builds the package set via `pkgs.emacsPackagesFor cfg.package'
+    # where `pkgs' is stable nixpkgs.  That gives us stable's package
+    # definitions linked against unstable's emacs binary — which means
+    # packages that only exist in unstable (e.g. `agent-shell') need to
+    # be injected via the `overrides' overlay.
+    overrides = self: super: {
+      inherit (unstable.emacsPackages) agent-shell;
+    };
     extraPackages = epkgs: with epkgs; [
       # ---- core completion / minibuffer ----
       vertico orderless marginalia consult
@@ -112,7 +139,7 @@ in {
       magit vterm gptel elfeed pdf-tools notdeft
 
       # ---- jujutsu (jj VCS) integration ----
-      pkgs.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR)
+      unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR; from unstable to match emacsPkg)
 
       # ---- workspaces / scratch ----
       persp-mode persistent-scratch
@@ -124,6 +151,9 @@ in {
       wgrep            # batch-edit consult-ripgrep results via embark-export
       helpful          # richer describe-* buffers (callers, refs, source)
       apheleia         # format-on-save via subprocess (ruff/prettier/shfmt/...)
+      pulsar           # pulse the line on jumps (avy, M-., consult, recenter)
+      jinx             # fast spell-check via libenchant (Apple Spell on macOS)
+      agent-shell      # native emacs shell for ACP-protocol LLM agents
 
     ];
   };
@@ -220,7 +250,7 @@ in {
   # whole block runs inside `set +e` so HM's outer `set -eu` doesn't
   # halt on the first non-zero exit.
   # All paths baked at eval time — no runtime path discovery needed.
-  # ${pkgs.emacs} = real emacs store; cp -L follows the bin/emacs -> emacs-XX.X symlink.
+  # ${emacsPkg} = real emacs store; cp -L follows the bin/emacs -> emacs-XX.X symlink.
   # native-lisp lives at <store>/lib/emacs/<version>/native-lisp — glob picks the version dir.
   # The inner shell wrapper `.emacs-wrapped` lives in the wrapped (with-packages) derivation.
   home.activation.stabilizeEmacsAndBounce = lib.hm.dag.entryAfter [
@@ -231,14 +261,14 @@ in {
     BIN="$HOME/.local/bin"
     mkdir -p "$BIN"
 
-    /bin/cp -fL ${pkgs.emacs}/bin/emacs       "$BIN/emacs-stable"
-    /bin/cp -fL ${pkgs.emacs}/bin/emacsclient "$BIN/emacsclient-stable"
+    /bin/cp -fL ${emacsPkg}/bin/emacs       "$BIN/emacs-stable"
+    /bin/cp -fL ${emacsPkg}/bin/emacsclient "$BIN/emacsclient-stable"
     /bin/chmod u+rwx "$BIN/emacs-stable" "$BIN/emacsclient-stable"
 
-    NATIVE_LISP=$(ls -d ${pkgs.emacs}/lib/emacs/*/native-lisp 2>/dev/null | /usr/bin/head -1)
+    NATIVE_LISP=$(ls -d ${emacsPkg}/lib/emacs/*/native-lisp 2>/dev/null | /usr/bin/head -1)
     [ -n "$NATIVE_LISP" ] && /bin/ln -sfn "$NATIVE_LISP" "$HOME/.local/native-lisp"
 
-    /usr/bin/sed "s|exec ${pkgs.emacs}/bin/emacs |exec $BIN/emacs-stable |g" \
+    /usr/bin/sed "s|exec ${emacsPkg}/bin/emacs |exec $BIN/emacs-stable |g" \
       ${config.programs.emacs.finalPackage}/bin/.emacs-wrapped > "$BIN/emacs-stable-launch"
     /bin/chmod u+rwx "$BIN/emacs-stable-launch"
 
@@ -272,6 +302,29 @@ in {
     fi
   '';
 
+  # Regenerate ~/.emacs.d/elfeed-feeds.el from the canonical feeds list
+  # at nix-config/data/feeds.txt — but ONLY when the FEED COUNT changes.
+  # Compares non-comment lines in feeds.txt vs feed entries in the
+  # generated output; runs the script if they differ.  Edit-in-place
+  # changes (renaming a tag, fixing a URL) keep the count the same and
+  # don't trigger regen — force it manually with the script if needed.
+  home.activation.regenerateElfeedFeeds =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      FEEDS_TXT="$HOME/.config/nix-config/data/feeds.txt"
+      SCRIPT="$HOME/.config/nix-config/scripts/feeds-to-elfeed.sh"
+      OUT="$HOME/.emacs.d/elfeed-feeds.el"
+      if [ -r "$FEEDS_TXT" ] && [ -x "$SCRIPT" ]; then
+        SRC_COUNT=$(grep -cvE '^[[:space:]]*(#|$)' "$FEEDS_TXT" || echo 0)
+        OUT_COUNT=0
+        [ -e "$OUT" ] && OUT_COUNT=$(grep -c '^        (' "$OUT" || echo 0)
+        if [ "$SRC_COUNT" != "$OUT_COUNT" ]; then
+          echo "[regenerateElfeedFeeds] $OUT_COUNT -> $SRC_COUNT feeds; regenerating"
+          "$SCRIPT" >/dev/null 2>&1 || \
+            echo "[regenerateElfeedFeeds] WARNING: feeds-to-elfeed.sh failed" >&2
+        fi
+      fi
+    '';
+
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
   home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [
     pkgs.pyright
@@ -283,6 +336,7 @@ in {
     pkgs.nixfmt-rfc-style
     pkgs.xapian
     pkgs.emacs-lsp-booster   # rust JSON bridge for eglot-booster
+    pkgs.enchant             # jinx spell-check backend (uses Apple Spell on macOS)
   ];
 
   # Daemon-only flow: typing `emacs` in any shell goes through emacsclient.

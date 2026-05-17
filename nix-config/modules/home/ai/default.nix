@@ -13,6 +13,7 @@ let cfg = config.modules.ai; in {
     ./hermes-profiles.nix
     ./claude-code.nix
     ./opencode.nix
+    ./kimi-cli.nix
     ./pi-coding-agent.nix
     ./no-hallucination.nix
     ./hallucination-detector.nix
@@ -27,6 +28,7 @@ let cfg = config.modules.ai; in {
   config = lib.mkIf cfg.enable {
     modules.ai.claude-code.enable            = lib.mkDefault true;
     modules.ai.opencode.enable               = lib.mkDefault true;
+    modules.ai.kimi-cli.enable               = lib.mkDefault true;
     modules.ai.mcp-servers.enable            = lib.mkDefault true;
     modules.ai.rtk.enable                    = lib.mkDefault true;
     modules.ai.jobdrop.enable                = lib.mkDefault true;

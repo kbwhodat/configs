@@ -64,9 +64,21 @@
   ;; --- buffers / quit / nav ---
   (my/leader
     "b"  '(:ignore t :which-key "buffers")
-    "bb" '(switch-to-buffer    :which-key "switch")
-    "bd" '(kill-this-buffer    :which-key "kill")
+    ;; `persp-switch-to-buffer' restricts the picker to the current
+    ;; workspace's buffers.  Vanilla `switch-to-buffer' would also
+    ;; filter (because `persp-set-read-buffer-function t' in
+    ;; config-sessions.el), but binding the persp variant explicitly
+    ;; keeps the intent visible at the call site.
+    "bb" '(persp-switch-to-buffer :which-key "switch (in workspace)")
+    "bB" '(switch-to-buffer       :which-key "switch (all buffers)")
+    ;; `kill-this-buffer' was retired in emacs 30 — it errors unless
+    ;; called as a menu event.  Use `kill-buffer' (prompts via vertico)
+    ;; for "kill a buffer" and `kill-current-buffer' for the no-prompt
+    ;; "kill the one I'm in" path.
+    "bd" '(kill-buffer         :which-key "kill (pick)")
+    "bq" '(bury-buffer         :which-key "bury (hide, keep)")
     "d"  '(kill-current-buffer :which-key "kill current")
+    "D"  '(bury-buffer         :which-key "bury current")
     ";"  '(previous-buffer     :which-key "prev buffer")
     "'"  '(next-buffer         :which-key "next buffer")
     "q"  '(save-buffers-kill-terminal :which-key "quit"))

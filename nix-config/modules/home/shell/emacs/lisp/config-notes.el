@@ -162,6 +162,21 @@ In-memory only; does not modify any file on disk."
         (kill-buffer buf))))
   (advice-add 'notdeft-find-file :after #'my/notdeft--dismiss))
 
+;; --- Jinx: fast spell-check via libenchant -------------------------
+;; Replaces flyspell.  Uses libenchant (system Apple Spell on macOS,
+;; hunspell/aspell elsewhere — see `pkgs.enchant' in emacs.nix).
+;; Auto-enables in prose modes; comments + strings in prog modes are
+;; opt-in via M-x jinx-mode.
+;;
+;; M-$    `jinx-correct'     — fix the misspelled word at/before point
+;; C-M-$  `jinx-languages'   — toggle active dictionary languages
+(use-package jinx
+  :hook ((text-mode . jinx-mode)
+         (markdown-mode . jinx-mode)
+         (org-mode . jinx-mode))
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)))
+
 ;; --- Persistent scratch ---
 (use-package persistent-scratch
   :hook (after-init . persistent-scratch-autosave-mode)

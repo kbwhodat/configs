@@ -18,7 +18,11 @@
   (setq persp-auto-resume-time -1
         persp-autosave-fname "autosave"
         persp-save-dir my/persp-save-dir
-        persp-autosave-default nil)
+        persp-autosave-default nil
+        ;; Filter `switch-to-buffer' (and any other read-buffer caller)
+        ;; to the current workspace's buffers.  Cross-workspace switch
+        ;; available via `C-x C-b' / `M-x ibuffer'.
+        persp-set-read-buffer-function t)
   (defun my/persp-list ()
     "Echo the full list of workspaces with `*' next to the current one."
     (interactive)

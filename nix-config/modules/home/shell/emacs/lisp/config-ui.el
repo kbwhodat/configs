@@ -12,18 +12,35 @@
 ;; --- Relative line numbers when enabled (vim-style) ---
 (setq display-line-numbers-type 'relative)
 
-;; --- Minimal modeline: filled vs hollow dot + buffer name ---
+;; --- Minimal modeline: filled vs hollow dot + buffer name; workspace on right ---
+(defun my/modeline-workspace-name ()
+  "Return the current persp-mode workspace name, or empty string."
+  (or (and (bound-and-true-p persp-mode)
+           (fboundp 'get-current-persp)
+           (fboundp 'safe-persp-name)
+           (let ((name (safe-persp-name (get-current-persp))))
+             (and (stringp name) name)))
+      ""))
+
 (setq-default
  mode-line-format
  '((:eval
-    (concat
-     (if (buffer-modified-p)
-         (concat
-          (propertize "   ● " 'face '(:foreground "#ffffff" :weight bold))
-          (propertize "%b"     'face '(:foreground "#ffffff" :weight bold)))
-       (concat
-        (propertize "   ○ " 'face '(:weight bold))
-        (propertize "%b"    'face '(:weight bold))))))))
+    (let* ((left
+            (if (buffer-modified-p)
+                (concat
+                 (propertize "   ● " 'face '(:foreground "#ffffff" :weight bold))
+                 (propertize "%b"    'face '(:foreground "#ffffff" :weight bold)))
+              (concat
+               (propertize "   ○ " 'face '(:weight bold))
+               (propertize "%b"    'face '(:weight bold)))))
+           (ws (my/modeline-workspace-name))
+           ;; +1 for the right-side trailing space.
+           (right-width (1+ (length ws))))
+      (concat
+       left
+       (propertize " " 'display
+                   `((space :align-to (- right ,right-width))))
+       (propertize ws 'face '(:weight bold)))))))
 
 ;; --- Theme load path (kbwhodat doom-alabaster fetched via nix) ---
 (add-to-list 'custom-theme-load-path
@@ -35,6 +52,30 @@
   :init
   (add-hook 'window-setup-hook
             (lambda () (load-theme 'doom-alabaster t))))
+
+;; --- Pulsar: pulse the line on jumps -------------------------------
+;; Pulses a brief highlight on the current line after navigation
+;; commands (avy, M-., consult-line, recenter, window-switch).  Solves
+;; "where did my cursor go?" after every jump.  Evil scroll/window/
+;; goto-line commands aren't in the default pulse list — add them here.
+(use-package pulsar
+  :hook (after-init . pulsar-global-mode)
+  :config
+  (setq pulsar-pulse t
+        pulsar-delay 0.04
+        pulsar-iterations 8
+        pulsar-face 'pulsar-yellow
+        pulsar-region-face 'pulsar-yellow)
+  (dolist (cmd '(evil-scroll-up evil-scroll-down
+                 evil-scroll-page-up evil-scroll-page-down
+                 evil-window-up evil-window-down
+                 evil-window-left evil-window-right
+                 evil-goto-line evil-goto-first-line
+                 evil-search-next evil-search-previous
+                 windmove-up windmove-down
+                 windmove-left windmove-right
+                 avy-goto-word-1 avy-goto-line avy-goto-char-timer))
+    (add-to-list 'pulsar-pulse-functions cmd)))
 
 ;; --- Selection / region highlight ----------------------------------
 ;; Theme default `region' background is `#5C5C5C' — barely visible on

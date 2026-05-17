@@ -54,8 +54,9 @@
 
 ;; Restrict VC backends to ones we actually use. Default has 8 entries
 ;; (RCS CVS SVN SCCS SRC Bzr Git Hg); each costs a stat() per file
-;; open as VC sniffs for the backend.  Trim to Git + JJ (vc-jj).
-(setq vc-handled-backends '(Git JJ))
+;; open as VC sniffs for the backend.  Trim to Git only — jj support
+;; (vc-jj package) was dropped; we use majutsu/jj-CLI for jj repos.
+(setq vc-handled-backends '(Git))
 
 ;; --- Subprocess + LSP/eldoc/flymake latency knobs --------------------
 ;; These four are the highest-impact remaining input-feel tweaks for an

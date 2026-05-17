@@ -208,10 +208,22 @@ the snapshot is empty."
       (read (current-buffer)))))
 
 (defun my/session-lite--find-file (file &optional select)
-  "Open FILE cheaply.  SELECT means show it in the selected window."
+  "Open FILE cheaply.  SELECT means show it in the selected window.
+Adds the buffer to the current persp-mode workspace explicitly —
+`find-file-noselect' bypasses persp's `find-file-hook' auto-add, so
+without this restored buffers wouldn't show in workspace-filtered
+pickers like `persp-switch-to-buffer'."
   (when (my/session-lite--file-eligible-p file)
     (let ((enable-local-variables nil))
       (let ((buffer (find-file-noselect file)))
+        (when (and buffer
+                   (bound-and-true-p persp-mode)
+                   (fboundp 'persp-add-buffer)
+                   ;; Only add when there's a real perspective; in the
+                   ;; default "none" state `get-current-persp' is nil
+                   ;; and `persp-add-buffer' errors.
+                   (and (fboundp 'get-current-persp) (get-current-persp)))
+          (ignore-errors (persp-add-buffer buffer)))
         (when select
           (switch-to-buffer buffer))
         buffer))))
