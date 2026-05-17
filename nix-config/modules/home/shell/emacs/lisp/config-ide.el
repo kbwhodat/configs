@@ -10,10 +10,13 @@
 (setq major-mode-remap-alist
       '((python-mode     . python-ts-mode)
         (sh-mode         . bash-ts-mode)
+        (go-mode         . go-ts-mode)
         (js-mode         . js-ts-mode)
         (typescript-mode . typescript-ts-mode)
         (json-mode       . json-ts-mode)
         (yaml-mode       . yaml-ts-mode)))
+
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
 
 ;; --- nix-ts-mode for *.nix (treesit-auto doesn't ship a nix recipe) ---
 (use-package nix-ts-mode
@@ -35,7 +38,9 @@
   (setq eglot-report-progress nil
         eglot-autoshutdown t
         eglot-events-buffer-config '(:size 0 :format short)
-        jsonrpc-event-hook nil)
+        jsonrpc-event-hook nil
+        eglot-workspace-configuration
+        '(:nil (:nix (:flake (:autoArchive t)))))
   :config
   (add-to-list 'eglot-server-programs
                '(python-ts-mode . ("pyright-langserver" "--stdio")))
@@ -93,6 +98,27 @@
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 
+;; --- apheleia: subprocess CLI formatter, on-demand only -------------
+;; Installed but NOT hooked to save — user values their manual
+;; formatting (compact one-liners, deliberate alignment, etc.) and
+;; doesn't want it auto-clobbered on every C-x C-s.  Available via:
+;;
+;;   M-x apheleia-format-buffer  — format current buffer once
+;;   M-x apheleia-mode           — toggle save-format for this buffer
+;;
+;; For per-project save-format, drop a .dir-locals.el at the project root:
+;;
+;;   ((nil . ((eval . (apheleia-mode 1)))))
+;;
+;; Default formatter for python is `black'; override to `ruff' since
+;; ruff is on PATH via emacs.nix home.packages.
+(use-package apheleia
+  :defer t
+  :commands (apheleia-format-buffer apheleia-mode)
+  :config
+  (setf (alist-get 'python-mode apheleia-mode-alist) 'ruff
+        (alist-get 'python-ts-mode apheleia-mode-alist) 'ruff))
+
 ;; --- Built-in compile/run --------------------------------------------
 ;; `compile' is the native build runner: opens a *compilation* buffer,
 ;; captures stdout+stderr, parses errors so RET / `next-error' jumps
@@ -101,6 +127,8 @@
 ;; `project-compile' (built-in to emacs 28+) does the same but runs
 ;; from the project root and caches the command per-project — preferred
 ;; for repo work since you can ride the same SPC c c forever.
+(setq-default compile-command "")             ; don't default prompts to "make -k"
+
 (setq compilation-scroll-output 'first-error  ; auto-scroll, stop at first error
       compilation-ask-about-save nil          ; auto-save buffers before compile
       compilation-always-kill t               ; one compile at a time
@@ -114,6 +142,7 @@
 ;; cc  compile (or recompile from project cache)   cr  recompile
 ;; cC  re-prompt for compile command               ck  kill running compile
 ;; cn  next error                                  cp  previous error
+;; cv  run command in vterm
 (with-eval-after-load 'general
   (when (fboundp 'my/leader)
     (my/leader
@@ -124,6 +153,7 @@
       "ck" '(kill-compilation    :which-key "kill compile")
       "cn" '(next-error          :which-key "next error")
       "cp" '(previous-error      :which-key "prev error")
+      "cv" '(my/vterm-run-command :which-key "run in vterm")
       "c&" '(async-shell-command :which-key "background shell"))))
 
 (provide 'config-ide)

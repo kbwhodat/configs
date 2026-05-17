@@ -147,12 +147,13 @@
     magit         ; SPC g s     — pulls ~30 sub-files
     majutsu       ; SPC G       — magit-style jj UI; depends on magit
     vterm         ; SPC o t     — loads C dynamic module
-    notdeft       ; SPC n s     — Xapian binding load
     tempel        ; prog-mode hook
-    elfeed        ; SPC o f
-    pdf-tools)    ; opening *.pdf
+    elfeed)       ; SPC o r
   "Heavy packages to pre-load on idle so first-use is not laggy.
-Order matters — earliest entries get loaded soonest.")
+Order matters — earliest entries get loaded soonest.
+Dropped from preload (autoload on demand instead, ~MB RAM saved):
+  - notdeft   (Xapian native binding — rarely-searched notes)
+  - pdf-tools (heavy PDF renderer — loads on .pdf via :mode)")
 
 (defun my/idle-preload-next ()
   "Pop one package off `my/idle-preload-packages' and require it.

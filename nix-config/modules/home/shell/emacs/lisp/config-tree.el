@@ -51,7 +51,21 @@ but ignores it — the routing logic doesn't need a prefix."
       (select-window target)
       (find-file path))
      ((and path (file-directory-p path))
-      (treemacs-toggle-node)))))
+       (treemacs-toggle-node)))))
+
+(defun my/treemacs-goto-parent-or-open ()
+  "Go to the parent node, or open the current node if already at the top.
+This keeps `-' as an up-dir key while making it useful on a collapsed
+project/root node."
+  (interactive)
+  (let ((start (point)))
+    (treemacs-goto-parent-node)
+    (when (= start (point))
+      (let* ((btn (treemacs-current-button))
+             (path (and btn (treemacs-safe-button-get btn :path))))
+        (when (and btn path (file-directory-p path)
+                   (treemacs-is-node-collapsed? btn))
+          (treemacs-toggle-node))))))
 
 (use-package treemacs
   :defer t
@@ -75,6 +89,9 @@ but ignores it — the routing logic doesn't need a prefix."
         "e"  '(my/treemacs           :which-key "file tree")
         "T" '(my/treemacs-find-file  :which-key "tree: focus file"))))
   :config
+  ;; `treemacs-create-workspace' prompts via `cfrs-read', but current
+  ;; treemacs does not load cfrs before calling it.
+  (require 'cfrs)
   (setq treemacs-RET-actions-config
         '((root-node-open   . treemacs-toggle-node)
           (root-node-closed . treemacs-toggle-node)
@@ -95,7 +112,11 @@ but ignores it — the routing logic doesn't need a prefix."
   :after (treemacs evil)
   :config
   (dolist (binding '(("w"  . treemacs-set-width)            ; prompt for width
-                     ("-"  . treemacs-goto-parent-node)     ; netrw: up a dir
+                     ("a"  . treemacs-add-project-to-workspace) ; add root to workspace
+                     ("A"  . treemacs-create-workspace)     ; create workspace
+                     ("S"  . treemacs-switch-workspace)     ; switch workspace
+                     ("-"  . my/treemacs-goto-parent-or-open) ; up dir, open root
+                     ("d"  . treemacs-remove-project-from-workspace) ; remove root from workspace
                      ("D"  . treemacs-delete-file)          ; netrw: delete
                      ("%"  . treemacs-create-file)          ; netrw: new file
                      ("gh" . treemacs-toggle-show-dotfiles))) ; netrw: toggle dotfiles

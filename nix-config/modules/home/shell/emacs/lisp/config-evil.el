@@ -79,12 +79,26 @@
     (interactive) (split-window-below) (other-window 1))
   (defun my/split-right ()
     (interactive) (split-window-right) (other-window 1))
+  (defvar my/window-focus-configuration nil
+    "Window configuration saved before focusing one window.")
+  (defun my/window-focus-toggle ()
+    "Toggle the selected window between focused and restored layout."
+    (interactive)
+    (if my/window-focus-configuration
+        (let ((config my/window-focus-configuration))
+          (setq my/window-focus-configuration nil)
+          (set-window-configuration config))
+      (when (window-parameter (selected-window) 'window-side)
+        (user-error "Cannot focus a side window"))
+      (setq my/window-focus-configuration (current-window-configuration))
+      (delete-other-windows)))
   (my/leader
     "-"  '(my/split-below     :which-key "split below")
     "\\" '(my/split-right     :which-key "split right")
     "w"  '(:ignore t :which-key "windows")
     "wv" '(split-window-right :which-key "vsplit")
     "ws" '(split-window-below :which-key "hsplit")
+    "wf" '(my/window-focus-toggle :which-key "focus toggle")
     "wd" '(delete-window      :which-key "close")
     "wu" '(winner-undo        :which-key "layout undo")
     "wr" '(winner-redo        :which-key "layout redo"))

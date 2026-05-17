@@ -149,18 +149,17 @@ In-memory only; does not modify any file on disk."
   ;; Shorter timestamp — full datetime was line-noise.
   (setq notdeft-time-format " %Y-%m-%d")
 
-  ;; --- Close the *NotDeft* buffer/window after picking a file -------
+  ;; --- Remove the *NotDeft* buffer/window after picking a file ------
   ;; Notdeft leaves its search buffer behind after RET on a result.
-  ;; Bury it and close the window so the picked file takes the full
-  ;; frame.  Killing would force a re-index next time; burying keeps
-  ;; the search state warm for instant reopen via SPC n s.
+  ;; Kill it so normal buffer cycling does not keep returning to the
+  ;; search buffer after a note has been selected.
   (defun my/notdeft--dismiss (&rest _)
     (let ((buf (get-buffer notdeft-buffer)))
       (when buf
         (dolist (win (get-buffer-window-list buf nil t))
           (when (window-deletable-p win)
             (delete-window win)))
-        (bury-buffer buf))))
+        (kill-buffer buf))))
   (advice-add 'notdeft-find-file :after #'my/notdeft--dismiss))
 
 ;; --- Persistent scratch ---

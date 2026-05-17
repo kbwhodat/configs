@@ -8,6 +8,12 @@
 (require 'cl-lib)
 (require 'subr-x)
 
+(defun my/gptel-menu ()
+  "Open gptel's transient menu, loading its current home first."
+  (interactive)
+  (require 'gptel-transient)
+  (call-interactively #'gptel-menu))
+
 (defun my/gptel-load-skill (path)
   "Load a Claude Code SKILL.md as the system prompt for the current gptel chat.
 Strips the YAML frontmatter (between leading `---' fences) so the LLM
@@ -138,6 +144,104 @@ major-mode name, leaves point ready for you to type the question."
       (insert (format "Feedback on this line (`%s`, %s):\n```%s\n%s\n```\n\n"
                       file mode mode line)))))
 
+(defun my/gptel-rewrite-region-prompt (instruction)
+  "Prompt for INSTRUCTION and rewrite the active region in place."
+  (interactive
+   (progn
+     (unless (use-region-p)
+       (user-error "Select a region before rewriting"))
+     (require 'gptel-rewrite)
+     (list (read-string "Rewrite instruction: "))))
+  (require 'gptel-rewrite)
+  (unless (use-region-p)
+    (user-error "Select a region before rewriting"))
+  (setq-local gptel-rewrite-default-action 'accept)
+  (message "gptel rewrite: sending to %s/%s..."
+           (gptel-backend-name gptel-backend)
+           (gptel--model-name gptel-model))
+  (gptel--suffix-rewrite instruction))
+
+(defconst my/gptel-selection-file
+  (expand-file-name "gptel-selection.el" user-emacs-directory)
+  "Small local state file storing the selected gptel backend/model.")
+
+(defvar my/gptel--restoring-selection nil
+  "Non-nil while restoring gptel selection from disk.")
+
+(defun my/gptel--selection-readable-p (backend-name)
+  "Return non-nil if BACKEND-NAME has credentials/config for startup use."
+  (pcase backend-name
+    ("Claude" (not (string-empty-p (or (getenv "ANTHROPIC_API_KEY") ""))))
+    ("ChatGPT" (not (string-empty-p (or (getenv "OPENAI_API_KEY") ""))))
+    ("Kimi-Coder" (file-readable-p my/kimi-credentials-file))
+    ("Codex" (file-readable-p my/codex-credentials-file))
+    (_ t)))
+
+(defun my/gptel--save-selection (&optional backend model)
+  "Persist BACKEND and MODEL names without storing secrets."
+  (unless my/gptel--restoring-selection
+    (let* ((backend (or backend gptel-backend))
+           (model (or model gptel-model))
+           (backend-name (and backend (gptel-backend-name backend))))
+      (when (and backend-name model)
+        (make-directory (file-name-directory my/gptel-selection-file) t)
+        (with-temp-file my/gptel-selection-file
+          (let ((print-level nil)
+                (print-length nil))
+            (prin1 `(:backend ,backend-name :model ,model) (current-buffer))))))))
+
+(defun my/gptel--read-selection ()
+  "Read persisted gptel backend/model selection, or nil."
+  (when (file-readable-p my/gptel-selection-file)
+    (ignore-errors
+      (with-temp-buffer
+        (insert-file-contents my/gptel-selection-file)
+        (read (current-buffer))))))
+
+(defun my/gptel--set-default (backend-name model)
+  "Set default gptel BACKEND-NAME and MODEL when available."
+  (when-let* ((backend (alist-get backend-name gptel--known-backends nil nil #'equal)))
+    (setq gptel-backend backend
+          gptel-model model)
+    t))
+
+(defun my/gptel--model-supported-p (backend-name model)
+  "Return non-nil when BACKEND-NAME advertises MODEL."
+  (when-let* ((backend (alist-get backend-name gptel--known-backends nil nil #'equal)))
+    (cl-some (lambda (candidate)
+               (eq (if (consp candidate) (car candidate) candidate) model))
+             (gptel-backend-models backend))))
+
+(defun my/gptel--restore-or-choose-default ()
+  "Restore a usable gptel default, avoiding unconfigured providers."
+  (let ((my/gptel--restoring-selection t)
+        (selection (my/gptel--read-selection)))
+    (or (when-let* ((backend-name (plist-get selection :backend))
+                    (model (plist-get selection :model)))
+          (when (and (my/gptel--selection-readable-p backend-name)
+                     (my/gptel--model-supported-p backend-name model))
+            (my/gptel--set-default backend-name model)))
+        (when (and (file-readable-p my/codex-credentials-file)
+                   (my/gptel--set-default "Codex" 'gpt-5.5))
+          t)
+        (when (and (file-readable-p my/kimi-credentials-file)
+                   (my/gptel--set-default "Kimi-Coder" 'kimi-for-coding))
+          t)
+        (when (and (not (string-empty-p (or (getenv "ANTHROPIC_API_KEY") "")))
+                   (my/gptel--set-default "Claude" 'claude-opus-4-7))
+          t)
+        (my/gptel--set-default "ChatGPT" 'gpt-4o))))
+
+(defun my/gptel--selection-watcher (symbol newval operation _where)
+  "Persist gptel selection after SYMBOL changes to NEWVAL by OPERATION."
+  (when (and (eq operation 'set)
+             (not my/gptel--restoring-selection)
+             (boundp 'gptel-backend)
+             (boundp 'gptel-model))
+    (pcase symbol
+      ('gptel-backend (my/gptel--save-selection newval gptel-model))
+      ('gptel-model (my/gptel--save-selection gptel-backend newval)))))
+
 ;; =============================================================================
 ;; Kimi K2 Coding Plan — OAuth 2.0 Device Authorization Grant in pure elisp
 ;; =============================================================================
@@ -156,6 +260,8 @@ Matches the constant baked into pi-kimi-coder's source.")
 (defconst my/kimi-credentials-file
   (expand-file-name "~/.kimi/credentials/kimi-code.json")
   "Shared credential store. Read/written by my/kimi-* AND pi-kimi-coder.")
+(defconst my/kimi-refresh-skew-seconds 300
+  "Refresh Kimi OAuth access tokens when less than this many seconds remain.")
 
 (defun my/kimi--http-post (path params)
   "POST form-encoded PARAMS (alist) to `my/kimi-oauth-host'+PATH.
@@ -532,17 +638,40 @@ Streaming + tool-use supported.  Auth via `my/codex-access-token'."
                      :endpoint endpoint
                      :protocol "https"
                      :stream t
-                     :coding-system 'utf-8
-                     :models models
-                     :header (lambda ()
-                               `(("chatgpt-account-id" . ,(my/codex-account-id))
-                                 ("Originator" . "emacs-gptel")))
-                     :key #'my/codex-access-token
-                     :url (concat "https://" host endpoint))))
+                      :coding-system 'utf-8
+                      :models models
+                      :header (lambda ()
+                                `(("Authorization" . ,(concat "Bearer " (my/codex-access-token)))
+                                  ("chatgpt-account-id" . ,(my/codex-account-id))
+                                  ("Originator" . "emacs-gptel")))
+                      :key #'my/codex-access-token
+                      :url (concat "https://" host endpoint))))
       (setf (alist-get name gptel--known-backends nil nil #'equal) backend)
       backend))
 
 ;; ---- helpers: prompts -> Responses-API input items + tool defs translate ----
+
+  (defun gptel-codex--flatten-text (content)
+    "Reduce gptel's possibly-structured CONTENT to a single string.
+`gptel-rewrite' (and other gptel paths) pass `:content' as a list or
+vector of `(:type \"text\" :text STRING)' parts instead of a bare
+string.  The Codex Responses API rejects that with
+    \"Invalid type for 'input[N].content[N].text': expected a string,
+     but got an array instead.\"
+so we concatenate the inner `:text' fields into a single string."
+    (cond
+     ((null content) "")
+     ((stringp content) content)
+     ((or (listp content) (vectorp content))
+      (mapconcat
+       (lambda (part)
+         (cond ((stringp part) part)
+               ((and (listp part) (plist-get part :text))
+                (gptel-codex--flatten-text (plist-get part :text)))
+               (t "")))
+       content
+       ""))
+     (t (format "%s" content))))
 
   (defun gptel-codex--prompts-to-input (prompts)
     "Translate gptel PROMPTS list into Responses API input items.
@@ -550,12 +679,17 @@ Handles: user/assistant text messages, assistant tool_calls (function_call
 items), and role=tool messages (function_call_output items)."
   (let (items)
     (dolist (p prompts)
-      (let ((role (plist-get p :role)))
+      (let ((role (if (stringp p) "user" (plist-get p :role))))
         (cond
+         ((stringp p)
+          (push `(:type "message"
+                  :role "user"
+                  :content [(:type "input_text" :text ,p)])
+                items))
          ((equal role "tool")
           (push `(:type "function_call_output"
                   :call_id ,(plist-get p :tool_call_id)
-                  :output ,(or (plist-get p :content) ""))
+                  :output ,(gptel-codex--flatten-text (plist-get p :content)))
                 items))
          ((and (equal role "assistant") (plist-get p :tool_calls))
           (cl-loop for tc across (plist-get p :tool_calls)
@@ -565,14 +699,14 @@ items), and role=tool messages (function_call_output items)."
                               :name ,(plist-get fn :name)
                               :arguments ,(or (plist-get fn :arguments) ""))
                             items))
-          (let ((c (plist-get p :content)))
-            (when (and c (not (eq c :null)) (not (string-empty-p c)))
+          (let ((c (gptel-codex--flatten-text (plist-get p :content))))
+            (when (and c (not (string-empty-p c)))
               (push `(:type "message"
                       :role "assistant"
                       :content [(:type "output_text" :text ,c)])
                     items))))
          (t
-          (let* ((text (or (plist-get p :content) ""))
+          (let* ((text (gptel-codex--flatten-text (plist-get p :content)))
                  (ctype (if (equal role "assistant") "output_text" "input_text")))
             (push `(:type "message"
                     :role ,role
@@ -622,7 +756,7 @@ Differs from Chat Completions by flattening :function fields."
          (body `(:model ,(gptel--model-name gptel-model)
                  :instructions ,sys
                  :input ,input
-                 :stream ,(if gptel-stream :json-true :json-false)
+                  :stream ,(if gptel-stream t :json-false)
                  :store :json-false)))
     (when (and gptel-use-tools gptel-tools)
       (plist-put body :tools (gptel-codex--tools-translate gptel-tools))
@@ -807,11 +941,11 @@ survive a daemon restart, after registering call:
 
 (use-package gptel
   :defer t
-  :commands (gptel gptel-send gptel-menu gptel-rewrite
-             my/gptel-feedback-line my/gptel-add-openai-backend
-             my/gptel-load-skill my/gptel-load-project-context
-             my/gptel-project-chat
-             my/kimi-login my/codex-login)
+  :commands (gptel gptel-send
+              my/gptel-feedback-line my/gptel-add-openai-backend
+              my/gptel-load-skill my/gptel-load-project-context
+              my/gptel-project-chat my/gptel-menu my/gptel-rewrite-region-prompt
+              my/kimi-login my/codex-login)
   :init
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)
@@ -820,23 +954,23 @@ survive a daemon restart, after registering call:
         "a a" '(gptel                          :which-key "chat (ephemeral)")
         "a C" '(my/gptel-project-chat          :which-key "chat (project, persistent)")
         "a s" '(gptel-send                     :which-key "send region")
-        "a r" '(gptel-rewrite                  :which-key "rewrite region")
+        "a r" '(my/gptel-rewrite-region-prompt :which-key "rewrite region")
         "a l" '(my/gptel-feedback-line         :which-key "feedback on line")
         "a k" '(my/gptel-load-skill            :which-key "load skill (SKILL.md)")
         "a c" '(my/gptel-load-project-context  :which-key "load CLAUDE/AGENTS/MEMORY")
         "a b" '(my/gptel-add-openai-backend    :which-key "add backend (LiteLLM/...)")
         "a L" '(my/kimi-login                  :which-key "kimi OAuth (device flow)")
         "a O" '(my/codex-login                 :which-key "OpenAI/Codex OAuth (PKCE)")
-        "a m" '(gptel-menu                     :which-key "menu (model/system/tools)"))))
+        "a m" '(my/gptel-menu                  :which-key "menu (model/system/tools)"))))
   :config
-  ;; --- Backend + model defaults ---------------------------------
-  ;; Explicit Anthropic backend so behavior doesn't depend on env
-  ;; auto-detection.  Rename `gptel-model' when newer Claude ships.
-  (setq gptel-backend (gptel-make-anthropic "Claude"
-                        :stream t
-                        :key (lambda () (getenv "ANTHROPIC_API_KEY")))
-        gptel-model   'claude-opus-4-7
-        gptel-default-mode 'markdown-mode
+  ;; --- Backends + model defaults --------------------------------
+  ;; Register Claude, but don't make it the startup default unless its
+  ;; API key exists.  The default is restored or chosen after the local
+  ;; OAuth backends are registered below.
+  (gptel-make-anthropic "Claude"
+    :stream t
+    :key (lambda () (getenv "ANTHROPIC_API_KEY")))
+  (setq gptel-default-mode 'markdown-mode
         gptel-track-response t
         gptel-track-media t)
 
@@ -861,7 +995,7 @@ Signals user-error if no credentials exist — run M-x my/kimi-login
            (access     (alist-get 'access_token data))
            (refresh    (alist-get 'refresh_token data))
            (expires-at (or (alist-get 'expires_at data) 0)))
-      (if (> expires-at (+ (float-time) 60))
+      (if (> expires-at (+ (float-time) my/kimi-refresh-skew-seconds))
           access
         ;; Stale or near-stale — refresh and persist.
         (unless refresh
@@ -878,7 +1012,12 @@ Signals user-error if no credentials exist — run M-x my/kimi-login
     :key #'my/kimi-coder-access-token
     ;; api.kimi.com checks User-Agent and rejects requests without an
     ;; agent-style UA.  KimiCLI/1.5 is the value pi-kimi-coder uses.
-    :header '(("User-Agent" . "KimiCLI/1.5"))
+    :header (lambda ()
+              (let ((token (my/kimi-coder-access-token)))
+                (unless (and (stringp token) (not (string= token "")))
+                  (user-error "Kimi OAuth access token missing — run M-x my/kimi-login"))
+                `(("Authorization" . ,(concat "Bearer " token))
+                  ("User-Agent" . "KimiCLI/1.5"))))
     :models '(kimi-for-coding kimi-k2.6 kimi-k2-thinking))
 
   ;; --- Codex (ChatGPT subscription, OAuth) ----------------------
@@ -887,7 +1026,13 @@ Signals user-error if no credentials exist — run M-x my/kimi-login
   ;; between gptel's Chat Completions shape and the Responses API shape
   ;; chatgpt.com/backend-api expects.  Non-streaming, no tool-use yet.
   (my/gptel-make-codex "Codex"
-    :models '(gpt-5 gpt-5-mini gpt-4o))
+    :models '(gpt-5.5 gpt-5.4-mini gpt-5.4 gpt-5.3-codex))
+
+  (my/gptel--restore-or-choose-default)
+  (remove-variable-watcher 'gptel-backend #'my/gptel--selection-watcher)
+  (remove-variable-watcher 'gptel-model #'my/gptel--selection-watcher)
+  (add-variable-watcher 'gptel-backend #'my/gptel--selection-watcher)
+  (add-variable-watcher 'gptel-model #'my/gptel--selection-watcher)
 
   ;; --- Auto-load project agent context on every chat -----------
   ;; New gptel chat buffer opened in a project dir → reads CLAUDE.md /
@@ -945,6 +1090,120 @@ Signals user-error if no credentials exist — run M-x my/kimi-login
 ;;
 ;; Any gptel chat started from a buffer in that project picks it up
 ;; automatically.  Saves restating project context every conversation.
+
+;; --- gptel-rewrite formatting policy --------------------------------
+(defvar my/gptel-rewrite-whole-buffer-format-modes
+  '(go-mode go-ts-mode rust-mode rust-ts-mode nix-mode nix-ts-mode)
+  "Major modes for which `gptel--rewrite-accept' formats the WHOLE
+buffer after accept (via the LSP's format-buffer).  Other modes get
+range-only formatting so user's manual formatting elsewhere is
+preserved.  Add modes here where canonical formatting is universal
+and you don't keep deliberate custom formatting (Go/gofmt,
+Rust/rustfmt, Nix/nixfmt).")
+
+;; --- gptel-rewrite: indent inserted text to match destination ------
+;;
+;; LLMs routinely return code at column 0 even when the original was
+;; inside a method/block — `gptel--rewrite-accept' just `insert's
+;; the response verbatim, so it lands flush left.  We run the
+;; major-mode's indent function over the freshly inserted region
+;; (treesit-indent for *-ts-mode buffers, c-indent-region for c-mode,
+;; etc.) so it drops in correctly.
+;;
+;; Captures (buffer, start, response-length) BEFORE the original
+;; accept runs and uses those to compute the inserted region.  For
+;; single-overlay accepts (the typical case) this is exact; for
+;; multi-overlay accepts later overlays' positions may shift, so
+;; the second+ regions are best-effort.
+(defun my/gptel--rewrite-indent-around (orig-fn &optional ovs buf)
+  "Around `gptel--rewrite-accept': make the inserted region land
+indented and canonically formatted.  Three layers, each falls back
+gracefully:
+
+  1. Force the tree-sitter parser (and syntax cache) to refresh
+     before indenting — without this the indent intermittently uses
+     stale node positions and either over-indents or leaves things
+     flush-left depending on timing.
+  2. `indent-region' over the inserted span via the major-mode's
+     `indent-line-function' (treesit-indent for *-ts-mode, etc.).
+  3. If eglot is managing the buffer, `eglot-format' the same span
+     — gopls/pyright/nil/etc. invoke the canonical formatter
+     (gofmt, ruff, nixfmt, …) which fixes anything indent-region
+     missed and also tidies spacing/blank-line conventions.
+
+Multi-overlay accepts: positions of overlays after the first may
+have shifted by the time we indent.  We trust the first region;
+later ones are best-effort."
+  (let* ((ov-list (ensure-list ovs))
+         (regions
+          (mapcar (lambda (ov)
+                    (list (overlay-buffer ov)
+                          (overlay-start ov)
+                          (length (or (overlay-get ov 'gptel-rewrite) ""))))
+                  ov-list)))
+    (funcall orig-fn ovs buf)
+    (dolist (r regions)
+      (let ((dbuf  (nth 0 r))
+            (start (nth 1 r))
+            (rlen  (nth 2 r)))
+        (when (and dbuf (buffer-live-p dbuf) start (> rlen 0))
+          (with-current-buffer dbuf
+            (let ((end (min (+ start rlen) (point-max))))
+              ;; --- 1) flush stale parser/syntax state ---
+              (ignore-errors (syntax-ppss-flush-cache start))
+              (ignore-errors (font-lock-flush start end))
+              (when (and (fboundp 'treesit-parser-list)
+                         (treesit-parser-list))
+                (dolist (p (treesit-parser-list))
+                  ;; Forces a parse by walking the root node — cheap,
+                  ;; happens entirely in the tree-sitter library.
+                  (ignore-errors (treesit-parser-root-node p))))
+              ;; --- 2) indent-region (mode's native indenter) ---
+              (save-excursion
+                (when indent-line-function
+                  (ignore-errors (indent-region start end))))
+              ;; --- 3) eglot-format: per-mode whole-buffer vs range ---
+              ;; For languages where canonical formatting is universal
+              ;; (Go/gofmt, Rust/rustfmt, Nix/nixfmt — gofmt-style
+              ;; conventions), do whole-buffer format because gopls'
+              ;; range-format is finicky on partial syntax and the
+              ;; buffer is by convention always canonically formatted
+              ;; anyway, so a buffer-format is a no-op outside the
+              ;; rewrite region.  For every other language, range-only
+              ;; so the user's manual formatting elsewhere is preserved.
+              ;;
+              ;; If you want the rewrite to look good in a range-only
+              ;; mode where it didn't auto-clean, run
+              ;; `M-x apheleia-format-buffer' or
+              ;; `M-x eglot-format-buffer' on demand.
+              (when (and (fboundp 'eglot-managed-p)
+                         (eglot-managed-p))
+                (save-excursion
+                  (if (memq major-mode my/gptel-rewrite-whole-buffer-format-modes)
+                      (when (fboundp 'eglot-format-buffer)
+                        (ignore-errors (eglot-format-buffer)))
+                    (when (fboundp 'eglot-format)
+                      (ignore-errors (eglot-format start end)))))))))))))
+
+(with-eval-after-load 'gptel-rewrite
+  (advice-add 'gptel--rewrite-accept :around #'my/gptel--rewrite-indent-around))
+
+;; Cosmetic: tell the model to match indent so the overlay preview
+;; also looks right (final accept is corrected regardless by the
+;; advice above).  This hook is invoked when `gptel--rewrite-message'
+;; is nil; if you already have a per-mode rewrite directive that you
+;; want to keep, edit that directive to include the same instruction.
+(defun my/gptel-rewrite-default-directive ()
+  "Default rewrite directive: preserve indentation."
+  (concat "Refactor the code I provide.\n"
+          "- Output only code, no explanation, no markdown fences.\n"
+          "- Preserve the exact indentation of the original snippet — "
+          "if the snippet starts with leading tabs/spaces, keep them.\n"
+          "- Generate code in full, do not abbreviate."))
+
+(with-eval-after-load 'gptel-rewrite
+  (add-hook 'gptel-rewrite-directives-hook
+            #'my/gptel-rewrite-default-directive))
 
 (provide 'config-llm)
 ;;; config-llm.el ends here

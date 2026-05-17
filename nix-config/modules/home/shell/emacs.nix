@@ -92,7 +92,6 @@ in {
 
       # ---- ui / theme ----
       doom-themes      # bug fix: init.el (require 'doom-themes) was unmet
-      minions
 
       # ---- file-tree sidebar (SPC e) ----
       treemacs treemacs-evil treemacs-magit nerd-icons
@@ -113,8 +112,6 @@ in {
       magit vterm gptel elfeed pdf-tools notdeft
 
       # ---- jujutsu (jj VCS) integration ----
-      vc-jj           # emacs vc.el backend for jj repos (C-x v d/l/v work)
-      jjdescription   # major mode for jj commit-message buffers
       pkgs.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR)
 
       # ---- workspaces / scratch ----
@@ -126,6 +123,7 @@ in {
       embark-consult   # bridges consult results into embark actions
       wgrep            # batch-edit consult-ripgrep results via embark-export
       helpful          # richer describe-* buffers (callers, refs, source)
+      apheleia         # format-on-save via subprocess (ruff/prettier/shfmt/...)
 
     ];
   };
@@ -169,7 +167,8 @@ in {
       "/etc/profiles/per-user/${config.home.username}/bin"     # home-manager user profile
       "/run/current-system/sw/bin"                             # nix-darwin system profile
       "/nix/var/nix/profiles/default/bin"                      # default nix profile (fallback)
-      "/usr/local/bin"
+      "/opt/homebrew/bin"                                      # Apple Silicon Homebrew (chawan, etc.)
+      "/usr/local/bin"                                         # Intel Homebrew (kept for x86 fallback)
       "/usr/bin"
       "/bin"
       "/usr/sbin"
