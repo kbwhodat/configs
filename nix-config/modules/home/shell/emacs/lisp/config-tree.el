@@ -53,10 +53,11 @@ but ignores it — the routing logic doesn't need a prefix."
      ((and path (file-directory-p path))
        (treemacs-toggle-node)))))
 
-(defun my/treemacs-goto-parent-or-open ()
-  "Go to the parent node, or open the current node if already at the top.
-This keeps `-' as an up-dir key while making it useful on a collapsed
-project/root node."
+(defun my/treemacs-goto-parent-or-collapse ()
+  "Go to the parent node; if already at the project root, collapse it.
+- moves up the directory tree like netrw.  Once at the project/root
+node, the next `-' folds the project closed.  Never expands a
+collapsed root (use RET or TAB for that)."
   (interactive)
   (let ((start (point)))
     (treemacs-goto-parent-node)
@@ -64,7 +65,8 @@ project/root node."
       (let* ((btn (treemacs-current-button))
              (path (and btn (treemacs-safe-button-get btn :path))))
         (when (and btn path (file-directory-p path)
-                   (treemacs-is-node-collapsed? btn))
+                   ;; Only collapse if currently OPEN — never expand
+                   (not (treemacs-is-node-collapsed? btn)))
           (treemacs-toggle-node))))))
 
 (use-package treemacs
@@ -115,7 +117,7 @@ project/root node."
                      ("a"  . treemacs-add-project-to-workspace) ; add root to workspace
                      ("A"  . treemacs-create-workspace)     ; create workspace
                      ("S"  . treemacs-switch-workspace)     ; switch workspace
-                     ("-"  . my/treemacs-goto-parent-or-open) ; up dir, open root
+                     ("-"  . my/treemacs-goto-parent-or-collapse) ; up dir, collapse at root
                      ("d"  . treemacs-remove-project-from-workspace) ; remove root from workspace
                      ("D"  . treemacs-delete-file)          ; netrw: delete
                      ("%"  . treemacs-create-file)          ; netrw: new file

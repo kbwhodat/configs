@@ -1,7 +1,6 @@
 ;;; config-git.el --- Magit + Majutsu (deferred) -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; magit on SPC g (git); majutsu on SPC G (jujutsu — capital);
-;; vc-jj is silent — registers jj as a vc.el backend (C-x v ...).
+;; magit on SPC g (git); majutsu on SPC G (jujutsu — capital).
 ;;; Code:
 
 (use-package magit

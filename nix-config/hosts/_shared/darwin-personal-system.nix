@@ -158,8 +158,8 @@ in
     onActivation.cleanup = "zap";
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "firefoxpwa" ];
-    casks = [ "monarch" "mitmproxy" "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
+    brews = [ "chawan" "firefoxpwa" "kimi-cli" ];
+    casks = [ "mitmproxy" "tradingview" "sublime-text" "ipvanish-vpn" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings = {

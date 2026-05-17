@@ -1205,5 +1205,35 @@ later ones are best-effort."
   (add-hook 'gptel-rewrite-directives-hook
             #'my/gptel-rewrite-default-directive))
 
+;; --- agent-shell: ACP-protocol agentic LLM shell --------------------
+;; Complement to gptel (not a replacement).  gptel is "chat with an
+;; LLM about code"; agent-shell is "an agent operates on files".
+;;
+;; The emacs side speaks ACP (Agent Client Protocol) over stdio to a
+;; backend CLI.  agent-shell ships per-backend modules — start fn is
+;; always `agent-shell-<backend>-start-agent'.  Supported backends in
+;; upstream: opencode, claude-code (anthropic), codex (openai), gemini
+;; (google), goose, auggie, cline, cursor, droid, github, hermes,
+;; kimi, kiro, mistral, pi, qwen.
+;;
+;; Bindings:
+;;   SPC a A  open the default agent (opencode — you already have it
+;;            on PATH via nix; nothing to install).
+;;   SPC a M-A  pick a different agent interactively via `agent-shell'.
+(use-package agent-shell
+  :defer t
+  :commands (agent-shell
+             agent-shell-opencode-start-agent
+             agent-shell-anthropic-start-agent
+             agent-shell-openai-start-agent
+             agent-shell-google-start-agent
+             agent-shell-goose-start-agent)
+  :init
+  (with-eval-after-load 'general
+    (when (fboundp 'my/leader)
+      (my/leader
+        "a A"   '(agent-shell-opencode-start-agent :which-key "agent (opencode)")
+        "a M-A" '(agent-shell                      :which-key "agent (pick…)")))))
+
 (provide 'config-llm)
 ;;; config-llm.el ends here

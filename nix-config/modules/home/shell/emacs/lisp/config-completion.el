@@ -21,6 +21,25 @@
 (use-package marginalia
   :config (marginalia-mode 1))
 
+;; Shell-like minibuffer editing: C-u clears the prompt input, C-w deletes the
+;; previous word/path component.  Useful when `find-file' starts in a long cwd.
+(defun my/minibuffer-kill-input ()
+  "Delete all editable text in the active minibuffer."
+  (interactive)
+  (delete-minibuffer-contents))
+
+(dolist (map-symbol '(minibuffer-local-map
+                      minibuffer-local-ns-map
+                      minibuffer-local-completion-map
+                      minibuffer-local-must-match-map
+                      minibuffer-local-isearch-map
+                      minibuffer-local-filename-completion-map
+                      minibuffer-local-filename-must-match-map))
+  (when (boundp map-symbol)
+    (let ((map (symbol-value map-symbol)))
+      (define-key map (kbd "C-u") #'my/minibuffer-kill-input)
+      (define-key map (kbd "C-w") #'backward-kill-word))))
+
 (use-package consult
   :defer t
   :commands (consult-line consult-ripgrep consult-buffer consult-project-buffer)
