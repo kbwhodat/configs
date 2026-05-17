@@ -25,11 +25,6 @@
         (propertize "   ○ " 'face '(:weight bold))
         (propertize "%b"    'face '(:weight bold))))))))
 
-;; --- Minions: declutter minor-mode lighters ---
-(use-package minions
-  :defer 1
-  :config (minions-mode 1))
-
 ;; --- Theme load path (kbwhodat doom-alabaster fetched via nix) ---
 (add-to-list 'custom-theme-load-path
              (expand-file-name "themes/doom-alabaster-theme" user-emacs-directory))
@@ -41,6 +36,17 @@
   (add-hook 'window-setup-hook
             (lambda () (load-theme 'doom-alabaster t))))
 
+;; --- Selection / region highlight ----------------------------------
+;; Theme default `region' background is `#5C5C5C' — barely visible on
+;; the alabaster dark background.  Use a saturated blue so visual-mode
+;; selections (and treemacs highlights, which inherit `region') are
+;; obviously visible.  `:extend t' makes the highlight span to the
+;; line end like vim's visual-line, not stop at the last char.
+(custom-theme-set-faces
+ 'user
+ '(region    ((t (:background "#525868" :extend t))))
+ '(hl-line   ((t (:background "#1f2733" :extend t)))))
+
 ;; --- Font: apply after first frame ---
 (add-hook 'window-setup-hook
           (lambda ()
@@ -48,9 +54,8 @@
                                 :family "ComicShannsMono Nerd Font Mono"
                                 :height 135)))
 
-;; --- Browse URL: open in external firefox ---
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "/etc/profiles/per-user/katob/bin/firefox")
+;; --- Browse URL: use the system default browser ---
+(setq browse-url-browser-function 'browse-url-default-browser)
 
 ;; --- Idempotent "summon emacs" entry point --------------------------
 ;; Hammerspoon Ctrl+Shift+Space + EmacsClient.app both used to run
@@ -80,9 +85,10 @@ whatever buffer is current if no usable snapshot exists."
         (let* ((snap (my/session-lite-read))
                (file (and snap (plist-get snap :selected-file))))
           (when (and file
-                     (file-exists-p file)
-                     (file-readable-p file))
-            (find-file file))))
+                      (file-exists-p file)
+                      (file-readable-p file))
+            (let ((enable-local-variables nil))
+              (find-file file)))))
       (make-frame '((window-system . ns))))))
 
 (provide 'config-ui)

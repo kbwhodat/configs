@@ -210,10 +210,11 @@ the snapshot is empty."
 (defun my/session-lite--find-file (file &optional select)
   "Open FILE cheaply.  SELECT means show it in the selected window."
   (when (my/session-lite--file-eligible-p file)
-    (let ((buffer (find-file-noselect file)))
-      (when select
-        (switch-to-buffer buffer))
-      buffer)))
+    (let ((enable-local-variables nil))
+      (let ((buffer (find-file-noselect file)))
+        (when select
+          (switch-to-buffer buffer))
+        buffer))))
 
 (defun my/session-lite--ensure-workspace (name)
   "Create or switch to persp-mode workspace NAME when available."

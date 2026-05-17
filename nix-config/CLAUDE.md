@@ -35,7 +35,10 @@ macbook-neo = mkDarwin {
 ## Per-program module pattern (CRITICAL)
 
 **Every program/agent/tool gets its own file** under `modules/<scope>/<topic>/<name>.nix` with an `enable` flag. The topic's `default.nix` is an umbrella that imports the per-program files and toggles them on with `mkDefault true`. Do **not** stuff package installs into the umbrella's `default.nix` — break the rule and you fight the whole repo.
+## Host platform map
 
+| Host         | System            | Notes                                                                     |
+| ------------ | ----------------- | ------------------------------------------------------------------------- |
 ### Template (per-program file)
 
 ```nix
@@ -97,10 +100,10 @@ Canonical examples to copy from: `modules/home/ai/jobdrop.nix` (uv-tool install)
 
 Drop a `package.nix` under `pkgs/by-name/<name>/` (nixpkgs `by-name` layout). `pkgs/overlay.nix` picks it up automatically and exposes it as `pkgs.<name>`.
 
-## Host platform map
 
-| Host         | System            | Notes                                                                     |
-| ------------ | ----------------- | ------------------------------------------------------------------------- |
+
+
+
 | util         | x86_64-linux      | server profile                                                            |
 | frame13      | x86_64-linux      | desktop+laptop+workstation, framework-13 hw                               |
 | server       | x86_64-linux      | server profile                                                            |
