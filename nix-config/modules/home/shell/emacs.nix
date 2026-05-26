@@ -127,16 +127,27 @@ in {
       nix-ts-mode markdown-mode
 
       # ---- tree-sitter grammars (.so files) — required by ts-modes ----
-      # Earlier I assumed the nix emacs wrapper bundles grammars
-      # automatically; it doesn't. Without this, opening a .sh / .py /
-      # .json buffer with a *-ts-mode major-mode-remap triggers a
-      # dlopen failure for libtree-sitter-bash.so etc.
-      treesit-grammars.with-all-grammars
+      # Specific grammars only (not `with-all-grammars`) — installs ~8
+      # grammars instead of ~30, saving disk + load-time RAM.  Add a
+      # grammar here when you start using a new *-ts-mode in
+      # `major-mode-remap-alist' (config-ide.el).
+      (treesit-grammars.with-grammars (g: with g; [
+        tree-sitter-python
+        tree-sitter-bash
+        tree-sitter-go
+        tree-sitter-javascript
+        tree-sitter-typescript
+        tree-sitter-tsx
+        tree-sitter-json
+        tree-sitter-yaml
+        tree-sitter-nix
+        tree-sitter-markdown
+      ]))
 
       # ---- IDE (eglot is built-in; treesit grammars auto-wired by nix) ----
 
       # ---- one-stop-shop additions ----
-      magit vterm gptel elfeed pdf-tools notdeft
+      magit vterm gptel pdf-tools notdeft
 
       # ---- jujutsu (jj VCS) integration ----
       unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR; from unstable to match emacsPkg)
@@ -301,29 +312,6 @@ in {
       $DRY_RUN_CMD rm -rf "$EMACS_APP"
     fi
   '';
-
-  # Regenerate ~/.emacs.d/elfeed-feeds.el from the canonical feeds list
-  # at nix-config/data/feeds.txt — but ONLY when the FEED COUNT changes.
-  # Compares non-comment lines in feeds.txt vs feed entries in the
-  # generated output; runs the script if they differ.  Edit-in-place
-  # changes (renaming a tag, fixing a URL) keep the count the same and
-  # don't trigger regen — force it manually with the script if needed.
-  home.activation.regenerateElfeedFeeds =
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      FEEDS_TXT="$HOME/.config/nix-config/data/feeds.txt"
-      SCRIPT="$HOME/.config/nix-config/scripts/feeds-to-elfeed.sh"
-      OUT="$HOME/.emacs.d/elfeed-feeds.el"
-      if [ -r "$FEEDS_TXT" ] && [ -x "$SCRIPT" ]; then
-        SRC_COUNT=$(grep -cvE '^[[:space:]]*(#|$)' "$FEEDS_TXT" || echo 0)
-        OUT_COUNT=0
-        [ -e "$OUT" ] && OUT_COUNT=$(grep -c '^        (' "$OUT" || echo 0)
-        if [ "$SRC_COUNT" != "$OUT_COUNT" ]; then
-          echo "[regenerateElfeedFeeds] $OUT_COUNT -> $SRC_COUNT feeds; regenerating"
-          "$SCRIPT" >/dev/null 2>&1 || \
-            echo "[regenerateElfeedFeeds] WARNING: feeds-to-elfeed.sh failed" >&2
-        fi
-      fi
-    '';
 
   # Add EmacsClient.app to home packages (shows in ~/Applications/Home Manager Apps/)
   home.packages = (lib.optionals isDarwin [ emacsClientApp ]) ++ [

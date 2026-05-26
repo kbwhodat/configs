@@ -49,10 +49,38 @@
 
 (use-package general
   :config
+  ;; Predefine the leader keymap so we can pass its value (not symbol)
+  ;; to the M-SPC alias below — passing the symbol made general try to
+  ;; call it as a command, hence the `commandp' error.
+  (defvar my/leader-prefix-map (make-sparse-keymap)
+    "Leader keymap.  Invoked by both `SPC' and `M-SPC' in every state.")
+
   (general-create-definer my/leader
+    ;; SPC = leader in MODAL states only (normal/visual/motion).  Do
+    ;; NOT include insert/emacs here — that would shadow plain SPC in
+    ;; vterm / minibuffer / magit popups, breaking typing.
     :states '(normal visual motion)
     :keymaps 'override
-    :prefix "SPC" :non-normal-prefix "M-SPC")
+    :prefix "SPC"
+    :prefix-map 'my/leader-prefix-map)
+
+  ;; M-SPC = same leader, accessible from every state including insert
+  ;; and emacs.  Bound at the top level of the override map (not a
+  ;; state-specific aux map), so it works regardless of evil state and
+  ;; doesn't collide with plain SPC.  Pair with adding "M-SPC" to
+  ;; `vterm-keymap-exceptions' (config-term.el) so vterm passes it
+  ;; through to emacs instead of forwarding to the shell.
+  (define-key general-override-mode-map (kbd "M-SPC") my/leader-prefix-map)
+
+  ;; Belt-and-suspenders: in some major modes (`*Messages*',
+  ;; help-mode, magit, etc.) evil's `evil-motion-state-map' default
+  ;; binding (`SPC' = `evil-forward-char') wins over the general-
+  ;; override aux through evil's intercept chain.  Re-bind SPC in evil's
+  ;; own motion-state-map to the leader prefix so SPC works as the
+  ;; leader EVERYWHERE normal/motion/visual state is active.  Loses
+  ;; SPC = forward-char in motion state, but `l' still does that.
+  (with-eval-after-load 'evil
+    (define-key evil-motion-state-map (kbd "SPC") my/leader-prefix-map))
 
   ;; --- windmove leaves (preserved from user's existing setup) ---
   (my/leader

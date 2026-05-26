@@ -21,7 +21,7 @@
 (require 'config-tree)         ; treemacs sidebar (SPC e)
 (require 'config-term)         ; vterm (SPC o t half / SPC o T full)
 (require 'config-llm)          ; gptel
-(require 'config-feeds)        ; elfeed, pdf-tools
+(require 'config-pdf)          ; pdf-tools
 
 ;; --- Buffer hygiene (after init only, not eagerly) ---
 (defun my/initial-buffer-setup ()

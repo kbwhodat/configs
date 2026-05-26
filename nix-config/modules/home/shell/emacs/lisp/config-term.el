@@ -129,6 +129,12 @@ Use after `SPC \\\\' / `SPC -' to get two parallel shells, tmux-pane style."
 (use-package vterm
   :defer t
   :commands (vterm vterm-other-window my/vterm-toggle my/vterm-fullscreen my/vterm-new my/vterm-kill-buffers my/vterm-run-command)
+  :config
+  ;; Let M-SPC reach emacs instead of being forwarded to the shell so
+  ;; the leader works inside vterm without first ESC-ing into normal
+  ;; state.  (See `config-evil.el' — leader's `:non-normal-prefix' is
+  ;; M-SPC for insert/emacs states.)
+  (add-to-list 'vterm-keymap-exceptions "M-SPC")
   :init
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)

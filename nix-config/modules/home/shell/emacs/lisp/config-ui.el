@@ -53,17 +53,16 @@
   (add-hook 'window-setup-hook
             (lambda () (load-theme 'doom-alabaster t))))
 
-;; --- Pulsar: pulse the line on jumps -------------------------------
-;; Pulses a brief highlight on the current line after navigation
-;; commands (avy, M-., consult-line, recenter, window-switch).  Solves
-;; "where did my cursor go?" after every jump.  Evil scroll/window/
-;; goto-line commands aren't in the default pulse list — add them here.
+;; --- Pulsar: pulse the line on jumps (lightweight) ------------------
+;; 3 iterations × 0.04 s = 120 ms animation (was 8 × 0.04 = 320 ms).
+;; Visible enough to track where the cursor went without stuttering on
+;; weaker hardware.
 (use-package pulsar
   :hook (after-init . pulsar-global-mode)
   :config
   (setq pulsar-pulse t
         pulsar-delay 0.04
-        pulsar-iterations 8
+        pulsar-iterations 3
         pulsar-face 'pulsar-yellow
         pulsar-region-face 'pulsar-yellow)
   (dolist (cmd '(evil-scroll-up evil-scroll-down

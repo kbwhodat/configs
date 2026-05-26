@@ -165,15 +165,18 @@ In-memory only; does not modify any file on disk."
 ;; --- Jinx: fast spell-check via libenchant -------------------------
 ;; Replaces flyspell.  Uses libenchant (system Apple Spell on macOS,
 ;; hunspell/aspell elsewhere — see `pkgs.enchant' in emacs.nix).
-;; Auto-enables in prose modes; comments + strings in prog modes are
-;; opt-in via M-x jinx-mode.
+;;
+;; ON-DEMAND ONLY — no auto-hooks.  Spell-check is per-buffer work that
+;; we don't want on every text/markdown/org buffer (felt slow on weaker
+;; hardware).  Enable manually with `M-x jinx-mode' in a specific buffer
+;; when you actually want spell-checking, or add a buffer-local hook in
+;; .dir-locals.el for a specific project.
 ;;
 ;; M-$    `jinx-correct'     — fix the misspelled word at/before point
 ;; C-M-$  `jinx-languages'   — toggle active dictionary languages
 (use-package jinx
-  :hook ((text-mode . jinx-mode)
-         (markdown-mode . jinx-mode)
-         (org-mode . jinx-mode))
+  :defer t
+  :commands (jinx-mode jinx-correct jinx-languages)
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages)))
 
