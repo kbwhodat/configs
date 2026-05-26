@@ -19,6 +19,12 @@
 ;; large buffers. Brief inaccuracy self-corrects on idle.
 (setq redisplay-skip-fontification-on-input t)
 
+;; Defer fontification 50 ms after every edit.  Complements the above:
+;; that one skips during redisplay-vs-input races, this one batches the
+;; post-edit refontify so fast typing doesn't refontify on every key.
+;; Free win on big buffers; tiny lag in font-lock catching up.
+(setq jit-lock-defer-time 0.05)
+
 ;; Faster scrolling at the cost of brief font-lock inaccuracy. Same idea.
 (setq fast-but-imprecise-scrolling t)
 
@@ -41,16 +47,17 @@
 (global-so-long-mode 1)
 
 ;; gcmh: high GC threshold during foreground work, GC fires on idle.
-;; Eliminates the stutter that happens when our 64MB gc-cons-threshold
-;; trips mid-keystroke on large buffers. Doom uses this; widely
-;; recommended.  1 GiB high-threshold based on monkeynut.org report
-;; that 64 MiB still trips during typical scrolling.
+;; 64 MiB foreground threshold — was 1 GiB but that hoarded too much
+;; RAM on weaker hardware (OS-level swap pressure outweighed the
+;; saved GC pauses).  At 64 MiB you'll see a few more GC pauses on
+;; very large buffers (minified JSON, big magit-log) but the typing
+;; experience is unchanged and the OS keeps its file cache warm.
 (use-package gcmh
   :hook (after-init . gcmh-mode)
   :init
   (setq gcmh-idle-delay 'auto
         gcmh-auto-idle-delay-factor 10
-        gcmh-high-cons-threshold (* 1024 1024 1024)))   ; 1 GiB
+        gcmh-high-cons-threshold (* 64 1024 1024)))   ; 64 MiB
 
 ;; Restrict VC backends to ones we actually use. Default has 8 entries
 ;; (RCS CVS SVN SCCS SRC Bzr Git Hg); each costs a stat() per file
@@ -148,11 +155,10 @@
     magit         ; SPC g s     — pulls ~30 sub-files
     majutsu       ; SPC G       — magit-style jj UI; depends on magit
     vterm         ; SPC o t     — loads C dynamic module
-    tempel        ; prog-mode hook
-    elfeed)       ; SPC o r
+    tempel)       ; prog-mode hook
   "Heavy packages to pre-load on idle so first-use is not laggy.
 Order matters — earliest entries get loaded soonest.
-Dropped from preload (autoload on demand instead, ~MB RAM saved):
+Loaded on demand instead (saves RAM and idle CPU):
   - notdeft   (Xapian native binding — rarely-searched notes)
   - pdf-tools (heavy PDF renderer — loads on .pdf via :mode)")
 

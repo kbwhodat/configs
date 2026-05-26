@@ -16,6 +16,25 @@
 (setq package-enable-at-startup nil
       package-quickstart nil)
 
+;; --- diagnostic: per-package load/config timings ---
+;; Must be set BEFORE any `use-package' form expands.  After the daemon
+;; has been up for a bit, run `M-x use-package-report' to see which
+;; packages cost the most startup time.  Cheap; leave on permanently.
+(setq use-package-compute-statistics t)
+
+;; --- suppress redisplay + minibuffer messages during startup ---
+;; Saves the visual cost of repainting the unstyled frame + flashing
+;; "Loading X..." messages during init.  Reset on `window-setup-hook'
+;; (first frame paint).  Trade-off: init errors won't render visually
+;; until window-setup fires — but they still go to *Messages*.
+(setq-default inhibit-redisplay t
+              inhibit-message t)
+(add-hook 'window-setup-hook
+          (lambda ()
+            (setq-default inhibit-redisplay nil
+                          inhibit-message nil)
+            (redisplay)))
+
 ;; --- subprocess I/O (eglot, ripgrep) ---
 (setq read-process-output-max (* 4 1024 1024))
 
