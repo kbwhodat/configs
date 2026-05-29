@@ -18,6 +18,13 @@
 
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
 
+;; --- lua-ts-mode (built-in emacs 30+) for *.lua --------------------
+;; No lua-mode package installed, so we just hard-route .lua to the
+;; built-in tree-sitter mode (requires tree-sitter-lua grammar — see
+;; emacs.nix `with-grammars').  Covers Hammerspoon, Wezterm, Neovim,
+;; awesome-wm configs.
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
+
 ;; --- nix-ts-mode for *.nix (treesit-auto doesn't ship a nix recipe) ---
 (use-package nix-ts-mode
   :mode "\\.nix\\'")
@@ -142,7 +149,7 @@
 ;; cc  compile (or recompile from project cache)   cr  recompile
 ;; cC  re-prompt for compile command               ck  kill running compile
 ;; cn  next error                                  cp  previous error
-;; cv  run command in vterm
+;; cv  run command in ghostel
 (with-eval-after-load 'general
   (when (fboundp 'my/leader)
     (my/leader
@@ -153,7 +160,7 @@
       "ck" '(kill-compilation    :which-key "kill compile")
       "cn" '(next-error          :which-key "next error")
       "cp" '(previous-error      :which-key "prev error")
-      "cv" '(my/vterm-run-command :which-key "run in vterm")
+      "cv" '(my/ghostel-run-command :which-key "run in ghostel")
       "c&" '(async-shell-command :which-key "background shell"))))
 
 (provide 'config-ide)

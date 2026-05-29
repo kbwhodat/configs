@@ -22,6 +22,25 @@ let
   };
   emacsPkg = unstable.emacs;
 
+  # --- ghostel from upstream release (bypasses broken nixpkgs Zig build) ---
+  # nixpkgs's ghostel derivation is locked at v0.7-era (May 6) and crashes
+  # at `b.dependency("ghostty", ...)` because the submodule isn't fetched
+  # correctly under Zig 0.15.  Workaround: fetch the upstream tarball and
+  # the platform-specific prebuilt .dylib from the GitHub release, glue
+  # them with trivialBuild, drop the .dylib next to ghostel.el so emacs
+  # loads it without prompting for download.  No Zig compile.
+  ghostelVersion = "0.31.0";
+  ghostelSrc = pkgs.fetchFromGitHub {
+    owner = "dakra";
+    repo = "ghostel";
+    rev = "v${ghostelVersion}";
+    sha256 = "12zq0y654hvwwzfc2haxmaw4jmnwpg8811pglf5f9xiab1x7j3d0";
+  };
+  ghostelModule = pkgs.fetchurl {
+    url = "https://github.com/dakra/ghostel/releases/download/v${ghostelVersion}/ghostel-module-aarch64-macos.dylib";
+    sha256 = "113m69p82pskp6v2m7875bblx41i6npl15sh31n2li9v51lqa4mp";
+  };
+
   # pick ONE: classic (~/.emacs.d) or XDG (~/.config/emacs)
   useXDG = false;
 
@@ -97,6 +116,40 @@ in {
     # be injected via the `overrides' overlay.
     overrides = self: super: {
       inherit (unstable.emacsPackages) agent-shell;
+      ghostel = self.trivialBuild {
+        pname = "ghostel";
+        version = ghostelVersion;
+        src = ghostelSrc;
+        # v0.31 restructured the repo: ghostel.el moved to lisp/.
+        # trivialBuild globs *.el at the cwd root — flatten the layout
+        # here.  We deliberately do NOT mv extensions/evil-ghostel/ in:
+        # it `(require 'evil)' at byte-compile time and `evil' isn't in
+        # the build sandbox.  Instead, postInstall ships it as a raw
+        # .el; emacs natively compiles it on first load when evil is
+        # already loaded.  Cost: tiny (~50 ms) one-time compile per
+        # emacs derivation; pays for itself the first time you ESC out
+        # of a ghostel prompt.
+        preBuild = ''
+          mv lisp/*.el .
+        '';
+        # postInstall ships the runtime extras trivialBuild doesn't know
+        # about: the prebuilt native module (so emacs loads it without
+        # prompting) and the etc/ tree (bundled terminfo for
+        # xterm-ghostty + bash/zsh/fish shell-integration scripts).
+        # ghostel resolves etc/ relative to ghostel.el — see
+        # `ghostel--resource-root' upstream — so it goes next to the .el.
+        # Without etc/ you get "Bundled terminfo not found" on startup
+        # and lose synchronized-output + kitty-graphics features.
+        postInstall = ''
+          LISPDIR=$out/share/emacs/site-lisp
+          install -m644 ${ghostelModule} "$LISPDIR/ghostel-module.dylib"
+          cp -r etc "$LISPDIR/etc"
+          # evil-ghostel: source-only install.  See preBuild for why we
+          # can't byte-compile it here.  Lives in the same site-lisp dir
+          # so use-package's plain `(require 'evil-ghostel)' picks it up.
+          install -m644 extensions/evil-ghostel/evil-ghostel.el "$LISPDIR/"
+        '';
+      };
     };
     extraPackages = epkgs: with epkgs; [
       # ---- core completion / minibuffer ----
@@ -142,12 +195,18 @@ in {
         tree-sitter-yaml
         tree-sitter-nix
         tree-sitter-markdown
+        tree-sitter-lua
       ]))
 
       # ---- IDE (eglot is built-in; treesit grammars auto-wired by nix) ----
 
       # ---- one-stop-shop additions ----
-      magit vterm gptel pdf-tools notdeft
+      # ghostel = vterm replacement, ~2× faster.  See custom derivation
+      # `ghostel` defined in let-binding below — uses prebuilt .dylib
+      # from upstream GitHub releases to bypass the broken Zig build in
+      # nixpkgs's ghostel derivation (May 6 snapshot pre-dates ghostel's
+      # major refactors; v0.7 build script is incompatible with v0.31).
+      magit ghostel gptel pdf-tools notdeft
 
       # ---- jujutsu (jj VCS) integration ----
       unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR; from unstable to match emacsPkg)
@@ -252,6 +311,43 @@ in {
     "/bin/sh" "-c"
     ''/bin/wait4path "$HOME/.local/bin/emacs-stable-launch" && exec "$HOME/.local/bin/emacs-stable-launch" --fg-daemon''
   ];
+
+  # Purge ~/.emacs.d/eln-cache when the emacs derivation changes.
+  #
+  # WHY: native-comp .eln files bake in absolute /nix/store paths to
+  # gcc/libgccjit and the .el source.  When you rebuild and gcc moves
+  # (which it does on any nixpkgs bump), the cached .eln files reference
+  # dead store paths.  First emacs launch after that rebuild errors with
+  # "Internal native compiler error: error invoking gcc driver" because
+  # emacs tries to use the still-cached .eln, finds its baked-in gcc
+  # path is gone, and re-natively-compile fails because libgccjit moved
+  # too.  Nix-built packages are immune (their .eln lives in the store
+  # next to the package and rebuilds together).  Only USER eln-cache —
+  # which holds .eln for early-init.el, config-*.el, site-start.el —
+  # gets stuck.  Wiping it forces emacs to recompile against the new
+  # toolchain on first use.
+  #
+  # Stamps the emacs derivation path in ~/.emacs.d/.nix-emacs-deriv so
+  # we only purge on actual change, not on every activation.  Runs
+  # before stabilizeEmacsAndBounce so the kicked daemon starts with a
+  # clean cache.
+  home.activation.purgeStaleElnCache = lib.hm.dag.entryBefore [
+    "stabilizeEmacsAndBounce"
+  ] ''
+    STAMP="$HOME/.emacs.d/.nix-emacs-deriv"
+    CURRENT="${emacsPkg}"
+    ELN_CACHE="$HOME/.emacs.d/eln-cache"
+    PREV=""
+    [ -f "$STAMP" ] && PREV=$(/bin/cat "$STAMP" 2>/dev/null || true)
+    if [ "$PREV" != "$CURRENT" ]; then
+      if [ -d "$ELN_CACHE" ]; then
+        echo "purgeStaleElnCache: emacs deriv changed, wiping $ELN_CACHE" >&2
+        /bin/rm -rf "$ELN_CACHE"
+      fi
+      /bin/mkdir -p "$HOME/.emacs.d"
+      printf '%s' "$CURRENT" > "$STAMP"
+    fi
+  '';
 
   # Combined TCC-stabilize + daemon-bounce activation.  Runs dead-last
   # (after every HM phase we care about) and is fully fail-soft so a

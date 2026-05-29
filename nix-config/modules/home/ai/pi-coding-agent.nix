@@ -8,7 +8,6 @@ let
   # auto-discovery path. Bumps happen via
   # `nix flake update --update-input <name>`.
   eccSrc         = inputs.everything-claude-code;
-  superpowersSrc = inputs.superpowers;
 in {
   options.modules.ai.pi-coding-agent = {
     enable = lib.mkEnableOption ''
@@ -68,7 +67,6 @@ in {
     skillSources = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
       default = {
-        superpowers = "${superpowersSrc}/skills";
         everything-claude-code = "${eccSrc}/skills";
       };
       description = ''
@@ -78,8 +76,8 @@ in {
         recursively, and only descriptions sit in context — so
         surfacing entire plugin skill libraries is cheap.
 
-        Default surfaces both Claude Code plugins (superpowers, ECC)
-        since Pi implements the same Agent Skills standard.
+        Default surfaces the ECC skill library since Pi implements the
+        same Agent Skills standard as Claude Code.
       '';
     };
   };

@@ -12,14 +12,13 @@ let
   # invalidates a hard-coded sha256 here. Bump deliberately via
   # `nix flake update --update-input <name>`.
   eccSrc              = inputs.everything-claude-code;
-  superpowersSrc      = inputs.superpowers;
   wshobsonAgentsSrc   = inputs.wshobson-agents;
   # Matt Pocock's skill collection — surfaced as a symlinked dir
   # under ~/.claude/skills/mattpocock so Claude Code (and our gptel
   # `M-x my/gptel-load-skill') can pick them up.
   mattpocockSkillsSrc = inputs.mattpocock-skills;
 in {
-  options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC + superpowers";
+  options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC";
 
   config = lib.mkIf cfg.enable {
     # Global ~/.claude/CLAUDE.md — auto-loaded at every Claude Code
@@ -94,7 +93,6 @@ in {
       ## Sessions / context
 
       - One goal per session. When scope shifts, start a new session.
-      - For anything beyond a one-file change: `/superpowers:brainstorm` → `/superpowers:write-plan` → `/superpowers:execute-plan`. Plans live on disk, not in context.
       - Compact at phase boundaries, not when context is already full.
       - When you discover a recurring correction, write it to MEMORY.md so future sessions don't repeat it.
 
@@ -102,7 +100,6 @@ in {
 
       You operate inside a stack — use it, don't reinvent:
 
-      - **superpowers** (obra) — brainstorming, write-plan, execute-plan, TDD, systematic-debugging, verification-before-completion. Use the slash commands.
       - **everything-claude-code** — gateguard (active), search-first, silent-failure-hunter, code-review, eval-harness.
       - **no-hallucination** (AlethiaQuizForge) — tracker-ledger-guard hooks active. verify-guard, proof-guard, claim-guard, deliverable-guard run on every Stop.
 
@@ -128,19 +125,14 @@ in {
       # (installed via uv-tool to ~/.local/bin/).
       marketplaces = {
         ecc = eccSrc;
-        superpowers = superpowersSrc;
         wshobson-agents = wshobsonAgentsSrc;
       };
       plugins = [
         eccSrc
-        superpowersSrc
         "${wshobsonAgentsSrc}/plugins/quantitative-trading"
-        "${wshobsonAgentsSrc}/plugins/python-development"
-        "${wshobsonAgentsSrc}/plugins/data-engineering"
-        "${wshobsonAgentsSrc}/plugins/machine-learning-ops"
       ];
       mcpServers = {
-        jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; disabled = true; };
+        jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; };
       };
       settings = {
         # Disable specific MCP servers from any installed plugin's

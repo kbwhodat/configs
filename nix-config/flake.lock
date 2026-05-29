@@ -344,6 +344,22 @@
         "type": "github"
       }
     },
+    "librarian": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775522768,
+        "narHash": "sha256-8a1Nf09/YEh6hZdY4be2kKCegArv4B4zWw97z6dzSRU=",
+        "owner": "ktundwal",
+        "repo": "librarian",
+        "rev": "73e7916579098f135390ca1a24b113f14eedc157",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ktundwal",
+        "repo": "librarian",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "blueprint": "blueprint",
@@ -712,6 +728,7 @@
         "gonchill": "gonchill",
         "gonwatch": "gonwatch",
         "home-manager": "home-manager",
+        "librarian": "librarian",
         "llm-agents": "llm-agents",
         "matcha": "matcha",
         "mattpocock-skills": "mattpocock-skills",
@@ -720,8 +737,8 @@
         "nixpkgs": "nixpkgs_6",
         "nur": "nur",
         "sops-nix": "sops-nix",
-        "superpowers": "superpowers",
         "thorium-browser": "thorium-browser",
+        "understand-anything": "understand-anything",
         "undetected-chromedriver": "undetected-chromedriver",
         "unstable": "unstable",
         "wshobson-agents": "wshobson-agents",
@@ -743,22 +760,6 @@
       "original": {
         "id": "sops-nix",
         "type": "indirect"
-      }
-    },
-    "superpowers": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777932301,
-        "narHash": "sha256-3E3rO6hR87JUfS3XV1Eaoz6SDWOftleWvN9UPNFEMjw=",
-        "owner": "obra",
-        "repo": "superpowers",
-        "rev": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "obra",
-        "repo": "superpowers",
-        "type": "github"
       }
     },
     "systems": {
@@ -844,6 +845,22 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "understand-anything": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779772197,
+        "narHash": "sha256-rLdYR0nUPGH19rvZWYsvHpPSytC/UEA5V68J6oxt72s=",
+        "owner": "Lum1104",
+        "repo": "Understand-Anything",
+        "rev": "26edf61856fa476e466bda1814819a266a293c47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Lum1104",
+        "repo": "Understand-Anything",
         "type": "github"
       }
     },
