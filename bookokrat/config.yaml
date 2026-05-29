@@ -8,7 +8,7 @@ pdf_render_mode: page
 pdf_enabled: true
 pdf_settings_configured: true
 book_sort_order: by_name
-lookup_command: "techdict '{}'"
+lookup_command: 'techdict ''{}'''
 lookup_display: popup
 
 # ============================================================================
@@ -62,3 +62,8 @@ lookup_display: popup
 #     base0D: "7E9CD8"    # Blue (links)
 #     base0E: "957FB8"    # Purple (keywords)
 #     base0F: "D27E99"    # Brown/Pink
+
+pdf_page_layout_mode: single
+justify_text: false
+nav_panel_width: null
+synctex_editor: null

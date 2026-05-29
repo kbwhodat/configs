@@ -1,24 +1,24 @@
 { lib, stdenvNoCC, fetchurl, gnutar }:
 
 let
-  version = "0.3.6";
+  version = "0.3.11";
 
   release = {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-JSn164JPJ+AYcfpVGiuntxlx1SwwxNUzxZ7JxKNebYM=";
+      hash = "sha256-PJUbNHGoxMstqmZmg01KToAlHJDfKdUnULpAld59AjQ=";
     };
     aarch64-linux = {
       target = "aarch64-unknown-linux-gnu";
-      hash = "sha256-S6tRXirmTIeovW1ClBnC7xJ8Ew3Gb5K7U+VC60rZFrU=";
+      hash = "sha256-2yywG2AFBbGHg6nfd7dalb7WqtSLMnbzxOyPrJgEz84=";
     };
     x86_64-darwin = {
       target = "x86_64-apple-darwin";
-      hash = "sha256-MuBq1AkArT/g0db8RRPwQXZlTGAsYr225RolYj1YnNs=";
+      hash = "sha256-yUBTHstOzrDWux0RlxQeAkn51tJzjfHY7olINjTosqc=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-NSHjQuE4sIBNCenPOFZUtubOuAlU/nZJNVMdmFSefCU=";
+      hash = "sha256-8yqxqq8ne7/Sd+l3KHjwc1F7r1t2S/zyQxzwa8nsCoY=";
     };
   }.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system for bookokrat prebuilt binary");
 in

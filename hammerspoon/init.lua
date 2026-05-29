@@ -142,16 +142,27 @@ local function activateEmacsWhenReady(attempts)
 end
 
 hs.hotkey.bind({"ctrl", "shift"}, "space", function()
-  -- Ensure a GUI frame exists.  `my/raise-or-make-frame' focuses an
-  -- existing GUI frame, else makes one.  Idempotent — pressing twice
-  -- never piles up duplicate frames.
-  hs.execute(
-    "/etc/profiles/per-user/katob/bin/emacsclient -n -a '' --eval '(my/raise-or-make-frame)'",
-    true)
-
-  -- Activate at macOS level once the frame actually exists.  Polls
-  -- because emacsclient -n returns before the frame is rendered.
-  activateEmacsWhenReady()
+  -- Async, but use the callback to drive activation only AFTER the eval
+  -- has finished — i.e. after `my/raise-or-make-frame' has created the
+  -- frame, switched to a sane buffer, and run `(redisplay t)' to force
+  -- the paint.  This eliminates the race that produced the "blank
+  -- black box": we used to do `emacsclient -n' (returns immediately)
+  -- and then poll for the window with AX manipulation while emacs was
+  -- mid-creating it, leaving Cocoa stuck on an unpainted NSWindow.
+  local task = hs.task.new(
+    "/etc/profiles/per-user/katob/bin/emacsclient",
+    function(_exitCode)
+      -- Eval finished → frame guaranteed to exist and be painted.
+      -- Now safe to do the macOS-level activation.  No polling, no AX
+      -- chain — just the PID route that's known to work.
+      local app = findEmacs()
+      if app then
+        app:unhide()
+        activateEmacsByPID(app:pid())
+      end
+    end,
+    {"-a", "", "--eval", "(progn (my/raise-or-make-frame) (redisplay t) t)"})
+  task:start()
 end)
 
 hs.hotkey.bind({"ctrl"}, "space", function()

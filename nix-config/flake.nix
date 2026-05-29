@@ -66,9 +66,10 @@
   # our pinned sha256 — bumps happen deliberately via
   # `nix flake update --update-input <name>`.
   inputs.everything-claude-code = { url = "github:affaan-m/everything-claude-code"; flake = false; };
-  inputs.superpowers           = { url = "github:obra/superpowers";                  flake = false; };
   inputs.wshobson-agents       = { url = "github:wshobson/agents";                   flake = false; };
   inputs.mattpocock-skills     = { url = "github:mattpocock/skills";                 flake = false; };
+  inputs.understand-anything   = { url = "github:Lum1104/Understand-Anything";       flake = false; };
+  inputs.librarian             = { url = "github:ktundwal/librarian";                flake = false; };
 
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 

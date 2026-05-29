@@ -108,28 +108,43 @@
 Intended to be called via `emacsclient --eval' from a global hotkey or
 .app launcher.  TTY frames (e.g. the daemon's F1) are ignored.
 
-When making a new frame, pre-open the last persisted file (from
-`config-session-lite') so the new frame opens directly on that buffer
-— no `*scratch*' flash before restore catches up.  Falls back to
-whatever buffer is current if no usable snapshot exists."
+Hardened against the \"blank black box\" symptom on macOS:
+  - If the existing GUI frame is iconified, un-minimize it first.
+  - The new-frame path explicitly switches to a known-good buffer
+    (persisted file or *scratch*) BEFORE the frame appears, so the
+    frame is never created with an internal/process buffer in its
+    window slot.
+  - A `(redisplay t)' forces a synchronous paint at the end of every
+    path to defeat the Cocoa NSWindow-shown-before-NSView race."
   (let ((gui (seq-find #'display-graphic-p (frame-list))))
-    (if gui
-        (progn
-          (select-frame-set-input-focus gui)
-          (raise-frame gui))
-      ;; Pre-open the persisted file in the daemon's current buffer slot
-      ;; BEFORE creating the frame.  `make-frame' inherits current-buffer
-      ;; for the new frame's initial window, so the frame appears with
-      ;; the right file already loaded — no scratch-then-swap visible.
-      (when (fboundp 'my/session-lite-read)
-        (let* ((snap (my/session-lite-read))
-               (file (and snap (plist-get snap :selected-file))))
-          (when (and file
-                      (file-exists-p file)
-                      (file-readable-p file))
-            (let ((enable-local-variables nil))
-              (find-file file)))))
-      (make-frame '((window-system . ns))))))
+    (cond
+     ;; Have a GUI frame already.
+     (gui
+      (when (eq (frame-visible-p gui) 'icon)
+        (make-frame-visible gui))
+      (select-frame-set-input-focus gui)
+      (raise-frame gui)
+      (redisplay t))
+     ;; No GUI frame — create one, ensuring its buffer is sane.
+     (t
+      (let ((target-buf nil))
+        (when (fboundp 'my/session-lite-read)
+          (let* ((snap (my/session-lite-read))
+                 (file (and snap (plist-get snap :selected-file))))
+            (when (and file (file-exists-p file) (file-readable-p file))
+              (let ((enable-local-variables nil))
+                (setq target-buf (find-file-noselect file))))))
+        ;; Fallback: *scratch* — never trust the daemon's current-buffer
+        ;; which may be an invisible process buffer that breaks redisplay.
+        (unless (and target-buf (buffer-live-p target-buf))
+          (setq target-buf (get-buffer-create "*scratch*")))
+        (set-buffer target-buf)
+        (let ((frame (make-frame '((window-system . ns)))))
+          (with-selected-frame frame
+            (switch-to-buffer target-buf))
+          (select-frame-set-input-focus frame)
+          (raise-frame frame)
+          (redisplay t)))))))
 
 (provide 'config-ui)
 ;;; config-ui.el ends here

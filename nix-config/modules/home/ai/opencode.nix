@@ -46,7 +46,6 @@ in {
       };
       settings = {
         plugin = [
-          "superpowers@git+https://github.com/obra/superpowers.git"
           "ecc-universal@git+https://github.com/affaan-m/everything-claude-code.git"
         ];
         mcp = {

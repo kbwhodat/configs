@@ -154,7 +154,7 @@
   '(consult       ; SPC s g/s/b — usually first thing hit
     magit         ; SPC g s     — pulls ~30 sub-files
     majutsu       ; SPC G       — magit-style jj UI; depends on magit
-    vterm         ; SPC o t     — loads C dynamic module
+    ghostel       ; SPC o t     — loads ghostel native module
     tempel)       ; prog-mode hook
   "Heavy packages to pre-load on idle so first-use is not laggy.
 Order matters — earliest entries get loaded soonest.

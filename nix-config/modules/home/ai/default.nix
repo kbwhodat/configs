@@ -17,6 +17,8 @@ let cfg = config.modules.ai; in {
     ./pi-coding-agent.nix
     ./no-hallucination.nix
     ./hallucination-detector.nix
+    ./understand-anything.nix
+    ./librarian.nix
   ];
 
   options.modules.ai.enable = lib.mkOption {
@@ -42,6 +44,8 @@ let cfg = config.modules.ai; in {
     modules.ai.pi-coding-agent.enable        = lib.mkDefault false;
     modules.ai.no-hallucination.enable       = lib.mkDefault false;
     modules.ai.hallucination-detector.enable = lib.mkDefault false;
+    modules.ai.understand-anything.enable    = lib.mkDefault true;
+    modules.ai.librarian.enable              = lib.mkDefault true;
 
     # uv-tool installs (hermes, jobdrop, future agents) drop binaries
     # into ~/.local/bin. Make sure interactive shells can find them.

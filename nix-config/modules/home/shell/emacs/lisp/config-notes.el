@@ -78,7 +78,11 @@
   :init
   (setq notdeft-directories '("~/vault")
         notdeft-extension "md"
-        notdeft-secondary-extensions '("md"))
+        notdeft-secondary-extensions '("md")
+        ;; Default cap is 100 — vault now has 370+ notes, so anything
+        ;; past row 100 was being silently hidden.  10000 is fine for
+        ;; any realistic note collection.
+        notdeft-xapian-max-results 10000)
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)
       (my/leader
@@ -89,48 +93,94 @@
         "nd" '(notdeft-delete-file :which-key "delete")
         "nr" '(notdeft-refresh     :which-key "refresh"))))
   :config
-  ;; Fix title display: every note in ~/vault starts with `---\n...---'
-  ;; YAML frontmatter (from `my/markdown-template'), and notdeft's
-  ;; built-in parser takes the first non-empty line as the title — so
-  ;; every entry shows up as "---".  Strip the frontmatter and the
-  ;; leading `# ' off the markdown heading before notdeft parses.
+  ;; --- Title resolution from YAML frontmatter ------------------------
+  ;; `my/markdown-template' generates notes with frontmatter containing
+  ;; the canonical name (in `id:' as a slug, optionally `aliases:' as
+  ;; the human title).  notdeft's default parser takes the first
+  ;; non-empty body line as the title — which for stub notes like
+  ;; `kenya.md' (body: "niceplace") is wrong.
+  ;;
+  ;; This pair of advices pulls a title from the frontmatter in
+  ;; priority order:  aliases:[0]  >  title:  >  id:.  If none of
+  ;; those exist, falls back to first body line (original behavior).
+  ;; The advices then make notdeft see  "<title>\n\n<body>"  so its
+  ;; built-in extraction picks the right title AND the body becomes
+  ;; the summary.
+
+  (defun my/notdeft--frontmatter-title (text)
+    "Pull a display title from TEXT's YAML frontmatter.
+Returns nil if no frontmatter or no usable field.  Handles bare
+\(`id: kenya') and quoted (`id: \"kenya\"') values."
+    (when (string-match
+           "\\`---[[:space:]]*\n\\(\\(?:.*\n\\)*?\\)---[[:space:]]*\n" text)
+      (let ((fm (match-string 1 text)))
+        (cond
+         ;; aliases:\n  - VALUE
+         ((string-match
+           "^aliases:[[:space:]]*\n[[:space:]]*-[[:space:]]+\"?\\([^\"\n]+?\\)\"?[[:space:]]*$"
+           fm)
+          (string-trim (match-string 1 fm)))
+         ;; title: VALUE  (or "VALUE")
+         ((string-match "^title:[[:space:]]*\"?\\([^\"\n]+?\\)\"?[[:space:]]*$" fm)
+          (string-trim (match-string 1 fm)))
+         ;; id: VALUE  (or "VALUE")
+         ((string-match "^id:[[:space:]]*\"?\\([^\"\n]+?\\)\"?[[:space:]]*$" fm)
+          (string-trim (match-string 1 fm)))))))
+
   (defun my/notdeft--clean-contents (contents)
-    "Strip YAML frontmatter + leading markdown header marker from CONTENTS.
-In-memory only; does not modify any file on disk."
-    (let ((c contents))
-      (when (string-match "\\`---[[:space:]]*\n\\(?:.*\n\\)*?---[[:space:]]*\n"
-                          c)
+    "Return CONTENTS with frontmatter title prepended as the first line.
+Used by the `notdeft-parse-title' filter-args advice (a few code
+paths rely on this rather than `notdeft-parse-buffer')."
+    (let* ((c contents)
+           (title (my/notdeft--frontmatter-title c)))
+      (when (string-match "\\`---[[:space:]]*\n\\(?:.*\n\\)*?---[[:space:]]*\n" c)
         (setq c (substring c (match-end 0))))
       (setq c (replace-regexp-in-string "\\`[[:space:]\n\r]+" "" c))
       (setq c (replace-regexp-in-string "\\`#+[[:space:]]+" "" c))
-      c))
+      (if (and title (not (string-empty-p title)))
+          (concat title "\n\n" c)
+        c)))
   (advice-add 'notdeft-parse-title :filter-args
               (lambda (args)
                 (list (my/notdeft--clean-contents (car args)))))
 
-  ;; --- Strip YAML frontmatter + leading `#' from BOTH title & summary -
-  ;; `notdeft-parse-title' advice above only fires in a few code paths.
-  ;; The actual listing buffer derives both title AND summary from
-  ;; `notdeft-parse-buffer', which sees the raw file — so without this
-  ;; advice the summary column shows `--- --- id: ... aliases: ...'.
-  ;; We narrow past the frontmatter (and the leading markdown header
-  ;; marker) so parse-buffer's "first non-whitespace line" picks the
-  ;; real title and the summary starts at body text.
   (defun my/notdeft--skip-frontmatter (orig-fn &rest args)
-    (save-restriction
-      (widen)
-      (let ((body-start
-             (save-excursion
-               (goto-char (point-min))
-               (when (looking-at "\\`---[[:space:]]*\n")
-                 (forward-line 1)
-                 (when (re-search-forward "^---[[:space:]]*\n" nil t)
-                   (goto-char (match-end 0))))
-               (skip-chars-forward " \t\n\r")
-               (when (looking-at "#+[[:space:]]+")
-                 (goto-char (match-end 0)))
-               (point))))
-        (narrow-to-region body-start (point-max))
+    "Around-advice: feed `notdeft-parse-buffer' a synthetic buffer
+where the YAML frontmatter is replaced by `<title>\\n\\n<body>'.
+
+Title-resolution priority:
+  1. aliases:/title:/id: from YAML frontmatter (via `my/notdeft--frontmatter-title')
+  2. First non-empty body line (notdeft's normal fallback inside `orig-fn')
+  3. File basename minus extension (used here ONLY when 1 and 2 produce
+     nothing usable — i.e. note has no frontmatter title AND empty body)
+
+So a file like `my-random-thoughts.md' with no frontmatter and no body
+still shows up as `my-random-thoughts' in the listing rather than blank."
+    (let* ((src-content (buffer-substring-no-properties (point-min) (point-max)))
+           (title (my/notdeft--frontmatter-title src-content))
+           (body-start
+            (save-excursion
+              (goto-char (point-min))
+              (when (looking-at "\\`---[[:space:]]*\n")
+                (forward-line 1)
+                (when (re-search-forward "^---[[:space:]]*\n" nil t)
+                  (goto-char (match-end 0))))
+              (skip-chars-forward " \t\n\r")
+              (when (looking-at "#+[[:space:]]+")
+                (goto-char (match-end 0)))
+              (point)))
+           (body (buffer-substring-no-properties body-start (point-max))))
+      ;; Layer-3 fallback: empty/whitespace body AND no frontmatter title
+      ;; → use the file basename so the listing isn't blank.
+      (when (and (or (null title) (string-empty-p title))
+                 (string-empty-p (string-trim body))
+                 buffer-file-name)
+        (setq title (file-name-base buffer-file-name)))
+      (with-temp-buffer
+        (when (and title (not (string-empty-p title)))
+          (insert title "\n\n"))
+        (insert body)
+        (goto-char (point-min))
         (apply orig-fn args))))
   (advice-add 'notdeft-parse-buffer :around #'my/notdeft--skip-frontmatter)
 
