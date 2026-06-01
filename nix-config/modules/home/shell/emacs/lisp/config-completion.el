@@ -9,7 +9,52 @@
   :config (savehist-mode 1))
 
 (use-package vertico
-  :config (vertico-mode 1))
+  :config
+  (vertico-mode 1)
+
+  ;; --- vertico-multiform: per-category layouts ---------------------
+  ;; Built-in to the vertico package — no separate install.  Lets you
+  ;; pick a layout per completion category instead of one-size-fits-all
+  ;; vertical.  Toggle layouts at any prompt with `M-V'.
+  ;;
+  ;; CRITICAL: must `require' each extension file so the corresponding
+  ;; mode symbols become `fboundp'.  vertico-multiform resolves a
+  ;; shorthand like `grid' -> `vertico-grid-mode' via `intern-soft' +
+  ;; `fboundp' (vertico-multiform.el line 137-139); if the extension
+  ;; isn't loaded, the resolver falls back to the bare symbol and
+  ;; later `(funcall 'grid ...)' errors with `void-function grid'.
+  ;; README examples don't mention this because they assume the user
+  ;; has enabled extensions globally — for our per-category use, just
+  ;; loading the files (not enabling the modes) is enough.
+  (require 'vertico-grid)
+  (require 'vertico-buffer)
+  (require 'vertico-unobtrusive)
+  (require 'vertico-flat)
+  (require 'vertico-multiform)
+  (vertico-multiform-mode 1)
+  (setq vertico-multiform-categories
+        '((file       grid)              ; find-file: 2D grid (more files per screen)
+          (consult-grep buffer)          ; ripgrep results: full-buffer view
+          (jinx       grid (vertico-grid-annotate . 20))  ; spellcheck suggestions
+          (imenu      buffer)))
+  (setq vertico-multiform-commands
+        '((execute-extended-command unobtrusive)  ; M-x: stays as one line
+          (consult-line             buffer))))    ; in-buffer search: buffer view
+
+(use-package vertico-posframe
+  :after vertico
+  :config
+  ;; Pop completion in a child frame near point instead of the
+  ;; minibuffer at the bottom.  Stylistic.  Comment out
+  ;; `(vertico-posframe-mode 1)' to disable while keeping the package
+  ;; installed.
+  (setq vertico-posframe-poshandler  #'posframe-poshandler-frame-center
+        vertico-posframe-border-width 2
+        vertico-posframe-parameters
+        '((left-fringe  . 8)
+          (right-fringe . 8)))
+  (vertico-posframe-mode 1))
+
 
 (use-package orderless
   :config

@@ -106,16 +106,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1772129556,
-        "narHash": "sha256-Utk0zd8STPsUJPyjabhzPc5BpPodLTXrwkpXBHYnpeg=",
+        "lastModified": 1779036909,
+        "narHash": "sha256-zXcwYQGCT6pzinK+1dBB2ekTVtfxGZAapb3Evdcu4fY=",
         "owner": "nix-darwin",
         "repo": "nix-darwin",
-        "rev": "ebec37af18215214173c98cf6356d0aca24a2585",
+        "rev": "56c666e108467d87d13508936aade6d567f2a501",
         "type": "github"
       },
       "original": {
         "owner": "nix-darwin",
-        "ref": "nix-darwin-25.11",
+        "ref": "nix-darwin-26.05",
         "repo": "nix-darwin",
         "type": "github"
       }
@@ -344,22 +344,6 @@
         "type": "github"
       }
     },
-    "librarian": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1775522768,
-        "narHash": "sha256-8a1Nf09/YEh6hZdY4be2kKCegArv4B4zWw97z6dzSRU=",
-        "owner": "ktundwal",
-        "repo": "librarian",
-        "rev": "73e7916579098f135390ca1a24b113f14eedc157",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ktundwal",
-        "repo": "librarian",
-        "type": "github"
-      }
-    },
     "llm-agents": {
       "inputs": {
         "blueprint": "blueprint",
@@ -538,16 +522,16 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1778430510,
-        "narHash": "sha256-Ti+ZBvW6yrWWAg2szExVTwCd4qOJ3KlVr1tFHfyfi8Q=",
+        "lastModified": 1780203844,
+        "narHash": "sha256-K5sT4jTpGs15ADhviMKNBH38REpPf5Q6mM1+N6cArVE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8fd9daa3db09ced9700431c5b7ad0e8ba199b575",
+        "rev": "b51242d7d43689db2f3be91bd05d5b24fbb469c4",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-25.11",
+        "ref": "nixos-26.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -728,7 +712,6 @@
         "gonchill": "gonchill",
         "gonwatch": "gonwatch",
         "home-manager": "home-manager",
-        "librarian": "librarian",
         "llm-agents": "llm-agents",
         "matcha": "matcha",
         "mattpocock-skills": "mattpocock-skills",
@@ -737,6 +720,7 @@
         "nixpkgs": "nixpkgs_6",
         "nur": "nur",
         "sops-nix": "sops-nix",
+        "superpowers": "superpowers",
         "thorium-browser": "thorium-browser",
         "understand-anything": "understand-anything",
         "undetected-chromedriver": "undetected-chromedriver",
@@ -760,6 +744,22 @@
       "original": {
         "id": "sops-nix",
         "type": "indirect"
+      }
+    },
+    "superpowers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780085125,
+        "narHash": "sha256-P/FD8HTQO+QzvMe3A/B2v2vjs8T6ZmIYH3MPp79dSzo=",
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "6fd4507659784c351abbd2bc264c7162cfd386dc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "obra",
+        "repo": "superpowers",
+        "type": "github"
       }
     },
     "systems": {

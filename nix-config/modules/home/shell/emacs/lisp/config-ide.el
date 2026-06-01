@@ -103,7 +103,84 @@
 ;; envrc consults the nearest .envrc and exports its variables into
 ;; every subprocess emacs spawns from that buffer.
 (use-package envrc
-  :hook (after-init . envrc-global-mode))
+  :hook (after-init . envrc-global-mode)
+  :config
+  ;; --- Async direnv -------------------------------------------------
+  ;; envrc's `envrc--export' uses `call-process' synchronously to
+  ;; invoke `direnv export json'.  For `use flake'-style .envrc files
+  ;; (nix, guix), that call can block emacs for 5-60 seconds the first
+  ;; time per project per session.  Upstream tracks this as a known
+  ;; limitation (purcell/envrc issues #6 + #53, both closed without a
+  ;; merged fix as of 2025-12).
+  ;;
+  ;; Around-advice on `envrc--export':
+  ;;   - if not already running for ENV-DIR, spawn `direnv export json'
+  ;;     via `make-process' (non-blocking) and return 'none immediately
+  ;;     so envrc--update doesn't stall
+  ;;   - the sentinel parses the JSON, puts the real env in
+  ;;     envrc--cache (overwriting the 'none we returned), and
+  ;;     re-applies the env to every live buffer in ENV-DIR
+  ;;   - duplicate concurrent calls for the same dir are coalesced
+  ;;     via `my/envrc--pending'
+  ;;
+  ;; Trade-off: first project visit sees the GLOBAL env briefly (a
+  ;; second or two for warm-cache direnv, longer for cold-cache nix
+  ;; flake).  Once the sentinel fires, env is correct.  Subsequent
+  ;; visits hit envrc--cache → instant.  vs blocking emacs entirely.
+  (require 'json)
+  (defvar my/envrc--pending (make-hash-table :test 'equal)
+    "Map of env-dir -> t for direnvs currently running async.
+Coalesces duplicate concurrent calls for the same dir.")
+  (defun my/envrc-async-export (_orig-fn env-dir)
+    "Async wrapper around `envrc--export'.  Returns 'none immediately,
+spawns direnv in background, applies real env when it finishes."
+    (cond
+     ((gethash env-dir my/envrc--pending) 'none)
+     (t
+      (puthash env-dir t my/envrc--pending)
+      (let ((global-env (default-value 'process-environment))
+            (output-buffer (generate-new-buffer " *envrc-async-out*"))
+            (default-directory env-dir))
+        (make-process
+         :name (format "envrc-async %s" env-dir)
+         :buffer output-buffer
+         :command (list envrc-direnv-executable "export" "json")
+         :noquery t
+         :sentinel
+         (lambda (proc _event)
+           (when (memq (process-status proc) '(exit signal))
+             (remhash env-dir my/envrc--pending)
+             (let* ((exit-code (process-exit-status proc))
+                    (output (and (buffer-live-p output-buffer)
+                                 (with-current-buffer output-buffer
+                                   (buffer-string)))))
+               (when (buffer-live-p output-buffer)
+                 (kill-buffer output-buffer))
+               (when (and (numberp exit-code) (zerop exit-code))
+                 (let ((env (if (or (null output)
+                                    (string-empty-p (string-trim output)))
+                                'none
+                              (condition-case nil
+                                  (with-temp-buffer
+                                    (insert output)
+                                    (goto-char (point-min))
+                                    (let ((json-key-type 'string))
+                                      (json-read-object)))
+                                (error 'error)))))
+                   ;; Cache the real result (overwrites the 'none we
+                   ;; returned synchronously).
+                   (puthash (envrc--cache-key env-dir global-env)
+                            env envrc--cache)
+                   ;; Re-apply to all live buffers in this env-dir.
+                   (dolist (buf (buffer-list))
+                     (when (and (buffer-live-p buf)
+                                (buffer-local-value 'envrc-mode buf))
+                       (with-current-buffer buf
+                         (when (equal (envrc--find-env-dir) env-dir)
+                           (envrc--apply buf env)))))
+                   (message "envrc: %s loaded" env-dir)))))))
+        'none))))
+  (advice-add 'envrc--export :around #'my/envrc-async-export))
 
 ;; --- apheleia: subprocess CLI formatter, on-demand only -------------
 ;; Installed but NOT hooked to save — user values their manual

@@ -3,36 +3,20 @@
 
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-  # Using Lix -- which essentially a nix upgrade with extra features and optimizations
-  # inputs.lix-module.url = "https://git.lix.systems/lix-project/nixos-module/archive/2.93.0.tar.gz";
-  # inputs.lix-module.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.nil.url = "github:oxalica/nil";
-
-  #inputs.home-manager.url = "github:nix-community/home-manager/release-24.11";
-  # Pinned to 9c6f130 (2026-05-04) — last HM master commit before
-  # fb6a0c6 added modules/services-modular, which imports
-  # `pkgs.path + "/lib/services/lib.nix"`. That file landed only in
-  # nixpkgs-unstable; our nixpkgs follows nixos-25.11 (rev 8fd9daa)
-  # which lacks it. Bump this rev once we move nixpkgs to unstable
-  # or to a 25.11 backport that includes lib/services/lib.nix.
   inputs.home-manager.url = "github:nix-community/home-manager/9c6f1307e1d76a2285d8001e1b8bc281bfe15dac";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   inputs.unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-  # inputs.nixpkgs.url = "github:matteo-pacini/nixpkgs/gtk3-clang-fixes-2";
 
   inputs.mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
   inputs.llm-agents.url = "github:numtide/llm-agents.nix/main";
-  # inputs.ocv.url = "github:leohenon/opencode-vim/v1.14.25-ocv.3.28";
 
   inputs.nur.url = "github:nix-community/NUR";
   inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
 
-  # inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
-  inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+  inputs.darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
   inputs.darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-  # inputs.firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/main";
   inputs.zen-browser.url = "github:kbwhodat/zen-browser-flake";
   inputs.zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -45,31 +29,18 @@
 
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.1";
   inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
-  # inputs.gonchill.url = "github:kbwhodat/gonchill/2607f4315c455d6303afb8b20d9ee9cbe694686e";
 
   inputs.matcha.url = "github:floatpane/matcha";
-  # Follow `unstable` (not stable nixpkgs): matcha's go.mod requires
-  # Go ≥ 1.26.3; matcha's pinned nixpkgs has 1.26.2; our nixos-25.11
-  # is older still; only nixos-unstable has a recent enough go_1_26.
   inputs.matcha.inputs.nixpkgs.follows = "unstable";
 
-  # Pinned to b393ce8 (pi-coding-agent 0.73.0, 2026-05-04). HEAD on master
-  # ships pi 0.74.0 with a stale npmDepsHash that breaks the build (upstream
-  # CI is also failing). Bump this rev once upstream lands a fix.
   inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
   inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
 
-  # Claude Code plugin/skill source trees consumed by
-  # modules/home/ai/claude-code.nix. Declared as `flake = false` because
-  # these repos are plain content (skills, agents, marketplaces), not
-  # Nix flakes. Flake-lock pins them, so `main` no longer drifts under
-  # our pinned sha256 — bumps happen deliberately via
-  # `nix flake update --update-input <name>`.
   inputs.everything-claude-code = { url = "github:affaan-m/everything-claude-code"; flake = false; };
   inputs.wshobson-agents       = { url = "github:wshobson/agents";                   flake = false; };
   inputs.mattpocock-skills     = { url = "github:mattpocock/skills";                 flake = false; };
+  inputs.superpowers           = { url = "github:obra/superpowers";                  flake = false; };
   inputs.understand-anything   = { url = "github:Lum1104/Understand-Anything";       flake = false; };
-  inputs.librarian             = { url = "github:ktundwal/librarian";                flake = false; };
 
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 
@@ -83,6 +54,19 @@
         # firefox-darwin.overlay
         undetected-chromedriver.overlay
         (import ./pkgs/overlay.nix)
+        # libfyaml 0.9.6 on darwin: AX_PTHREAD probe leaks "none required"
+        # into PTHREAD_LIBS, which the .pc.in template substitutes into the
+        # Libs: line. Every pkg-config consumer (appstream → zathura plugins)
+        # then fails to link with `clang: error: no such file or directory:
+        # 'none' / 'required'`. Upstream fix: pantoniou/libfyaml#275 (post-0.9.6).
+        # Equivalent of closed PR NixOS/nixpkgs#519320.
+        (final: prev: {
+          libfyaml = prev.libfyaml.overrideAttrs (old: {
+            postConfigure = (old.postConfigure or "") + prev.lib.optionalString prev.stdenv.hostPlatform.isDarwin ''
+              substituteInPlace libfyaml.pc --replace-fail "none required" ""
+            '';
+          });
+        })
       ];
 
       pkgs = import nixpkgs {

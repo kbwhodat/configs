@@ -92,13 +92,19 @@
   ;; --- buffers / quit / nav ---
   (my/leader
     "b"  '(:ignore t :which-key "buffers")
-    ;; `persp-switch-to-buffer' restricts the picker to the current
-    ;; workspace's buffers.  Vanilla `switch-to-buffer' would also
-    ;; filter (because `persp-set-read-buffer-function t' in
-    ;; config-sessions.el), but binding the persp variant explicitly
-    ;; keeps the intent visible at the call site.
-    "bb" '(persp-switch-to-buffer :which-key "switch (in workspace)")
-    "bB" '(switch-to-buffer       :which-key "switch (all buffers)")
+    ;; `bb' — current workspace only.  `persp-switch-to-buffer' uses
+    ;; persp-mode's filtered reader directly.
+    "bb" '(persp-switch-to-buffer    :which-key "switch (in workspace)")
+    ;; `bB' — ALL buffers, bypassing both the persp filter and the
+    ;; chatter filter.  Vanilla `switch-to-buffer' goes through
+    ;; `persp-set-read-buffer-function t' (set in config-sessions.el)
+    ;; and is therefore restricted to current-workspace buffers too,
+    ;; meaning `*Messages*' etc. are unreachable AND a typed name silently
+    ;; becomes a NEW empty buffer instead of finding the existing one.
+    ;; `my/switch-to-buffer-global' (in config-sessions.el) dynamically
+    ;; rebinds `read-buffer-function' to nil so the picker sees the true
+    ;; global buffer-list.
+    "bB" '(my/switch-to-buffer-global :which-key "switch (all buffers, global)")
     ;; `kill-this-buffer' was retired in emacs 30 — it errors unless
     ;; called as a menu event.  Use `kill-buffer' (prompts via vertico)
     ;; for "kill a buffer" and `kill-current-buffer' for the no-prompt
@@ -107,8 +113,12 @@
     "bq" '(bury-buffer         :which-key "bury (hide, keep)")
     "d"  '(kill-current-buffer :which-key "kill current")
     "D"  '(bury-buffer         :which-key "bury current")
-    ";"  '(previous-buffer     :which-key "prev buffer")
-    "'"  '(next-buffer         :which-key "next buffer")
+    ;; Workspace-aware: only cycles buffers in the current persp-mode
+    ;; workspace.  See `my/persp-cycle-buffer' in config-sessions.el.
+    ;; Vanilla `previous-buffer'/`next-buffer' walk the global list and
+    ;; would leak buffers from other workspaces into the cycle.
+    ";"  '(my/persp-previous-buffer :which-key "prev buffer (workspace)")
+    "'"  '(my/persp-next-buffer     :which-key "next buffer (workspace)")
     "q"  '(save-buffers-kill-terminal :which-key "quit"))
 
   ;; --- windows ---

@@ -103,6 +103,29 @@
 ;; the hotkey twice gave you two stacked scratch frames.  This function
 ;; focuses an existing GUI frame if one is open, else creates one;
 ;; called from both endpoints so behavior is consistent.
+(defun my/raise-or-make-frame--sweep-orphan-posframes ()
+  "Delete any child frames left behind by `vertico-posframe' / `posframe'.
+When the daemon is summoned via `emacsclient --eval', minibuffer-
+setup-related hooks can briefly fire during frame creation, causing
+vertico-posframe to show its popup buffer (`*Minibuf-1*' etc.).  No
+corresponding minibuffer-exit fires (we're not actually IN a
+completion), so the posframe's own hide logic never triggers — it
+stays visible as an empty popup that only goes away when you start
+and finish a real minibuffer interaction.
+
+`posframe-hide' just sets the frame invisible without deleting it,
+and even that doesn't reliably stick here.  Hard-delete every child
+frame whose parameters identify it as a posframe (`posframe-buffer'
+parameter present) OR whose name starts with ` *Minibuf' (the
+vertico/minibuffer popup buffer convention)."
+  (dolist (f (frame-list))
+    (when (and (frame-parameter f 'parent-frame)
+               (or (frame-parameter f 'posframe-buffer)
+                   (let ((name (frame-parameter f 'name)))
+                     (and (stringp name)
+                          (string-prefix-p " *Minibuf" name)))))
+      (ignore-errors (delete-frame f t)))))
+
 (defun my/raise-or-make-frame ()
   "Focus an existing graphical frame, or create one if none exist.
 Intended to be called via `emacsclient --eval' from a global hotkey or
@@ -115,7 +138,16 @@ Hardened against the \"blank black box\" symptom on macOS:
     frame is never created with an internal/process buffer in its
     window slot.
   - A `(redisplay t)' forces a synchronous paint at the end of every
-    path to defeat the Cocoa NSWindow-shown-before-NSView race."
+    path to defeat the Cocoa NSWindow-shown-before-NSView race.
+
+Hardened against the \"blank vertico-posframe popup\" symptom:
+  - Before AND after frame work, sweep orphan posframe child frames
+    via `my/raise-or-make-frame--sweep-orphan-posframes'.  Without
+    this, an emacsclient --eval invocation often leaves a `*Minibuf-1*'
+    child frame stuck visible because vertico-posframe's hide hook
+    only fires from real minibuffer-exit, which never happens here."
+  ;; Pre-sweep: kill any orphan popup left from a prior invocation.
+  (my/raise-or-make-frame--sweep-orphan-posframes)
   (let ((gui (seq-find #'display-graphic-p (frame-list))))
     (cond
      ;; Have a GUI frame already.
@@ -144,7 +176,36 @@ Hardened against the \"blank black box\" symptom on macOS:
             (switch-to-buffer target-buf))
           (select-frame-set-input-focus frame)
           (raise-frame frame)
-          (redisplay t)))))))
+          (redisplay t))))
+     )
+    ;; Post-sweep: any popup that crept in during frame creation gets
+    ;; nuked here.  Idempotent — no-op when no orphans exist.
+    (my/raise-or-make-frame--sweep-orphan-posframes)))
+
+;; --- Search highlight: make it actually visible ---------------------
+;; The default `lazy-highlight' from doom-alabaster was `#2c2c1c'
+;; (near-black olive) — invisible on our dark background.  Override
+;; both the isearch faces (path used by evil's `/' since
+;; `evil-search-module' = 'isearch) AND the evil-ex faces (path used
+;; when search-module is 'evil-search) so a future module switch
+;; doesn't undo this.  Black text on bright amber for the current
+;; match (`isearch'), softer yellow for other matches in the buffer
+;; (`lazy-highlight').  Theme-agnostic: stays legible on any
+;; background since contrast is enforced explicitly.
+(dolist (spec '((isearch              "#fbbf24" t)   ; amber-400, bold
+                (evil-ex-search       "#fbbf24" t)
+                (lazy-highlight       "#facc15" nil) ; yellow-400
+                (evil-ex-lazy-highlight "#facc15" nil)))
+  (let ((face (nth 0 spec))
+        (bg   (nth 1 spec))
+        (bold (nth 2 spec)))
+    (when (facep face)
+      (set-face-attribute face nil
+                          :background bg
+                          :foreground "#000000"
+                          :weight (if bold 'bold 'normal)
+                          :underline nil
+                          :box nil))))
 
 (provide 'config-ui)
 ;;; config-ui.el ends here

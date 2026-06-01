@@ -207,23 +207,40 @@ the snapshot is empty."
       (insert-file-contents my/session-lite-file)
       (read (current-buffer)))))
 
-(defun my/session-lite--find-file (file &optional select)
+(defun my/session-lite--find-file (file &optional select workspace)
   "Open FILE cheaply.  SELECT means show it in the selected window.
-Adds the buffer to the current persp-mode workspace explicitly —
-`find-file-noselect' bypasses persp's `find-file-hook' auto-add, so
-without this restored buffers wouldn't show in workspace-filtered
-pickers like `persp-switch-to-buffer'."
+WORKSPACE, when non-nil, is the persp-mode workspace name the buffer
+should be added to.  Without WORKSPACE we fall back to the current
+persp (e.g. for global-files restore where no workspace context exists).
+
+Routing to an explicit workspace is CRITICAL for correctness: the
+lazy restore opens many files from many workspaces, and if every
+`persp-add-buffer' just used `(get-current-persp)' (the previous
+behaviour) every restored buffer would land in whatever workspace
+happened to be active at restore time — corrupting workspace
+membership across emacs restarts.  Third arg `nil' to `persp-add-buffer'
+suppresses persp-mode's `persp-switch-to-added-buffer' default so the
+active workspace doesn't flicker during background restore."
   (when (my/session-lite--file-eligible-p file)
     (let ((enable-local-variables nil))
       (let ((buffer (find-file-noselect file)))
         (when (and buffer
                    (bound-and-true-p persp-mode)
-                   (fboundp 'persp-add-buffer)
-                   ;; Only add when there's a real perspective; in the
-                   ;; default "none" state `get-current-persp' is nil
-                   ;; and `persp-add-buffer' errors.
-                   (and (fboundp 'get-current-persp) (get-current-persp)))
-          (ignore-errors (persp-add-buffer buffer)))
+                   (fboundp 'persp-add-buffer))
+          (let* ((target-persp
+                  (or
+                   ;; Prefer the explicit workspace argument (lookup via
+                   ;; the persp-mode hash table).
+                   (and workspace
+                        (boundp '*persp-hash*)
+                        (hash-table-p *persp-hash*)
+                        (gethash workspace *persp-hash*))
+                   ;; Fallback: current persp (skip if it's the "none"
+                   ;; default — `persp-add-buffer' errors on nil persp).
+                   (and (fboundp 'get-current-persp)
+                        (get-current-persp)))))
+            (when target-persp
+              (ignore-errors (persp-add-buffer buffer target-persp nil)))))
         (when select
           (switch-to-buffer buffer))
         buffer))))
@@ -236,52 +253,61 @@ pickers like `persp-switch-to-buffer'."
     (persp-switch name)
     t))
 
-(defun my/session-lite--window-layout-buffer (saved-name buffers)
-  "Return the live buffer for SAVED-NAME described by BUFFERS."
+(defun my/session-lite--window-layout-buffer (saved-name buffers &optional workspace)
+  "Return the live buffer for SAVED-NAME described by BUFFERS.
+WORKSPACE is forwarded to `my/session-lite--find-file' so the opened
+buffer joins the right persp."
   (let* ((entry (seq-find (lambda (buffer)
                             (equal (plist-get buffer :name) saved-name))
                           buffers))
          (file (plist-get entry :file)))
     (when file
-      (my/session-lite--find-file file nil))))
+      (my/session-lite--find-file file nil workspace))))
 
-(defun my/session-lite--window-layout-open-buffers (buffers)
-  "Open every file-backed buffer required by BUFFERS."
+(defun my/session-lite--window-layout-open-buffers (buffers &optional workspace)
+  "Open every file-backed buffer required by BUFFERS.
+WORKSPACE is forwarded so each opened buffer joins the right persp."
   (cl-every (lambda (buffer)
-              (my/session-lite--find-file (plist-get buffer :file) nil))
+              (my/session-lite--find-file (plist-get buffer :file) nil workspace))
             buffers))
 
-(defun my/session-lite--rewrite-window-layout-buffer-names (state buffers)
-  "Rewrite saved buffer names in STATE to the live names for BUFFERS."
+(defun my/session-lite--rewrite-window-layout-buffer-names (state buffers &optional workspace)
+  "Rewrite saved buffer names in STATE to the live names for BUFFERS.
+WORKSPACE is forwarded so any buffers opened during name-resolution
+join the right persp."
   (cond
    ((and (consp state)
          (eq (car state) 'buffer)
          (stringp (cadr state)))
-    (let ((buffer (my/session-lite--window-layout-buffer (cadr state) buffers)))
+    (let ((buffer (my/session-lite--window-layout-buffer (cadr state) buffers workspace)))
       (if buffer
           (cons 'buffer (cons (buffer-name buffer) (cddr state)))
         state)))
    ((and (consp state)
          (my/session-lite--proper-list-p state))
     (mapcar (lambda (item)
-              (my/session-lite--rewrite-window-layout-buffer-names item buffers))
+              (my/session-lite--rewrite-window-layout-buffer-names item buffers workspace))
             state))
    (t state)))
 
-(defun my/session-lite--restore-window-layout (layout &optional frame)
+(defun my/session-lite--restore-window-layout (layout &optional frame workspace)
   "Restore file-backed window LAYOUT.
 Return non-nil on success.  Failures are soft so the caller can fall
-back to simple selected-file restore."
+back to simple selected-file restore.  WORKSPACE, when non-nil, is
+the persp-mode workspace name that every layout-resident buffer
+should be added to — typically the snapshot's current-workspace,
+since the saved window layout was captured from a frame in that
+workspace."
   (let ((target (or frame (selected-frame)))
         (state (plist-get layout :state))
         (buffers (plist-get layout :buffers)))
     (when (and state buffers)
       (condition-case err
-          (when (my/session-lite--window-layout-open-buffers buffers)
+          (when (my/session-lite--window-layout-open-buffers buffers workspace)
             (with-selected-frame target
               (delete-other-windows)
               (window-state-put
-               (my/session-lite--rewrite-window-layout-buffer-names state buffers)
+               (my/session-lite--rewrite-window-layout-buffer-names state buffers workspace)
                (frame-root-window target)
                'safe))
             t)
@@ -290,13 +316,30 @@ back to simple selected-file restore."
          nil)))))
 
 (defun my/session-lite--restore-files-lazily (files)
-  "Restore FILES one per idle tick."
+  "Restore FILES one per idle tick.  No workspace context (e.g. when
+the snapshot has no workspaces — files restore into current persp)."
   (let ((delay my/session-lite-restore-idle-delay))
     (dolist (file files)
       (run-with-idle-timer
        delay nil
        (lambda (target) (my/session-lite--find-file target nil))
        file)
+      (setq delay (+ delay my/session-lite-restore-idle-delay)))))
+
+(defun my/session-lite--restore-pairs-lazily (pairs)
+  "Restore (file . workspace-name) PAIRS one per idle tick.
+Each timer callback opens its file AND adds the buffer to the named
+workspace via the WORKSPACE argument of `my/session-lite--find-file' —
+preserving the file's original workspace membership across restarts.
+Without this (the previous flat-list restore) every restored file
+landed in whatever workspace was active at restore time."
+  (let ((delay my/session-lite-restore-idle-delay))
+    (dolist (pair pairs)
+      (run-with-idle-timer
+       delay nil
+       (lambda (target-pair)
+         (my/session-lite--find-file (car target-pair) nil (cdr target-pair)))
+       pair)
       (setq delay (+ delay my/session-lite-restore-idle-delay)))))
 
 (defun my/session-lite-restore (&optional frame)
@@ -314,16 +357,35 @@ back to simple selected-file restore."
                    (equal (plist-get snapshot :version) 1))
           (if workspaces
               (progn
+                ;; Materialize every workspace up front so the per-file
+                ;; lookup via `*persp-hash*' resolves below.
                 (dolist (workspace workspaces)
                   (my/session-lite--ensure-workspace (plist-get workspace :name)))
+                ;; Switch to the saved active workspace — single switch,
+                ;; no thrashing.
                 (my/session-lite--ensure-workspace current-workspace)
-                (unless (my/session-lite--restore-window-layout window-layout target)
-                  (my/session-lite--find-file selected-file t))
-                (my/session-lite--restore-files-lazily
-                 (seq-remove (lambda (file) (equal file selected-file))
-                             (cl-mapcan (lambda (workspace)
-                                          (copy-sequence (plist-get workspace :files)))
-                                        workspaces))))
+                ;; Restore the visible window state.  Selected-file
+                ;; AND every buffer inside the saved layout goes into
+                ;; `current-workspace' (where the user left them).
+                (unless (my/session-lite--restore-window-layout
+                         window-layout target current-workspace)
+                  (my/session-lite--find-file selected-file t current-workspace))
+                ;; CRITICAL: pair each lazy-restored file with its
+                ;; ORIGINAL workspace so `my/session-lite--find-file'
+                ;; can `persp-add-buffer' it to the correct persp
+                ;; (instead of dumping every file into whichever
+                ;; workspace happens to be active at restore time).
+                ;; Without this, `kato'-tagged files reappear under
+                ;; `projects' and vice versa.
+                (let ((pairs (cl-mapcan
+                              (lambda (workspace)
+                                (let ((ws-name (plist-get workspace :name)))
+                                  (mapcar (lambda (file) (cons file ws-name))
+                                          (plist-get workspace :files))))
+                              workspaces)))
+                  (my/session-lite--restore-pairs-lazily
+                   (seq-remove (lambda (pair) (equal (car pair) selected-file))
+                               pairs))))
             (unless (my/session-lite--restore-window-layout window-layout target)
               (my/session-lite--find-file selected-file t))
             (my/session-lite--restore-files-lazily

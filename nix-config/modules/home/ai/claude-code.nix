@@ -14,9 +14,11 @@ let
   eccSrc              = inputs.everything-claude-code;
   wshobsonAgentsSrc   = inputs.wshobson-agents;
   # Matt Pocock's skill collection — surfaced as a symlinked dir
-  # under ~/.claude/skills/mattpocock so Claude Code (and our gptel
-  # `M-x my/gptel-load-skill') can pick them up.
+  # under ~/.claude/skills/mattpocock so Claude Code can pick them up.
   mattpocockSkillsSrc = inputs.mattpocock-skills;
+  # obra/superpowers — we only want the `systematic-debugging` skill,
+  # not the whole plugin. Symlinked as a single user skill.
+  superpowersSrc      = inputs.superpowers;
 in {
   options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC";
 
@@ -173,6 +175,13 @@ in {
     # appear without a full home-manager activation re-run.
     home.file.".claude/skills/mattpocock" = {
       source = config.lib.file.mkOutOfStoreSymlink "${mattpocockSkillsSrc}/skills";
+    };
+
+    # Just the `systematic-debugging` skill from obra/superpowers — not
+    # the rest of the plugin's skills/commands/hooks.
+    home.file.".claude/skills/systematic-debugging" = {
+      source = config.lib.file.mkOutOfStoreSymlink
+        "${superpowersSrc}/skills/systematic-debugging";
     };
 
     # Kill the slowness: ECC plugin runs 30+ hooks across PreToolUse,

@@ -89,7 +89,6 @@ in
       selenium
       cdp-socket
       seleniuim_driverless
-      conda
       # ipvanish
 
       #for gonwatch
