@@ -20,8 +20,9 @@
 (require 'config-session-lite) ; fast file/workspace snapshots
 (require 'config-tree)         ; treemacs sidebar (SPC e)
 (require 'config-term)         ; vterm (SPC o t half / SPC o T full)
-(require 'config-llm)          ; gptel
+(require 'config-llm)          ; agent-shell (ACP)
 (require 'config-pdf)          ; pdf-tools
+(require 'config-reader)       ; nov.el (.epub) + olivetti
 
 ;; --- Buffer hygiene (after init only, not eagerly) ---
 (defun my/initial-buffer-setup ()
