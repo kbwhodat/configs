@@ -23,7 +23,7 @@ in
     let
 
 # Keep only custom browser chrome theme (preserve all-black styling)
-    userChrome = builtins.readFile ../../../../chrome/zen-browser-theme.css;
+    userChrome = builtins.readFile ./chrome/zen-browser-theme.css;
 
     name = "kato";
     path = "main";

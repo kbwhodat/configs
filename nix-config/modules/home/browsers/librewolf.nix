@@ -21,7 +21,7 @@ in
     let
 
 # Using my own custom chrome.css
-    userChrome = builtins.readFile ../../../../chrome/darkchrome.css;
+    userChrome = builtins.readFile ./chrome/darkchrome.css;
 
     name = "kato";
     path = "main";

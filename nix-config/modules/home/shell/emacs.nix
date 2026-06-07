@@ -200,19 +200,14 @@ in lib.mkMerge [
           };
         };
       extraPackages = epkgs: (with epkgs; [
-        # ---- core completion / minibuffer ----
+        # core completion / minibuffer (vertico-multiform ships in vertico)
         vertico orderless marginalia consult
-        # --- vertico extensions ----------------------------------------
-        # vertico-posframe   : pop completion list in a child frame near
-        #                      point instead of the minibuffer at bottom
-        # (vertico-multiform ships INSIDE the vertico package already —
-        #  no separate install, just `require'd and enabled in config)
-        vertico-posframe
 
-        # ---- in-buffer completion (NEW — popup as you type) ----
-        corfu cape
+        # in-buffer completion — company uses overlay rendering, no
+        # macOS child frame (avoid corfu/posframe: child-frame Cmd-Tab orphan bug)
+        company
 
-        # ---- GC pause elimination (NEW) ----
+        # GC pause elimination
         gcmh
 
         # ---- eglot LSP performance booster (NEW) ----

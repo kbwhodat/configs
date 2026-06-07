@@ -28,7 +28,7 @@ in
 
   programs.firefox.profiles =
     let
-    userChrome = builtins.readFile ../../../../chrome/darkchrome.css;
+    userChrome = builtins.readFile ./chrome/darkchrome.css;
 
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       pwas-for-firefox

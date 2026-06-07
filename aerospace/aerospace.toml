@@ -12,8 +12,11 @@ after-login-command = []
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = []
 
-# Start AeroSpace at login
-start-at-login = true
+# Start AeroSpace at login.
+# Set to false because home-manager's launchd integration handles startup
+# (programs.aerospace.launchd.enable in modules/home/macos/aerospace.nix).
+# Setting this true would create a second, conflicting startup path.
+start-at-login = false
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -92,6 +95,12 @@ automatically-unhide-macos-hidden-apps = true
     # All possible modifiers: cmd, cmd, ctrl, shift
 
     # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
+
+    # ctrl-shift-space is handled by Hammerspoon (~/.config/hammerspoon/
+    # init.lua → findEmacs + focusEmacsWindow).  Hammerspoon does
+    # focus-by-app-name natively, no dynamic-lookup script needed.
+    # Trade-off: no cross-AeroSpace-workspace switching (Hammerspoon
+    # doesn't model AeroSpace workspaces).  Accepted per user preference.
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
     # You can uncomment the following lines to open up terminal with cmd + enter shortcut

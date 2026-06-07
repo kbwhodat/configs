@@ -67,28 +67,44 @@
   (setq tempel-path
         (expand-file-name "templates/*.eld" user-emacs-directory)))
 
-;; --- In-buffer completion (corfu + cape) -----------------------------
-;; corfu = popup-as-you-type. cape = extra completion-at-point sources.
-;; Before this we had NO popup completion — only manual M-TAB.
-
-(use-package corfu
-  :hook (after-init . global-corfu-mode)
+;; --- In-buffer completion (company-mode, overlay-based) ------------
+;; Overlay rendering, not child frames — immune to the macOS Cmd-Tab
+;; orphan that hits corfu / posframe consumers.
+(use-package company
+  :hook (after-init . global-company-mode)
   :init
-  (setq corfu-cycle t                ; wrap around list
-        corfu-auto t                 ; popup automatically (no manual M-TAB)
-        corfu-auto-delay 0.2
-        corfu-auto-prefix 3
-        corfu-preselect 'prompt      ; preselect the input as a candidate
-        corfu-popupinfo-delay '(0.5 . 0.5)
-        corfu-quit-no-match 'separator))
+  (setq company-idle-delay 0.2
+        company-minimum-prefix-length 3
+        company-selection-wrap-around t
+        company-tooltip-align-annotations t
+        company-tooltip-limit 12
+        company-show-quick-access t          ; M-1..M-9 to pick by number
+        company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend)
+        ;; Defaults dismiss the popup mid-typing (unique-match, no-match
+        ;; auto-abort, single-candidate hide).  Override → popup stays
+        ;; put until RET / ESC.
+        company-abort-on-unique-match nil
+        company-require-match nil
+        company-selection-default nil))      ; no auto-highlight on open
 
-(use-package cape
-  :after corfu
-  :init
-  ;; Add extra capf sources: file paths, dabbrev (words from buffers),
-  ;; abbrevs.  These show up alongside language-specific (eglot) ones.
-  (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-dabbrev))
+;; Popup styling.  DO NOT add :box to company-tooltip — it triggers
+;; per-character-cell rendering and lags scroll severely.
+(with-eval-after-load 'company
+  (set-face-attribute 'company-tooltip nil
+                      :background "#11161e" :foreground "#dfe7f0")
+  (set-face-attribute 'company-tooltip-selection nil
+                      :background "#3b6ea5" :foreground "#ffffff" :weight 'bold)
+  (set-face-attribute 'company-tooltip-common nil
+                      :foreground "#fbbf24" :weight 'bold)
+  (set-face-attribute 'company-tooltip-common-selection nil
+                      :foreground "#facc15" :weight 'bold)
+  (set-face-attribute 'company-tooltip-annotation nil
+                      :foreground "#a3aab8" :slant 'italic)
+  (set-face-attribute 'company-tooltip-annotation-selection nil
+                      :foreground "#e8eef7" :slant 'italic :weight 'bold)
+  (set-face-attribute 'company-scrollbar-bg nil :background "#11161e")
+  (set-face-attribute 'company-scrollbar-fg nil :background "#525868"))
 
 ;; --- eglot-booster: 4x faster LSP JSON via Rust wrapper -------------
 ;; Requires the emacs-lsp-booster binary on PATH (installed via

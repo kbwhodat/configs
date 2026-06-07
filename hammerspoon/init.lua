@@ -41,28 +41,10 @@ hs.hotkey.bind({"ctrl", "option"}, "space", function()
 
 end)
 
--- Find the emacs daemon process at the macOS level.  System Events sees
--- it under the literal binary name `emacs-stable' (from `~/.local/bin/
--- emacs-stable' — see `home.activation.stabilizeEmacsAndBounce' in
--- emacs.nix).  hs.application.find may return a table on multi-match
--- so we unwrap that case.
-local function findEmacs()
-  local r = hs.application.find("emacs-stable")
-  if type(r) == "table" then r = r[1] end
-  return r
-end
-
--- Force-activate emacs at the macOS level via System Events by PID.
---
--- Why not `app:activate()` (the obvious choice):
---   `:activate()' calls NSRunningApplication.activateWithOptions, which
---   silently fails for our daemon.  Reason: the daemon binary at
---   `~/.local/bin/emacs-stable' is a bare Mach-O — no .app bundle, no
---   Info.plist, so NSRunningApplication can't fully activate it.
---   Verified: `osascript … set frontmost of process "emacs-stable"' is
---   a no-op too, but the same call using `(first process whose unix id
---   is PID)' DOES bring it forward.  PID-route bypasses the broken
---   bundle lookup.
+-- Force-activate emacs by PID via System Events.  Bare-daemon emacs
+-- has no .app bundle so `app:activate()` and `osascript ... by-name`
+-- both fail; the PID route is the working path (and only works once
+-- the daemon owns at least one visible window).
 local function activateEmacsByPID(pid)
   if not pid then return end
   hs.osascript.applescript(string.format(
@@ -74,95 +56,16 @@ local function activateEmacsByPID(pid)
     pid))
 end
 
--- Poll until the daemon has at least one window, then activate.
--- emacsclient -n returns the moment the eval is enqueued, not when
--- the NSWindow is rendered — there's a ~100-300 ms cold-start gap.
-local function emacsWindow(app, screen)
-  if not app then return nil end
-  local windows = app:allWindows()
-  if screen then
-    for _, win in ipairs(windows) do
-      if win:screen() == screen then
-        return win
-      end
-    end
-  end
-  return app:mainWindow() or app:focusedWindow() or windows[1]
-end
-
-local function focusEmacsWindow(app, win)
-  if not app or not win then return end
-
-  app:unhide()
-
-  -- emacs-stable is a bare daemon binary, not a normal .app bundle, so
-  -- NSRunningApplication activation is unreliable. Drive focus through
-  -- Accessibility by PID/window instead.
-  local axApp = hs.axuielement.applicationElement(app)
-  if axApp then
-    pcall(function() axApp:setAttributeValue("AXFrontmost", true) end)
-  end
-
-  activateEmacsByPID(app:pid())
-
-  local axWin = hs.axuielement.windowElement(win)
-  if axWin then
-    pcall(function() axWin:performAction("AXRaise") end)
-    pcall(function() axWin:setAttributeValue("AXMain", true) end)
-    pcall(function() axWin:setAttributeValue("AXFocused", true) end)
-    pcall(function()
-      hs.axuielement.systemWideElement():setAttributeValue("AXFocusedWindow", axWin)
-    end)
-  end
-
-  win:raise()
-  win:focus()
-  activateEmacsByPID(app:pid())
-end
-
-local function activateEmacsWhenReady(attempts)
-  attempts = attempts or 0
-  local app = findEmacs()
-  local screen = hs.mouse.getCurrentScreen()
-  local win = emacsWindow(app, screen)
-  if app and win then
-    if screen and win:screen() ~= screen then
-      win:moveToScreen(screen)
-    end
-
-    focusEmacsWindow(app, win)
-
-    if app:isFrontmost() then
-      return
-    end
-  end
-  if attempts < 40 then  -- 40 × 50 ms = 2 s ceiling
-    hs.timer.doAfter(0.05, function() activateEmacsWhenReady(attempts + 1) end)
-  end
-end
-
+-- ctrl-shift-space → focus emacs (focus-only; silent no-op if no GUI frame).
 hs.hotkey.bind({"ctrl", "shift"}, "space", function()
-  -- Async, but use the callback to drive activation only AFTER the eval
-  -- has finished — i.e. after `my/raise-or-make-frame' has created the
-  -- frame, switched to a sane buffer, and run `(redisplay t)' to force
-  -- the paint.  This eliminates the race that produced the "blank
-  -- black box": we used to do `emacsclient -n' (returns immediately)
-  -- and then poll for the window with AX manipulation while emacs was
-  -- mid-creating it, leaving Cocoa stuck on an unpainted NSWindow.
-  local task = hs.task.new(
-    "/etc/profiles/per-user/katob/bin/emacsclient",
-    function(_exitCode)
-      -- Eval finished → frame guaranteed to exist and be painted.
-      -- Now safe to do the macOS-level activation.  No polling, no AX
-      -- chain — just the PID route that's known to work.
-      local app = findEmacs()
-      if app then
-        app:unhide()
-        activateEmacsByPID(app:pid())
-      end
-    end,
-    {"-a", "", "--eval", "(progn (my/raise-or-make-frame) (redisplay t) t)"})
-  task:start()
+  local pidOutput = hs.execute(
+    "/usr/bin/pgrep -f 'emacs-stable.*--fg-daemon' | /usr/bin/head -n 1")
+  local pid = pidOutput and pidOutput ~= "" and tonumber((pidOutput:gsub("%s+", "")))
+  if pid and pid > 0 then
+    activateEmacsByPID(pid)
+  else
+    hs.alert.show("emacs daemon not running", 1)
+  end
 end)
 
 hs.hotkey.bind({"ctrl"}, "space", function()
@@ -202,7 +105,12 @@ local volume = {
     mute = function() sendSystemKey("MUTE") end,
 }
 hs.hotkey.bind({}, "f10", volume.mute)
-hs.hotkey.bind({}, "f11", volume.down, nil, volume.down)
+-- F11 is held by macOS at the system level (RegisterEventHotKey -9878
+-- "eventHotKeyExistsErr").  Hammerspoon can't override it, and the
+-- binding error spams the log on every reload.  Mac hardware/media-
+-- key handler already maps F11 to volume-down — this binding was a
+-- redundant no-op.  Disabled.
+-- hs.hotkey.bind({}, "f11", volume.down, nil, volume.down)
 hs.hotkey.bind({}, "f12", volume.up, nil, volume.up)
 
 local function focusBrowser(target)

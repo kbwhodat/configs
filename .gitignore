@@ -180,3 +180,4 @@ lean-ctx/
 nix-config/modules/home/shell/emacs/history
 nix-config/modules/home/shell/emacs/recentf
 nix-config/modules/home/shell/emacs/session-lite.el
+/.agent-shell/
