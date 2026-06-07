@@ -264,7 +264,74 @@ If claude errors or returns empty, the region is left untouched."
   (dolist (fn '(agent-shell-send-region
                 agent-shell-send-region-to
                 agent-shell-send-dwim))
-    (advice-add fn :around #'my/agent-shell--trim-region-overshoot)))
+    (advice-add fn :around #'my/agent-shell--trim-region-overshoot))
+
+  ;; --- Shell-style line editing inside agent-shell buffers ----------
+  ;; agent-shell is a regular buffer (not a minibuffer), so the C-u/C-w
+  ;; rebinds in config-completion.el don't apply.  Bind the typical
+  ;; bash/readline keys here so typing/editing the prompt feels like
+  ;; any other terminal.  Bound in BOTH the mode map (covers emacs
+  ;; state / non-evil callers) AND evil insert state explicitly
+  ;; (because evil's insert state has its own bindings for C-u and
+  ;; C-w that would otherwise shadow ours).
+  (defun my/agent-shell-kill-input-backward ()
+    "Kill from point backward to the beginning of the current line.
+Bash-style C-u — wipes a half-typed prompt back to column 0."
+    (interactive)
+    (kill-line 0))
+
+  (let ((map agent-shell-mode-map))
+    (define-key map (kbd "C-a") #'move-beginning-of-line)
+    (define-key map (kbd "C-e") #'move-end-of-line)
+    (define-key map (kbd "C-k") #'kill-line)
+    (define-key map (kbd "C-u") #'my/agent-shell-kill-input-backward)
+    (define-key map (kbd "C-w") #'backward-kill-word))
+
+  (with-eval-after-load 'evil
+    (evil-define-key 'insert agent-shell-mode-map
+      (kbd "C-a") #'move-beginning-of-line
+      (kbd "C-e") #'move-end-of-line
+      (kbd "C-k") #'kill-line
+      (kbd "C-u") #'my/agent-shell-kill-input-backward
+      (kbd "C-w") #'backward-kill-word)
+    (evil-define-key 'normal agent-shell-mode-map
+      (kbd "C-a") #'move-beginning-of-line
+      (kbd "C-e") #'move-end-of-line))
+
+  ;; --- Route agent-shell completion through company popup -----------
+  ;; When you type `/' in agent-shell to get slash commands, agent-shell
+  ;; calls `completion-at-point' directly.  Without intervention, that
+  ;; falls through to emacs's vanilla `*Completions*' buffer ("Click or
+  ;; type M-RET on a completion..." ugliness) instead of company's
+  ;; nice in-buffer overlay popup.
+  ;;
+  ;; Two changes scoped to agent-shell buffers only (no impact on
+  ;; coding buffers' company config):
+  ;;   1. Lower `company-minimum-prefix-length' to 1 — single `/'
+  ;;      should trigger the popup.
+  ;;   2. Remap `completion-at-point' -> `company-complete' — so when
+  ;;      agent-shell explicitly invokes completion, it goes through
+  ;;      company's overlay renderer instead of vanilla *Completions*.
+  (defun my/agent-shell-prefer-company ()
+    "Make completion in this agent-shell buffer use company's overlay.
+Specifically:
+  - lower `company-minimum-prefix-length' to 1 (popup on first char)
+  - `company-idle-delay' 0.2 — debounces typing.  An earlier version
+    used 0.0 (instant) but every keystroke synchronously called
+    agent-shell's capf, which queries the agent over ACP — net result
+    was per-character lag.  200ms still feels instant for the slash
+    trigger but coalesces fast typing into one capf call.
+  - disable `completion-auto-help' (no auto *Completions* buffer)
+  - rewire `completion-in-region-function' to invoke company,
+    catching paths my [remap completion-at-point] doesn't reach
+    (e.g. when agent-shell calls `completion-in-region' directly)."
+    (setq-local company-minimum-prefix-length 1
+                company-idle-delay 0.2
+                completion-auto-help nil
+                completion-in-region-function
+                (lambda (&rest _) (company-complete))))
+  (add-hook 'agent-shell-mode-hook #'my/agent-shell-prefer-company)
+  (define-key agent-shell-mode-map [remap completion-at-point] #'company-complete))
 
 (provide 'config-llm)
 ;;; config-llm.el ends here

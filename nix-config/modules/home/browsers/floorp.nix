@@ -28,7 +28,7 @@ in
   programs.myfloorp.profiles =
     let
 
-  userChrome = builtins.readFile ../../../../chrome/myuserchrome.css;
+  userChrome = builtins.readFile ./chrome/myuserchrome.css;
 
   path =
     if isDarwin then

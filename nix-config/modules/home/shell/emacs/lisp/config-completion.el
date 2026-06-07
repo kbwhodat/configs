@@ -41,19 +41,7 @@
         '((execute-extended-command unobtrusive)  ; M-x: stays as one line
           (consult-line             buffer))))    ; in-buffer search: buffer view
 
-(use-package vertico-posframe
-  :after vertico
-  :config
-  ;; Pop completion in a child frame near point instead of the
-  ;; minibuffer at the bottom.  Stylistic.  Comment out
-  ;; `(vertico-posframe-mode 1)' to disable while keeping the package
-  ;; installed.
-  (setq vertico-posframe-poshandler  #'posframe-poshandler-frame-center
-        vertico-posframe-border-width 2
-        vertico-posframe-parameters
-        '((left-fringe  . 8)
-          (right-fringe . 8)))
-  (vertico-posframe-mode 1))
+;; vertico-posframe removed — child-frame popup orphaned on macOS Cmd-Tab.
 
 
 (use-package orderless

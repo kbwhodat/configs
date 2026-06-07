@@ -156,6 +156,7 @@ in
     onActivation.upgrade = true;
     onActivation.autoUpdate = true;
     onActivation.cleanup = "zap";
+    onActivation.extraFlags = [ "--force" ];
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "chawan" "firefoxpwa" "kimi-cli" ];
