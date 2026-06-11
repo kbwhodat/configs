@@ -36,11 +36,11 @@
   inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
   inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
 
-  inputs.everything-claude-code = { url = "github:affaan-m/everything-claude-code"; flake = false; };
-  inputs.wshobson-agents       = { url = "github:wshobson/agents";                   flake = false; };
-  inputs.mattpocock-skills     = { url = "github:mattpocock/skills";                 flake = false; };
-  inputs.superpowers           = { url = "github:obra/superpowers";                  flake = false; };
-  inputs.understand-anything   = { url = "github:Lum1104/Understand-Anything";       flake = false; };
+  inputs.everything-claude-code = { url = "github:affaan-m/everything-claude-code";   flake = false; };
+  inputs.wshobson-agents        = { url = "github:wshobson/agents";                   flake = false; };
+  inputs.mattpocock-skills      = { url = "github:mattpocock/skills";                 flake = false; };
+  inputs.superpowers            = { url = "github:obra/superpowers";                  flake = false; };
+  inputs.understand-anything    = { url = "github:Lum1104/Understand-Anything";       flake = false; };
 
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
 

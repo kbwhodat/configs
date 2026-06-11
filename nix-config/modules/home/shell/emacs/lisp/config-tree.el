@@ -76,7 +76,11 @@ collapsed root (use RET or TAB for that)."
   (setq treemacs-no-png-images t            ; unicode icons, no PNG files needed
         treemacs-width 30
         treemacs-position 'left
-        treemacs-follow-after-init t
+        ;; OFF: treemacs-follow-mode adds a `post-command-hook' tick on
+        ;; every keystroke while the sidebar is visible (it keeps the
+        ;; tree synced with the active buffer).  We have `SPC T'
+        ;; (`my/treemacs-find-file') for explicit refocus when desired.
+        treemacs-follow-after-init nil
         treemacs-show-cursor t              ; visible cursor when navigating
         treemacs-recenter-after-file-follow 'always
         treemacs-recenter-after-tag-follow 'always

@@ -1,7 +1,8 @@
-;;; config-ide.el --- Tree-sitter, eglot, tempel -*- lexical-binding: t; -*-
+;;; config-ide.el --- Tree-sitter, lsp-mode, tempel -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; eglot is built-in to emacs 30.  treesit grammars are auto-wired by the
-;; nix emacs wrapper via treesit-extra-load-path.
+;; lsp-mode (lean configuration; see below) wired with emacs-lsp-booster
+;; for performance.  treesit grammars are auto-wired by the nix emacs
+;; wrapper via treesit-extra-load-path.
 ;;; Code:
 
 ;; --- Explicit tree-sitter remaps -----------------------------------
@@ -14,7 +15,9 @@
         (js-mode         . js-ts-mode)
         (typescript-mode . typescript-ts-mode)
         (json-mode       . json-ts-mode)
-        (yaml-mode       . yaml-ts-mode)))
+        (yaml-mode       . yaml-ts-mode)
+        (c-mode          . c-ts-mode)
+        (c++-mode        . c++-ts-mode)))
 
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
 
@@ -29,34 +32,228 @@
 (use-package nix-ts-mode
   :mode "\\.nix\\'")
 
-;; --- Eglot per language (built-in) ---
-(use-package eglot
-  :ensure nil
-  :hook ((python-ts-mode . eglot-ensure)
-         (bash-ts-mode   . eglot-ensure)
-         (go-ts-mode     . eglot-ensure)
-         (nix-ts-mode    . eglot-ensure))
+;; --- LSP client (lsp-mode, lean — eglot-shaped feature surface) ----
+;; All UI bloat disabled.  What's left hooks into emacs primitives
+;; (xref / eldoc / flymake) so the rest of the config stays unchanged
+;; from the eglot era.  Booster wraps each server's stdio in a Rust
+;; process that pre-parses JSON into bytecode (~4x parse speedup).
+;;
+;; PLIST OPT: lsp-mode's `LSP_USE_PLISTS' env var switches from
+;; hash-table to plist representation for another big perf win, but
+;; the var must be set at BYTECOMPILE time.  nix bytecompiles lsp-mode
+;; at build time without it, so we run the (slightly slower) hash-
+;; table path.  Booster is the bigger knob anyway.  To enable plists,
+;; override the lsp-mode derivation in emacs.nix to set
+;; LSP_USE_PLISTS=true during preBuild.
+(use-package lsp-mode
+  ;; python-ts-mode is hooked by `lsp-pyright' below — it must `require'
+  ;; lsp-pyright (which registers the pyright client) BEFORE lsp-deferred
+  ;; runs its client discovery.  If python-ts-mode were also hooked here,
+  ;; the timing would race and pyright might not register in time.
+  :hook ((bash-ts-mode   . lsp-deferred)
+         (go-ts-mode     . lsp-deferred)
+         (nix-ts-mode    . lsp-deferred)
+         (c-ts-mode      . lsp-deferred)
+         (c++-ts-mode    . lsp-deferred))
+  :commands (lsp lsp-deferred)
   :init
-  ;; Perf tuning (source: jamescherti/minimal-emacs.d):
-  ;; - skip minibuffer progress spam from pyright/gopls
-  ;; - kill LSP server when last managed buffer closes (saves memory)
-  ;; - disable the events buffer (was a 2 MB ring buffer per server)
-  ;; - skip jsonrpc event hook overhead
-  (setq eglot-report-progress nil
-        eglot-autoshutdown t
-        eglot-events-buffer-config '(:size 0 :format short)
-        jsonrpc-event-hook nil
-        eglot-workspace-configuration
-        '(:nil (:nix (:flake (:autoArchive t)))))
+  ;; NOTE: `read-process-output-max' is set to 4 MB in early-init.el — do
+  ;; NOT re-set it here.  An earlier 1 MB setting silently downgraded the
+  ;; LSP read buffer because this :init runs AFTER early-init.
+  (setq lsp-keymap-prefix nil                    ; no SPC-l prefix; we use g-keys
+
+        ;; --- UI bloat OFF -----------------------------------------
+        lsp-headerline-breadcrumb-enable      nil
+        lsp-modeline-code-actions-enable      nil
+        lsp-modeline-diagnostics-enable       nil
+        lsp-modeline-workspace-status-enable  nil
+        lsp-lens-enable                       nil
+        lsp-signature-auto-activate           nil
+        lsp-enable-symbol-highlighting        nil
+        lsp-semantic-tokens-enable            nil   ; treesitter handles syntax
+
+        ;; --- "Helpful" behaviors OFF ------------------------------
+        lsp-enable-indentation                nil
+        lsp-enable-on-type-formatting         nil
+        lsp-enable-snippet                    nil
+        lsp-enable-file-watchers              nil   ; big saving in large repos
+        lsp-log-io                            nil   ; no per-msg logging
+        lsp-completion-show-detail            nil   ; company shows annotation; LSP detail redundant
+        lsp-enable-text-document-color        nil   ; CSS color hints — not needed
+        lsp-enable-folding                    nil   ; tree-sitter handles folding
+        lsp-enable-dap-auto-configure         nil   ; no dap installed
+        lsp-enable-links                      nil   ; clickable URL hints — minor
+
+        ;; --- Defer to emacs primitives ---------------------------
+        lsp-completion-provider               :capf
+        lsp-diagnostics-provider              :flymake
+        lsp-eldoc-enable-hover                nil   ; no auto-hover in echo area
+        lsp-eldoc-render-all                  nil
+
+        ;; Stop the "X is not part of any project, import root?" prompt.
+        ;; Auto-detects via project.el / projectile (git root etc.).
+        lsp-auto-guess-root                   t
+
+        lsp-idle-delay                        0.5)
   :config
-  (add-to-list 'eglot-server-programs
-               '(python-ts-mode . ("pyright-langserver" "--stdio")))
-  (add-to-list 'eglot-server-programs
-               '(bash-ts-mode   . ("bash-language-server" "start")))
-  (add-to-list 'eglot-server-programs
-               '(go-ts-mode     . ("gopls")))
-  (add-to-list 'eglot-server-programs
-               '(nix-ts-mode    . ("nil"))))
+  ;; --- emacs-lsp-booster (Rust JSON → bytecode wrapper) -----------
+  ;; Same binary that drove eglot-booster.  We hook it in via advice
+  ;; on `lsp-resolve-final-command' (prepends `emacs-lsp-booster' to
+  ;; the LSP server invocation) and `json-parse-buffer' (recognizes
+  ;; the bytecode form and evaluates it).
+  (defun my/lsp-booster--final-command (orig cmd &optional test)
+    (let ((result (funcall orig cmd test)))
+      (if (and (executable-find "emacs-lsp-booster")
+               (not test)
+               (not (file-remote-p default-directory)))
+          ;; Booster defaults to emitting plists, but our lsp-mode isn't
+          ;; compiled with LSP_USE_PLISTS (nix build doesn't get the env
+          ;; var), so it expects hash-tables.  Explicit `--json-object-
+          ;; type hashtable' makes booster match.  `--' separates booster
+          ;; args from the LSP server command that follows.
+          (append (list "emacs-lsp-booster"
+                        "--json-object-type" "hashtable"
+                        "--")
+                  result)
+        result)))
+  (defun my/lsp-booster--json-parse (orig &rest args)
+    (or (and (equal (following-char) ?#)
+             (let ((bytecode (read (current-buffer))))
+               (when (byte-code-function-p bytecode)
+                 (funcall bytecode))))
+        (apply orig args)))
+  (advice-add 'lsp-resolve-final-command :around #'my/lsp-booster--final-command)
+  (advice-add 'json-parse-buffer         :around #'my/lsp-booster--json-parse))
+
+;; --- lsp-ui: visual layers (doc popup, sideline, peek, imenu) ------
+;; All four submodes ON so you can see what each does.  Each can be
+;; toggled or stripped after deciding what you like.  Brings child
+;; frames back; mitigation hook (below) hides lsp-ui-doc on macOS
+;; Cmd-Tab away.
+(use-package lsp-ui
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :init
+  (setq
+   ;; --- DOC popup (cursor-anchored hover) ------------------------
+   lsp-ui-doc-enable             t
+   lsp-ui-doc-show-with-cursor   nil    ; on-demand only (use `g h')
+   lsp-ui-doc-show-with-mouse    nil    ; keyboard-only workflow
+   lsp-ui-doc-position           'at-point
+   lsp-ui-doc-max-width          80
+   lsp-ui-doc-max-height         20
+   lsp-ui-doc-delay              0.2
+   lsp-ui-doc-border             "#525868"
+
+   ;; --- SIDELINE (inline info on the right of each line) --------
+   lsp-ui-sideline-enable                t
+   lsp-ui-sideline-show-diagnostics      t
+   lsp-ui-sideline-show-code-actions     nil   ; "extract function" etc. — disabled
+   lsp-ui-sideline-show-hover            nil   ; no inline sig; use `g h' on demand
+   lsp-ui-sideline-show-symbol           nil   ; pure noise — symbol name inline
+   lsp-ui-sideline-update-mode           'line ; only update on line change
+   lsp-ui-sideline-delay                 0.2
+
+   ;; --- PEEK (replacement for jump-to-def window) ---------------
+   lsp-ui-peek-enable                    t
+   lsp-ui-peek-always-show               t     ; show overlay even for single result (default skips for 1 def)
+   lsp-ui-peek-show-directory            t
+   lsp-ui-peek-list-width                60
+   lsp-ui-peek-fontify                   'always
+
+   ;; --- IMENU sidebar ------------------------------------------
+   lsp-ui-imenu-enable                   t
+   lsp-ui-imenu-auto-refresh             'after-save
+   lsp-ui-imenu-window-width             32))
+
+;; macOS Cmd-Tab orphan mitigation: hide lsp-ui-doc child frame when
+;; emacs loses focus.  Scoped — does NOT touch other posframes.
+(with-eval-after-load 'lsp-ui-doc
+  (defun my/lsp-ui-doc--hide-on-focus-out ()
+    (unless (frame-focus-state)
+      (when (fboundp 'lsp-ui-doc-hide)
+        (lsp-ui-doc-hide))))
+  (add-function :after after-focus-change-function
+                #'my/lsp-ui-doc--hide-on-focus-out))
+
+;; --- Pyright client for lsp-mode (Python) --------------------------
+;; lsp-mode core doesn't ship a pyright client.  Without this, Python
+;; buffers only get ruff (linting) — no definitions / references /
+;; hover.  pyright provides those; ruff stays attached as an "add-on"
+;; client for linting + formatting suggestions.
+(use-package lsp-pyright
+  :init
+  (setq lsp-pyright-langserver-command "pyright")    ; use pkgs.pyright on PATH
+  :hook (python-ts-mode . (lambda ()
+                            (require 'lsp-pyright)
+                            (lsp-deferred))))
+
+;; flymake is the diagnostics backend (lsp-diagnostics-provider :flymake).
+;; Force-load it so `flymake-goto-next-error' etc. are commandp BEFORE
+;; lsp attaches — otherwise pressing `g e' in a non-LSP buffer errors:
+;;   Wrong type argument: commandp, flymake-goto-next-error
+(require 'flymake)
+
+;; `lsp-diagnostics.el' is the sub-module that wires LSP diagnostics
+;; INTO flymake.  lsp-mode lazy-loads it, but if a buffer attaches LSP
+;; before the lazy-load trigger fires, `lsp-diagnostics-mode' never
+;; activates and diagnostics never reach flymake → red squiggles
+;; missing + `g e' walks nothing.  Explicit require sidesteps the race.
+(with-eval-after-load 'lsp-mode
+  (require 'lsp-diagnostics))
+
+;; --- Vim-style LSP keybindings (consistent with nvim + Zed) ---------
+;; Scoped to `prog-mode-map' so `g i' doesn't shadow defaults in
+;; text/org/markdown.  `g i' in default evil is `evil-insert-resume'
+;; which almost no one uses — overriding for "go to impl" is the
+;; community convention.
+(with-eval-after-load 'evil
+  (evil-define-key 'normal prog-mode-map
+    ;; --- Navigation ---
+    (kbd "g d") #'lsp-find-definition             ; def at point
+    (kbd "g D") #'lsp-find-declaration            ; declaration
+    (kbd "g r") #'lsp-find-references             ; find all references
+    (kbd "g i") #'lsp-find-implementation         ; impl(s)
+    (kbd "g t") #'lsp-find-type-definition        ; type def
+
+    ;; --- Info ---
+    (kbd "g h") #'lsp-ui-doc-glance               ; cursor-anchored hover popup
+    (kbd "g H") #'lsp-describe-thing-at-point     ; *lsp-help* buffer (fallback)
+    (kbd "g s") #'lsp-signature-activate          ; signature help (cycle w/ C-n/C-p)
+
+    ;; --- Refactor ---
+    (kbd "g R") #'lsp-rename                      ; rename symbol across project
+    (kbd "g a") #'lsp-execute-code-action         ; run a code action at point
+    (kbd "g w") #'xref-find-apropos               ; fuzzy-search ANY symbol in workspace (via lsp-xref backend)
+    (kbd "g f") #'lsp-format-buffer               ; LSP format (NB: apheleia also formats)
+
+    ;; --- Diagnostics ---
+    (kbd "g e") #'flymake-goto-next-error         ; next diagnostic
+    (kbd "g E") #'flymake-goto-prev-error         ; prev diagnostic
+    (kbd "g q") #'flymake-show-buffer-diagnostics ; list errors in this buffer
+    (kbd "g Q") #'flymake-show-project-diagnostics ; project-wide errors list
+
+    ;; --- lsp-ui peek (preview without jumping) ---
+    (kbd "g p d") #'lsp-ui-peek-find-definitions  ; peek defs
+    (kbd "g p r") #'lsp-ui-peek-find-references   ; peek refs
+    (kbd "g p i") #'lsp-ui-peek-find-implementation  ; peek impls
+    (kbd "g p s") #'lsp-ui-peek-find-workspace-symbol)) ; peek workspace sym
+
+;; --- Use consult's xref renderer (fuzzy list + live preview) -------
+;; Default `xref-find-references' pops a `*xref*' buffer in a new
+;; window — passable, but takes screen real estate and you scroll a
+;; static list.  consult-xref shows results in the minibuffer with
+;; vertico filtering and live preview at point.
+;;
+;; NOTE: `consult-xref' is provided by the sub-library `consult-xref.el',
+;; NOT the main `consult.el'.  In our nixpkgs build the autoloads file
+;; doesn't expose the function, so loading `consult' alone is not
+;; enough — `lsp-show-xrefs' calls `consult-xref' directly and errors
+;; with `void-function consult-xref'.  Explicit `require' fixes it.
+(with-eval-after-load 'consult
+  (require 'consult-xref)
+  (setq xref-show-xrefs-function       #'consult-xref
+        xref-show-definitions-function #'consult-xref))
 
 ;; --- Tempel snippets (replaces yasnippet; tempel is lighter) ---
 (use-package tempel
@@ -70,8 +267,16 @@
 ;; --- In-buffer completion (company-mode, overlay-based) ------------
 ;; Overlay rendering, not child frames — immune to the macOS Cmd-Tab
 ;; orphan that hits corfu / posframe consumers.
+;;
+;; Scoped to prog + text modes instead of `global-company-mode'.  Global
+;; mode turns company on in dired, magit, *Messages*, help, etc. where
+;; there's nothing useful to complete — wasting cycles per keystroke
+;; and adding hook overhead in every buffer.  prog/text covers every
+;; buffer where completion is actually wanted (code, markdown, org,
+;; commit messages).
 (use-package company
-  :hook (after-init . global-company-mode)
+  :hook ((prog-mode . company-mode)
+         (text-mode . company-mode))
   :init
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 3
@@ -106,15 +311,8 @@
   (set-face-attribute 'company-scrollbar-bg nil :background "#11161e")
   (set-face-attribute 'company-scrollbar-fg nil :background "#525868"))
 
-;; --- eglot-booster: 4x faster LSP JSON via Rust wrapper -------------
-;; Requires the emacs-lsp-booster binary on PATH (installed via
-;; emacs.nix home.packages).
-(use-package eglot-booster
-  :after eglot
-  :config (eglot-booster-mode))
-
 ;; --- envrc: project-local env vars via direnv -----------------------
-;; Without this, eglot-spawned LSPs and `M-x compile` see your login
+;; Without this, lsp-spawned servers and `M-x compile` see your login
 ;; shell PATH/env — not the project's nix develop / virtualenv / etc.
 ;; envrc consults the nearest .envrc and exports its variables into
 ;; every subprocess emacs spawns from that buffer.

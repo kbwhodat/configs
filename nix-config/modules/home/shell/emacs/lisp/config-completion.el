@@ -10,36 +10,21 @@
 
 (use-package vertico
   :config
-  (vertico-mode 1)
+  (vertico-mode 1))
 
-  ;; --- vertico-multiform: per-category layouts ---------------------
-  ;; Built-in to the vertico package — no separate install.  Lets you
-  ;; pick a layout per completion category instead of one-size-fits-all
-  ;; vertical.  Toggle layouts at any prompt with `M-V'.
-  ;;
-  ;; CRITICAL: must `require' each extension file so the corresponding
-  ;; mode symbols become `fboundp'.  vertico-multiform resolves a
-  ;; shorthand like `grid' -> `vertico-grid-mode' via `intern-soft' +
-  ;; `fboundp' (vertico-multiform.el line 137-139); if the extension
-  ;; isn't loaded, the resolver falls back to the bare symbol and
-  ;; later `(funcall 'grid ...)' errors with `void-function grid'.
-  ;; README examples don't mention this because they assume the user
-  ;; has enabled extensions globally — for our per-category use, just
-  ;; loading the files (not enabling the modes) is enough.
-  (require 'vertico-grid)
-  (require 'vertico-buffer)
-  (require 'vertico-unobtrusive)
-  (require 'vertico-flat)
-  (require 'vertico-multiform)
-  (vertico-multiform-mode 1)
-  (setq vertico-multiform-categories
-        '((file       grid)              ; find-file: 2D grid (more files per screen)
-          (consult-grep buffer)          ; ripgrep results: full-buffer view
-          (jinx       grid (vertico-grid-annotate . 20))  ; spellcheck suggestions
-          (imenu      buffer)))
-  (setq vertico-multiform-commands
-        '((execute-extended-command unobtrusive)  ; M-x: stays as one line
-          (consult-line             buffer))))    ; in-buffer search: buffer view
+;; vertico-multiform extensions intentionally NOT loaded.  Earlier
+;; configs had per-command and per-category overrides (M-x as
+;; `unobtrusive', consult-grep as `buffer', find-file as `grid', etc.)
+;; but the unobtrusive M-x in particular obscured the candidate list —
+;; only one match visible at a time.  Plain vertico bottom-minibuffer
+;; with full list is the consistent UX.
+;;
+;; If you ever want multiform back, add these requires (they must be
+;; loaded BEFORE `(vertico-multiform-mode 1)' so symbols like `grid'
+;; and `unobtrusive' resolve via `intern-soft' + `fboundp'):
+;;   (require 'vertico-grid) (require 'vertico-buffer)
+;;   (require 'vertico-unobtrusive) (require 'vertico-flat)
+;;   (require 'vertico-multiform) (vertico-multiform-mode 1)
 
 ;; vertico-posframe removed — child-frame popup orphaned on macOS Cmd-Tab.
 

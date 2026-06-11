@@ -210,8 +210,29 @@ in lib.mkMerge [
         # GC pause elimination
         gcmh
 
-        # ---- eglot LSP performance booster (NEW) ----
-        eglot-booster
+        # ---- LSP client (lean lsp-mode; pairs with emacs-lsp-booster) ----
+        # Switched from built-in eglot to lsp-mode for richer feature
+        # surface.  All UI bloat (sideline, breadcrumb, lens, modeline
+        # diagnostics, semantic tokens, file watchers) disabled in
+        # config-ide.el — what remains is essentially "eglot-shaped"
+        # lsp-mode that hooks into emacs primitives (xref, eldoc, flymake).
+        # The same `emacs-lsp-booster' rust binary (home.packages below)
+        # provides the JSON→bytecode speedup.
+        #
+        # lsp-pyright registers pyright as a Python LSP client (lsp-mode
+        # core ships pylsp/pyls/ruff/semgrep/ty but NOT pyright — separate
+        # package).  pyright provides definitions/hover/refs; ruff stays
+        # active as an add-on for linting/formatting suggestions.
+        #
+        # lsp-ui adds visual layers on top of lsp-mode:
+        #   - lsp-ui-doc      : cursor-anchored hover popup (child frame)
+        #   - lsp-ui-sideline : inline diagnostics + code-actions to the right
+        #   - lsp-ui-peek     : peek window for definitions/references
+        #   - lsp-ui-imenu    : symbol sidebar
+        # Configured in config-ide.el.  Brings child frames back to GUI;
+        # known macOS orphan-on-Cmd-Tab quirk applies — mitigated with a
+        # scoped focus-out hook for lsp-ui-doc only.
+        lsp-mode lsp-pyright lsp-ui
 
         # ---- evil + leader ----
         evil evil-collection evil-surround general which-key avy
@@ -220,7 +241,11 @@ in lib.mkMerge [
         undo-fu undo-fu-session tempel
 
         # ---- ui / theme ----
-        doom-themes      # bug fix: init.el (require 'doom-themes) was unmet
+        # doom-themes provides the doom-alabaster theme (kbwhodat fork
+        # fetched as a custom-theme-load-path entry below).  The light
+        # toggle target (modus-operandi) is built into emacs 28+ — no
+        # package needed for that side.
+        doom-themes
 
         # ---- file-tree sidebar (SPC e) ----
         treemacs treemacs-evil treemacs-magit nerd-icons
@@ -245,6 +270,8 @@ in lib.mkMerge [
           tree-sitter-nix
           tree-sitter-markdown
           tree-sitter-lua
+          tree-sitter-c           # config-ide.el remaps c-mode -> c-ts-mode
+          tree-sitter-cpp         # config-ide.el remaps c++-mode -> c++-ts-mode
         ]))
 
         # ---- IDE (eglot is built-in; treesit grammars auto-wired by nix) ----
@@ -293,9 +320,21 @@ in lib.mkMerge [
       pkgs.fetchFromGitHub {
         owner = "kbwhodat";
         repo = "doom-alabaster-theme";
-        rev = "master";           # or a pinned commit hash if you prefer
-        sha256 = "sha256-FrREa0leAqOqC50hAH1uY8VMy+CMmsSjwPN9KJ5cuPo=";
+        # Pinned to the bold-types commit.  Bump rev + sha256 after
+        # pushing any further tweaks upstream:
+        #   nix-prefetch-url --unpack \
+        #     https://github.com/kbwhodat/doom-alabaster-theme/archive/<rev>.tar.gz
+        #   nix hash convert --hash-algo sha256 --to sri <hash>
+        rev = "521edf143de8be56f7e152008dc3d1d7501e3e21";
+        sha256 = "sha256-TwBAutpH5UBNJLHNU60C8KwAZb2XbT+mxOKW0dXo/yc=";
       };
+
+    # Local sibling: light alabaster (Sublime original palette) for the
+    # SPC t t toggle target.  Lives in-repo so we own the colors.
+    home.file."${emacsDir}/themes/doom-alabaster-light-theme" = {
+      source = ./emacs/themes/doom-alabaster-light-theme;
+      recursive = true;
+    };
 
     # Run Emacs as a daemon.  On darwin home-manager wires this to a
     # launchd plist (org.nix-community.home.emacs); on linux it wires
@@ -314,13 +353,14 @@ in lib.mkMerge [
     home.packages = [
       pkgs.pyright
       pkgs.bash-language-server
+      pkgs.clang-tools          # clangd — C/C++ LSP server (cross-platform)
       pkgs.gopls
       pkgs.nil
       pkgs.ruff
       pkgs.shfmt
       pkgs.nixfmt-rfc-style
       pkgs.xapian
-      pkgs.emacs-lsp-booster   # rust JSON bridge for eglot-booster
+      pkgs.emacs-lsp-booster   # rust JSON bridge for lsp-mode (advice in config-ide.el)
       pkgs.enchant             # jinx spell-check backend (Apple Spell on macOS / hunspell on linux)
       pkgs.claude-agent-acp    # ACP bridge for agent-shell -> Claude Code (pkgs/by-name/claude-agent-acp/)
     ];

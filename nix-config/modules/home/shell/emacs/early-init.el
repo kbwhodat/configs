@@ -16,23 +16,30 @@
 (setq package-enable-at-startup nil
       package-quickstart nil)
 
-;; --- diagnostic: per-package load/config timings ---
-;; Must be set BEFORE any `use-package' form expands.  After the daemon
-;; has been up for a bit, run `M-x use-package-report' to see which
-;; packages cost the most startup time.  Cheap; leave on permanently.
-(setq use-package-compute-statistics t)
+;; --- diagnostic: per-package load/config timings (OFF) ---
+;; When enabled, every `use-package' form records start/end timestamps
+;; for :init / :config so `M-x use-package-report' shows the slow
+;; packages.  Useful when tuning startup — off otherwise to keep the
+;; per-form overhead at zero.  Flip to `t' temporarily when investigating
+;; a new slow package.
+(setq use-package-compute-statistics nil)
 
 ;; --- suppress redisplay + minibuffer messages during startup ---
 ;; Saves the visual cost of repainting the unstyled frame + flashing
 ;; "Loading X..." messages during init.  Reset on `window-setup-hook'
 ;; (first frame paint).  Trade-off: init errors won't render visually
 ;; until window-setup fires — but they still go to *Messages*.
-(setq-default inhibit-redisplay t
-              inhibit-message t)
+;;
+;; Plain `setq' (not `setq-default'): we want the GLOBAL value flipped
+;; for the init window, NOT a default that leaks into every new buffer
+;; created before `window-setup-hook' fires (those buffers would
+;; inherit `t' as their buffer-local default and render blank).
+(setq inhibit-redisplay t
+      inhibit-message t)
 (add-hook 'window-setup-hook
           (lambda ()
-            (setq-default inhibit-redisplay nil
-                          inhibit-message nil)
+            (setq inhibit-redisplay nil
+                  inhibit-message nil)
             (redisplay)))
 
 ;; --- subprocess I/O (eglot, ripgrep) ---
@@ -74,9 +81,11 @@
        (t nil)))
 
 ;; --- cheap rendering defaults ---
+;; NOTE: `idle-update-delay' is tuned in config-perf.el (0.1).  Don't set
+;; it here too — last-write-wins, and we want the perf value to be the
+;; canonical one.
 (setq bidi-inhibit-bpa t
       inhibit-compacting-font-caches t
-      idle-update-delay 0.5
       frame-resize-pixelwise t)
 ;; Stronger than bidi-inhibit-bpa alone — disables full bidirectional
 ;; layout reordering. Acceptable cost on English/code content.
