@@ -42,16 +42,108 @@
                    `((space :align-to (- right ,right-width))))
        (propertize ws 'face '(:weight bold)))))))
 
-;; --- Theme load path (kbwhodat doom-alabaster fetched via nix) ---
+;; --- Theme: doom-alabaster ↔ doom-alabaster-light ------------------
+;; Same minimal-syntax-highlighting identity, just bg/fg flipped.
+;;   - dark : kbwhodat's `doom-alabaster' fork (black bg, soft fg)
+;;   - light: in-repo `doom-alabaster-light' (Sublime alabaster
+;;            original palette — white bg, red comments)
+;; Toggle on `SPC t t' feels like flipping the page, not changing
+;; themes.
 (add-to-list 'custom-theme-load-path
              (expand-file-name "themes/doom-alabaster-theme" user-emacs-directory))
+(add-to-list 'custom-theme-load-path
+             (expand-file-name "themes/doom-alabaster-light-theme" user-emacs-directory))
 
-;; --- Theme: load after first frame is visible ---
-(use-package doom-themes
-  :defer t
-  :init
-  (add-hook 'window-setup-hook
-            (lambda () (load-theme 'doom-alabaster t))))
+(defvar my/dark-theme  'doom-alabaster
+  "Dark theme used by `my/toggle-theme'.")
+(defvar my/light-theme 'doom-alabaster-light
+  "Light theme used by `my/toggle-theme' — Sublime Alabaster port.")
+(defvar my/current-theme my/dark-theme
+  "Theme currently applied.  Updated by `my/toggle-theme'.")
+
+;; --- doom-alabaster face polish ------------------------------------
+;; doom-alabaster's defaults for `region', `hl-line', and isearch are
+;; dim on its dark bg — saturated blue selection + muted amber search
+;; highlight are the tuned values from earlier iterations.
+;; Apply only when alabaster is active; reset to `unspecified' when
+;; toggling to modus so the light theme's own colors take over.
+(defun my/apply-alabaster-tweaks ()
+  "Brighten region/hl-line/search faces under doom-alabaster."
+  (custom-set-faces
+   '(region  ((t (:background "#525868" :extend t))))
+   '(hl-line ((t (:background "#1f2733" :extend t)))))
+  (dolist (spec '((isearch                "#5d4e16" t)   ; muted amber bold (current)
+                  (evil-ex-search         "#5d4e16" t)
+                  (lazy-highlight         "#3d3622" nil) ; even dimmer (other matches)
+                  (evil-ex-lazy-highlight "#3d3622" nil)))
+    (let ((face (nth 0 spec)) (bg (nth 1 spec)) (bold (nth 2 spec)))
+      (when (facep face)
+        (set-face-attribute face nil
+                            :background bg
+                            :foreground "#fde68a"
+                            :weight (if bold 'bold 'normal)
+                            :underline nil
+                            :box nil)))))
+
+(defun my/clear-alabaster-tweaks ()
+  "Reset alabaster-tuned faces so the active theme's own colors win."
+  (custom-set-faces
+   '(region  ((t nil)))
+   '(hl-line ((t nil))))
+  (dolist (face '(isearch evil-ex-search lazy-highlight evil-ex-lazy-highlight))
+    (when (facep face)
+      (set-face-attribute face nil
+                          :background 'unspecified
+                          :foreground 'unspecified
+                          :weight 'unspecified
+                          :underline 'unspecified
+                          :box 'unspecified))))
+
+(defun my/load-current-theme ()
+  "Activate `my/current-theme' and apply alabaster-specific face polish.
+Type face brightness (base8 = pure white for dark, pure black for
+light) and weight (normal) are baked directly into both theme files'
+face-override blocks — no runtime override needed."
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme my/current-theme t)
+  (if (eq my/current-theme my/dark-theme)
+      (my/apply-alabaster-tweaks)
+    (my/clear-alabaster-tweaks)))
+
+;; Load theme at DAEMON STARTUP, not on first GUI frame.  Earlier we
+;; deferred to `after-make-frame-functions' to skip the work on the
+;; daemon's TTY F1 — but that moved the ~300-face theme apply to the
+;; critical path of `emacsclient -c', which the user perceives as a
+;; 30 s "blank black frame" while theme + font + session restore all
+;; run synchronously before the frame can paint.
+;;
+;; `load-theme' itself doesn't need a graphical frame; it registers
+;; face specs that resolve to TTY colors on TTY frames and RGB on GUI.
+;; Calling it at `window-setup-hook' (daemon TTY F1 paint) means the
+;; daemon is fully themed before any emacsclient connects — the GUI
+;; frame inherits the styled state and paints immediately.
+(add-hook 'window-setup-hook #'my/load-current-theme)
+
+(defun my/toggle-theme ()
+  "Swap between dark and light alabaster."
+  (interactive)
+  (setq my/current-theme
+        (if (eq my/current-theme my/dark-theme)
+            my/light-theme
+          my/dark-theme))
+  (my/load-current-theme)
+  (message "Theme: %s" my/current-theme))
+
+;; Wait on `config-evil', not `general' — `my/leader' is created
+;; INSIDE general's `:config' block, and `with-eval-after-load 'general'
+;; fires the moment `(provide 'general)' runs (end of general.el) which
+;; is BEFORE that `:config' block executes.  Other modules using the
+;; same `general' eval-after-load pattern only get away with it because
+;; they're required AFTER config-evil — config-ui is the one loaded
+;; before, so we key off the file that actually defines the leader.
+(with-eval-after-load 'config-evil
+  (when (fboundp 'my/leader)
+    (my/leader "tt" '(my/toggle-theme :which-key "theme (dark/light)"))))
 
 ;; --- Pulsar: pulse the line on jumps (lightweight) ------------------
 ;; 3 iterations × 0.04 s = 120 ms animation (was 8 × 0.04 = 320 ms).
@@ -76,23 +168,20 @@
                  avy-goto-word-1 avy-goto-line avy-goto-char-timer))
     (add-to-list 'pulsar-pulse-functions cmd)))
 
-;; --- Selection / region highlight ----------------------------------
-;; Theme default `region' background is `#5C5C5C' — barely visible on
-;; the alabaster dark background.  Use a saturated blue so visual-mode
-;; selections (and treemacs highlights, which inherit `region') are
-;; obviously visible.  `:extend t' makes the highlight span to the
-;; line end like vim's visual-line, not stop at the last char.
-(custom-theme-set-faces
- 'user
- '(region    ((t (:background "#525868" :extend t))))
- '(hl-line   ((t (:background "#1f2733" :extend t)))))
-
-;; --- Font: apply after first frame ---
-(add-hook 'window-setup-hook
-          (lambda ()
-            (set-face-attribute 'default nil
-                                :family "ComicShannsMono Nerd Font Mono"
-                                :height 135)))
+;; --- Font: apply after first GRAPHICAL frame ---------------------
+;; Same FRAME-arg fix as the theme loader above — bare
+;; `(display-graphic-p)' consults the daemon's TTY F1 and would
+;; never trigger, leaving the GUI frame at the default font.
+(defun my/set-font-when-graphical (&optional frame)
+  (let ((target (or frame (selected-frame))))
+    (when (display-graphic-p target)
+      (set-face-attribute 'default nil
+                          :family "ComicShannsMono Nerd Font Mono"
+                          :height 140)
+      (remove-hook 'after-make-frame-functions
+                   #'my/set-font-when-graphical))))
+(add-hook 'window-setup-hook        #'my/set-font-when-graphical)
+(add-hook 'after-make-frame-functions #'my/set-font-when-graphical)
 
 ;; --- Browse URL: use the system default browser ---
 (setq browse-url-browser-function 'browse-url-default-browser)
@@ -139,37 +228,26 @@ Hardened against the \"blank black box\" symptom on macOS:
         (unless (and target-buf (buffer-live-p target-buf))
           (setq target-buf (get-buffer-create "*scratch*")))
         (set-buffer target-buf)
-        (let ((frame (make-frame '((window-system . ns)))))
+        ;; Daemon's invisible F1 frame is a TTY; bare `(make-frame)' would
+        ;; create another TTY frame (invisible).  Must explicitly request a
+        ;; GUI window-system: `ns' on macOS, `pgtk' (Wayland) or `x' on
+        ;; Linux.  Without this the "no GUI frame yet" path silently
+        ;; produces an invisible frame and `emacs' from a shell appears
+        ;; to do nothing.
+        (let* ((gui-ws (cond ((eq system-type 'darwin) 'ns)
+                             ((getenv "WAYLAND_DISPLAY") 'pgtk)
+                             (t 'x)))
+               (frame (make-frame `((window-system . ,gui-ws)))))
           (with-selected-frame frame
             (switch-to-buffer target-buf))
           (select-frame-set-input-focus frame)
           (raise-frame frame)
           (redisplay t)))))))
 
-;; --- Search highlight: make it actually visible ---------------------
-;; The default `lazy-highlight' from doom-alabaster was `#2c2c1c'
-;; (near-black olive) — invisible on our dark background.  Override
-;; both the isearch faces (path used by evil's `/' since
-;; `evil-search-module' = 'isearch) AND the evil-ex faces (path used
-;; when search-module is 'evil-search) so a future module switch
-;; doesn't undo this.  Black text on bright amber for the current
-;; match (`isearch'), softer yellow for other matches in the buffer
-;; (`lazy-highlight').  Theme-agnostic: stays legible on any
-;; background since contrast is enforced explicitly.
-(dolist (spec '((isearch              "#fbbf24" t)   ; amber-400, bold
-                (evil-ex-search       "#fbbf24" t)
-                (lazy-highlight       "#facc15" nil) ; yellow-400
-                (evil-ex-lazy-highlight "#facc15" nil)))
-  (let ((face (nth 0 spec))
-        (bg   (nth 1 spec))
-        (bold (nth 2 spec)))
-    (when (facep face)
-      (set-face-attribute face nil
-                          :background bg
-                          :foreground "#000000"
-                          :weight (if bold 'bold 'normal)
-                          :underline nil
-                          :box nil))))
+;; Search highlight, region, hl-line: using modus's defaults.  Modus
+;; ships proper WCAG-AAA `isearch' / `lazy-highlight' / `region' /
+;; `hl-line' colors for both vivendi and operandi — overriding them
+;; with hardcoded hex breaks the toggle (one palette won't suit both).
 
 (provide 'config-ui)
 ;;; config-ui.el ends here

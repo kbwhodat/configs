@@ -5,7 +5,7 @@ local cmp_nvim_lsp = require('cmp_nvim_lsp')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
-vim.lsp.config["clangd"] = {
+return {
   filetypes = { "c", "cpp", "objc", "objcpp" },  -- support for C, C++ and Objective-C files
   root_markers = { ".git", "compile_commands.json", "compile_flags.txt" },  -- common project root indicators
   cmd = {
@@ -15,5 +15,5 @@ vim.lsp.config["clangd"] = {
     "--completion-style=detailed",  -- get more detailed completion information
     "--header-insertion=never"  -- control header insertion behavior (or adjust as needed)
   },
-  capabilities = capabilities,  -- assuming you've defined 'capabilities' (for instance, by extending LSP capabilities with nvim-cmp)
+  capabilities = capabilities,
 }

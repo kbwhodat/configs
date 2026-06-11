@@ -8,8 +8,10 @@
 ;; Remember cursor position per file
 (save-place-mode 1)
 
-;; Recent files — needed for SPC f r binding
-(setq recentf-max-saved-items 500)
+;; Recent files — needed for SPC f r binding.
+;; 200 is plenty for SPC f r vertico filtering; serialized on every
+;; save, so smaller = faster shutdown / less write churn.
+(setq recentf-max-saved-items 200)
 (recentf-mode 1)
 
 ;; --- Underrated redisplay / scroll / completion perf ----------------
@@ -31,6 +33,13 @@
 ;; Don't recenter when cursor moves past viewport edge. Default 0 is
 ;; aggressive (always recenter); 20 is balanced; >100 disables.
 (setq scroll-conservatively 20)
+
+;; Keep the cursor 8 lines away from the viewport edges.  Pairs with
+;; `scroll-conservatively' to eliminate the small "recenter pull" you
+;; otherwise feel when typing at the bottom of a buffer — cursor never
+;; reaches the very last visible line, so emacs scrolls smoothly
+;; instead of jerking to recenter.
+(setq scroll-margin 8)
 
 ;; M-x: skip commands not applicable to current mode. Big win for
 ;; M-x completion responsiveness as your package count grows.
@@ -74,12 +83,6 @@
 ;; emacs sees it.  Doom flips this off by default.
 (setq process-adaptive-read-buffering nil)
 
-;; eldoc fires textDocument/hover at the LSP every time the cursor
-;; rests for 0.5 s.  With slow servers (pyright, tsserver) that means
-;; the echo area flickers while you're trying to read it.  1 s gives
-;; you breathing room before the round-trip starts.
-(setq eldoc-idle-delay 1.0)
-
 ;; flymake reruns diagnostics 0.5 s after every change — that triggers
 ;; an LSP didChange + republish cycle on every keystroke pause.  1 s
 ;; throttles it to the speed of human typing.
@@ -105,23 +108,29 @@
 ;; modern data. 100 MB avoids prompts on logs / json / csv.
 (setq large-file-warning-threshold (* 100 1024 1024))
 
-;; --- Crash safety: backup files + auto-save -------------------------
-;; By default emacs litters `file~' and `.#file' next to every save —
-;; pollutes git status and dired. Send them to a dedicated dir.
+;; --- Crash safety: auto-save only (no per-save backup copies) -------
+;; By default emacs writes a `file~' (and optionally numbered
+;; `file.~N~') copy on EVERY save — multiply that by buffer-count and
+;; you get noticeable disk churn during heavy editing.  We have:
+;;   - git for real version control
+;;   - undo-fu-session for cross-session undo history
+;;   - auto-save-visited-mode (below) for crash safety
+;; So per-save backup copies are dead weight.  Disable entirely.
+;;
+;; auto-save (`.#file' lockfiles + `#file#' progress files) still goes
+;; through `auto-save-file-name-transforms' into a dedicated dir so
+;; they don't pollute git status / dired listings.
 (let ((backup-dir (expand-file-name "backups/" user-emacs-directory)))
   (unless (file-directory-p backup-dir) (make-directory backup-dir t))
-  (setq backup-directory-alist        `(("." . ,backup-dir))
-        auto-save-file-name-transforms `((".*" ,backup-dir t))
-        backup-by-copying t            ; safer (preserves inode for watching tools)
-        version-control t              ; numbered backups
-        delete-old-versions t
-        kept-new-versions 6
-        kept-old-versions 2))
+  (setq make-backup-files              nil    ; no `file~' copies per save
+        backup-directory-alist         `(("." . ,backup-dir))
+        auto-save-file-name-transforms `((".*" ,backup-dir t))))
 
-;; auto-save-visited-mode: save the file you're editing every 30s.
-;; Pairs with undo-fu-session — worst-case data loss is ~30s.
-;; Bump interval to 60-120 if you run aggressive file-watchers.
-(setq auto-save-visited-interval 30)
+;; auto-save-visited-mode: save the file you're editing every 60s.
+;; Pairs with undo-fu-session — worst-case data loss is ~60s.
+;; (Was 30 s; bumped because we save every visited modified buffer
+;; on each tick — 80 open buffers × every-30-s = a lot of writes.)
+(setq auto-save-visited-interval 60)
 (auto-save-visited-mode 1)
 
 ;; --- winner-mode: undo/redo window layout changes -------------------
@@ -154,11 +163,11 @@
   '(consult       ; SPC s g/s/b — usually first thing hit
     magit         ; SPC g s     — pulls ~30 sub-files
     majutsu       ; SPC G       — magit-style jj UI; depends on magit
-    ghostel       ; SPC o t     — loads ghostel native module
-    tempel)       ; prog-mode hook
+    ghostel)      ; SPC o t     — loads ghostel native module
   "Heavy packages to pre-load on idle so first-use is not laggy.
 Order matters — earliest entries get loaded soonest.
 Loaded on demand instead (saves RAM and idle CPU):
+  - tempel    (already loaded by `prog-mode' hook in config-ide.el)
   - notdeft   (Xapian native binding — rarely-searched notes)
   - pdf-tools (heavy PDF renderer — loads on .pdf via :mode)")
 

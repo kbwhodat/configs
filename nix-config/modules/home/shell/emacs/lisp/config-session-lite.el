@@ -31,6 +31,13 @@
 (defvar my/session-lite--restored nil
   "Non-nil after the first GUI-frame restore attempt.")
 
+(defvar my/session-lite--had-workspaces nil
+  "Cached `t' once we've observed workspaces on disk OR in memory.
+Used by `my/session-lite--snapshot-loses-workspaces-p' so the guard
+doesn't have to re-read the on-disk file on every idle save.  Set on
+first successful `my/session-lite-read', and again every time
+`my/session-lite-build-snapshot' actually produces workspaces.")
+
 (defun my/session-lite--file-eligible-p (file)
   "Return non-nil when FILE is cheap and useful to restore."
   (and file
@@ -162,6 +169,10 @@ saved; restore then falls back to the selected file."
                                           (my/session-lite--workspace-snapshot
                                            name current-workspace selected-file))
                                         (my/session-lite--workspace-names)))))
+        ;; Refresh the workspace-presence cache so the loses-workspaces
+        ;; guard doesn't need a disk read on every idle save.
+        (when workspaces
+          (setq my/session-lite--had-workspaces t))
         (list :version 1
               :saved-at (float-time)
               :current-workspace current-workspace
@@ -176,6 +187,28 @@ saved; restore then falls back to the selected file."
        (null (plist-get snapshot :global-files))
        (null (plist-get snapshot :workspaces))))
 
+(defun my/session-lite--snapshot-loses-workspaces-p (snapshot)
+  "Return non-nil if writing SNAPSHOT would LOSE workspace data.
+Critical guard: `kill-emacs-hook' runs `my/session-lite-save' AFTER
+persp-mode has torn down its `*persp-hash*'.  At that moment
+`build-snapshot' produces `:workspaces nil', but `:selected-file' is
+still non-nil — so `snapshot-empty-p' returns false and the bad
+snapshot would overwrite a good on-disk one, silently destroying the
+user's workspaces on every shutdown.
+
+Uses the cached `my/session-lite--had-workspaces' flag so we don't
+re-read the on-disk file on every 1-second idle save.  The flag is
+seeded from disk once (on the first call) and refreshed by
+`my/session-lite-build-snapshot' whenever a non-empty workspaces list
+is produced."
+  ;; Lazy seed from disk on first call after startup.
+  (unless my/session-lite--had-workspaces
+    (let ((existing (my/session-lite-read)))
+      (when (and existing (plist-get existing :workspaces))
+        (setq my/session-lite--had-workspaces t))))
+  (and my/session-lite--had-workspaces
+       (null (plist-get snapshot :workspaces))))
+
 (defun my/session-lite-save (&optional force frame)
   "Persist the current lightweight session snapshot.
 Automatic saves skip empty snapshots so a fresh daemon does not replace
@@ -184,7 +217,9 @@ the snapshot is empty."
   (interactive "P")
   (let ((snapshot (my/session-lite-build-snapshot frame))
         (dir (file-name-directory my/session-lite-file)))
-    (unless (and (not force) (my/session-lite--snapshot-empty-p snapshot))
+    (unless (and (not force)
+                 (or (my/session-lite--snapshot-empty-p snapshot)
+                     (my/session-lite--snapshot-loses-workspaces-p snapshot)))
       (unless (file-directory-p dir)
         (make-directory dir t))
       (with-temp-file my/session-lite-file
@@ -400,18 +435,30 @@ FRAME (not `(display-graphic-p)' on whatever happens to be selected
 during a server-side eval) is the critical fix: the
 `(make-frame ...)' inside `my/raise-or-make-frame' runs while the
 selected frame is still the daemon's TTY F1, which `display-graphic-p'
-would report as non-graphical.  The guard is only set AFTER a
-successful restore, and cleared on error so the next frame retries."
+would report as non-graphical.
+
+PERF: `my/session-lite-restore' opens N file buffers + materializes
+workspaces synchronously; on first `emacsclient -c' that blocks the
+new frame's first paint (user sees a black box for seconds).  Defer
+the actual restore by 0.1 s so the frame can paint with the daemon's
+current buffer first, then the session swaps in.  Idempotent guard
+(`my/session-lite--restored') still flips immediately so a second
+frame opened during that window doesn't queue a duplicate restore."
   (let ((target (or frame (selected-frame))))
     (when (and (not my/session-lite--restored)
                (frame-live-p target)
                (display-graphic-p target))
       (setq my/session-lite--restored t)
-      (condition-case err
-          (my/session-lite-restore target)
-        (error
-         (setq my/session-lite--restored nil)
-         (message "session-lite restore failed: %S" err))))))
+      (run-with-timer
+       0.1 nil
+       (lambda (f)
+         (condition-case err
+             (when (frame-live-p f)
+               (my/session-lite-restore f))
+           (error
+            (setq my/session-lite--restored nil)
+            (message "session-lite restore failed: %S" err))))
+       target))))
 
 (defun my/session-lite-save-on-frame-close (frame)
   "Save the session when a frame closes, covering Cmd+Q-style exits."
@@ -424,7 +471,16 @@ Return t so `kill-emacs-query-functions' continues normally."
   t)
 
 (defun my/session-lite-mode-enable ()
-  "Enable lightweight session persistence."
+  "Enable lightweight session persistence.
+
+Save triggers (in order of importance):
+  - 1-second idle timer: catches all normal editing
+  - delete-frame-functions: catches Cmd+Q-style frame close
+  - kill-emacs-hook / kill-emacs-query-functions: catches daemon shutdown
+
+`buffer-list-update-hook' was previously also wired in but removed —
+it fires on every `select-window' (between splits) and adds no signal
+the idle timer doesn't already catch within 1 s."
   (remove-hook 'buffer-list-update-hook #'my/session-lite-schedule-save)
   (remove-hook 'kill-emacs-hook #'my/session-lite-save)
   (remove-hook 'kill-emacs-query-functions #'my/session-lite-save-before-kill)
@@ -432,7 +488,6 @@ Return t so `kill-emacs-query-functions' continues normally."
   (remove-hook 'window-setup-hook #'my/session-lite-restore-on-gui-frame)
   (remove-hook 'server-after-make-frame-hook #'my/session-lite-restore-on-gui-frame)
   (remove-hook 'after-make-frame-functions #'my/session-lite-restore-on-gui-frame)
-  (add-hook 'buffer-list-update-hook #'my/session-lite-schedule-save)
   (add-hook 'kill-emacs-hook #'my/session-lite-save)
   (add-hook 'kill-emacs-query-functions #'my/session-lite-save-before-kill -90)
   ;; Run before `server-handle-delete-frame' tears down emacsclient frames.
