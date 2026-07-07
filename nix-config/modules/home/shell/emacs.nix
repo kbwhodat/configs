@@ -15,13 +15,13 @@ let
   unstable = import inputs.unstable {
     system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
-    # Apply the NUR overlay so unstable.nur.repos.* exists and any
-    # NUR emacs package (e.g. majutsu) is built against unstable.emacs,
-    # not stable.  Without this overlay, `pkgs.nur.repos.X' uses stable
-    # epkgs and JIT-fails to recompile against our unstable emacs.
-    overlays = [ inputs.nur.overlays.default ];
+    overlays = [
+      inputs.nur.overlays.default
+      # Alias emacs -> emacs31 so NUR's emacsPackages tracks 31 too.
+      (_final: prev: { emacs = prev.emacs31; })
+    ];
   };
-  emacsPkg = unstable.emacs;
+  emacsPkg = unstable.emacs;  # 31.0.90 pretest via overlay above
 
   # --- ghostel from upstream release (bypasses broken nixpkgs Zig build) ---
   # nixpkgs's ghostel derivation is locked at v0.7-era (May 6) and crashes
@@ -286,7 +286,7 @@ in lib.mkMerge [
         nov olivetti
 
         # ---- jujutsu (jj VCS) integration ----
-        unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR; from unstable to match emacsPkg)
+        unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR)
 
         # ---- workspaces / scratch ----
         persp-mode persistent-scratch
@@ -301,6 +301,7 @@ in lib.mkMerge [
         pulsar           # pulse the line on jumps (avy, M-., consult, recenter)
         jinx             # fast spell-check via libenchant (Apple Spell on macOS)
         agent-shell      # native emacs shell for ACP-protocol LLM agents
+        exercism         # exercism.org integration — transient menu, run/submit tests
 
       ]) ++ lib.optional ghostelSupported epkgs.ghostel;
       # ghostel = vterm replacement, ~2× faster.  Only included on
@@ -363,6 +364,7 @@ in lib.mkMerge [
       pkgs.emacs-lsp-booster   # rust JSON bridge for lsp-mode (advice in config-ide.el)
       pkgs.enchant             # jinx spell-check backend (Apple Spell on macOS / hunspell on linux)
       pkgs.claude-agent-acp    # ACP bridge for agent-shell -> Claude Code (pkgs/by-name/claude-agent-acp/)
+      pkgs.exercism            # CLI required by the emacs `exercism' package (transient menu)
     ];
 
     # Daemon-only flow: typing `emacs` in any shell goes through

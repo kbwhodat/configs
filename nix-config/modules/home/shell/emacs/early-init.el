@@ -45,6 +45,11 @@
 ;; --- subprocess I/O (eglot, ripgrep) ---
 (setq read-process-output-max (* 4 1024 1024))
 
+;; emacs 31+: cache load-path scans (no-op on <= 30).
+(when (and (boundp 'load-path-filter-function)
+           (fboundp 'load-path-filter-cache-directory-files))
+  (setq load-path-filter-function #'load-path-filter-cache-directory-files))
+
 ;; --- GC + file-handler suspension during init ---
 (defvar my/file-name-handler-alist-backup file-name-handler-alist)
 (setq file-name-handler-alist nil

@@ -454,5 +454,15 @@ spawns direnv in background, applies real env when it finishes."
       "cv" '(my/ghostel-run-command :which-key "run in ghostel")
       "c&" '(async-shell-command :which-key "background shell"))))
 
+;; exercism.org — transient menu via `M-x exercism' / SPC c e.
+;; CLI installed via emacs.nix; one-time `Configure' -> API token.
+(use-package exercism
+  :defer t
+  :commands (exercism)
+  :init
+  (with-eval-after-load 'general
+    (when (fboundp 'my/leader)
+      (my/leader "ce" '(exercism :which-key "exercism (transient)")))))
+
 (provide 'config-ide)
 ;;; config-ide.el ends here
