@@ -214,35 +214,36 @@ Hardened against the \"blank black box\" symptom on macOS:
       (select-frame-set-input-focus gui)
       (raise-frame gui)
       (redisplay t))
-     ;; No GUI frame — create one, ensuring its buffer is sane.
+     ;; No GUI frame — defer make-frame via timer.  On emacs 31 +
+     ;; macOS, `make-frame' from an --eval context deadlocks the main
+     ;; event loop; timer fires after --eval returns.
      (t
-      (let ((target-buf nil))
-        (when (fboundp 'my/session-lite-read)
-          (let* ((snap (my/session-lite-read))
-                 (file (and snap (plist-get snap :selected-file))))
-            (when (and file (file-exists-p file) (file-readable-p file))
-              (let ((enable-local-variables nil))
-                (setq target-buf (find-file-noselect file))))))
-        ;; Fallback: *scratch* — never trust the daemon's current-buffer
-        ;; which may be an invisible process buffer that breaks redisplay.
-        (unless (and target-buf (buffer-live-p target-buf))
-          (setq target-buf (get-buffer-create "*scratch*")))
-        (set-buffer target-buf)
-        ;; Daemon's invisible F1 frame is a TTY; bare `(make-frame)' would
-        ;; create another TTY frame (invisible).  Must explicitly request a
-        ;; GUI window-system: `ns' on macOS, `pgtk' (Wayland) or `x' on
-        ;; Linux.  Without this the "no GUI frame yet" path silently
-        ;; produces an invisible frame and `emacs' from a shell appears
-        ;; to do nothing.
-        (let* ((gui-ws (cond ((eq system-type 'darwin) 'ns)
-                             ((getenv "WAYLAND_DISPLAY") 'pgtk)
-                             (t 'x)))
-               (frame (make-frame `((window-system . ,gui-ws)))))
-          (with-selected-frame frame
-            (switch-to-buffer target-buf))
-          (select-frame-set-input-focus frame)
-          (raise-frame frame)
-          (redisplay t)))))))
+      (run-at-time
+       0 nil
+       (lambda ()
+         (let ((target-buf nil))
+           (when (fboundp 'my/session-lite-read)
+             (let* ((snap (my/session-lite-read))
+                    (file (and snap (plist-get snap :selected-file))))
+               (when (and file (file-exists-p file) (file-readable-p file))
+                 (let ((enable-local-variables nil))
+                   (setq target-buf (find-file-noselect file))))))
+           ;; Fallback to *scratch* if no persisted file.
+           (unless (and target-buf (buffer-live-p target-buf))
+             (setq target-buf (get-buffer-create "*scratch*")))
+           (set-buffer target-buf)
+           ;; Explicit window-system: bare make-frame from daemon = TTY.
+           (let* ((gui-ws (cond ((eq system-type 'darwin) 'ns)
+                                ((getenv "WAYLAND_DISPLAY") 'pgtk)
+                                (t 'x)))
+                  (frame (make-frame `((window-system . ,gui-ws)))))
+             (with-selected-frame frame
+               (switch-to-buffer target-buf))
+             (select-frame-set-input-focus frame)
+             (raise-frame frame)
+             (redisplay t)))))
+      ;; Return t so the --eval caller sees success immediately.
+      t))))
 
 ;; Search highlight, region, hl-line: using modus's defaults.  Modus
 ;; ships proper WCAG-AAA `isearch' / `lazy-highlight' / `region' /

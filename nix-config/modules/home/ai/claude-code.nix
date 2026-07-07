@@ -113,6 +113,16 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
         jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; };
       };
       settings = {
+        # Default model for new sessions. settings.json is a read-only
+        # store symlink, so /model "save as default" can never persist —
+        # this is the only place it sticks.
+        model = "claude-fable-5";
+        # Don't silently switch models when a safety classifier flags a
+        # message — surface it instead. Key extracted from the CLI binary
+        # (v2.1.177): ic("switchModelsOnFlag", true); undocumented in the
+        # public settings reference as of Jul 2026.
+        switchModelsOnFlag = false;
+
         # Disable specific MCP servers from any installed plugin's
         # `.mcp.json` without disabling the whole plugin. Heavy or
         # redundant servers disabled by default; re-enable per-session

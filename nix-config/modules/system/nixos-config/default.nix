@@ -1,16 +1,16 @@
 { inputs, config, pkgs, lib, ... }:
 
 let
-# myrepo = pkgs.fetchFromGitHub {
-#   owner = "kbwhodat";
-#   repo = "pass-keys";
-#   rev = "20fadc63a83680779a112ff8667a39f702818cb9";
-# };
-myrepo = builtins.fetchGit {
-  url = "https://github.com/kbwhodat/pass-keys.git";
-  ref = "main";
-  rev = "20fadc63a83680779a112ff8667a39f702818cb9";
-};
+  # myrepo = pkgs.fetchFromGitHub {
+  #   owner = "kbwhodat";
+  #   repo = "pass-keys";
+  #   rev = "20fadc63a83680779a112ff8667a39f702818cb9";
+  # };
+  myrepo = builtins.fetchGit {
+    url = "https://github.com/kbwhodat/pass-keys.git";
+    ref = "main";
+    rev = "20fadc63a83680779a112ff8667a39f702818cb9";
+  };
 in
 {
   imports =
@@ -52,12 +52,12 @@ in
   ];
 
   nix.settings.trusted-users = [
-		"root"
+    "root"
     "taskchampion"
-		"katob"
-		"nixos"
-		"@wheel"
-	];
+    "katob"
+    "nixos"
+    "@wheel"
+  ];
   nix.settings.sandbox = false;
 
   users.users.katob = {
@@ -65,12 +65,12 @@ in
     description = "kato";
     extraGroups = [ "libvirtd" "taskchampion" "audio" "docker" "networkmanager" "wheel" ];
     ignoreShellProgramCheck = true;
-		shell = pkgs.zsh;
+    shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
-         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
-         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
-         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILuQLHoHdOry21yHqwszBboRaO/vhbXmpdseDW4oyZs6 server"
-         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpnblcmFWCeTXQ7sBD1x4im0l7joHwzmM1JXCd/ce0Q frame13"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3SkLoVy10CCXlTHH91GPTHfW9U7Ix9VHPb0q2A24TE main"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNEmrMVBS9omF7tSAORWRZ2f9RyBuwCNCVBgPGMYgjn utility"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILuQLHoHdOry21yHqwszBboRaO/vhbXmpdseDW4oyZs6 server"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpnblcmFWCeTXQ7sBD1x4im0l7joHwzmM1JXCd/ce0Q frame13"
     ];
   };
 
@@ -92,9 +92,9 @@ in
 
   fonts.fontconfig = {
     defaultFonts = {
-        serif = [ "ComicShannsMono Nerd Font Mono Propo"];
-        sansSerif = [ "ComicShannsMono Nerd Font Mono Propo"];
-        monospace = [ "ComicShannsMono Nerd Font Mono"];
+      serif = [ "ComicShannsMono Nerd Font Mono Propo"];
+      sansSerif = [ "ComicShannsMono Nerd Font Mono Propo"];
+      monospace = [ "ComicShannsMono Nerd Font Mono"];
     };
   };
 
@@ -142,10 +142,10 @@ in
   # hardware.opengl.driSupport = true;
   # hardware.graphics.enable32Bit = true;
 
-	hardware.graphics = {
-		enable = true;
-		enable32Bit = true;
-	};
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
 
 
   # Configure keymap in X11
@@ -465,15 +465,18 @@ in
       "mac-studio" = {
         id = "BOVCXJY-FCRVFJS-DFJ667E-ICJHPSR-U5K7YQI-M4Q6NEW-6NTLGWB-EE2BSAE";
       };
+      "mac-neo" = {
+        id = "BTCSTSR-IK5SIAR-WZDNOFS-RCLFYYH-ZGPTUYU-FTWRG2L-JRFLT2E-ZBCB6AX";
+      };
     };
     settings.folders = {
       "/home/katob/vault" = {
         id = "notes";
-        devices = [ "mac-studio" "iphone" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
+        devices = [ "mac-neo" "mac-studio" "iphone" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
       };
       "/home/katob/Documents" = {
         id = "documents";
-        devices = [ "mac-studio" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
+        devices = [ "mac-neo" "mac-studio" "nixos-main" "nixos-frame13" "nixos-util" "nixos-server"];
       };
     };
   };
