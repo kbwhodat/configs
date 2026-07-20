@@ -6,6 +6,29 @@
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
+;; --- AOT-native-compiled config (built by nix; see emacs.nix) -------
+;; The nix derivation ships .eln for every config-*.el under lisp/eln/.
+;; Register that dir so the elc→eln swap picks them up on `require'.
+;; APPEND (last arg t): the first entry of `native-comp-eln-load-path'
+;; must stay the writable user eln-cache — the JIT writes there.
+(add-to-list 'native-comp-eln-load-path
+             (expand-file-name "lisp/eln/" user-emacs-directory) t)
+
+;; Backstop: NEVER let the async JIT compile config files.  Its workers
+;; compile each file in isolation — without init.el loaded — so
+;; cross-file macros (`my/leader', `evil-define-key') miscompile into
+;; function calls, and the poisoned .eln breaks the next daemon start
+;; with "Invalid function: evil-define-key".  With the AOT .eln present
+;; the JIT has nothing to do anyway; this covers the edge case where
+;; the eln lookup misses (e.g. mid-upgrade version-dir mismatch) —
+;; falling back to plain byte-code, which is correct, just slower.
+;; Second regexp matches the files via their store truename.
+;; (Defcustom lives in comp-run.el, not yet loaded; plain setq binds it
+;; and the later defcustom preserves the value.)
+(setq native-comp-jit-compilation-deny-list
+      '("/lisp/config-[^/]*\\.el\\'"
+        "emacs-config-lisp-compiled/config-[^/]*\\.el\\'"))
+
 ;; use-package is built-in to emacs 30+.
 
 ;; --- Topical config files (order matters for general / evil) ---

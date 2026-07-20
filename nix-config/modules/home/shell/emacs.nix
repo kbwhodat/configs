@@ -78,6 +78,109 @@ let
   emacsDir = if useXDG then "${config.home.homeDirectory}/.config/emacs"
                         else "${config.home.homeDirectory}/.emacs.d";
 
+  # --- Byte-compile lisp/config-*.el at nix build time -----------------
+  # Emacs only JIT-native-compiles code loaded from .elc — plain .el
+  # files loaded via `require' run INTERPRETED forever (~4-6x slower on
+  # hot paths: the lsp-booster json-parse advice fires per LSP message,
+  # the modeline :eval per redisplay, the persp advice per find-file).
+  # Shipping .elc next to .el fixes that, and on first load the daemon
+  # JIT-native-compiles them into ~/.emacs.d/eln-cache (which
+  # purgeStaleElnCache below already manages across rebuilds).
+  #
+  # The compile runs against `finalPackage' (full package set on
+  # EMACSLOADPATH) because macro expansion needs the real packages:
+  # `use-package', `evil-define-key', general's `my/leader' definer,
+  # treemacs macros.  Loading init.el first (instead of compiling files
+  # in isolation) defines `my/leader' before any file that calls it is
+  # compiled, and doubles as a build-time smoke test — a config that
+  # fails to load fails the build.  Explicit `(require 'treemacs)'
+  # because config-tree.el uses `treemacs-safe-button-get' (a macro) in
+  # top-level defuns that compile before use-package's own compile-time
+  # require of treemacs fires.
+  # Driver for the AOT native-compile pass (pass 2 below).  Runs with
+  # init.el already loaded, so cross-file macros (`my/leader',
+  # `evil-define-key', treemacs macros) expand correctly — the exact
+  # environment the async JIT workers LACK (they compile files in
+  # isolation, miscompiling those macro calls into function calls;
+  # observed as "Invalid function: evil-define-key" when such an .eln
+  # loads).  That is why config .eln must be produced here, AOT, and
+  # never by the runtime JIT.
+  nativeCompileDriver = pkgs.writeText "native-compile-config.el" ''
+    ;; -*- lexical-binding: t; -*-
+    (require 'comp)
+    (setq native-comp-speed 3
+          native-compile-target-directory (getenv "ELN_OUT"))
+    ${lib.optionalString (system == "aarch64-darwin") ''
+      ;; Append to the nix-baked default (keeps the -B toolchain flags).
+      (setq native-comp-driver-options
+            (append native-comp-driver-options '("-mcpu=apple-m1")))
+    ''}
+    (dolist (f (directory-files (getenv "OUT_DIR") t "\\.el\\'"))
+      (native-compile f))
+  '';
+
+  compiledConfigLisp = pkgs.stdenv.mkDerivation {
+    name = "emacs-config-lisp-compiled";
+    src = ./emacs;
+    nativeBuildInputs = [ config.programs.emacs.finalPackage ];
+    # Pass 1: byte-compile in the build tree.  Loading init.el first
+    # defines `my/leader' and friends before any file using them is
+    # compiled, and doubles as a load-smoke-test of the whole config.
+    buildPhase = ''
+      export HOME=$TMPDIR
+      emacs --batch \
+        --eval "(setq inhibit-automatic-native-compilation t native-comp-jit-compilation nil)" \
+        --eval "(setq user-emacs-directory default-directory)" \
+        -l ./init.el \
+        --eval "(require 'treemacs)" \
+        --eval '(byte-recompile-directory (expand-file-name "lisp") 0)'
+      el=$(ls lisp/*.el | wc -l); elc=$(ls lisp/*.elc | wc -l)
+      if [ "$el" -ne "$elc" ]; then
+        echo "byte-compile incomplete: $elc/$el files compiled" >&2
+        exit 1
+      fi
+    '';
+    # Pass 2: AOT native-compile the INSTALLED $out/*.el into $out/eln.
+    # The .eln filename embeds a hash of the source file's resolved
+    # path, so compilation must happen against the final store path —
+    # at runtime ~/.emacs.d/lisp/config-*.el resolves (through the
+    # home-manager symlink) to exactly these $out files, making the
+    # lookup hash match.  init.el registers $out-adjacent lisp/eln/ on
+    # `native-comp-eln-load-path'; the elc→eln swap then loads native
+    # code from the first require, and the JIT never runs for config.
+    installPhase = ''
+      mkdir -p $out
+      cp lisp/*.el lisp/*.elc $out/
+      export OUT_DIR=$out ELN_OUT=$out/eln
+      emacs --batch \
+        --eval "(setq user-emacs-directory default-directory)" \
+        -l ./init.el \
+        --eval "(require 'treemacs)" \
+        -l ${nativeCompileDriver}
+      # Count only config-*.eln — the trampoline .eln (below) shares the dir.
+      el=$(ls $out/*.el | wc -l); eln=$(ls $out/eln/*/config-*.eln | wc -l)
+      if [ "$el" -ne "$eln" ]; then
+        echo "native-compile incomplete: $eln/$el files compiled" >&2
+        exit 1
+      fi
+      # AOT-compile the advice trampoline for `json-parse-buffer' (the
+      # lsp-booster advice targets this C primitive).  Without a cached
+      # trampoline, emacs SYNCHRONOUSLY native-compiles one on the main
+      # thread the first time the advice is added — a noticeable UI
+      # freeze on the first code-file open after any eln-cache purge.
+      # Shipping it in $out/eln (on `native-comp-eln-load-path' via
+      # init.el) makes that cost zero.  Separate -Q invocation: the
+      # config-loading session above has already ADVISED the primitive,
+      # and comp-trampoline-compile needs the raw subr.
+      emacs --batch -Q \
+        --eval "(let ((native-comp-eln-load-path (list \"$out/eln/\"))) (comp-trampoline-compile 'json-parse-buffer))"
+      if ! ls $out/eln/*/subr--trampoline*.eln >/dev/null 2>&1; then
+        echo "json-parse-buffer trampoline missing from $out/eln" >&2
+        exit 1
+      fi
+    '';
+  };
+
   # EmacsClient.app wrapper for Raycast on macOS.  Only built when
   # actually used (we only reference it inside the darwin mkMerge
   # branch), so no harm having the derivation defined unconditionally
@@ -158,7 +261,27 @@ in lib.mkMerge [
       # problem because we don't include it in `extraPackages' below
       # either) or simply nothing.
       overrides = self: super:
-        { inherit (unstable.emacsPackages) agent-shell; }
+        {
+          inherit (unstable.emacsPackages) agent-shell;
+          # Upstream's treesit queries use predicate spellings emacs's
+          # treesit rejects: `(#match "re" @cap)' (regexp-first, no `?')
+          # and `(#equal @cap "s")' (no `?').  Emacs only accepts the
+          # tree-sitter-standard `(#match? @cap "re")' form — anything
+          # else makes EVERY textobject in that language fail at
+          # runtime with "Query pattern is malformed" (hit in go).
+          # Rewrite to the accepted spelling at build time.
+          evil-textobj-tree-sitter =
+            super.evil-textobj-tree-sitter.overrideAttrs (old: {
+              postPatch = (old.postPatch or "") + ''
+                for f in $(grep -rl '#match "' treesit-queries/ || true); do
+                  sed -i -E 's/\(#match "([^"]+)" (@[A-Za-z_.]+)\)/(#match? \2 "\1")/g' "$f"
+                done
+                for f in $(grep -rl '#equal @' treesit-queries/ || true); do
+                  sed -i 's/#equal @/#equal? @/g' "$f"
+                done
+              '';
+            });
+        }
         // lib.optionalAttrs ghostelSupported {
           ghostel = self.trivialBuild {
             pname = "ghostel";
@@ -237,6 +360,14 @@ in lib.mkMerge [
         # ---- evil + leader ----
         evil evil-collection evil-surround general which-key avy
 
+        # tree-sitter text objects for evil: dif/vaf/cia operate on
+        # functions/classes/arguments via the treesit grammars above.
+        evil-textobj-tree-sitter
+
+        # vim-commentary port: gcc comments a line, gc+motion / visual
+        # gc comment anything (gcap, gcif, ...).
+        evil-commentary
+
         # ---- editing utilities ----
         undo-fu undo-fu-session tempel
 
@@ -313,7 +444,7 @@ in lib.mkMerge [
     home.file."${emacsDir}/early-init.el".source = ./emacs/early-init.el;
     home.file."${emacsDir}/init.el".source       = ./emacs/init.el;
     home.file."${emacsDir}/lisp" = {
-      source    = ./emacs/lisp;
+      source    = compiledConfigLisp;   # .el + .elc — see let-binding above
       recursive = true;
     };
 
@@ -514,6 +645,20 @@ in lib.mkMerge [
       /usr/bin/sed "s|exec ${emacsPkg}/bin/emacs |exec $BIN/emacs-stable |g" \
         ${config.programs.emacs.finalPackage}/bin/.emacs-wrapped > "$BIN/emacs-stable-launch"
       /bin/chmod u+rwx "$BIN/emacs-stable-launch"
+
+      # Graceful pre-bounce save: ask the RUNNING daemon to write out all
+      # modified file buffers and take a session-lite snapshot BEFORE
+      # kickstart -k kills it — the kill is abrupt (no kill-emacs-hook),
+      # so without this the last <60 s of edits ride on auto-save-visited
+      # timing.  NO force flag on the save: a freshly-bounced daemon with
+      # no restored session builds an EMPTY snapshot, and force would
+      # overwrite the good on-disk session with it (observed 2026-07-20).
+      # The non-force path runs session-lite's skip-empty +
+      # skip-workspace-loss guards, which exist for exactly this case.
+      # Timeout so a hung daemon can't block activation; fail-soft.
+      ${pkgs.coreutils}/bin/timeout 10 "$BIN/emacsclient-stable" \
+        --eval '(progn (save-some-buffers t) (when (fboundp (quote my/session-lite-save)) (my/session-lite-save)))' \
+        >/dev/null 2>&1 || true
 
       # Atomic restart via kickstart -k (kill + relaunch from already-loaded
       # plist).  If the service somehow isn't loaded (orphaned state after a

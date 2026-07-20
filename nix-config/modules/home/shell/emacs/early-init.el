@@ -68,27 +68,34 @@
 
 ;; --- native-comp tuning for runtime JIT compilation ---
 ;; Most of our packages are AOT-compiled by nix at build time, so these
-;; flags only kick in for .el files loaded outside that scope. Cheap to
+;; flags only kick in for .el files loaded outside that scope (the
+;; byte-compiled config-*.elc, evil-ghostel, site-start). Cheap to
 ;; set, real effect on packages installed/loaded post-build.
-;;
-;; Only Apple Silicon gets `-mcpu=apple-m1'. Intel macs and Linux hosts
-;; must not inherit ARM CPU flags.
 (setq native-comp-speed 3
       native-comp-compiler-options
-      '("-O2" "-g0" "-fno-omit-frame-pointer" "-fno-finite-math-only")
-      native-comp-driver-options
-      (cond
-       ((and (eq system-type 'darwin)
-             (string-match-p "^aarch64-" system-configuration))
-        '("-Wl,-w" "-mcpu=apple-m1"))
-       ((eq system-type 'darwin)
-        '("-Wl,-w"))
-       (t nil)))
+      '("-O2" "-g0" "-fno-omit-frame-pointer" "-fno-finite-math-only"))
+
+;; APPEND to `native-comp-driver-options' — NEVER replace it.  nixpkgs
+;; bakes -B/nix/store/... toolchain paths (libgccjit, clang, binutils,
+;; macOS SDK) into the variable's DEFAULT value; libgccjit needs them
+;; to locate its gcc driver at runtime.  An earlier plain `setq' here
+;; clobbered them, and every JIT compile failed with
+;;   "libgccjit.so: error: error invoking gcc driver"
+;; warnings on daemon start.  The var lives in comp.el, which loads
+;; lazily on the first compile — a bare reference at early-init time
+;; would be void-variable, hence the `with-eval-after-load'.
+;;
+;; Only Apple Silicon gets `-mcpu=apple-m1'. Intel macs and Linux hosts
+;; must not inherit ARM CPU flags ("-Wl,-w" is already in the nix
+;; default on darwin — no need to re-add it).
+(with-eval-after-load 'comp
+  (when (and (eq system-type 'darwin)
+             (string-match-p "^aarch64-" system-configuration)
+             (not (member "-mcpu=apple-m1" native-comp-driver-options)))
+    (setq native-comp-driver-options
+          (append native-comp-driver-options '("-mcpu=apple-m1")))))
 
 ;; --- cheap rendering defaults ---
-;; NOTE: `idle-update-delay' is tuned in config-perf.el (0.1).  Don't set
-;; it here too — last-write-wins, and we want the perf value to be the
-;; canonical one.
 (setq bidi-inhibit-bpa t
       inhibit-compacting-font-caches t
       frame-resize-pixelwise t)
