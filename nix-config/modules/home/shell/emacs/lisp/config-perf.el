@@ -89,10 +89,6 @@
 (with-eval-after-load 'flymake
   (setq flymake-no-changes-timeout 1.0))
 
-;; Faster mode-line / cursor-blink / which-key wake-up.  Marginal but
-;; free — default 0.5 s is conservative for terminal emacs from 1996.
-(setq idle-update-delay 0.1)
-
 ;; --- TIER 2: smaller quality-of-life wins ---------------------------
 
 ;; recentf default polls every 10s to clean dead entries — disable.
@@ -160,7 +156,9 @@
 ;; 0.5 s of idle, makes the first interactive press feel instant.
 
 (defvar my/idle-preload-packages
-  '(consult       ; SPC s g/s/b — usually first thing hit
+  '(lsp-mode      ; first code-file open otherwise loads ~50 sub-files
+    lsp-ui        ; attaches on lsp-mode-hook — load it in the same slice
+    consult       ; SPC s g/s/b — usually first thing hit
     magit         ; SPC g s     — pulls ~30 sub-files
     majutsu       ; SPC G       — magit-style jj UI; depends on magit
     ghostel)      ; SPC o t     — loads ghostel native module

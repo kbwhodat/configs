@@ -28,6 +28,14 @@
 (defvar my/session-lite--save-timer nil
   "Pending idle timer used to debounce session snapshot writes.")
 
+(defvar my/session-lite--last-written nil
+  "Comparable form of the most recently written snapshot.
+The repeating idle timer calls `my/session-lite-save' after every
+pause in editing; most of those snapshots are identical to what is
+already on disk.  Caching the last write (minus the `:saved-at'
+stamp, which always differs) lets the save skip the stat-walk
+serialization + disk write when nothing actually changed.")
+
 (defvar my/session-lite--restored nil
   "Non-nil after the first GUI-frame restore attempt.")
 
@@ -209,23 +217,34 @@ is produced."
   (and my/session-lite--had-workspaces
        (null (plist-get snapshot :workspaces))))
 
+(defun my/session-lite--comparable (snapshot)
+  "Return SNAPSHOT with the `:saved-at' stamp neutralized for `equal'."
+  (let ((copy (copy-sequence snapshot)))
+    (plist-put copy :saved-at nil)))
+
 (defun my/session-lite-save (&optional force frame)
   "Persist the current lightweight session snapshot.
 Automatic saves skip empty snapshots so a fresh daemon does not replace
-the last useful session with only `*scratch*'.  FORCE writes even when
-the snapshot is empty."
+the last useful session with only `*scratch*', and skip unchanged
+snapshots so the repeating idle timer doesn't rewrite an identical
+file after every editing pause.  FORCE writes even when the snapshot
+is empty or unchanged."
   (interactive "P")
   (let ((snapshot (my/session-lite-build-snapshot frame))
         (dir (file-name-directory my/session-lite-file)))
     (unless (and (not force)
                  (or (my/session-lite--snapshot-empty-p snapshot)
-                     (my/session-lite--snapshot-loses-workspaces-p snapshot)))
+                     (my/session-lite--snapshot-loses-workspaces-p snapshot)
+                     (equal (my/session-lite--comparable snapshot)
+                            my/session-lite--last-written)))
       (unless (file-directory-p dir)
         (make-directory dir t))
       (with-temp-file my/session-lite-file
         (let ((print-length nil)
               (print-level nil))
-          (prin1 snapshot (current-buffer)))))))
+          (prin1 snapshot (current-buffer))))
+      (setq my/session-lite--last-written
+            (my/session-lite--comparable snapshot)))))
 
 (defun my/session-lite-schedule-save ()
   "Debounce a lightweight session save onto idle time."
