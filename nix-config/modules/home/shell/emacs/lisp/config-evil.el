@@ -29,6 +29,14 @@
   :after evil
   :config (global-evil-surround-mode 1))
 
+;; vim-commentary: `gcc' toggles the line, `gc' is an operator so it
+;; composes with everything — `gcap' (paragraph), `gcif' (function via
+;; treesit textobj), visual selection + `gc'.  Comment syntax comes
+;; from each major mode, so it does the right thing in nix/elisp/go/py.
+(use-package evil-commentary
+  :after evil
+  :config (evil-commentary-mode 1))
+
 ;; --- Ctrl-Q = blockwise-visual (alias for vanilla evil's C-v) -------
 ;; C-q stays as `quoted-insert' in insert state so you can still
 ;; insert literal tabs / control chars there.
@@ -180,6 +188,34 @@
          ("C-h k" . helpful-key)
          ("C-h x" . helpful-command)
          ("C-h o" . helpful-symbol)))
+
+;; --- Tree-sitter text objects (syntax units as vim text objects) -----
+;; Uses the same treesit grammars the *-ts-modes run on.  Adds:
+;;   dif / daf   delete inner/whole function       vif / vaf  select it
+;;   cic / vac   change/select class
+;;   cia / daa   change inner argument / delete argument (incl. comma)
+;;   dil / val   loops
+;; Languages without bundled queries (e.g. nix) just echo
+;; "No textobject query" — harmless no-op.
+(use-package evil-textobj-tree-sitter
+  :after evil
+  :config
+  (define-key evil-outer-text-objects-map "f"
+              (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  (define-key evil-inner-text-objects-map "f"
+              (evil-textobj-tree-sitter-get-textobj "function.inner"))
+  (define-key evil-outer-text-objects-map "c"
+              (evil-textobj-tree-sitter-get-textobj "class.outer"))
+  (define-key evil-inner-text-objects-map "c"
+              (evil-textobj-tree-sitter-get-textobj "class.inner"))
+  (define-key evil-outer-text-objects-map "a"
+              (evil-textobj-tree-sitter-get-textobj "parameter.outer"))
+  (define-key evil-inner-text-objects-map "a"
+              (evil-textobj-tree-sitter-get-textobj "parameter.inner"))
+  (define-key evil-outer-text-objects-map "l"
+              (evil-textobj-tree-sitter-get-textobj "loop.outer"))
+  (define-key evil-inner-text-objects-map "l"
+              (evil-textobj-tree-sitter-get-textobj "loop.inner")))
 
 ;; --- Avy under SPC SPC (SPC j is windmove leaf — general rejects double-bind) ---
 (use-package avy
