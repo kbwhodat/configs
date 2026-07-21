@@ -25,7 +25,19 @@ in
       tmuxPlugins.jump
       tmuxPlugins.fuzzback
       tmuxPlugins.sessionist
-      # tmuxPlugins.extrakto
+      # extrakto: fzf-pick any word/path/url from scrollback, insert at
+      # prompt or copy — keyboard replacement for mouse-selecting output.
+      # Default binding: prefix + Tab.  Was commented out historically;
+      # the old nixpkgs breakages (unpatched python shebang, missing
+      # clipboard tools on PATH) are both fixed in the pinned rev
+      # (0-unstable-2025-07-27, verified: extrakto.py runs on darwin).
+      tmuxPlugins.extrakto
+      # fingers: hint-style copy (prefix + F) — overlays a letter on
+      # every URL/IP/path/SHA on screen; press the letter, it's on the
+      # clipboard.  Zero typing, complements extrakto (which needs a
+      # few chars of fuzzy input but handles arbitrary tokens).  The
+      # maintained successor to the abandoned tmux-thumbs.
+      tmuxPlugins.fingers
       tmuxPlugins.resurrect
       tmuxPlugins.yank
       tmuxPlugins.continuum
@@ -40,11 +52,12 @@ in
 
       set -g copy-mode-match-style 'fg=black,bg=yellow,bold'
 
-      bind-key / command-prompt -p "search:" \
-        "copy-mode; send -X search-backward '%%';"
-
-      # bind-key ? command-prompt -p "search:" \
-      #   "copy-mode; send -X search-forward '%%';"
+      # Incremental search: matches highlight live as you type, like
+      # vim's `/'.  (Was a one-shot prompt search before.)
+      bind-key / copy-mode \; command-prompt -i -p "search:" \
+        "send -X search-backward-incremental \"%%%\""
+      bind-key -T copy-mode-vi / command-prompt -i -p "search:" \
+        "send -X search-backward-incremental \"%%%\""
 
       unbind-key n
       unbind-key N
@@ -130,7 +143,21 @@ in
       bind-key -T copy-mode-vi C-l select-pane -R
       bind-key q display-panes
       bind-key -T copy-mode-vi v send-keys -X begin-selection
-      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "xclip -selection clipboard -i"
+      # Platform clipboard for mouse-drag copy: pbcopy on macOS (xclip
+      # doesn't exist there), xclip on linux/X11.
+      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe "${if isDarwin then "pbcopy" else "xclip -selection clipboard -i"}"
+
+      # Pane resize (repeatable: prefix once, then tap H/J/K/L).
+      # NB: shadows default prefix+L (last session) — fzf session
+      # switch + sessionist cover that.
+      bind-key -r H resize-pane -L 5
+      bind-key -r J resize-pane -D 5
+      bind-key -r K resize-pane -U 5
+      bind-key -r L resize-pane -R 5
+
+      # Floating scratch shell over the current session (prefix+t;
+      # shadows the clock).  Opens in the pane's cwd; exit to dismiss.
+      bind-key t display-popup -E -d "#{pane_current_path}" -w 80% -h 75%
 
       # Continuum settings
       set -g @resurrect-strategy-nvim 'session'
