@@ -1,0 +1,44 @@
+name: nix eval all hosts
+
+# Eval tripwire: every host's system.build.toplevel must EVALUATE on
+# every change.  Catches nixpkgs option deprecations/renames the day
+# they land in a lock bump, instead of at deploy time on the affected
+# host.  Eval only — nothing is built, so darwin hosts check fine from
+# a linux runner.
+
+on:
+  push:
+    paths:
+      - "nix-config/**"
+      - ".github/workflows/nix-eval.yml"
+  pull_request:
+    paths:
+      - "nix-config/**"
+  workflow_dispatch:
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v16
+
+      - name: Evaluate every host
+        run: |
+          set -u
+          cd nix-config
+          fail=0
+          for attr in nixosConfigurations darwinConfigurations; do
+            for host in $(nix eval --json ".#$attr" --apply builtins.attrNames | jq -r '.[]'); do
+              echo "::group::$attr.$host"
+              if nix eval ".#$attr.$host.config.system.build.toplevel" --apply 'x: x.outPath'; then
+                echo "OK: $host"
+              else
+                echo "::error title=eval failed::$attr.$host failed to evaluate"
+                fail=1
+              fi
+              echo "::endgroup::"
+            done
+          done
+          exit $fail
