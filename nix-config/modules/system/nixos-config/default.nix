@@ -364,12 +364,13 @@ in
 
   services.resolved = {
     enable = true;
-    extraConfig = "
-      [Resolve]
-      DNS=45.90.28.0#66f183.dns.nextdns.io
-      DNS=45.90.30.0#66f183.dns.nextdns.io
-      DNSOverTLS=yes
-    ";
+    settings.Resolve = {
+      DNS = [
+        "45.90.28.0#66f183.dns.nextdns.io"
+        "45.90.30.0#66f183.dns.nextdns.io"
+      ];
+      DNSOverTLS = "yes";
+    };
   };
 
   services.taskchampion-sync-server = {
@@ -385,8 +386,25 @@ in
       server = {
         http_addr = "10.0.0.20";
       };
+      # Grafana no longer ships a default secret_key (used to encrypt
+      # datasource credentials in its DB).  Point it at a host-local
+      # file; the preStart below generates it once, so no manual
+      # provisioning step and nothing secret in the nix store.
+      security.secret_key = "$__file{/var/lib/grafana/secret_key}";
     };
   };
+
+  # One-time secret_key generation for grafana.  Guarded by mkIf so the
+  # unit isn't created on hosts where grafana is disabled.
+  systemd.services.grafana.preStart =
+    lib.mkIf config.services.grafana.enable (lib.mkBefore ''
+      if [ ! -s /var/lib/grafana/secret_key ]; then
+        umask 077
+        ${pkgs.coreutils}/bin/od -An -tx1 -N32 /dev/urandom \
+          | ${pkgs.coreutils}/bin/tr -d ' \n' \
+          > /var/lib/grafana/secret_key
+      fi
+    '');
 
   services.postgresql = {
     enable = if config.networking.hostName == "nixos-server" then true else false;

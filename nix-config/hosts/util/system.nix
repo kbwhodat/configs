@@ -24,7 +24,12 @@
   #services.logind.lidSwitchExternalPower = lib.mkForce "suspend-then-hibernate";
   services.logind.lidSwitch = lib.mkForce "suspend-then-hibernate";
 
-  systemd.sleep.extraConfig = "AllowSuspendThenHibernate=yes\nSuspendState=suspend\nHibernateState=hibernate\nHibernateDelaySec=60s";
+  systemd.sleep.settings.Sleep = {
+    AllowSuspendThenHibernate = "yes";
+    SuspendState = "suspend";
+    HibernateState = "hibernate";
+    HibernateDelaySec = "60s";
+  };
 
 
   services.kanata = {
