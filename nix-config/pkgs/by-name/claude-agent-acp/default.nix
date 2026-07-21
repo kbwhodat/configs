@@ -19,18 +19,18 @@
 
 buildNpmPackage rec {
   pname = "claude-agent-acp";
-  version = "0.39.0";
+  version = "0.60.0";
 
   src = fetchFromGitHub {
     owner = "agentclientprotocol";
     repo = "claude-agent-acp";
     rev = "v${version}";
-    sha256 = "sha256-0FHq8dZny4i3AhS4Xqy1CwNoN/F8nYQVIgHd5OdQ/NA=";
+    sha256 = "sha256-idyZcd8KD+bhAlKqqaTS6X8DcNjAzluln8it1V0vyUk=";
   };
 
   # Content hash of all npm deps from package-lock.json — bump this when
   # the version changes (build will fail and print the new hash).
-  npmDepsHash = "sha256-f5ULuNKO+kb7aoYpxKsF/fHCbT2LLWwYnTN1VKVLgpY=";
+  npmDepsHash = "sha256-dJeUPTcGN616YVKLcsiGgSn8wb7NhJZuZmPRHeUxR4U=";
 
   # `npm run build' just runs `tsc' to compile src/*.ts -> dist/*.js.
   # buildNpmPackage runs this automatically as the build phase, but

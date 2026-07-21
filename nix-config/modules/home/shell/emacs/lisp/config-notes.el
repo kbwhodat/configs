@@ -29,8 +29,7 @@
    '(markdown-line-break-face       ((t (:inherit default :foreground unspecified :background unspecified))))
    '(markdown-blockquote-face       ((t (:inherit default))))
    '(markdown-header-delimiter-face ((t (:inherit default :weight bold :foreground unspecified :background unspecified))))
-   '(markdown-markup-face           ((t (:inherit default))))
-   '(hl-line                        ((t (:inherit default :foreground unspecified :background unspecified))))))
+   '(markdown-markup-face           ((t (:inherit default))))))
 
 ;; --- Markdown buffer cleanup ---
 (add-hook 'markdown-mode-hook (lambda () (flyspell-mode -1)))

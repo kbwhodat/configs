@@ -646,6 +646,28 @@ in lib.mkMerge [
         ${config.programs.emacs.finalPackage}/bin/.emacs-wrapped > "$BIN/emacs-stable-launch"
       /bin/chmod u+rwx "$BIN/emacs-stable-launch"
 
+      # --- Detect a rebuild launched from INSIDE the emacs daemon -----
+      # Killing the daemon mid-rebuild would take the ghostel shell (and
+      # the rebuild's output) down with it.  Walk the process ancestry —
+      # env vars like INSIDE_EMACS don't survive sudo boundaries, the
+      # process tree does.  When inside: skip the bounce, drop a flag;
+      # config-perf.el surfaces it and SPC q applies the new generation
+      # (KeepAlive respawns the daemon via the updated launch script).
+      INSIDE_EMACS_TREE=0
+      WALK_PID=$$
+      while [ "$WALK_PID" -gt 1 ] 2>/dev/null; do
+        WALK_CMD=$(/bin/ps -o comm= -p "$WALK_PID" 2>/dev/null || true)
+        case "$WALK_CMD" in
+          *[Ee]macs*) INSIDE_EMACS_TREE=1; break ;;
+        esac
+        WALK_PID=$(/bin/ps -o ppid= -p "$WALK_PID" 2>/dev/null | /usr/bin/tr -d ' ' || true)
+        [ -z "$WALK_PID" ] && break
+      done
+
+      if [ "$INSIDE_EMACS_TREE" = 1 ]; then
+        /usr/bin/touch "$HOME/.emacs.d/.restart-pending" || true
+      else
+
       # Graceful pre-bounce save: ask the RUNNING daemon to write out all
       # modified file buffers and take a session-lite snapshot BEFORE
       # kickstart -k kills it — the kill is abrupt (no kill-emacs-hook),
@@ -673,6 +695,8 @@ in lib.mkMerge [
           /bin/launchctl bootstrap "gui/$UID_NUM" "$PLIST" >/dev/null 2>&1
         fi
       fi
+
+      fi # INSIDE_EMACS_TREE
       set -e
       true
     '';

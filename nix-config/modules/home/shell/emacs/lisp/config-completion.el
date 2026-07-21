@@ -10,7 +10,13 @@
 
 (use-package vertico
   :config
-  (vertico-mode 1))
+  (vertico-mode 1)
+  ;; Vim-style candidate movement while hands stay on home row.  The
+  ;; minibuffer is non-modal by design (plain keys filter), so j/k
+  ;; can't move the selection — C-j/C-k is the evil-community
+  ;; convention.  C-n/C-p and arrows still work too.
+  (define-key vertico-map (kbd "C-j") #'vertico-next)
+  (define-key vertico-map (kbd "C-k") #'vertico-previous))
 
 ;; vertico-multiform extensions intentionally NOT loaded.  Earlier
 ;; configs had per-command and per-category overrides (M-x as
