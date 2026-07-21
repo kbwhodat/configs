@@ -1,8 +1,11 @@
 { config, lib, ... }:
-let cfg = config.modules.email; in {
-  imports = [
-    ./matcha.nix
-  ];
+let
+  cfg = config.modules.email;
+in
+{
+#  imports = [
+#    ./matcha.nix
+#  ];
 
   options.modules.email.enable = lib.mkOption {
     type = lib.types.bool;

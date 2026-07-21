@@ -175,6 +175,7 @@ herbie/
 .serena/
 nix-config/.claude/
 lean-ctx/
+jobdrop/
 
 # Emacs runtime data that landed in the source dir
 nix-config/modules/home/shell/emacs/history

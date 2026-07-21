@@ -30,9 +30,6 @@
   inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.1";
   inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
 
-  inputs.matcha.url = "github:floatpane/matcha";
-  inputs.matcha.inputs.nixpkgs.follows = "unstable";
-
   inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
   inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
 

@@ -51,12 +51,32 @@
 
 (defun my/ghostel-toggle ()
   "Toggle the bottom half-screen ghostel.
-Visible → hide.  Hidden but exists → show.  Doesn't exist → create."
+Visible → hide.  Hidden but exists → show.  Doesn't exist → create.
+Fullscreened (via `my/ghostel-fullscreen') → restore the saved layout
+and hide — a bare `delete-window' would error with \"Attempt to delete
+... sole ordinary window\" since fullscreen makes ghostel the only
+window in the frame."
   (interactive)
   (let ((buf (my/ghostel--buffer)))
     (cond
      ((and buf (get-buffer-window buf))
-      (delete-window (get-buffer-window buf)))
+      (let ((win (get-buffer-window buf)))
+        (cond
+         ;; Fullscreened: leave fullscreen via the saved layout, then
+         ;; hide the bottom ghostel that layout brings back.
+         ((and my/ghostel-fullscreen-window-configuration
+               (not (window-parameter win 'window-side)))
+          (let ((config my/ghostel-fullscreen-window-configuration))
+            (setq my/ghostel-fullscreen-window-configuration nil)
+            (set-window-configuration config))
+          (when-let* ((w (get-buffer-window buf)))
+            (when (window-deletable-p w) (delete-window w))))
+         ;; Sole window but no saved layout (e.g. user maximized by
+         ;; hand): can't delete the last window — swap the buffer out.
+         ((not (window-deletable-p win))
+          (switch-to-buffer (other-buffer buf)))
+         (t
+          (delete-window win)))))
      (buf
       (select-window (display-buffer buf)))
      (t

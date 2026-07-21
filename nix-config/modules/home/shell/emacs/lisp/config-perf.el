@@ -184,5 +184,19 @@ loads spread across idle slices instead of one freeze."
           (lambda ()
             (run-with-idle-timer 2 nil #'my/idle-preload-next)))
 
+;; --- Deferred-restart notice ----------------------------------------
+;; When `darwin-rebuild switch' runs from a shell INSIDE this daemon,
+;; the activation skips the daemon bounce (killing us would kill the
+;; rebuild's own shell) and drops this flag instead.  Surface it so
+;; "did I restart into the new config yet?" never lingers: SPC q
+;; applies it (KeepAlive respawns the daemon on the new generation).
+(defun my/check-restart-pending ()
+  "Notify once if a nix rebuild deferred the daemon restart."
+  (let ((flag (expand-file-name ".restart-pending" user-emacs-directory)))
+    (when (file-exists-p flag)
+      (delete-file flag)
+      (message "nix: new generation on disk — SPC q to restart emacs into it"))))
+(run-with-idle-timer 5 t #'my/check-restart-pending)
+
 (provide 'config-perf)
 ;;; config-perf.el ends here

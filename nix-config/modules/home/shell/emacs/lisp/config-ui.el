@@ -62,16 +62,18 @@
   "Theme currently applied.  Updated by `my/toggle-theme'.")
 
 ;; --- doom-alabaster face polish ------------------------------------
-;; doom-alabaster's defaults for `region', `hl-line', and isearch are
-;; dim on its dark bg — saturated blue selection + muted amber search
-;; highlight are the tuned values from earlier iterations.
+;; doom-alabaster's defaults for `region' and isearch are dim on its
+;; dark bg — saturated blue selection + muted amber search highlight
+;; are the tuned values from earlier iterations.
 ;; Apply only when alabaster is active; reset to `unspecified' when
 ;; toggling to modus so the light theme's own colors take over.
+;; `:distant-foreground' kicks in only when the selected text's own fg
+;; is too low-contrast against the selection bg (dim punctuation,
+;; muted faces) — normal text renders unchanged.
 (defun my/apply-alabaster-tweaks ()
-  "Brighten region/hl-line/search faces under doom-alabaster."
+  "Brighten region/search faces under doom-alabaster."
   (custom-set-faces
-   '(region  ((t (:background "#525868" :extend t))))
-   '(hl-line ((t (:background "#1f2733" :extend t)))))
+   '(region  ((t (:background "#525868" :distant-foreground "#ffffff" :extend t)))))
   (dolist (spec '((isearch                "#5d4e16" t)   ; muted amber bold (current)
                   (evil-ex-search         "#5d4e16" t)
                   (lazy-highlight         "#3d3622" nil) ; even dimmer (other matches)
@@ -88,8 +90,7 @@
 (defun my/clear-alabaster-tweaks ()
   "Reset alabaster-tuned faces so the active theme's own colors win."
   (custom-set-faces
-   '(region  ((t nil)))
-   '(hl-line ((t nil))))
+   '(region  ((t nil))))
   (dolist (face '(isearch evil-ex-search lazy-highlight evil-ex-lazy-highlight))
     (when (facep face)
       (set-face-attribute face nil
@@ -185,6 +186,26 @@ face-override blocks — no runtime override needed."
 
 ;; --- Browse URL: use the system default browser ---
 (setq browse-url-browser-function 'browse-url-default-browser)
+
+;; --- In-frame video/web: xwidget-webkit (SPC o w) -------------------
+;; Our emacs 31 build ships xwidgets; `xwidget-webkit-browse-url' opens
+;; a real WebKit view as a buffer — youtube plays inside the frame.
+;;
+;; The NS xwidget DOUBLE-DELIVERS keystrokes: emacs processes the key
+;; AND the page sees it (observed: SPC pauses the video and pops the
+;; leader simultaneously; j/k scroll AND seek).  Give xwidget buffers
+;; emacs state so plain keys belong to the PAGE only — SPC=pause,
+;; j/k=seek, f=fullscreen, native app semantics — same philosophy as
+;; ghostel/vterm.  `M-SPC' remains the leader from any state, so
+;; workspace/buffer switching stays one chord away.
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'xwidget-webkit-mode 'emacs))
+;; config-evil, not general: config-ui loads BEFORE config-evil, and
+;; `my/leader' only exists after general's :config runs — same trap as
+;; the theme-toggle binding above.
+(with-eval-after-load 'config-evil
+  (when (fboundp 'my/leader)
+    (my/leader "ow" '(xwidget-webkit-browse-url :which-key "browse (in-frame webkit)"))))
 
 ;; --- Idempotent "summon emacs" entry point --------------------------
 ;; Hammerspoon Ctrl+Shift+Space + EmacsClient.app both used to run
