@@ -202,6 +202,20 @@
 (with-eval-after-load 'lsp-mode
   (require 'lsp-diagnostics))
 
+;; --- Vim-style gf: open file at point immediately, no prompt --------
+;; `find-file-at-point' always prompts (guess pre-filled) and RET on a
+;; directory-only guess lands in dired — not vim behavior.  Resolve
+;; silently when the token at point is an existing file; fall back to
+;; the interactive ffap prompt only when nothing resolves.
+(defun my/find-file-at-point-dwim ()
+  "Open the file at point directly (vim `gf'); prompt only as fallback."
+  (interactive)
+  (require 'ffap)
+  (let ((f (ffap-file-at-point)))
+    (if (and f (file-exists-p f) (not (file-directory-p f)))
+        (find-file f)
+      (call-interactively #'find-file-at-point))))
+
 ;; --- Vim-style LSP keybindings (consistent with nvim + Zed) ---------
 ;; Scoped to `prog-mode-map' so `g i' doesn't shadow defaults in
 ;; text/org/markdown.  `g i' in default evil is `evil-insert-resume'
@@ -225,7 +239,11 @@
     (kbd "g R") #'lsp-rename                      ; rename symbol across project
     (kbd "g a") #'lsp-execute-code-action         ; run a code action at point
     (kbd "g w") #'xref-find-apropos               ; fuzzy-search ANY symbol in workspace (via lsp-xref backend)
-    (kbd "g f") #'lsp-format-buffer               ; LSP format (NB: apheleia also formats)
+    ;; vim muscle memory: `g f' = open file path under cursor,
+    ;; e.g. `./matcha.nix' in a nix imports list.  LSP format moved to
+    ;; `g F' — apheleia is the day-to-day formatter anyway.
+    (kbd "g f") #'my/find-file-at-point-dwim      ; vim gf: follow file, no prompt
+    (kbd "g F") #'lsp-format-buffer               ; LSP format (NB: apheleia also formats)
 
     ;; --- Diagnostics ---
     (kbd "g e") #'flymake-goto-next-error         ; next diagnostic
