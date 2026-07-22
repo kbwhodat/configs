@@ -15,7 +15,14 @@ in {
     sops = {
       defaultSopsFile = ../../../secrets/secrets.yaml;
       defaultSopsFormat = "yaml";
-      age.keyFile = "/etc/.secrets/keys.txt";
+      # Age key provisioned MANUALLY once per machine (sops-nix's
+      # standard location) — previously delivered by an eval-time
+      # `builtins.fetchGit` of the private pass-keys repo, which broke
+      # CI eval (no credentials on runners) and put key material in the
+      # world-readable nix store.  Migration on hosts that had it:
+      #   mkdir -p ~/.config/sops/age && cp /etc/.secrets/keys.txt ~/.config/sops/age/keys.txt
+      # (run BEFORE the rebuild that removes /etc/.secrets)
+      age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
 
       secrets = {
         taskchamp-pass = { };

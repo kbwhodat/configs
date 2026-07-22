@@ -73,7 +73,13 @@
 (defun my/apply-alabaster-tweaks ()
   "Brighten region/search faces under doom-alabaster."
   (custom-set-faces
-   '(region  ((t (:background "#525868" :distant-foreground "#ffffff" :extend t)))))
+   '(region  ((t (:background "#525868" :distant-foreground "#ffffff" :extend t))))
+   ;; Window dividers in the slate accent — on the true-black bg the
+   ;; boundary between a bottom side window (ghostel/dired popup) and
+   ;; the buffer above is otherwise nearly invisible.
+   '(window-divider             ((t (:foreground "#525868"))))
+   '(window-divider-first-pixel ((t (:foreground "#525868"))))
+   '(window-divider-last-pixel  ((t (:foreground "#525868")))))
   (dolist (spec '((isearch                "#5d4e16" t)   ; muted amber bold (current)
                   (evil-ex-search         "#5d4e16" t)
                   (lazy-highlight         "#3d3622" nil) ; even dimmer (other matches)
@@ -90,7 +96,10 @@
 (defun my/clear-alabaster-tweaks ()
   "Reset alabaster-tuned faces so the active theme's own colors win."
   (custom-set-faces
-   '(region  ((t nil))))
+   '(region  ((t nil)))
+   '(window-divider             ((t nil)))
+   '(window-divider-first-pixel ((t nil)))
+   '(window-divider-last-pixel  ((t nil))))
   (dolist (face '(isearch evil-ex-search lazy-highlight evil-ex-lazy-highlight))
     (when (facep face)
       (set-face-attribute face nil
@@ -145,6 +154,25 @@ face-override blocks — no runtime override needed."
 (with-eval-after-load 'config-evil
   (when (fboundp 'my/leader)
     (my/leader "tt" '(my/toggle-theme :which-key "theme (dark/light)"))))
+
+;; --- Visible window dividers (only while a bottom popup exists) -----
+;; The boundary where ghostel/dired popups meet the buffer above is
+;; invisible on the black bg.  `window-divider-mode' is all-or-nothing
+;; though: enabled statically it also draws a useless line under a
+;; SOLE full-frame window (above the echo area).  So sync the mode to
+;; the presence of a bottom side window: popup appears → dividers on;
+;; popup gone → dividers off.  Colored via the `window-divider*' faces
+;; in the alabaster tweaks above.
+(setq window-divider-default-places 'bottom-only
+      window-divider-default-bottom-width 2)
+(defun my/window-divider-sync (&rest _)
+  "Enable window dividers only while a bottom side window is shown."
+  (let ((want (seq-some (lambda (w)
+                          (eq (window-parameter w 'window-side) 'bottom))
+                        (window-list nil 'no-minibuf))))
+    (unless (eq (bound-and-true-p window-divider-mode) want)
+      (window-divider-mode (if want 1 -1)))))
+(add-hook 'window-configuration-change-hook #'my/window-divider-sync)
 
 ;; --- Pulsar: pulse the line on jumps (lightweight) ------------------
 ;; 3 iterations × 0.04 s = 120 ms animation (was 8 × 0.04 = 320 ms).

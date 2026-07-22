@@ -1,17 +1,5 @@
 { inputs, config, pkgs, lib, ... }:
 
-let
-  # myrepo = pkgs.fetchFromGitHub {
-  #   owner = "kbwhodat";
-  #   repo = "pass-keys";
-  #   rev = "20fadc63a83680779a112ff8667a39f702818cb9";
-  # };
-  myrepo = builtins.fetchGit {
-    url = "https://github.com/kbwhodat/pass-keys.git";
-    ref = "main";
-    rev = "20fadc63a83680779a112ff8667a39f702818cb9";
-  };
-in
 {
   imports =
     [
@@ -21,7 +9,6 @@ in
   services.lorri.enable = true;
 
   environment = {
-    etc.".secrets".source = "${myrepo}";
     pathsToLink = [ "/libexec" ];
 
     # Block redlib settings page in Thorium/Chromium browsers

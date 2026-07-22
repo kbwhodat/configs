@@ -5,16 +5,7 @@
     ...
 }:
 
-let
-myrepo = builtins.fetchGit {
-  url = "https://github.com/kbwhodat/pass-keys.git";
-  ref = "main";
-  rev = "10fb8bcdaff679ee2a12d26f89ec4bba7909f64b";
-};
-in
 {
-  environment.etc.".secrets".source = "${myrepo}";
-
   system.primaryUser = "katob";
 
   nix.enable = true; # auto upgrade nix package and daemon service
