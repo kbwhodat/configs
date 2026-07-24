@@ -116,10 +116,13 @@
 ;; --- undecorated frames (macOS) ---
 (add-to-list 'default-frame-alist '(undecorated . t))
 
-;; --- sensible default size for emacsclient -c new frames ---
-;; Without these, new frames open at emacs's built-in default of 80×24
-;; chars — the tiny square you saw on EmacsClient launch.
-;; ~140×45 chars ≈ 1100×850 px at 14pt mono.
+;; --- new frames open MAXIMIZED ---
+;; Previously fixed at 140×45 chars, which meant every emacsclient
+;; frame was born small and manually maximized — and window-derived
+;; layout (pdf centering pads etc.) was computed against the small
+;; frame first.  Born-maximized removes the resize step entirely.
+;; width/height kept as fallback for displays where maximize fails.
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(width  . 140))
 (add-to-list 'default-frame-alist '(height . 45))
 
