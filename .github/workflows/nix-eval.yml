@@ -42,3 +42,52 @@ jobs:
             done
           done
           exit $fail
+
+      - name: Work-laptop isolation tripwire
+        # mac-work must never receive personal tooling.  Two layers:
+        # option assertions (catches activation-script installs like
+        # jobdrop that never appear in home.packages) and a package-name
+        # denylist (catches raw home.packages additions that bypass the
+        # module options entirely).  See profiles/home/work.nix for the
+        # policy this enforces.
+        run: |
+          set -u
+          cd nix-config
+          fail=0
+
+          echo "::group::option assertions"
+          for opt in \
+            modules.ai.jobdrop.enable \
+            modules.ai.opencode.enable \
+            modules.ai.kimi-cli.enable \
+            modules.ai.mcp-servers.enable \
+            modules.ai.understand-anything.enable \
+            modules.browsers.zen.enable \
+            modules.shell.bookokrat.enable \
+            modules.shell.claude-acp.enable \
+            modules.packages.personalTools.enable; do
+            val=$(nix eval ".#darwinConfigurations.mac-work.config.home-manager.users.katob.$opt" 2>/dev/null || echo "MISSING")
+            if [ "$val" != "false" ]; then
+              echo "::error title=work isolation::$opt is '$val' on mac-work (must be false)"
+              fail=1
+            else
+              echo "OK: $opt = false"
+            fi
+          done
+          echo "::endgroup::"
+
+          echo "::group::package denylist"
+          pkgs=$(nix eval ".#darwinConfigurations.mac-work.config.home-manager.users.katob.home.packages" \
+                   --apply 'ps: builtins.concatStringsSep "\n" (map (p: p.pname or p.name) ps)' --raw)
+          for bad in jobdrop zen-browser librewolf floorp thorium opencode kimi \
+                     syncthing newsboat nmap taskwarrior bookokrat \
+                     browserpass password-store; do
+            if echo "$pkgs" | grep -qi "$bad"; then
+              echo "::error title=work isolation::denylisted package matching '$bad' present on mac-work"
+              fail=1
+            fi
+          done
+          [ "$fail" = 0 ] && echo "package set clean"
+          echo "::endgroup::"
+
+          exit $fail
