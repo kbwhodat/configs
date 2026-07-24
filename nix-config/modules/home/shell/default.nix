@@ -6,6 +6,20 @@ let cfg = config.modules.shell; in {
     description = "Shell + terminal bundle (zsh, bash, tmux, wezterm, alacritty, emacs, etc.)";
   };
 
+  # Gate for PERSONAL tools living under shell/, referenced from their
+  # bare-config sub-files.  Default true = personal hosts unchanged;
+  # profiles/home/work.nix flips them off (work-laptop isolation).
+  options.modules.shell.bookokrat.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "bookokrat reader + techdict (personal — off on work)";
+  };
+  options.modules.shell.claude-acp.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "claude-agent-acp bridge for emacs agent-shell (npm-fetched — off on work, Zscaler blocks npm)";
+  };
+
   imports = [
     ./emacs.nix
     ./jujutsu.nix
@@ -17,7 +31,6 @@ let cfg = config.modules.shell; in {
     ./kitty.nix
     ./rio.nix
     ./tmux.nix
-    ./password-store.nix
     ./gpg.nix
     ./wezterm.nix
     ./alacritty.nix

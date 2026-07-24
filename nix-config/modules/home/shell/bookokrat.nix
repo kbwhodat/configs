@@ -46,7 +46,7 @@ let
     echo "Nothing found for $word"
   '';
 in {
-  home.packages = [
+  home.packages = lib.mkIf config.modules.shell.bookokrat.enable [
     pkgs.bookokrat
     pkgs.dict
     techdict
@@ -55,7 +55,8 @@ in {
   # On macOS, bookokrat looks for config in ~/Library/Application Support/bookokrat/
   # but we keep our config in ~/.config/bookokrat/ for consistency.
   # Create a symlink so bookokrat finds it.
-  home.file."Library/Application Support/bookokrat/config.yaml" = lib.mkIf isDarwin {
-    source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/bookokrat/config.yaml";
-  };
+  home.file."Library/Application Support/bookokrat/config.yaml" =
+    lib.mkIf (isDarwin && config.modules.shell.bookokrat.enable) {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/bookokrat/config.yaml";
+    };
 }
