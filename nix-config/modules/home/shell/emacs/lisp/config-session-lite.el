@@ -46,6 +46,12 @@ doesn't have to re-read the on-disk file on every idle save.  Set on
 first successful `my/session-lite-read', and again every time
 `my/session-lite-build-snapshot' actually produces workspaces.")
 
+(defvar my/session-lite-large-ok-extensions '("pdf" "epub")
+  "Extensions exempt from `my/session-lite-max-file-size'.
+Reading formats are the legitimate large-file case: a 40MB book is
+exactly what the user expects to reopen after a restart, and both
+pdf-view and nov render lazily so restore stays cheap.")
+
 (defun my/session-lite--file-eligible-p (file)
   "Return non-nil when FILE is cheap and useful to restore."
   (and file
@@ -53,17 +59,39 @@ first successful `my/session-lite-read', and again every time
        (not (file-remote-p file))
        (file-exists-p file)
        (file-readable-p file)
-       (let ((attrs (file-attributes file)))
-         (and attrs
-              (numberp (file-attribute-size attrs))
-              (<= (file-attribute-size attrs) my/session-lite-max-file-size)))))
+       (or (member (downcase (or (file-name-extension file) ""))
+                   my/session-lite-large-ok-extensions)
+           (let ((attrs (file-attributes file)))
+             (and attrs
+                  (numberp (file-attribute-size attrs))
+                  (<= (file-attribute-size attrs)
+                      my/session-lite-max-file-size))))))
+
+(defvar my/session-lite--open-real nil
+  "Bind non-nil to force `my/session-lite--find-file' to open REAL buffers.
+The window-layout restore displays its buffers immediately — lazy
+placeholders there fire the materialize hook in the middle of
+`window-state-put', which kills buffers out from under it and
+collapses the layout.  Visible buffers are opened real; laziness is
+for buffers nobody is looking at.")
+
+(defvar-local my/session-lite--lazy-file nil
+  "File this buffer is a lazy placeholder for (pdf/epub restore).
+Opening a PDF spins up epdfinfo and BLOCKS in `accept-process-output'
+for seconds; doing that inside the background restore timers froze the
+UI for 10+ s (timers re-enter during the wait and nest more opens).
+Placeholders join the workspace instantly; the real document loads on
+first display via `my/session-lite--lazy-materialize'.")
 
 (defun my/session-lite--buffer-file (buffer)
-  "Return BUFFER's truename-free file name when it should be restored."
+  "Return BUFFER's truename-free file name when it should be restored.
+Placeholders count as their target file so unopened lazy documents
+stay in every future snapshot."
   (when (buffer-live-p buffer)
     (with-current-buffer buffer
-      (when (my/session-lite--file-eligible-p buffer-file-name)
-        buffer-file-name))))
+      (let ((file (or buffer-file-name my/session-lite--lazy-file)))
+        (when (my/session-lite--file-eligible-p file)
+          file)))))
 
 (defun my/session-lite--buffers-to-files (buffers)
   "Return restoreable file names for BUFFERS, preserving order."
@@ -80,10 +108,23 @@ first successful `my/session-lite-read', and again every time
   (seq-take (my/session-lite--buffers-to-files (buffer-list))
             my/session-lite-max-buffers))
 
-(defun my/session-lite--selected-file ()
-  "Return the selected buffer's file, or the first restoreable file."
-  (or (my/session-lite--buffer-file (current-buffer))
-      (car (my/session-lite--global-files))))
+(defun my/session-lite--selected-file (&optional workspace)
+  "Return the file to restore as selected, scoped to WORKSPACE.
+With a named WORKSPACE, both the current buffer's file and any
+fallback are constrained to that workspace's OWN buffers — never the
+global MRU list.  (The old global fallback injected a foreign
+project's file into a fresh scratch-only workspace at snapshot time,
+and the persp exclusivity advice then MIGRATED that file across
+workspaces on restore.)  Without workspaces there are no boundaries
+to violate, so the global MRU fallback is fine."
+  (let* ((file (my/session-lite--buffer-file (current-buffer)))
+         (ws-files (and workspace
+                        (my/session-lite--workspace-files workspace))))
+    (cond
+     ((and workspace file (member file ws-files)) file)
+     (workspace (car ws-files))
+     (file file)
+     (t (car (my/session-lite--global-files))))))
 
 (defun my/session-lite--workspace-names ()
   "Return meaningful persp-mode workspace names, excluding the default none state."
@@ -112,14 +153,18 @@ first successful `my/session-lite-read', and again every time
         (my/session-lite--buffers-to-files (persp-buffers persp))))))
 
 (defun my/session-lite--workspace-snapshot (name current-workspace selected-file)
-  "Build one workspace snapshot for NAME."
+  "Build one workspace snapshot for NAME.
+Emitted even when the workspace holds NO files: a workspace the user
+created must survive a restart as itself.  (The old `(when files ...)'
+guard silently dropped empty workspaces — a freshly created workspace
+vanished from the snapshot, surviving only as the :current-workspace
+string, which broke restore in several ways.)"
   (let ((files (my/session-lite--workspace-files name)))
-    (when files
-      (list :name name
-            :selected-file (if (equal name current-workspace)
-                               (or selected-file (car files))
-                             (car files))
-            :files files))))
+    (list :name name
+          :selected-file (if (equal name current-workspace)
+                             (or selected-file (car files))
+                           (car files))
+          :files files)))
 
 (defun my/session-lite--proper-list-p (value)
   "Return non-nil when VALUE is a proper list."
@@ -141,18 +186,37 @@ first successful `my/session-lite-read', and again every time
              append (my/session-lite--window-state-buffer-names item)))))
 
 (defun my/session-lite--window-layout-buffer-snapshot (name)
-  "Return a serializable file-backed snapshot for buffer NAME."
+  "Return a serializable snapshot for buffer NAME, or nil.
+File buffers record their path.  Workspace scratches (non-file by
+design) record their workspace so a scratch left visible in a split
+— e.g. pdf | notes — comes back in that split; its CONTENT rides the
+scratch stash, not this snapshot.  Global `*scratch*' likewise
+(persistent-scratch owns its content)."
   (let ((buffer (get-buffer name)))
     (when buffer
-      (let ((file (my/session-lite--buffer-file buffer)))
-        (when file
-          (list :name name :file file))))))
+      (let ((file (my/session-lite--buffer-file buffer))
+            (sws (buffer-local-value 'my/workspace-scratch-ws buffer)))
+        (cond
+         (file (list :name name :file file))
+         (sws (list :name name :scratch sws))
+         ((equal name "*scratch*") (list :name name :global-scratch t)))))))
 
-(defun my/session-lite--window-layout-snapshot (&optional frame)
+(defun my/session-lite--window-layout-snapshot (&optional frame workspace-files
+                                                          current-workspace)
   "Return FRAME's file-backed split layout, or nil.
 Side windows are intentionally excluded by snapshotting the frame's main
 window only.  If any main-window leaf is not file-backed, no layout is
-saved; restore then falls back to the selected file."
+saved; restore then falls back to the selected file.
+
+MEMBERSHIP GUARD: when WORKSPACE-FILES is non-nil (a list of the
+current workspace's own files), every leaf must be one of them or no
+layout is saved.  The layout is attributed to :current-workspace at
+restore time — and restore `persp-add-buffer's every layout file into
+that workspace — so persisting a frame that still shows another
+workspace's buffer (stale persp window-conf, debris from an eval,
+popup fallout) would migrate foreign files across workspaces on the
+next restart.  That was the \"databases split reappeared inside
+gonwatch\" bug."
   (let* ((target (or frame (selected-frame)))
          (state (window-state-get (window-main-window target) t))
          (names (my/session-lite--window-state-buffer-names state))
@@ -160,18 +224,41 @@ saved; restore then falls back to the selected file."
                         (mapcar #'my/session-lite--window-layout-buffer-snapshot
                                 names))))
     (when (and (> (length names) 1)
-               (= (length names) (length buffers)))
+               (= (length names) (length buffers))
+               (or (null workspace-files)
+                   (cl-every
+                    (lambda (b)
+                      (cond
+                       ;; file leaf: must belong to the current workspace
+                       ((plist-get b :file)
+                        (member (plist-get b :file) workspace-files))
+                       ;; workspace scratch: only ITS OWN workspace's
+                       ((plist-get b :scratch)
+                        (equal (plist-get b :scratch) current-workspace))
+                       ;; global *scratch* is at home anywhere
+                       ((plist-get b :global-scratch) t)))
+                    buffers)))
       (list :buffers buffers
-            :state state))))
+            :state state
+            ;; `window-state-put' does NOT restore window selection —
+            ;; record which leaf was selected so restore can.
+            :selected (buffer-name
+                       (window-buffer (frame-selected-window target)))))))
 
 (defun my/session-lite-build-snapshot (&optional frame)
   "Build the lightweight session snapshot from FRAME."
   (let ((target (or frame (selected-frame))))
     (with-selected-frame target
       (let* ((global-files (my/session-lite--global-files))
-             (selected-file (my/session-lite--selected-file))
+             ;; current-workspace FIRST: selected-file is scoped to it.
              (current-workspace (my/session-lite--current-workspace))
-             (window-layout (my/session-lite--window-layout-snapshot target))
+             (selected-file (my/session-lite--selected-file current-workspace))
+             (window-layout (my/session-lite--window-layout-snapshot
+                             target
+                             (and current-workspace
+                                  (my/session-lite--workspace-files
+                                   current-workspace))
+                             current-workspace))
              (workspaces (delq nil
                                 (mapcar (lambda (name)
                                           (my/session-lite--workspace-snapshot
@@ -230,8 +317,17 @@ snapshots so the repeating idle timer doesn't rewrite an identical
 file after every editing pause.  FORCE writes even when the snapshot
 is empty or unchanged."
   (interactive "P")
-  (let ((snapshot (my/session-lite-build-snapshot frame))
-        (dir (file-name-directory my/session-lite-file)))
+  ;; Idle-timer saves run with whatever frame is selected — often the
+  ;; daemon's invisible TTY frame, whose "layout" is a single window
+  ;; and whose persp/treemacs scopes are stale.  Default to a live GUI
+  ;; frame so periodic snapshots capture what the user actually sees.
+  (let* ((frame (or (and (frame-live-p frame) frame)
+                    (seq-find (lambda (f)
+                                (and (frame-live-p f) (display-graphic-p f)))
+                              (frame-list))
+                    (selected-frame)))
+         (snapshot (my/session-lite-build-snapshot frame))
+         (dir (file-name-directory my/session-lite-file)))
     (unless (and (not force)
                  (or (my/session-lite--snapshot-empty-p snapshot)
                      (my/session-lite--snapshot-loses-workspaces-p snapshot)
@@ -276,8 +372,16 @@ membership across emacs restarts.  Third arg `nil' to `persp-add-buffer'
 suppresses persp-mode's `persp-switch-to-added-buffer' default so the
 active workspace doesn't flicker during background restore."
   (when (my/session-lite--file-eligible-p file)
-    (let ((enable-local-variables nil))
-      (let ((buffer (find-file-noselect file)))
+    (if (and (not select) (not my/session-lite--open-real))
+        ;; ANY background restore: placeholder only.  Real opens run
+        ;; major-mode init inside restore timers — epdfinfo blocked
+        ;; 14 s for a pdf, org-mode cold-load stuttered the first
+        ;; frame paint for elfeed.org.  Rule: background restore
+        ;; never does file I/O or mode init; the real buffer
+        ;; materializes on first display.
+        (my/session-lite--lazy-placeholder file workspace)
+      (let ((enable-local-variables nil))
+        (let ((buffer (find-file-noselect file)))
         (when (and buffer
                    (bound-and-true-p persp-mode)
                    (fboundp 'persp-add-buffer))
@@ -297,7 +401,100 @@ active workspace doesn't flicker during background restore."
               (ignore-errors (persp-add-buffer buffer target-persp nil)))))
         (when select
           (switch-to-buffer buffer))
-        buffer))))
+        buffer)))))
+
+(defun my/session-lite--lazy-placeholder (file workspace)
+  "Create (or return) a lazy placeholder buffer for FILE in WORKSPACE."
+  (let* ((name (file-name-nondirectory file))
+         (existing (get-buffer name))
+         (buf (if (and existing
+                       (equal (buffer-local-value 'my/session-lite--lazy-file
+                                                  existing)
+                              file))
+                  existing
+                (generate-new-buffer name))))
+    (with-current-buffer buf
+      (setq my/session-lite--lazy-file file
+            buffer-read-only t)
+      (add-hook 'window-configuration-change-hook
+                #'my/session-lite--lazy-materialize nil t))
+    (when (and (bound-and-true-p persp-mode) (fboundp 'persp-add-buffer))
+      (let ((target-persp
+             (or (and workspace
+                      (boundp '*persp-hash*)
+                      (hash-table-p *persp-hash*)
+                      (gethash workspace *persp-hash*))
+                 (and (fboundp 'get-current-persp)
+                      (get-current-persp)))))
+        (when target-persp
+          (ignore-errors (persp-add-buffer buf target-persp nil)))))
+    buf))
+
+(defun my/session-lite--lazy-resolve (orig filename &rest args)
+  "Consume any lazy placeholder for FILENAME before a real open.
+Without this, `find-file'/grep-jump/consult into a file that restore
+placeholder'd creates a SECOND buffer: uniquify renames the real one
+(`shell.nix<gonwatch>') while the empty placeholder squats on the
+plain name — picking it from the buffer list shows an empty impostor.
+The placeholder is killed first (its workspace memberships carry over
+to the real buffer) so every open resolves to one true buffer."
+  (let* ((full (ignore-errors (expand-file-name filename)))
+         (ph (and full
+                  (seq-find (lambda (b)
+                              (equal (buffer-local-value
+                                      'my/session-lite--lazy-file b)
+                                     full))
+                            (buffer-list))))
+         (persps (when (and ph (fboundp 'persp-persps))
+                   (seq-filter (lambda (p)
+                                 (and p (memq ph (persp-buffers p))))
+                               (persp-persps)))))
+    (when ph
+      (let ((kill-buffer-query-functions nil))
+        (kill-buffer ph)))
+    (let ((buf (apply orig filename args)))
+      (when (and buf persps (fboundp 'persp-add-buffer))
+        (dolist (p persps)
+          (ignore-errors (persp-add-buffer buf p nil))))
+      buf)))
+(advice-add 'find-file-noselect :around #'my/session-lite--lazy-resolve)
+
+(defun my/session-lite--lazy-materialize ()
+  "Swap a displayed lazy placeholder for the real document buffer.
+Runs from the placeholder's buffer-local
+`window-configuration-change-hook' — i.e. the first time the user
+actually selects/displays it.  The epdfinfo wait happens HERE, as a
+direct consequence of user intent, instead of inside background
+restore timers."
+  (let ((file my/session-lite--lazy-file)
+        (placeholder (current-buffer)))
+    (when (and file (get-buffer-window placeholder t))
+      (remove-hook 'window-configuration-change-hook
+                   #'my/session-lite--lazy-materialize t)
+      (setq my/session-lite--lazy-file nil)   ; block re-entry
+      (let ((persps (when (and (bound-and-true-p persp-mode)
+                               (fboundp 'persp-persps))
+                      (seq-filter (lambda (p)
+                                    (and p (memq placeholder
+                                                 (persp-buffers p))))
+                                  (persp-persps))))
+            (wins (get-buffer-window-list placeholder nil t)))
+        ;; Kill the placeholder BEFORE the real open so the real buffer
+        ;; takes the clean name (open-first left it uniquify-branded
+        ;; "file<dir>" forever).
+        (let ((kill-buffer-query-functions nil))
+          (kill-buffer placeholder))
+        (when-let* ((real (ignore-errors
+                            (let ((enable-local-variables nil))
+                              (find-file-noselect file)))))
+          (when (fboundp 'persp-add-buffer)
+            (dolist (p persps)
+              (ignore-errors (persp-add-buffer real p nil))))
+          (dolist (win wins)
+            (when (window-live-p win)
+              (set-window-buffer win real)))
+          (when (with-current-buffer real (derived-mode-p 'pdf-view-mode))
+            (run-at-time 0.3 nil #'my/session-lite--redisplay-pdfs)))))))
 
 (defun my/session-lite--ensure-workspace (name)
   "Create or switch to persp-mode workspace NAME when available."
@@ -307,22 +504,39 @@ active workspace doesn't flicker during background restore."
     (persp-switch name)
     t))
 
+(defun my/session-lite--window-layout-entry-buffer (entry workspace)
+  "Return (opening/creating) the live buffer for layout ENTRY.
+File entries open real (they are about to be visible); scratch
+entries recreate via `my/workspace-scratch-buffer' — content comes
+from the scratch stash; global `*scratch*' from persistent-scratch."
+  (let ((file (plist-get entry :file))
+        (sws (plist-get entry :scratch)))
+    (cond
+     (file (my/session-lite--find-file file nil workspace))
+     ((and sws (fboundp 'my/workspace-scratch-buffer))
+      (let ((buf (my/workspace-scratch-buffer sws)))
+        (when (and buf (bound-and-true-p persp-mode)
+                   (fboundp 'persp-add-buffer)
+                   (boundp '*persp-hash*)
+                   (hash-table-p *persp-hash*))
+          (when-let* ((p (gethash sws *persp-hash*)))
+            (ignore-errors (persp-add-buffer buf p nil))))
+        buf))
+     ((plist-get entry :global-scratch) (get-buffer-create "*scratch*")))))
+
 (defun my/session-lite--window-layout-buffer (saved-name buffers &optional workspace)
   "Return the live buffer for SAVED-NAME described by BUFFERS.
-WORKSPACE is forwarded to `my/session-lite--find-file' so the opened
-buffer joins the right persp."
-  (let* ((entry (seq-find (lambda (buffer)
-                            (equal (plist-get buffer :name) saved-name))
-                          buffers))
-         (file (plist-get entry :file)))
-    (when file
-      (my/session-lite--find-file file nil workspace))))
+WORKSPACE is forwarded so the opened buffer joins the right persp."
+  (when-let* ((entry (seq-find (lambda (buffer)
+                                 (equal (plist-get buffer :name) saved-name))
+                               buffers)))
+    (my/session-lite--window-layout-entry-buffer entry workspace)))
 
 (defun my/session-lite--window-layout-open-buffers (buffers &optional workspace)
-  "Open every file-backed buffer required by BUFFERS.
+  "Open every buffer required by BUFFERS (files real, scratches recreated).
 WORKSPACE is forwarded so each opened buffer joins the right persp."
-  (cl-every (lambda (buffer)
-              (my/session-lite--find-file (plist-get buffer :file) nil workspace))
+  (cl-every (lambda (entry)
+              (my/session-lite--window-layout-entry-buffer entry workspace))
             buffers))
 
 (defun my/session-lite--rewrite-window-layout-buffer-names (state buffers &optional workspace)
@@ -344,6 +558,19 @@ join the right persp."
             state))
    (t state)))
 
+(defun my/session-lite--redisplay-pdfs (&optional frame)
+  "Force pdf-view to (re)install image display in FRAME's windows.
+pdf-view-mode enabled while a frame is still settling (session
+restore races frame paint) can leave the RAW BYTES visible: mode
+active, no display property installed.  A deferred redisplay repairs
+it invisibly."
+  (let ((target (or frame (selected-frame))))
+    (when (frame-live-p target)
+      (dolist (w (window-list target 'no-minibuf))
+        (with-current-buffer (window-buffer w)
+          (when (derived-mode-p 'pdf-view-mode)
+            (ignore-errors (pdf-view-redisplay w))))))))
+
 (defun my/session-lite--restore-window-layout (layout &optional frame workspace)
   "Restore file-backed window LAYOUT.
 Return non-nil on success.  Failures are soft so the caller can fall
@@ -354,7 +581,9 @@ since the saved window layout was captured from a frame in that
 workspace."
   (let ((target (or frame (selected-frame)))
         (state (plist-get layout :state))
-        (buffers (plist-get layout :buffers)))
+        (buffers (plist-get layout :buffers))
+        ;; layout buffers become visible NOW — open them real, not lazy
+        (my/session-lite--open-real t))
     (when (and state buffers)
       (condition-case err
           (when (my/session-lite--window-layout-open-buffers buffers workspace)
@@ -363,7 +592,16 @@ workspace."
               (window-state-put
                (my/session-lite--rewrite-window-layout-buffer-names state buffers workspace)
                (frame-root-window target)
-               'safe))
+               'safe)
+              ;; reselect the window the user actually quit from
+              (when-let* ((sel (plist-get layout :selected))
+                          (buf (my/session-lite--window-layout-buffer
+                                sel buffers workspace))
+                          (win (get-buffer-window buf target)))
+                (select-window win)))
+            ;; pdf-view display can fail to install during early frame
+            ;; life — repair after the frame settles
+            (run-at-time 0.5 nil #'my/session-lite--redisplay-pdfs target)
             t)
         (error
          (message "session-lite window layout restore failed: %S" err)
@@ -421,9 +659,25 @@ landed in whatever workspace was active at restore time."
                 ;; Restore the visible window state.  Selected-file
                 ;; AND every buffer inside the saved layout goes into
                 ;; `current-workspace' (where the user left them).
-                (unless (my/session-lite--restore-window-layout
-                         window-layout target current-workspace)
-                  (my/session-lite--find-file selected-file t current-workspace))
+                ;; MEMBERSHIP GUARD: only open selected-file into the
+                ;; current workspace if the snapshot lists it among
+                ;; that workspace's own files — the restore path must
+                ;; never be able to inject a foreign file (empty
+                ;; workspaces restore to *scratch* instead).
+                (let* ((cur-entry (seq-find
+                                   (lambda (w) (equal (plist-get w :name)
+                                                      current-workspace))
+                                   workspaces))
+                       (safe-selected
+                        (and selected-file
+                             (member selected-file
+                                     (plist-get cur-entry :files))
+                             selected-file)))
+                  (unless (my/session-lite--restore-window-layout
+                           window-layout target current-workspace)
+                    (when safe-selected
+                      (my/session-lite--find-file safe-selected t
+                                                  current-workspace))))
                 ;; CRITICAL: pair each lazy-restored file with its
                 ;; ORIGINAL workspace so `my/session-lite--find-file'
                 ;; can `persp-add-buffer' it to the correct persp
