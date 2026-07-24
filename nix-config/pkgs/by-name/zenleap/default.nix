@@ -5,8 +5,8 @@ let
   fxAutoconfig = fetchFromGitHub {
     owner = "MrOtherGuy";
     repo = "fx-autoconfig";
-    rev = "d469a80";
-    sha256 = "sha256-czNgt62fofg3hXw7F4wXSv/+ZAsGtO6bg3sUOiUXcu4=";
+    rev = "dfdab56";
+    sha256 = "sha256-bpOt/fD8zZiKbb2sRQHl7eobuGklY9c2QI/jmYi9WE4=";
   };
 in
 stdenvNoCC.mkDerivation {
