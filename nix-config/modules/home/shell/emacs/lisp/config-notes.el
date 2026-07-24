@@ -250,9 +250,87 @@ still shows up as `my-random-thoughts' in the listing rather than blank."
   "Pop to the persistent scratch buffer."
   (interactive) (pop-to-buffer "*scratch*"))
 
+;; --- Per-WORKSPACE scratch (SPC x) ----------------------------------
+;; One scratch per persp workspace, operating exactly like the global
+;; `*scratch*': a NON-FILE buffer (`*scratch: <ws>*') — no file
+;; semantics, no save prompts, summoned on demand — whose contents are
+;; quietly stashed to ~/.emacs.d/scratches/ (60s idle + exit + on kill
+;; attempts, which bury instead of killing, same as global scratch).
+;; Invisible to recentf/greps/notdeft by construction (never a visited
+;; file).  Whiteboard tier: promote anything that matters via SPC n n.
+;; The global `*scratch*' stays on SPC X.
+(defvar my/workspace-scratch-directory
+  (expand-file-name "scratches/" user-emacs-directory)
+  "Directory stashing per-workspace scratch contents.")
+
+(defvar-local my/workspace-scratch-ws nil
+  "Workspace this scratch buffer belongs to (nil = not a ws scratch).")
+
+(defun my/workspace-scratch--stash (ws)
+  (expand-file-name
+   (concat (replace-regexp-in-string "[^[:alnum:]_-]" "_" ws) ".md")
+   my/workspace-scratch-directory))
+
+(defun my/workspace-scratch-save-all ()
+  "Stash the contents of every live workspace scratch buffer."
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when my/workspace-scratch-ws
+        (make-directory my/workspace-scratch-directory t)
+        (write-region (point-min) (point-max)
+                      (my/workspace-scratch--stash my/workspace-scratch-ws)
+                      nil 'silent)))))
+(run-with-idle-timer 60 t #'my/workspace-scratch-save-all)
+(add-hook 'kill-emacs-hook #'my/workspace-scratch-save-all)
+
+(defun my/workspace-scratch-buffer (ws)
+  "Return WS's scratch buffer, creating and restoring from stash if needed.
+Non-interactive core shared by `my/workspace-scratch' (SPC x) and the
+session-lite window-layout restore (a scratch left visible in a split
+must reappear in that split after a restart)."
+  (let* ((name (format "*scratch: %s*" ws))
+         (existing (get-buffer name))
+         (buf (or existing (get-buffer-create name))))
+    (unless existing
+      (with-current-buffer buf
+        ;; FULL global-scratch parity: same mode source (`initial-major-mode',
+        ;; lisp-interaction by default) — not markdown; that was divergence.
+        (funcall initial-major-mode)
+        (setq my/workspace-scratch-ws ws)
+        (let ((stash (my/workspace-scratch--stash ws)))
+          (when (file-readable-p stash)
+            (insert-file-contents stash)))))
+    buf))
+
+(defun my/workspace-scratch ()
+  "Pop to the current workspace's scratch buffer (creating/restoring)."
+  (interactive)
+  (let* ((ws (or (and (fboundp 'get-current-persp)
+                      (fboundp 'safe-persp-name)
+                      (safe-persp-name (get-current-persp)))
+                 "none"))
+         (buf (my/workspace-scratch-buffer ws)))
+    (switch-to-buffer buf)
+    ;; join the workspace (persp only auto-adds file buffers)
+    (when (and (bound-and-true-p persp-mode) (fboundp 'persp-add-buffer)
+               (get-current-persp))
+      (ignore-errors (persp-add-buffer buf (get-current-persp) nil)))))
+
+;; Kill attempts stash + bury instead of killing — global-scratch parity.
+(add-hook 'kill-buffer-query-functions
+          (lambda ()
+            (if (bound-and-true-p my/workspace-scratch-ws)
+                (progn (my/workspace-scratch-save-all)
+                       (bury-buffer)
+                       (ignore-errors (delete-window))
+                       nil)
+              t)))
+
 (with-eval-after-load 'general
   (when (fboundp 'my/leader)
-    (my/leader "x" '(my/open-persistent-scratch :which-key "scratch"))))
+    (my/leader
+      "x" '(my/workspace-scratch      :which-key "scratch (workspace)")
+      "X" '(my/open-persistent-scratch :which-key "scratch (global)"))))
 
 (provide 'config-notes)
 ;;; config-notes.el ends here
