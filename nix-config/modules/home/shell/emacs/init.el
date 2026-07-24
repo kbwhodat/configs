@@ -47,6 +47,8 @@
 (require 'config-llm)          ; agent-shell (ACP)
 (require 'config-pdf)          ; pdf-tools
 (require 'config-reader)       ; nov.el (.epub) + olivetti
+(require 'config-rss)          ; elfeed, extraction-first reading (SPC o r)
+(require 'config-freeze-watchdog) ; TEMPORARY: gopls freeze diagnostics (M-x my/freeze-report)
 
 ;; Buffer hygiene block removed.
 ;; Previously killed `*scratch*' (no-op — persistent-scratch's
