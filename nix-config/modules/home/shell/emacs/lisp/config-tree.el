@@ -21,12 +21,35 @@
       (setq my/treemacs-source-window win))))
 
 (defun my/treemacs ()
-  "Open the treemacs sidebar, remembering the current window.
-First invocation triggers the autoload of `treemacs' via the
-`:commands' list."
+  "Toggle the treemacs sidebar rooted at the CURRENT buffer's project.
+Treemacs keeps its own global project list that ignores persp
+workspaces — without the exclusive re-root, SPC e in the config
+workspace kept showing whatever project was added last (gonwatch).
+Visible sidebar toggles off; otherwise the tree is re-rooted to show
+only the project of the buffer you pressed SPC e from.  Falls back to
+a plain `treemacs' when the buffer isn't inside any project."
   (interactive)
   (my/treemacs--remember-source)
-  (treemacs))
+  (let* ((visible (and (fboundp 'treemacs-get-local-window)
+                       (treemacs-get-local-window)))
+         (proot (when-let* ((pr (project-current)))
+                  (expand-file-name (project-root pr))))
+         (shows-current
+          (and visible proot
+               (cl-some (lambda (p)
+                          (file-equal-p (treemacs-project->path p) proot))
+                        (treemacs-workspace->projects
+                         (treemacs-current-workspace))))))
+    (cond
+     ;; invoked from inside the sidebar itself → always close
+     ((and visible (treemacs-is-treemacs-window? (selected-window)))
+      (treemacs))
+     ;; visible and already on this project (or no project) → toggle off
+     ((and visible (or shows-current (null proot))) (treemacs))
+     ;; hidden, or visible-but-wrong-project → (re-)root at this project
+     (t (condition-case nil
+            (treemacs-add-and-display-current-project-exclusively)
+          (error (treemacs)))))))
 
 (defun my/treemacs-find-file ()
   "Focus current file in treemacs, remembering the current window."
@@ -71,7 +94,8 @@ collapsed root (use RET or TAB for that)."
 
 (use-package treemacs
   :defer t
-  :commands (treemacs treemacs-select-window treemacs-find-file)
+  :commands (treemacs treemacs-select-window treemacs-find-file
+             treemacs-add-and-display-current-project-exclusively)
   :init
   (setq treemacs-no-png-images t            ; unicode icons, no PNG files needed
         treemacs-width 30
