@@ -135,6 +135,34 @@ Use after `SPC \\\\' / `SPC -' to get two parallel shells, tmux-pane style."
         (display-buffer-alist nil))
     (ghostel)))
 
+(defun my/ghostel-cd-here ()
+  "Show the bottom ghostel and cd it to the directory at hand.
+From dired: the listed directory.  From a file buffer: its directory.
+Reuses the ONE existing terminal (sends `cd' into its pty — same
+mechanism as `my/ghostel-run-command') rather than spawning per-dir
+shells.  A C-u is sent first so half-typed prompt input can't
+concatenate with the cd.  Caveat: types into whatever is running in
+the terminal foreground."
+  (interactive)
+  (let ((dir (expand-file-name
+              (if (derived-mode-p 'dired-mode)
+                  (dired-current-directory)
+                default-directory)))
+        (buf (my/ghostel--buffer)))
+    (cond
+     ((and buf (get-buffer-window buf))
+      (select-window (get-buffer-window buf)))
+     (buf
+      (select-window (display-buffer buf)))
+     (t
+      (ghostel)
+      (when-let* ((win (get-buffer-window (my/ghostel--buffer) t)))
+        (select-window win))))
+    (when-let* ((b (my/ghostel--buffer))
+                (proc (get-buffer-process b)))
+      (process-send-string
+       proc (concat "\C-u" "cd " (shell-quote-argument dir) "\n")))))
+
 (defun my/ghostel-run-command (command)
   "Open/focus ghostel and run shell COMMAND."
   (interactive (list (read-shell-command "Run in ghostel: ")))

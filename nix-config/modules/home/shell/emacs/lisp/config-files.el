@@ -74,7 +74,15 @@
       (delete-window) (quit-window)))
 
 ;; netrw/oil keymap inside dired buffers — no need to learn dired defaults.
-(with-eval-after-load 'dired
+;; Named function so it can be applied TWICE: once when dired loads,
+;; and again after evil-collection sets up its dired bindings —
+;; evil-collection initializes on an idle timer AFTER our
+;; with-eval-after-load registration, so its bindings land later and
+;; were clobbering ours (observed: RET reverted to stock
+;; `dired-find-file', opening files INSIDE the popup instead of
+;; routing them to the main window).
+(defun my/dired-evil-keys ()
+  "Apply the netrw-style dired keymap (idempotent)."
   (define-key dired-mode-map (kbd "RET") #'my/dired-find-file-routing)
   (with-eval-after-load 'evil
     (evil-define-key 'normal dired-mode-map
@@ -91,8 +99,20 @@
       (kbd "gh")  #'dired-hide-dotfiles
       (kbd "gr")  #'revert-buffer
       (kbd "gs")  #'dired-sort-toggle-or-edit
+      (kbd "t")   #'my/ghostel-cd-here        ; terminal in THIS dir (shadows toggle-marks)
       (kbd "q")   #'my/dired-close-popup
       (kbd "?")   #'describe-mode)))
+
+(with-eval-after-load 'dired
+  (my/dired-evil-keys))
+
+;; Re-assert after evil-collection's dired setup (it runs later and
+;; would otherwise win the last-write race).
+(with-eval-after-load 'evil-collection
+  (add-hook 'evil-collection-setup-hook
+            (lambda (mode &rest _)
+              (when (eq mode 'dired)
+                (my/dired-evil-keys)))))
 
 ;; `dired-hide-dotfiles' = alias for dired-x's `dired-omit-mode'.
 (with-eval-after-load 'dired
