@@ -170,21 +170,41 @@ doesn't belong to that perspective.
   `*scratch*' so the default workspace feels like a clean slate.
 Without this hook, persp-mode just changes the persp parameter and
 leaves whatever buffer was visible — so switching from `foo' to a
-fresh `bar' workspace still shows foo's last file."
+fresh `bar' workspace still shows foo's last file.
+
+Sweeps EVERY main-area window of the frame, not just the selected
+one: a stale persp window-conf (or window debris from an eval /
+popup) can leave OTHER windows showing a foreign workspace's buffer.
+Those windows survived the old selected-window-only eviction, got
+re-saved into the persp's window-conf on the next switch-away, and
+session-lite then persisted the polluted frame across restarts.
+Extra foreign windows are deleted (their split belongs to the other
+workspace); side windows (ghostel popup etc.) are left alone."
   (when (fboundp 'get-current-persp)
-    (let* ((persp (get-current-persp))
-           (current (current-buffer))
-           (target
-            (cond
-             ;; Switched to "none" — always *scratch*.
-             ((null persp)
-              (get-buffer-create "*scratch*"))
-             ;; Switched to a named persp, current buffer doesn't belong.
-             ((not (memq current (persp-buffers persp)))
-              (or (seq-find #'buffer-live-p (persp-buffers persp))
-                  (get-buffer-create "*scratch*"))))))
-      (when (and target (not (eq target current)))
-        (switch-to-buffer target t)))))
+    (let ((persp (get-current-persp)))
+      ;; 1. Delete non-selected main-area windows showing foreign buffers.
+      (dolist (win (window-list nil 'no-minibuf))
+        (when (and (not (eq win (selected-window)))
+                   (not (window-parameter win 'window-side))
+                   (window-live-p win)
+                   (let ((buf (window-buffer win)))
+                     (if persp
+                         (not (memq buf (persp-buffers persp)))
+                       (not (string= (buffer-name buf) "*scratch*")))))
+          (ignore-errors (delete-window win))))
+      ;; 2. Fix the selected window's buffer if it doesn't belong.
+      (let* ((current (current-buffer))
+             (target
+              (cond
+               ;; Switched to "none" — always *scratch*.
+               ((null persp)
+                (get-buffer-create "*scratch*"))
+               ;; Switched to a named persp, current buffer doesn't belong.
+               ((not (memq current (persp-buffers persp)))
+                (or (seq-find #'buffer-live-p (persp-buffers persp))
+                    (get-buffer-create "*scratch*"))))))
+        (when (and target (not (eq target current)))
+          (switch-to-buffer target t))))))
 
 (use-package persp-mode
   :init
