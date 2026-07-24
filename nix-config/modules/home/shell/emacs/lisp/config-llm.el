@@ -151,18 +151,32 @@ If claude errors or returns empty, the region is left untouched."
         (let ((exit-code
                (with-temp-buffer
                  (insert input)
+                 ;; (list BUF nil): stdout -> BUF, stderr -> DISCARDED.
+                 ;; Capturing stderr into the output buffer spliced CLI
+                 ;; warnings (e.g. permission-rule complaints) straight
+                 ;; into the replacement text (observed 2026-07-22:
+                 ;; "Permission deny rule ..." written into a note).
                  (call-process-region
-                  (point-min) (point-max) "claude" nil output-buffer nil
+                  (point-min) (point-max) "claude" nil
+                  (list output-buffer nil) nil
                   "--print"
                   "--append-system-prompt" my/claude-rewrite-system-prompt))))
           (cond
            ((not (zerop exit-code))
-            (message "claude exited %d — region untouched (see %s for stderr)"
-                     exit-code (buffer-name output-buffer)))
+            (message "claude exited %d — region untouched (rerun in a shell to see stderr)"
+                     exit-code))
            (t
-            (let ((reply (my/claude-rewrite--strip-fences
-                          (with-current-buffer output-buffer
-                            (buffer-string)))))
+            (let* ((orig (buffer-substring-no-properties beg end))
+                   (reply (my/claude-rewrite--strip-fences
+                           (with-current-buffer output-buffer
+                             (buffer-string)))))
+              ;; Newline hygiene: make the reply's trailing-newline
+              ;; shape MATCH the original region exactly.  LLM output
+              ;; almost always ends in \n; if the selection didn't, a
+              ;; stray blank line appeared on every mid-line rewrite.
+              (setq reply (string-trim-right reply "\n+"))
+              (when (string-suffix-p "\n" orig)
+                (setq reply (concat reply "\n")))
               (cond
                ((string-empty-p (string-trim reply))
                 (message "claude returned empty — region untouched"))
@@ -171,13 +185,11 @@ If claude errors or returns empty, the region is left untouched."
                   (delete-region beg end)
                   (goto-char insert-beg)
                   (insert reply)
-                  ;; Normalize indent via the major mode's own rules —
-                  ;; covers the residual cases where claude got the
-                  ;; indent column slightly wrong despite the prompt.
-                  (let ((indent-end (point)))
-                    (indent-region insert-beg indent-end))
-                  (kill-buffer output-buffer)
-                  (setq output-buffer nil)
+                  ;; Re-indent only in code buffers.  In markdown/text,
+                  ;; `indent-region' has no syntax to work from and just
+                  ;; mangles whitespace.
+                  (when (derived-mode-p 'prog-mode)
+                    (indent-region insert-beg (point)))
                   (message "Rewrote %d → %d chars"
                            (- end beg) (length reply)))))))))
       (when (and output-buffer (buffer-live-p output-buffer))
@@ -315,6 +327,10 @@ Bash-style C-u — wipes a half-typed prompt back to column 0."
   (defun my/agent-shell-prefer-company ()
     "Make completion in this agent-shell buffer use company's overlay.
 Specifically:
+  - require + enable company here: agent-shell-mode derives from
+    neither prog-mode nor text-mode, so the global hooks never load
+    company — without this, a fresh daemon going straight into
+    agent-shell hits void-function `company-complete' on `/'
   - lower `company-minimum-prefix-length' to 1 (popup on first char)
   - `company-idle-delay' 0.2 — debounces typing.  An earlier version
     used 0.0 (instant) but every keystroke synchronously called
@@ -325,6 +341,8 @@ Specifically:
   - rewire `completion-in-region-function' to invoke company,
     catching paths my [remap completion-at-point] doesn't reach
     (e.g. when agent-shell calls `completion-in-region' directly)."
+    (require 'company)
+    (company-mode 1)
     (setq-local company-minimum-prefix-length 1
                 company-idle-delay 0.2
                 completion-auto-help nil
