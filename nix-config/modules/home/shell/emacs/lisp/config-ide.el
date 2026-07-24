@@ -45,21 +45,101 @@
 ;; table path.  Booster is the bigger knob anyway.  To enable plists,
 ;; override the lsp-mode derivation in emacs.nix to set
 ;; LSP_USE_PLISTS=true during preBuild.
+;; --- Async LSP attach ------------------------------------------------
+;; The synchronous half of a COLD workspace attach costs ~1s (spawn
+;; booster + server, session bookkeeping) — inside the mode hook that
+;; froze the first file-open of every workspace.  Defer the attach to
+;; an idle timer instead: the file renders instantly, and the
+;; bootstrap runs in the next natural half-second pause.  Once per
+;; workspace; every later buffer joins the live workspace in ~40ms.
+;; Servers spawn strictly for files actually open (incl. buffers the
+;; session restore brings back — which organically pre-warms your
+;; workspaces in idle time).
+(defvar-local my/lsp--attach-pending nil
+  "Non-nil: this buffer wants LSP once its workspace becomes active.
+Holds the PRE-REQUIRE feature symbol when one is needed, else t.")
+
+(defun my/lsp--attach-now-p (buf)
+  "Attach policy: BUF's workspace is active, or BUF is visible.
+Session restore opens buffers for EVERY workspace in the background;
+spawning servers for workspaces you aren't in wastes RAM.  Attach is
+deferred until the owning workspace activates (see
+`my/lsp-attach-workspace') — visibility is the override so explicit
+cross-workspace visits still get LSP."
+  (or (get-buffer-window buf t)
+      (not (bound-and-true-p persp-mode))
+      (let ((p (get-current-persp)))
+        (or (null p) (memq buf (persp-buffers p))))))
+
+(defun my/lsp--attach-do (buf pre-require)
+  "Perform the actual attach in BUF (PRE-REQUIRE loaded first)."
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (setq my/lsp--attach-pending nil)
+      (when (and pre-require (symbolp pre-require) (not (eq pre-require t)))
+        (require pre-require nil t))
+      (ignore-errors (lsp)))))
+
+(defun my/lsp-attach-async (&optional pre-require)
+  "Attach lsp to the current buffer on the next idle beat.
+Buffers outside the active workspace are only MARKED; the attach
+happens when their workspace activates.  PRE-REQUIRE names a feature
+to load first (client registration, e.g. `lsp-pyright')."
+  (let ((buf (current-buffer)))
+    (run-with-idle-timer
+     0.5 nil
+     (lambda ()
+       (when (buffer-live-p buf)
+         (if (my/lsp--attach-now-p buf)
+             (my/lsp--attach-do buf pre-require)
+           (with-current-buffer buf
+             (setq my/lsp--attach-pending (or pre-require t)))))))))
+
+(defun my/lsp-attach-workspace (&rest _)
+  "Schedule attach for pending buffers of the newly-active workspace."
+  (dolist (buf (buffer-list))
+    (when (and (buffer-live-p buf)
+               (buffer-local-value 'my/lsp--attach-pending buf)
+               (my/lsp--attach-now-p buf))
+      (let ((pre (buffer-local-value 'my/lsp--attach-pending buf)))
+        (run-with-idle-timer 0.3 nil #'my/lsp--attach-do buf pre)))))
+
+;; Fires on every persp activation (3-arg signature; we ignore args).
+;; Registered after persp-mode loads so its defcustom keeps defaults.
+(with-eval-after-load 'persp-mode
+  (add-hook 'persp-activated-functions #'my/lsp-attach-workspace))
+
 (use-package lsp-mode
-  ;; python-ts-mode is hooked by `lsp-pyright' below — it must `require'
-  ;; lsp-pyright (which registers the pyright client) BEFORE lsp-deferred
-  ;; runs its client discovery.  If python-ts-mode were also hooked here,
-  ;; the timing would race and pyright might not register in time.
-  :hook ((bash-ts-mode   . lsp-deferred)
-         (go-ts-mode     . lsp-deferred)
-         (nix-ts-mode    . lsp-deferred)
-         (c-ts-mode      . lsp-deferred)
-         (c++-ts-mode    . lsp-deferred))
+  ;; python-ts-mode is hooked by `lsp-pyright' below — its client must
+  ;; register (require) before attach; see the PRE-REQUIRE arg above.
+  ;; bash-ls dropped: the Node server held ~646 MB RSS to autocomplete
+  ;; shell scripts (measured 2026-07-24; zero UI cost, pure RAM bloat).
+  ;; tree-sitter still provides highlighting/indent for bash.
+  :hook ((go-ts-mode     . my/lsp-attach-async)
+         (nix-ts-mode    . my/lsp-attach-async)
+         (c-ts-mode      . my/lsp-attach-async)
+         (c++-ts-mode    . my/lsp-attach-async))
   :commands (lsp lsp-deferred)
+  ;; Eager load at daemon startup (background at login) — kills the
+  ;; first-code-file delay where the idle preloader lost the race.
+  ;; :demand runs AFTER :init below, so load-time vars (keymap prefix
+  ;; etc.) are set before lsp-mode builds its maps.
+  :demand t
   :init
   ;; NOTE: `read-process-output-max' is set to 4 MB in early-init.el — do
   ;; NOT re-set it here.  An earlier 1 MB setting silently downgraded the
   ;; LSP read buffer because this :init runs AFTER early-init.
+
+  ;; The FIRST `(lsp)' call of a session runs `lsp--require-packages',
+  ;; which `require's EVERY entry in `lsp-client-packages' (~150 client
+  ;; files).  On emacs 31 + nix each require walks the load-path filter
+  ;; cache across hundreds of store directories — measured 2-4 s of
+  ;; main-thread freeze inside the deferred attach timer.  Trim to the
+  ;; clients for modes that actually attach (see :hook below +
+  ;; python via lsp-pyright/lsp-ruff).
+  (setq lsp-client-packages
+        '(lsp-go lsp-nix lsp-clangd lsp-pyright lsp-ruff))
+
   (setq lsp-keymap-prefix nil                    ; no SPC-l prefix; we use g-keys
 
         ;; --- UI bloat OFF -----------------------------------------
@@ -123,7 +203,16 @@
                  (funcall bytecode))))
         (apply orig args)))
   (advice-add 'lsp-resolve-final-command :around #'my/lsp-booster--final-command)
-  (advice-add 'json-parse-buffer         :around #'my/lsp-booster--json-parse))
+  (advice-add 'json-parse-buffer         :around #'my/lsp-booster--json-parse)
+
+  ;; nil's flake-input evaluation (`autoEvalInputs', default t in
+  ;; lsp-nix) is disabled wholesale: it nagged to `nix flake archive'
+  ;; (confirmation lsp-mode can't render), then choked evaluating
+  ;; nixpkgs ("data did not match any variant of untagged enum
+  ;; FlakeOutput" — a nil-side parser bug).  All it buys is
+  ;; completions INSIDE flake inputs; core completion/diagnostics/
+  ;; formatting don't need it.
+  (setq lsp-nix-nil-auto-eval-inputs nil))
 
 ;; --- lsp-ui: visual layers (doc popup, sideline, peek, imenu) ------
 ;; All four submodes ON so you can see what each does.  Each can be
@@ -132,6 +221,7 @@
 ;; Cmd-Tab away.
 (use-package lsp-ui
   :after lsp-mode
+  :demand t   ; eager with lsp-mode — same first-file-delay rationale
   :hook (lsp-mode . lsp-ui-mode)
   :init
   (setq
@@ -185,8 +275,7 @@
   :init
   (setq lsp-pyright-langserver-command "pyright")    ; use pkgs.pyright on PATH
   :hook (python-ts-mode . (lambda ()
-                            (require 'lsp-pyright)
-                            (lsp-deferred))))
+                            (my/lsp-attach-async 'lsp-pyright))))
 
 ;; flymake is the diagnostics backend (lsp-diagnostics-provider :flymake).
 ;; Force-load it so `flymake-goto-next-error' etc. are commandp BEFORE
