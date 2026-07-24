@@ -145,12 +145,14 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
             hooks = [ { type = "command"; command = claudeHookPath; } ];
           }
         ];
+        # Claude Code's shell tool is named "Bash" regardless of the
+        # user's actual shell — "Zsh(...)" rules match no tool and just
+        # emit "matches no known tool" warnings on every invocation.
         permissions = {
-          allow = [ "WebFetch" "Read" "Grep" "Bash" "Zsh" ];
-          deny = [ "Bash(sudo*)" "Zsh(sudo*)" ];
+          allow = [ "WebFetch" "Read" "Grep" "Bash" ];
+          deny = [ "Bash(sudo*)" ];
           ask = [
             "Bash(rm*)" "Bash(rmdir*)" "Bash(unlink*)" "Bash(mv*)"
-            "Zsh(rm*)" "Zsh(rmdir*)" "Zsh(unlink*)" "Zsh(mv*)"
           ];
         };
       };

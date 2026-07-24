@@ -22,6 +22,12 @@ in
     system = {
       defaults = {
         NSGlobalDomain.AppleICUForce24HourTime = true;
+        # Menu bar VISIBLE (explicit false, not unset: a brief
+        # hide-the-menu-bar experiment wrote `true' to the macOS
+        # defaults, and nix-darwin doesn't clean up removed options —
+        # only an explicit false flips it back).  Verdict from the
+        # experiment: the focused-app name in the bar is wanted.
+        NSGlobalDomain._HIHideMenuBar = false;
         menuExtraClock.Show24Hour = true;
         # Disable press-and-hold accent menu for Sublime Text (enable key repeat)
         CustomUserPreferences."com.sublimetext.4".ApplePressAndHoldEnabled = false;
