@@ -25,6 +25,24 @@
    0.5 nil
    (lambda () (evil-collection-init))))
 
+;; Restored-buffer state normalizer.  Session-lite recreates buffers
+;; ~0.1s after the first frame; evil-collection-init runs at 0.5s idle
+;; — so restored buffers of modes it registers (pdf-view!) can be
+;; evil-initialized under PRE-registration rules and get stuck in
+;; emacs state (dead vim keys; observed with restored pdfs
+;; 2026-07-23).  After each mode's setup, re-initialize any existing
+;; buffer stuck in emacs state whose mode now prescribes otherwise.
+(defun my/evil-normalize-existing-buffers (&rest _)
+  "Fix buffers evil-initialized before their mode was registered."
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (bound-and-true-p evil-local-mode)
+                 (eq evil-state 'emacs)
+                 (not (eq (evil-initial-state-for-buffer) 'emacs)))
+        (ignore-errors (evil-change-to-initial-state))))))
+(with-eval-after-load 'evil-collection
+  (add-hook 'evil-collection-setup-hook #'my/evil-normalize-existing-buffers))
+
 (use-package evil-surround
   :after evil
   :config (global-evil-surround-mode 1))
@@ -36,6 +54,14 @@
 (use-package evil-commentary
   :after evil
   :config (evil-commentary-mode 1))
+
+;; --- vim's Ctrl-6 alternate-buffer bounce ---------------------------
+;; Evil binds C-^ (what TERMINALS send for Ctrl-6), but GUI emacs
+;; reports the physical Ctrl-6 press as C-6 — unbound.  Bind both to
+;; the window-local last-buffer switch so the vim reflex works.
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map (kbd "C-6") #'evil-switch-to-windows-last-buffer)
+  (define-key evil-motion-state-map (kbd "C-6") #'evil-switch-to-windows-last-buffer))
 
 ;; --- Ctrl-Q = blockwise-visual (alias for vanilla evil's C-v) -------
 ;; C-q stays as `quoted-insert' in insert state so you can still
@@ -50,10 +76,15 @@
   :after undo-fu
   :config (global-undo-fu-session-mode 1))
 
-(use-package which-key
-  :config
-  (setq which-key-idle-delay 1.5)
-  (which-key-mode 1))
+;; which-key: auto-popup DISABLED — the forced panel on every paused
+;; prefix press was hated.  Keybinding discovery is on-demand instead:
+;; any prefix + C-h (e.g. `SPC C-h', `SPC w C-h', `M-SPC C-h') opens
+;; the bindings as a SEARCHABLE MINIBUFFER LIST (embark's
+;; `prefix-help-command', wired in config-completion.el) — type to
+;; filter, RET executes.  M-x-style, zero popups.
+;; The package stays loaded (mode off): general's :which-key labels
+;; write into its vars, kept for a possible future re-enable.
+(use-package which-key)
 
 (use-package general
   :config
@@ -91,6 +122,17 @@
     (define-key evil-motion-state-map (kbd "SPC") my/leader-prefix-map))
 
   ;; --- windmove leaves (preserved from user's existing setup) ---
+  ;; Edge moves error loudly — moving DOWN with no window below tries
+  ;; the (inactive) minibuffer and yells "Minibuffer is inactive",
+  ;; which reads like breakage when it just means "nothing there".
+  ;; Demote all windmove edge errors to a quiet echo message.
+  (defun my/windmove-quiet (orig &rest args)
+    "Turn windmove's edge errors into a calm no-op message."
+    (condition-case nil
+        (apply orig args)
+      ((user-error error) (message "no window there"))))
+  (dolist (fn '(windmove-left windmove-right windmove-up windmove-down))
+    (advice-add fn :around #'my/windmove-quiet))
   (my/leader
     "h" '(windmove-left  :which-key "← window")
     "j" '(windmove-down  :which-key "↓ window")
@@ -158,6 +200,7 @@
     "ws" '(split-window-below :which-key "hsplit")
     "wf" '(my/window-focus-toggle :which-key "focus toggle")
     "wd" '(delete-window      :which-key "close")
+    "wk" '(my/popup-close-all :which-key "close ALL popups")
     "wu" '(winner-undo        :which-key "layout undo")
     "wr" '(winner-redo        :which-key "layout redo"))
 
