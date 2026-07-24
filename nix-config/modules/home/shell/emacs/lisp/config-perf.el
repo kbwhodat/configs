@@ -155,16 +155,30 @@
 ;; them in the background ~2 s after daemon startup, one package every
 ;; 0.5 s of idle, makes the first interactive press feel instant.
 
+;; NOTE: lsp-mode/lsp-ui are loaded EAGERLY at daemon startup via
+;; `:demand t' in config-ide.el (not here — their :init vars must be
+;; set before the load).  On the idle preloader they raced the user:
+;; "start daemon, open a nix file right away" lost the race and paid
+;; the ~0.7s load synchronously at file-open.
+
 (defvar my/idle-preload-packages
-  '(lsp-mode      ; first code-file open otherwise loads ~50 sub-files
-    lsp-ui        ; attaches on lsp-mode-hook — load it in the same slice
-    consult       ; SPC s g/s/b — usually first thing hit
-    magit         ; SPC g s     — pulls ~30 sub-files
-    majutsu       ; SPC G       — magit-style jj UI; depends on magit
-    ghostel)      ; SPC o t     — loads ghostel native module
+  '(consult       ; SPC s g/s/b — usually first thing hit
+    ghostel       ; SPC o t     — loads ghostel native module
+    ;; LSP clients (trimmed `lsp-client-packages' set in config-ide.el).
+    ;; First `(lsp)' per session requires these synchronously inside the
+    ;; attach timer; preloading makes even a restored-session's first
+    ;; attach pay ~nothing.
+    lsp-go lsp-nix lsp-clangd lsp-pyright lsp-ruff
+    ;; org: heavy cold require (~0.5-1 s).  Restored org files are lazy
+    ;; placeholders now, so org loads on first DISPLAY of one — preload
+    ;; moves that one-time cost into true idle instead of first click.
+    org)
   "Heavy packages to pre-load on idle so first-use is not laggy.
 Order matters — earliest entries get loaded soonest.
 Loaded on demand instead (saves RAM and idle CPU):
+  - magit + majutsu (jj/git work happens in the CLI; SPC g s / SPC G
+    still work, paying a ~2 s load on first press per session instead
+    of taxing EVERY session's startup idle + RAM)
   - tempel    (already loaded by `prog-mode' hook in config-ide.el)
   - notdeft   (Xapian native binding — rarely-searched notes)
   - pdf-tools (heavy PDF renderer — loads on .pdf via :mode)")
