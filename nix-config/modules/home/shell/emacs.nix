@@ -201,11 +201,23 @@ let
       cat > "$out/Applications/EmacsClient.app/Contents/MacOS/EmacsClient" << 'EOF'
 #!/bin/bash
 # Idempotent: focus an existing GUI frame if one is open, else create one.
-# `-c -a ""' alone ALWAYS spawns a new frame — clicking the .app icon
-# (or hitting the Hammerspoon hotkey) twice piled up duplicate frames.
 # `my/raise-or-make-frame' is defined in config-ui.el.
-exec ${config.programs.emacs.finalPackage}/bin/emacsclient \
-     -n -a "" --eval "(my/raise-or-make-frame)" "$@"
+#
+# BOOT-AWARE: `SPC q' kills the daemon and launchd KeepAlive respawns
+# it, but init takes ~3s (eager LSP) — launching within that window
+# used to hit a daemon that couldn't connect or hadn't defined the
+# function yet, and the press silently did nothing (second press
+# worked).  Poll until the daemon answers AND the function exists.
+# No `-a ""': spawning our own daemon just races launchd's respawn.
+EC=${config.programs.emacs.finalPackage}/bin/emacsclient
+for _ in $(seq 1 30); do
+  out=$("$EC" -n --eval "(if (fboundp 'my/raise-or-make-frame) (progn (my/raise-or-make-frame) 'ok) 'booting)" 2>&1)
+  case "$out" in
+    *ok*) exit 0 ;;
+  esac
+  sleep 0.4
+done
+exit 1
 EOF
       chmod +x "$out/Applications/EmacsClient.app/Contents/MacOS/EmacsClient"
 
@@ -408,7 +420,10 @@ in lib.mkMerge [
         # ---- IDE (eglot is built-in; treesit grammars auto-wired by nix) ----
 
         # ---- one-stop-shop additions ----
-        magit pdf-tools notdeft
+        magit pdf-tools pdf-view-restore notdeft
+
+        # ---- rss (elfeed; feeds in elfeed.org; extraction in config-rss.el) ----
+        elfeed elfeed-org
 
         # ---- ebook reading (.epub via nov.el) ----
         # `nov' renders EPUBs via the built-in `shr' HTML engine + emacs's
@@ -442,6 +457,7 @@ in lib.mkMerge [
     };
 
     home.file."${emacsDir}/early-init.el".source = ./emacs/early-init.el;
+    home.file."${emacsDir}/elfeed.org".source    = ./emacs/elfeed.org;
     home.file."${emacsDir}/init.el".source       = ./emacs/init.el;
     home.file."${emacsDir}/lisp" = {
       source    = compiledConfigLisp;   # .el + .elc — see let-binding above
@@ -679,7 +695,7 @@ in lib.mkMerge [
       # skip-workspace-loss guards, which exist for exactly this case.
       # Timeout so a hung daemon can't block activation; fail-soft.
       ${pkgs.coreutils}/bin/timeout 10 "$BIN/emacsclient-stable" \
-        --eval '(progn (save-some-buffers t) (when (fboundp (quote my/session-lite-save)) (my/session-lite-save)))' \
+        --eval '(progn (save-some-buffers t) (when (fboundp (quote my/session-lite-save)) (my/session-lite-save)) (when (and (featurep (quote elfeed)) (bound-and-true-p elfeed-db)) (ignore-errors (elfeed-db-save))))' \
         >/dev/null 2>&1 || true
 
       # Atomic restart via kickstart -k (kill + relaunch from already-loaded
