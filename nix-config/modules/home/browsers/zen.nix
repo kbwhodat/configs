@@ -8,7 +8,9 @@ in
     ./_extensions/zen.nix
   ];
 
-  programs.zen-browser.enable = true;
+  # Gated: work hosts disable via profiles/home/work.nix (the wrapper
+  # re-signs the app bundle — endpoint-security bait on managed macs).
+  programs.zen-browser.enable = config.modules.browsers.zen.enable;
 
   programs.zen-browser.package =
     if isDarwin then

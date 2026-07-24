@@ -510,8 +510,13 @@ in lib.mkMerge [
       pkgs.xapian
       pkgs.emacs-lsp-booster   # rust JSON bridge for lsp-mode (advice in config-ide.el)
       pkgs.enchant             # jinx spell-check backend (Apple Spell on macOS / hunspell on linux)
-      pkgs.claude-agent-acp    # ACP bridge for agent-shell -> Claude Code (pkgs/by-name/claude-agent-acp/)
       pkgs.exercism            # CLI required by the emacs `exercism' package (transient menu)
+    ]
+    # ACP bridge for agent-shell -> Claude Code.  npm-fetched — work's
+    # Zscaler blocks registry.npmjs.org (403, "supply chain pkg block"),
+    # so this is personal-machines-only: gated off in profiles/home/work.nix.
+    ++ lib.optionals config.modules.shell.claude-acp.enable [
+      pkgs.claude-agent-acp
     ];
 
     # Daemon-only flow: typing `emacs` in any shell goes through
