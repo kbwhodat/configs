@@ -7,6 +7,21 @@ let
   };
 in
 {
+  # Self-imposed block: refuse imperative `brew <anything> ipvanish*`.
+  programs.zsh.initContent = lib.mkAfter ''
+    brew() {
+      for arg in "$@"; do
+        case "''${arg:l}" in
+          *ipvanish*)
+            print -u2 "blocked: refusing 'brew $*' — matches '*ipvanish*' (self-imposed)"
+            return 1
+            ;;
+        esac
+      done
+      command brew "$@"
+    }
+  '';
+
   home.packages = with pkgs; [
     unstable.mpv
     _7zz
