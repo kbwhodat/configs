@@ -165,8 +165,8 @@ in
     onActivation.extraFlags = [ "--force" ];
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "chawan" "firefoxpwa" ];
-    casks = [ "spotify" "mitmproxy" "tradingview" "tuna" "sublime-text" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
+    brews = [ "container" "chawan" "firefoxpwa" ];
+    casks = [ "jagex" "spotify" "mitmproxy" "tuna" "sublime-text" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings = {

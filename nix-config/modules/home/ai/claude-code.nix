@@ -5,6 +5,32 @@ let
     system = pkgs.stdenv.hostPlatform.system;
     config = pkgs.config;
   };
+
+  # --- claude-code version pin (surgical) ----------------------------
+  # nixpkgs-unstable pins claude-code, but bumping the whole `unstable`
+  # input would also move emacs 31 + everything else we've stabilized.
+  # Instead override just the prebuilt-binary `src` to a newer release.
+  # Upstream ships one native binary per platform under
+  #   https://downloads.claude.ai/claude-code-releases/<ver>/<key>/claude
+  # with checksums in that version's manifest.json (fetch to update):
+  #   curl -s .../<ver>/manifest.json
+  # Bump = new version string + the four hex sha256s from that manifest.
+  claudeCodeVersion = "2.1.220";  # 2026-07-24 (npm `latest`); supports Opus 5
+  claudeCodeChecksums = {
+    "darwin-arm64" = "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081";
+    "darwin-x64"   = "dca7be0aa7d3d924836d440e0c6d8e3d47ef3c8e61fa5809b54b9017170ce2f3";
+    "linux-arm64"  = "159e4a51d796f3bf14677577100f7efb845611b1ceaf0c30cbd8d4650d942185";
+    "linux-x64"    = "674f61f20ff306f3100cf9200e4c36c4b70278b5bef2884549819b942a89c863";
+  };
+  platformKey = "${pkgs.stdenv.hostPlatform.node.platform}-${pkgs.stdenv.hostPlatform.node.arch}";
+  claudeCodePinned = unstable.claude-code.overrideAttrs (_: {
+    version = claudeCodeVersion;
+    src = pkgs.fetchurl {
+      url = "https://downloads.claude.ai/claude-code-releases/${claudeCodeVersion}/${platformKey}/claude";
+      sha256 = claudeCodeChecksums.${platformKey};
+    };
+  });
+
   claudeHookPath = "${config.home.homeDirectory}/.claude/hooks/rtk-rewrite.sh";
 
   # Plugin/skill source trees come from flake inputs (see flake.nix).
@@ -95,7 +121,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
     programs.claude-code = {
       enable = true;
-      package = unstable.claude-code;
+      package = claudeCodePinned;
       # All MCPs except `jobdrop` are shipped by the `claude-code-home-manager`
       # plugin under its own namespace (mcp__plugin_claude-code-home-manager_*).
       # User-level entries here were duplicate dead code (not loaded into
@@ -116,7 +142,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
         # Default model for new sessions. settings.json is a read-only
         # store symlink, so /model "save as default" can never persist —
         # this is the only place it sticks.
-        model = "claude-fable-5";
+        # "opus" is an ALIAS resolving to the latest Opus tier (currently
+        # Opus 5) — more robust than a dated ID and tracks forward on
+        # server-side model releases.
+        model = "opus";
         # Don't silently switch models when a safety classifier flags a
         # message — surface it instead. Key extracted from the CLI binary
         # (v2.1.177): ic("switchModelsOnFlag", true); undocumented in the

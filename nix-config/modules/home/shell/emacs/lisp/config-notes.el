@@ -211,6 +211,36 @@ still shows up as `my-random-thoughts' in the listing rather than blank."
         (kill-buffer buf))))
   (advice-add 'notdeft-find-file :after #'my/notdeft--dismiss))
 
+;; --- notdeft warmth: first open is never the thing that pays --------
+;; `SPC n s' was measured at ~4 s on a cold first-open, then ~0.2 s
+;; forever after.  The cold cost is (a) macOS validating + paging the
+;; ~200 MB `notdeft-xapian' binary on its genuine first exec, and (b)
+;; a CATCH-UP reindex: notdeft's change tracking is a buffer-local
+;; minor mode (`notdeft-note-mode') that is NOT enabled on vault files,
+;; so every note edited or synced while notdeft is dormant piles up as
+;; a pending reindex the next open must clear.  Two fixes:
+;;
+;;   1. Warm binary + index once, in idle, 8 s after startup — moves
+;;      the entire cold cost off the interactive path (reindex is
+;;      ~0.2 s on this vault, safely backgrounded).
+;;   2. Turn notdeft's own per-save index update ON for vault notes, so
+;;      the index stays fresh as you edit and no catch-up ever builds
+;;      up again.  (External syncthing/git edits are absorbed by the
+;;      boot warm on the next session.)
+(defun my/notdeft-warm ()
+  "Warm notdeft's binary + Xapian index in the background (no UI)."
+  (when (require 'notdeft nil t)
+    (ignore-errors (notdeft-reindex))))
+(run-with-idle-timer 8 nil #'my/notdeft-warm)
+
+(add-hook 'markdown-mode-hook
+          (lambda ()
+            (when (and buffer-file-name
+                       (string-prefix-p (expand-file-name "~/vault/")
+                                        (expand-file-name buffer-file-name))
+                       (fboundp 'notdeft-note-mode))
+              (notdeft-note-mode 1))))
+
 ;; --- Jinx: fast spell-check via libenchant -------------------------
 ;; Replaces flyspell.  Uses libenchant (system Apple Spell on macOS,
 ;; hunspell/aspell elsewhere — see `pkgs.enchant' in emacs.nix).

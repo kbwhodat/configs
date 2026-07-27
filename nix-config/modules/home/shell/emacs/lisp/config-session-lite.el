@@ -340,7 +340,94 @@ is empty or unchanged."
               (print-level nil))
           (prin1 snapshot (current-buffer))))
       (setq my/session-lite--last-written
-            (my/session-lite--comparable snapshot)))))
+            (my/session-lite--comparable snapshot))
+      (my/session-lite--checkpoint snapshot))))
+
+;; --- Known-good checkpoints (recover from silent degradation) --------
+;; The main snapshot is atomically OVERWRITTEN every second, with no
+;; history — so a session that degrades (a crash-partial restore, or a
+;; buffer-killing spree) silently overwrites the good state within
+;; seconds and it is gone.  Checkpoints keep coarse-grained history:
+;; an hourly snapshot, but ONLY when it is healthy (some workspace
+;; actually holds files).  `my/session-lite--last-checkpoint' resets to
+;; 0 on every daemon start, so the first healthy save after boot always
+;; checkpoints — capturing "state as restored at session start", which
+;; is exactly the rollback point you want after a bad session.
+(defvar my/session-lite-checkpoint-dir
+  (expand-file-name "session-lite.d/" user-emacs-directory)
+  "Directory holding timestamped known-good session checkpoints.")
+
+(defvar my/session-lite-checkpoint-interval 3600
+  "Minimum seconds between checkpoints.")
+
+(defvar my/session-lite-checkpoint-keep 24
+  "Number of newest checkpoints to retain.")
+
+(defvar my/session-lite--last-checkpoint 0
+  "`float-time' of the last checkpoint write (0 = none this session).")
+
+(defun my/session-lite--healthy-p (snapshot)
+  "Non-nil when SNAPSHOT has at least one workspace that holds files.
+This is the definition of \"worth keeping\" — an empty/degraded
+snapshot (every workspace fileless) is never checkpointed."
+  (seq-some (lambda (w) (plist-get w :files))
+            (plist-get snapshot :workspaces)))
+
+(defun my/session-lite--checkpoint (snapshot)
+  "Write SNAPSHOT to a timestamped checkpoint, throttled + healthy-only."
+  (when (and (my/session-lite--healthy-p snapshot)
+             (> (- (float-time) my/session-lite--last-checkpoint)
+                my/session-lite-checkpoint-interval))
+    (setq my/session-lite--last-checkpoint (float-time))
+    (make-directory my/session-lite-checkpoint-dir t)
+    (with-temp-file (expand-file-name
+                     (format-time-string "session-%Y%m%d-%H%M%S.el")
+                     my/session-lite-checkpoint-dir)
+      (let ((print-length nil) (print-level nil))
+        (prin1 snapshot (current-buffer))))
+    ;; prune to the newest N (filenames sort chronologically)
+    (let ((files (sort (directory-files my/session-lite-checkpoint-dir t
+                                        "\\`session-.*\\.el\\'")
+                       #'string<)))
+      (dolist (old (butlast files my/session-lite-checkpoint-keep))
+        (ignore-errors (delete-file old))))))
+
+(defun my/session-lite--checkpoint-summary (file)
+  "Return a one-line \"timestamp — ws(n) …\" summary of checkpoint FILE."
+  (condition-case nil
+      (let* ((s (with-temp-buffer (insert-file-contents file) (read (current-buffer))))
+             (wss (plist-get s :workspaces)))
+        (format "%s  —  %s"
+                (replace-regexp-in-string
+                 "session-\\([0-9]\\{8\\}\\)-\\([0-9]\\{6\\}\\)\\.el"
+                 "\\1.\\2" (file-name-nondirectory file))
+                (mapconcat (lambda (w) (format "%s(%d)" (plist-get w :name)
+                                               (length (plist-get w :files))))
+                           wss "  ")))
+    (error (file-name-nondirectory file))))
+
+(defun my/session-lite-rollback ()
+  "Restore session state from a chosen known-good checkpoint.
+Promotes the picked checkpoint to the live snapshot and restores it —
+your escape hatch when a session degrades and the 1-second autosave
+has already overwritten the good state."
+  (interactive)
+  (let ((files (nreverse (sort (directory-files
+                                my/session-lite-checkpoint-dir t
+                                "\\`session-.*\\.el\\'")
+                               #'string<))))
+    (unless files (user-error "No session checkpoints yet"))
+    (let* ((alist (mapcar (lambda (f)
+                            (cons (my/session-lite--checkpoint-summary f) f))
+                          files))
+           (pick (completing-read "Roll back to checkpoint: " alist nil t))
+           (file (cdr (assoc pick alist))))
+      (when file
+        (copy-file file my/session-lite-file t)
+        (setq my/session-lite--last-written nil)   ; force next save
+        (setq my/session-lite--restored nil)       ; allow re-restore
+        (my/session-lite-restore)
+        (message "session-lite: rolled back to %s" (file-name-nondirectory file))))))
 
 (defun my/session-lite-schedule-save ()
   "Debounce a lightweight session save onto idle time."

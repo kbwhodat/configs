@@ -46,10 +46,6 @@ in
 
   settings = {
       
-    # Disabling hardware acceleration
-    "browser.preferences.defaultPerformanceSettings.enabled" = false;
-    "layers.acceleration.disabled" = true;
-
     # Zen settings
     "browser.tabs.allow_transparent_browser" = true;
     "zen.theme.content-element-separation" = 0;
@@ -69,7 +65,7 @@ in
     "zen.view.sidebar-expanded" = false;
     "zen.view.use-single-toolbar" = false;
     "zen.splitView.change-on-hover" = true;
-    "zen.tab-unloader.timeout-minutes" = 35;
+    "zen.tab-unloader.timeout-minutes" = 10;
     "zen.view.compact.toolbar-flash-popup" = false;
     "zen.workspaces.continue-where-left-off" = true;
 
@@ -196,6 +192,34 @@ in
       };
     };
     /****************************************************************************
+     * SECTION: MEMORY DIET (16GB machine)                                      *
+     ****************************************************************************/
+    # Fewer content processes: 2 generic (default 8), 1 per isolated site
+    # (default 4), no preallocated spares. Tabs share processes; new-tab spawn
+    # is slower and one bad tab can take siblings down — acceptable trade here.
+    "dom.ipc.processCount" = 2;
+    "dom.ipc.processCount.webIsolated" = 1;
+    "dom.ipc.processPrelaunch.enabled" = false;
+    # Explicit defaults: these were previously overridden to force software
+    # rendering and are sticky in prefs.js if merely removed.
+    "layers.acceleration.disabled" = false;
+    "browser.preferences.defaultPerformanceSettings.enabled" = true;
+    # a11y engine instantiation costs ~100MB+ when tripped; not used here.
+    "accessibility.force_disabled" = 1;
+    # Cap in-memory page cache (auto-sizes to ~512MB on 16GB machines).
+    "browser.cache.memory.capacity" = 131072;
+    # Only give login/high-value sites their own isolated process instead of
+    # every origin — biggest process-count lever short of disabling fission.
+    "fission.webContentIsolationStrategy" = 2;
+    # Firefox-level unloader (complements zen.tab-unloader): eligible after
+    # 1 min idle instead of 10, and unload under system memory pressure.
+    "browser.tabs.unloadOnLowMemory" = true;
+    "browser.tabs.min_inactive_duration_before_unload" = 60000;
+    # No back/forward pages held live in RAM (auto-sizes ~8 on 16GB);
+    # back button re-renders from cache instead.
+    "browser.sessionhistory.max_total_viewers" = 0;
+
+    /****************************************************************************
      * SECTION: FASTFOX                                                         *
      ****************************************************************************/
     /** GENERAL ***/
@@ -203,15 +227,16 @@ in
 
     /** GFX ***/
     "layers.acceleration.enabled" = true;
-    "gfx.canvas.accelerated.cache-items" = 4096;
-    "gfx.canvas.accelerated.cache-size" = 512;
-    "gfx.content.skia-font-cache-size" = 20;
+    # Stock cache sizes — the FastFox bumps (4096/512MB/20MB) buy speed with RAM.
+    "gfx.canvas.accelerated.cache-items" = 2048;
+    "gfx.canvas.accelerated.cache-size" = 256;
+    "gfx.content.skia-font-cache-size" = 5;
 
     /** DISK CACHE ***/
     "browser.cache.jsbc_compression_level" = 3;
 
     /** MEDIA CACHE ***/
-    "media.memory_cache_max_size" = 65536;
+    "media.memory_cache_max_size" = 8192;
     "media.cache_readahead_limit" = 7200;
     "media.cache_resume_threshold" = 3600;
 
@@ -219,7 +244,7 @@ in
     "image.mem.decode_bytes_at_a_time" = 32768;
 
     /** NETWORK ***/
-    "network.http.max-connections" = 1800;
+    "network.http.max-connections" = 900;
     "network.http.max-persistent-connections-per-server" = 10;
     "network.http.max-urgent-start-excessive-connections-per-host" = 5;
     "network.http.pacing.requests.enabled" = false;
@@ -229,7 +254,8 @@ in
     /** SPECULATIVE LOADING ***/
     "network.dns.disablePrefetch" = true;
     "network.dns.disablePrefetchFromHTTPS" = true;
-    "network.prefetch-next" = true;
+    # No speculative loading of pages that may never be visited.
+    "network.prefetch-next" = false;
     "network.predictor.enabled" = false;
     "network.predictor.enable-prefetch" = false;
 
