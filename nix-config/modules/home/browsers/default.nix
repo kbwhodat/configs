@@ -17,12 +17,12 @@ let cfg = config.modules.browsers; in {
 
   imports = [
     ./firefox.nix
-    ./floorp.nix
+    # ./floorp.nix
     ./chawan.nix
     ./zen.nix
-    ./librewolf.nix
+    # ./librewolf.nix
     ./chrome.nix
-    # ./helium.nix
+    ./helium.nix
     ./thorium.nix
     # ./ladybird.nix
   ];

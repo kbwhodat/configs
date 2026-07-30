@@ -206,6 +206,8 @@ If claude errors or returns empty, the region is left untouched."
              agent-shell-send-region
              agent-shell-send-region-to
              agent-shell-send-dwim
+             agent-shell-send-file
+             agent-shell-send-file-to
              agent-shell-fork
              agent-shell-resume-session
              agent-shell-copy-session-id
@@ -213,14 +215,31 @@ If claude errors or returns empty, the region is left untouched."
              agent-shell-opencode-start-agent
              agent-shell-google-start-gemini
              agent-shell-openai-start-codex
-             agent-shell-goose-start-agent)
+             agent-shell-goose-start-agent
+             agent-shell-kimi-start-agent)
   :init
+  ;; `agent-shell-anthropic-start-claude-code' hard-codes `:new-shell t'
+  ;; — every invocation creates a fresh buffer, which looks like the
+  ;; previous conversation was wiped.  It wasn't: the old shell buffer
+  ;; is alive but buried.  Route the main entry point through the
+  ;; existing shell; `SPC a C' keeps the force-new behavior.
+  (defun my/agent-shell-claude-dwim ()
+    "Pop back to this project's live agent shell; start Claude if none."
+    (interactive)
+    (if (and (featurep 'agent-shell)
+             (or (agent-shell-project-buffers) (agent-shell-buffers)))
+        (agent-shell-toggle)
+      (agent-shell-anthropic-start-claude-code)))
   (with-eval-after-load 'general
     (when (fboundp 'my/leader)
       (my/leader
-        ;; --- start a fresh agent buffer ---
-        "a c"   '(agent-shell-anthropic-start-claude-code :which-key "agent: new Claude")
+        ;; --- start (or return to) an agent buffer ---
+        "a c"   '(my/agent-shell-claude-dwim              :which-key "agent: Claude (reuse)")
+        "a C"   '(agent-shell-anthropic-start-claude-code :which-key "agent: new Claude")
         "a A"   '(agent-shell-opencode-start-agent        :which-key "agent: new opencode")
+        ;; Kimi speaks ACP natively (`kimi acp') — no bridge binary, so
+        ;; this only needs pkgs.kimi-code on PATH.
+        "a k"   '(agent-shell-kimi-start-agent            :which-key "agent: new Kimi")
         "a M-A" '(agent-shell                             :which-key "agent: new (pick…)")
         ;; --- buffer navigation ---
         "a t"   '(agent-shell-toggle                      :which-key "agent: toggle last")
@@ -234,6 +253,12 @@ If claude errors or returns empty, the region is left untouched."
         "a s"   '(agent-shell-send-region                 :which-key "agent: send region")
         "a S"   '(agent-shell-send-region-to              :which-key "agent: send region to…")
         "a d"   '(agent-shell-send-dwim                   :which-key "agent: send dwim")
+        ;; --- current file as context ---
+        ;; From any file buffer: inserts @<file> into the agent prompt,
+        ;; then just type the instruction.  C-u prompts for a project
+        ;; file instead; from dired sends marked files.
+        "a b"   '(agent-shell-send-file                   :which-key "agent: send buffer file")
+        "a B"   '(agent-shell-send-file-to                :which-key "agent: send buffer file to…")
         ;; --- quick rewrite (sidecar via `claude' CLI, no agent flow) ---
         ;; Select region, SPC a r, type instruction, hit RET → in-place
         ;; replacement.  See `my/claude-rewrite-region' for the impl.
@@ -277,6 +302,23 @@ If claude errors or returns empty, the region is left untouched."
                 agent-shell-send-region-to
                 agent-shell-send-dwim))
     (advice-add fn :around #'my/agent-shell--trim-region-overshoot))
+
+  ;; --- Fall back to ANY live shell when the project has none --------
+  ;; send-file/send-region resolve their target via
+  ;; `agent-shell--shell-buffer', whose project filter
+  ;; (`agent-shell-project-buffers') compares the file's project root
+  ;; against each shell's cwd.  A shell started in a different
+  ;; directory makes SPC a b fail with "No agent shell buffers
+  ;; available for current project" even though a shell is running.
+  ;; When the project-scoped list is empty, fall back to the global
+  ;; list (same fallback `agent-shell-toggle' already does).  With
+  ;; multiple shells across projects the first one wins — use SPC a B
+  ;; to pick explicitly.
+  (defun my/agent-shell--any-shell-fallback (buffers)
+    "Return BUFFERS, or all agent shells when the project has none."
+    (or buffers (agent-shell-buffers)))
+  (advice-add 'agent-shell-project-buffers :filter-return
+              #'my/agent-shell--any-shell-fallback)
 
   ;; --- Shell-style line editing inside agent-shell buffers ----------
   ;; agent-shell is a regular buffer (not a minibuffer), so the C-u/C-w

@@ -40,6 +40,22 @@ in
       kagi-search
       vimium-c
       clearurls
+      # Not packaged in NUR — build from the pinned AMO xpi.  Bump:
+      # curl -s https://addons.mozilla.org/api/v5/addons/addon/ultimadark/ \
+      #   | jq -r '.current_version | .version, .file.url, .file.hash'
+      (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
+        pname = "ultimadark";
+        version = "1.6.67";
+        addonId = "{7c7f6dea-3957-4bb9-9eec-2ef2b9e5bcec}";
+        url = "https://addons.mozilla.org/firefox/downloads/file/4920369/ultimadark-1.6.67.xpi";
+        sha256 = "sha256:f6c3a7d7babc56db1b73bc81cad5086766068c7d6ebbbaa58acc4fceb1da6ea4";
+        meta = with lib; {
+          description = "UltimaDark — aggressive dark mode that rewrites page colors before render";
+          license = licenses.mpl20;
+          mozPermissions = [ "<all_urls>" ];
+          platforms = platforms.all;
+        };
+      })
   ];
   
 
@@ -74,6 +90,9 @@ in
     # Makes some website dark
     "layout.css.prefers-color-scheme.content-override" = 0;
 
+    # Collapse Zen's UI animations to instant transitions — UI-thread CPU saver.
+    "ui.prefersReducedMotion" = 1;
+
     "browser.theme.toolbar-theme" = 0;
     "browser.theme.content-theme" = 0;
     "ui.systemUsesDarkTheme" = 1;
@@ -107,14 +126,15 @@ in
     "privacy.sanitize.sanitizeOnShutdown" = false;
     "privacy.clearOnShutdown.history" = false;
     "browser.search.region" = "US";
-    "network.http.http3.enabled" = false;
+    "network.http.http3.enabled" = true;
     "dom.image-lazy-loading.enabled" = true;
 # "network.prefetch-next" = false;
     "general.smoothScroll" = true;
     "media.autoplay.default" = 1;
     "browser.cache.disk.enable" = true;
     "browser.cache.memory.enable" = true;
-    "browser.sessionstore.resume_from_crash" = false;
+    # Restore the session after a crash — reliability over cold-start purity.
+    "browser.sessionstore.resume_from_crash" = true;
     "browser.search.countryCode" = "US";
     "browser.search.isUS" = true;
     "browser.ctrlTab.recentlyUsedOrder" = true;
@@ -192,13 +212,15 @@ in
       };
     };
     /****************************************************************************
-     * SECTION: MEMORY DIET (16GB machine)                                      *
+     * SECTION: MEMORY DIET (shared config, 8GB+ hosts)                         *
      ****************************************************************************/
-    # Fewer content processes: 2 generic (default 8), 1 per isolated site
-    # (default 4), no preallocated spares. Tabs share processes; new-tab spawn
-    # is slower and one bad tab can take siblings down — acceptable trade here.
-    "dom.ipc.processCount" = 2;
-    "dom.ipc.processCount.webIsolated" = 1;
+    # Fewer content processes: 4 generic (default 8), 2 per isolated site
+    # (default 4), no preallocated spares. Middle ground for mixed-RAM hosts:
+    # processes only spawn as tabs need them, and the unloaders below keep the
+    # live-tab count low on small machines, so the extra slots mostly
+    # materialize where there's RAM for them.
+    "dom.ipc.processCount" = 4;
+    "dom.ipc.processCount.webIsolated" = 2;
     "dom.ipc.processPrelaunch.enabled" = false;
     # Explicit defaults: these were previously overridden to force software
     # rendering and are sticky in prefs.js if merely removed.
@@ -206,8 +228,9 @@ in
     "browser.preferences.defaultPerformanceSettings.enabled" = true;
     # a11y engine instantiation costs ~100MB+ when tripped; not used here.
     "accessibility.force_disabled" = 1;
-    # Cap in-memory page cache (auto-sizes to ~512MB on 16GB machines).
-    "browser.cache.memory.capacity" = 131072;
+    # Auto-size the in-memory page cache to RAM — Firefox's own per-machine
+    # scaling, so small hosts stay capped and big hosts use what they have.
+    "browser.cache.memory.capacity" = -1;
     # Only give login/high-value sites their own isolated process instead of
     # every origin — biggest process-count lever short of disabling fission.
     "fission.webContentIsolationStrategy" = 2;
@@ -215,9 +238,9 @@ in
     # 1 min idle instead of 10, and unload under system memory pressure.
     "browser.tabs.unloadOnLowMemory" = true;
     "browser.tabs.min_inactive_duration_before_unload" = 60000;
-    # No back/forward pages held live in RAM (auto-sizes ~8 on 16GB);
-    # back button re-renders from cache instead.
-    "browser.sessionhistory.max_total_viewers" = 0;
+    # Keep the last 2 back/forward pages live in RAM for instant back nav
+    # (auto would hold ~8); bfcache entries are evicted under memory pressure.
+    "browser.sessionhistory.max_total_viewers" = 2;
 
     /****************************************************************************
      * SECTION: FASTFOX                                                         *
@@ -242,13 +265,19 @@ in
 
     /** IMAGE CACHE ***/
     "image.mem.decode_bytes_at_a_time" = 32768;
+    # Keep decoded images mapped >=2 min (default 1) — no re-decode jank
+    # when scrolling back up a page.
+    "image.mem.shared.unmap.min_expiration_ms" = 120000;
 
     /** NETWORK ***/
     "network.http.max-connections" = 900;
     "network.http.max-persistent-connections-per-server" = 10;
     "network.http.max-urgent-start-excessive-connections-per-host" = 5;
     "network.http.pacing.requests.enabled" = false;
-    "network.dnsCacheExpiration" = 3600;
+    # 4 min DNS cache (was 1h): stale entries after a service's IP failover
+    # cause connection hangs that look like "browser is slow". OS-level DNS
+    # cache still absorbs most lookups.
+    "network.dnsCacheExpiration" = 240;
     "network.ssl_tokens_cache_capacity" = 10240;
 
     /** SPECULATIVE LOADING ***/
@@ -289,7 +318,12 @@ in
 
     /** DISK AVOIDANCE ***/
     "browser.privatebrowsing.forceMediaMemoryCache" = true;
-    "browser.sessionstore.interval" = 60000;
+    # 30s session snapshots (default 15s, was 60s): bounds crash data loss
+    # without the default's write churn. Writes happen off-main-thread.
+    "browser.sessionstore.interval" = 30000;
+    # Don't load all pinned tabs at once on startup — each loads on first
+    # click instead, avoiding the launch-time resource storm.
+    "browser.sessionstore.restore_pinned_tabs_on_demand" = true;
 
     /** SHUTDOWN & SANITIZING ***/
     "privacy.history.custom" = true;
@@ -371,9 +405,12 @@ in
     "browser.crashReports.unsubmittedCheck.autoSubmit2" = false;
 
     /** DETECTION ***/
-    "captivedetect.canonicalURL" = "";
-    "network.captive-portal-service.enabled" = false;
-    "network.connectivity-service.enabled" = false;
+    # Re-enabled (SecureFox disables these): without portal detection, hotel/
+    # cafe wifi silently times out on every page until the portal is found by
+    # hand — the worst kind of "delay". Costs periodic pings to Mozilla.
+    "captivedetect.canonicalURL" = "http://detectportal.firefox.com/canonical.html";
+    "network.captive-portal-service.enabled" = true;
+    "network.connectivity-service.enabled" = true;
 
     /****************************************************************************
      * SECTION: PESKYFOX                                                        *
