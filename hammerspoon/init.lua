@@ -157,3 +157,50 @@ hs.hotkey.bind({"ctrl", "cmd"}, "space", function()
     hs.application.launchOrFocus("Sublime Text")
   end
 end)
+
+-- Caps Lock navigation layer (replaces kanata).  hidutil remaps the
+-- physical Caps Lock to F18 (see nix-config/modules/home/macos/hidutil.nix);
+-- while F18 is held the keys below are rewritten.  Tap does nothing.
+local fnLayer = {
+  ["5"] = "f5",   ["6"] = "f6",
+  u = "pageup",   i = "pagedown",
+  g = "home",     h = "left", j = "down", k = "up", l = "right", [";"] = "end",
+}
+local fnKeyCode = hs.keycodes.map.f18
+local fnHeld = false
+local pressedInLayer = {}   -- keycode -> target, so key-up matches key-down
+
+local function flagList(flags)
+  local out = {}
+  for name, on in pairs(flags) do if on then out[#out + 1] = name end end
+  return out
+end
+
+capsLayerTap = hs.eventtap.new(
+  { hs.eventtap.event.types.keyDown, hs.eventtap.event.types.keyUp },
+  function(e)
+    local code = e:getKeyCode()
+    local isDown = e:getType() == hs.eventtap.event.types.keyDown
+    if code == fnKeyCode then
+      fnHeld = isDown
+      return true
+    end
+    if isDown and fnHeld then
+      if code == hs.keycodes.map["return"] then
+        hs.hid.capslock.toggle()
+        return true
+      end
+      local target = fnLayer[hs.keycodes.map[code]]
+      if target then
+        pressedInLayer[code] = target
+        return true, { hs.eventtap.event.newKeyEvent(flagList(e:getFlags()), target, true) }
+      end
+    elseif not isDown and pressedInLayer[code] then
+      local target = pressedInLayer[code]
+      pressedInLayer[code] = nil
+      return true, { hs.eventtap.event.newKeyEvent(flagList(e:getFlags()), target, false) }
+    end
+    return false
+  end
+)
+capsLayerTap:start()

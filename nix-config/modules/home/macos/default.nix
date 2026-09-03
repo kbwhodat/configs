@@ -11,7 +11,7 @@ let cfg = config.modules.macos; in {
     ./aerospace.nix
     # ./karabiner.nix
     # ./colima.nix
-    # ./kanata.nix
+    ./hidutil.nix
     ./xcode.nix
     ./hammerspoon.nix
   ];
