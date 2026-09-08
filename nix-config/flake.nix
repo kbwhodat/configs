@@ -27,8 +27,8 @@
 
   inputs.undetected-chromedriver.url = "github:kbwhodat/undetected-chromedriver/8b0bd1e599c8367040eb5578f9c191846945f838";
 
-  inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.1";
-  inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
+  # inputs.gonchill.url = "github:kbwhodat/gonchill?ref=1.1.1";
+  # inputs.gonwatch.url = "github:kbwhodat/gonwatch/main";
 
   inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
   inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
@@ -37,9 +37,10 @@
   inputs.wshobson-agents        = { url = "github:wshobson/agents";                   flake = false; };
   inputs.mattpocock-skills      = { url = "github:mattpocock/skills";                 flake = false; };
   inputs.superpowers            = { url = "github:obra/superpowers";                  flake = false; };
+  inputs.bro-skill              = { url = "github:luchasarie/bro-skill";             flake = false; };
   inputs.understand-anything    = { url = "github:Lum1104/Understand-Anything";       flake = false; };
 
-  outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, gonchill, gonwatch, zen-browser, ... }:
+  outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, zen-browser, ... }:
 
     let
       system = "x86_64-linux";
@@ -47,7 +48,7 @@
       overlays = [
         nur.overlays.default
         # gonchill.overlay
-        gonwatch.overlay
+        # gonwatch.overlay
         # firefox-darwin.overlay
         undetected-chromedriver.overlay
         (import ./pkgs/overlay.nix)

@@ -321,27 +321,37 @@ is empty or unchanged."
   ;; daemon's invisible TTY frame, whose "layout" is a single window
   ;; and whose persp/treemacs scopes are stale.  Default to a live GUI
   ;; frame so periodic snapshots capture what the user actually sees.
-  (let* ((frame (or (and (frame-live-p frame) frame)
-                    (seq-find (lambda (f)
-                                (and (frame-live-p f) (display-graphic-p f)))
-                              (frame-list))
-                    (selected-frame)))
-         (snapshot (my/session-lite-build-snapshot frame))
-         (dir (file-name-directory my/session-lite-file)))
-    (unless (and (not force)
-                 (or (my/session-lite--snapshot-empty-p snapshot)
-                     (my/session-lite--snapshot-loses-workspaces-p snapshot)
-                     (equal (my/session-lite--comparable snapshot)
-                            my/session-lite--last-written)))
-      (unless (file-directory-p dir)
-        (make-directory dir t))
-      (with-temp-file my/session-lite-file
-        (let ((print-length nil)
-              (print-level nil))
-          (prin1 snapshot (current-buffer))))
-      (setq my/session-lite--last-written
-            (my/session-lite--comparable snapshot))
-      (my/session-lite--checkpoint snapshot))))
+  ;;
+  ;; When NO GUI frame is left (user closed the window; daemon lingers
+  ;; or is shutting down) there is nothing worth snapshotting: the TTY
+  ;; frame's persp is the nil "none" persp, so a snapshot built from it
+  ;; records `:current-workspace nil' + `:window-layout nil' — silently
+  ;; clobbering the good save `delete-frame-functions' just wrote.
+  ;; That was the "restart lands in the wrong workspace showing
+  ;; *scratch*" bug.  Skip instead; FORCE still saves from whatever is
+  ;; selected.
+  (let ((frame (or (and (frame-live-p frame) frame)
+                   (seq-find (lambda (f)
+                               (and (frame-live-p f) (display-graphic-p f)))
+                             (frame-list))
+                   (and force (selected-frame)))))
+    (when frame
+      (let ((snapshot (my/session-lite-build-snapshot frame))
+            (dir (file-name-directory my/session-lite-file)))
+        (unless (and (not force)
+                     (or (my/session-lite--snapshot-empty-p snapshot)
+                         (my/session-lite--snapshot-loses-workspaces-p snapshot)
+                         (equal (my/session-lite--comparable snapshot)
+                                my/session-lite--last-written)))
+          (unless (file-directory-p dir)
+            (make-directory dir t))
+          (with-temp-file my/session-lite-file
+            (let ((print-length nil)
+                  (print-level nil))
+              (prin1 snapshot (current-buffer))))
+          (setq my/session-lite--last-written
+                (my/session-lite--comparable snapshot))
+          (my/session-lite--checkpoint snapshot))))))
 
 ;; --- Known-good checkpoints (recover from silent degradation) --------
 ;; The main snapshot is atomically OVERWRITTEN every second, with no
@@ -736,6 +746,23 @@ landed in whatever workspace was active at restore time."
                    (equal (plist-get snapshot :version) 1))
           (if workspaces
               (progn
+                ;; Harden against a snapshot whose `:current-workspace'
+                ;; is nil or names no workspace in the snapshot (a save
+                ;; from the daemon's TTY frame, where the persp is the
+                ;; nil "none" persp).  Without this, the switch on such
+                ;; a value below is a no-op and the user is stranded in
+                ;; whichever workspace the materialize loop touched
+                ;; LAST, showing *scratch*.  Fall back to the first
+                ;; workspace and ITS selected file (the top-level
+                ;; `:selected-file' from such a snapshot is equally
+                ;; untrustworthy).
+                (unless (seq-find (lambda (w)
+                                    (equal (plist-get w :name)
+                                           current-workspace))
+                                  workspaces)
+                  (let ((fallback (car workspaces)))
+                    (setq current-workspace (plist-get fallback :name)
+                          selected-file (plist-get fallback :selected-file))))
                 ;; Materialize every workspace up front so the per-file
                 ;; lookup via `*persp-hash*' resolves below.
                 (dolist (workspace workspaces)

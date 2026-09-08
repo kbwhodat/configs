@@ -11,6 +11,8 @@ let
 
 in
 {
+  imports = [ ../../modules/system/nextdns-lockdown ];
+
 # nix configuration
 # reference: https://daiderd.com/nix-darwin/manual/index.html#sec-options
 
@@ -44,23 +46,43 @@ in
             "184" = { enabled = false; }; # Cmd+Shift+5 screenshot/recording options
           };
         };
-        # Block redlib settings page in Chromium-based browsers
+        # Block redlib settings/search/user pages and kagi settings in Chromium-based browsers
         CustomUserPreferences."org.chromium.Thorium" = {
+          # uBlock Origin managed filters: block kagi's hamburger-menu
+          # settings API (URLBlocklist only covers page navigations).
+          "3rdparty".extensions."blockjmkbacgjkknlgpkjjiijinjdanf".toOverwrite.filters = [
+            "||kagi.com/api/quick_settings^"
+          ];
           URLBlocklist = [
             "https://redlib.catsarch.com/settings"
             "https://redlib.catsarch.com/settings/*"
+            "https://redlib.catsarch.com/search*"
+            "https://redlib.catsarch.com/r/*/search*"
+            "https://redlib.catsarch.com/u/*"
+            "https://redlib.catsarch.com/user/*"
+            "https://kagi.com/settings*"
           ];
         };
         CustomUserPreferences."org.chromium.Chromium" = {
           URLBlocklist = [
             "https://redlib.catsarch.com/settings"
             "https://redlib.catsarch.com/settings/*"
+            "https://redlib.catsarch.com/search*"
+            "https://redlib.catsarch.com/r/*/search*"
+            "https://redlib.catsarch.com/u/*"
+            "https://redlib.catsarch.com/user/*"
+            "https://kagi.com/settings*"
           ];
         };
         CustomUserPreferences."com.google.Chrome" = {
           URLBlocklist = [
             "https://redlib.catsarch.com/settings"
             "https://redlib.catsarch.com/settings/*"
+            "https://redlib.catsarch.com/search*"
+            "https://redlib.catsarch.com/r/*/search*"
+            "https://redlib.catsarch.com/u/*"
+            "https://redlib.catsarch.com/user/*"
+            "https://kagi.com/settings*"
           ];
         };
       };
@@ -136,8 +158,9 @@ in
   nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnsupportedSystem = true; 
 
-  networking.knownNetworkServices = [ "Wi-Fi" ];
-  networking.dns = [ "45.90.28.210" "45.90.30.210" ];
+  # NextDNS lockdown: pinned Wi-Fi DNS + PF port-53 block; generates
+  # /etc/web-filter.mobileconfig (install once manually).
+  modules.nextdnsLockdown.enable = true;
 
   services.nextdns = {
     enable = false;
@@ -163,7 +186,7 @@ in
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
     brews = [ "container" "chawan" "firefoxpwa" ];
-    casks = [ "jagex" "spotify" "mitmproxy" "tuna" "sublime-text" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
+    casks = [ "spotify" "mitmproxy" "tuna" "sublime-text" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
   nix.settings = {

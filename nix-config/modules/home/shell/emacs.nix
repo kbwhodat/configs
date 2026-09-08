@@ -275,6 +275,15 @@ in lib.mkMerge [
       overrides = self: super:
         {
           inherit (unstable.emacsPackages) agent-shell;
+          # `org' is pulled in as an elfeed-org dependency (emacs's
+          # built-in org doesn't satisfy the ELPA dep).  Stable pins
+          # org 9.8.3, but GNU ELPA archives only *some* old releases
+          # and 9.8.2/9.8.3 were never kept — the tarball 404s from
+          # every mirror, permanently, so the fetch can never succeed.
+          # Updating stable doesn't help: nixos-26.05's elpa-generated
+          # isn't refreshed on the release branch.  Take org from
+          # unstable (9.8.8), which ELPA still hosts.
+          inherit (unstable.emacsPackages) org;
           # Upstream's treesit queries use predicate spellings emacs's
           # treesit rejects: `(#match "re" @cap)' (regexp-first, no `?')
           # and `(#equal @cap "s")' (no `?').  Emacs only accepts the
@@ -432,7 +441,7 @@ in lib.mkMerge [
         nov olivetti
 
         # ---- jujutsu (jj VCS) integration ----
-        unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR)
+        # unstable.nur.repos.kira-bruneau.emacsPackages.majutsu  # magit-style jj UI (NUR)
 
         # ---- workspaces / scratch ----
         persp-mode persistent-scratch

@@ -183,3 +183,4 @@ nix-config/modules/home/shell/emacs/recentf
 nix-config/modules/home/shell/emacs/session-lite.el
 /.agent-shell/
 enchant/
+packet-lab/

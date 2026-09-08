@@ -15,12 +15,15 @@ let
   # with checksums in that version's manifest.json (fetch to update):
   #   curl -s .../<ver>/manifest.json
   # Bump = new version string + the four hex sha256s from that manifest.
-  claudeCodeVersion = "2.1.220";  # 2026-07-24 (npm `latest`); supports Opus 5
+  # NOTE: this pin is why `nix flake update` never moves claude-code —
+  # the version is hardcoded here, not taken from the `unstable` input.
+  # Bumping requires editing the two bindings below.
+  claudeCodeVersion = "2.1.259";  # 2026-09-02 (npm `latest`); supports Fable 5.1
   claudeCodeChecksums = {
-    "darwin-arm64" = "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081";
-    "darwin-x64"   = "dca7be0aa7d3d924836d440e0c6d8e3d47ef3c8e61fa5809b54b9017170ce2f3";
-    "linux-arm64"  = "159e4a51d796f3bf14677577100f7efb845611b1ceaf0c30cbd8d4650d942185";
-    "linux-x64"    = "674f61f20ff306f3100cf9200e4c36c4b70278b5bef2884549819b942a89c863";
+    "darwin-arm64" = "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898";
+    "darwin-x64"   = "af8741cff0d3fb5c4b893c7cb3613bd21b28fa61cca45469d60b8e5e161eb9d8";
+    "linux-arm64"  = "c6ff03c389ccdeae0f19e9dc32488eeba61fbef4796f531dbfba6c00f45040d0";
+    "linux-x64"    = "f7dd62ae415378018cd21dd950eb3bac174ab085830304d3b8b098146bfd47b6";
   };
   platformKey = "${pkgs.stdenv.hostPlatform.node.platform}-${pkgs.stdenv.hostPlatform.node.arch}";
   claudeCodePinned = unstable.claude-code.overrideAttrs (_: {
@@ -45,6 +48,8 @@ let
   # obra/superpowers — we only want the `systematic-debugging` skill,
   # not the whole plugin. Symlinked as a single user skill.
   superpowersSrc      = inputs.superpowers;
+  # luchasarie/bro-skill — `/bro` re-explains the last reply plainly.
+  broSkillSrc         = inputs.bro-skill;
 in {
   options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC";
 
@@ -119,6 +124,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
     '';
 
+    # Claude Code rewrites this file at runtime, replacing the store symlink.
+    # Without force, every rebuild fails because the .backup already exists.
+    home.file.".claude/plugins/known_marketplaces.json".force = true;
+
     programs.claude-code = {
       enable = true;
       package = claudeCodePinned;
@@ -180,9 +189,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
         permissions = {
           allow = [ "WebFetch" "Read" "Grep" "Bash" ];
           deny = [ "Bash(sudo*)" ];
-          ask = [
-            "Bash(rm*)" "Bash(rmdir*)" "Bash(unlink*)" "Bash(mv*)"
-          ];
+          # ask = [
+          #   "Bash(rm*)" "Bash(rmdir*)" "Bash(unlink*)" "Bash(mv*)"
+          # ];
         };
       };
     };
@@ -199,6 +208,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
     home.file.".claude/skills/systematic-debugging" = {
       source = config.lib.file.mkOutOfStoreSymlink
         "${superpowersSrc}/skills/systematic-debugging";
+    };
+
+    home.file.".claude/skills/bro/SKILL.md" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${broSkillSrc}/SKILL.md";
     };
 
     # Kill the slowness: ECC plugin runs 30+ hooks across PreToolUse,

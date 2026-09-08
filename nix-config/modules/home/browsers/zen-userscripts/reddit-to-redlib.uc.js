@@ -10,8 +10,9 @@
   }
   window.__redditToRedlibLoaded = true;
 
-  const REDLIB_HOST = "redlib.catsarch.com/";
-  const REDLIB_SETTINGS_PATH = "/settings";
+  const REDLIB_HOST = "redlib.catsarch.com";
+  // Blocked redlib paths: settings, site/subreddit search, user profiles.
+  const REDLIB_BLOCKED_PATH = /^\/(settings|search|u|user)(\/|$)|^\/r\/[^/]+\/search(\/|$)/;
   const OBSERVER_TOPIC = "http-on-modify-request";
 
   const getServices = () => {
@@ -66,19 +67,20 @@
     return url.toString();
   };
 
-  // Check if URL is redlib settings page
-  const isRedlibSettings = (spec) => {
-    if (!spec) return false;
-    try {
-      const url = new URL(spec);
-      return url.hostname === REDLIB_HOST && url.pathname.startsWith(REDLIB_SETTINGS_PATH);
-    } catch {
-      return false;
-    }
-  };
-
   // Get redlib home URL
   const getRedlibHome = () => `https://${REDLIB_HOST}/`;
+
+  // Blocked pages: redlib settings/search/user profiles, kagi settings.
+  // Returns the URL to redirect to, or null if the page is allowed.
+  const blockedRedirect = (spec) => {
+    if (!spec) return null;
+    try {
+      const url = new URL(spec);
+      if (url.hostname === REDLIB_HOST && REDLIB_BLOCKED_PATH.test(url.pathname)) return getRedlibHome();
+      if (url.hostname === "kagi.com" && /^\/(settings|api\/quick_settings)(\/|$)/.test(url.pathname)) return "https://kagi.com/";
+    } catch {}
+    return null;
+  };
 
   const newUri = (spec) => {
     try {
@@ -107,11 +109,12 @@
 
       const currentSpec = channel?.URI?.spec || "";
 
-      // Block redlib settings page - redirect to home
-      if (isRedlibSettings(currentSpec)) {
+      // Blocked page - redirect to that site's home
+      const blockedTarget = blockedRedirect(currentSpec);
+      if (blockedTarget) {
         try {
           if (typeof channel.redirectTo === "function") {
-            const uri = newUri(getRedlibHome());
+            const uri = newUri(blockedTarget);
             if (uri) {
               channel.redirectTo(uri);
             }
@@ -141,10 +144,11 @@
       return;
     }
 
-    // Block redlib settings page - redirect to home
-    if (isRedlibSettings(currentSpec)) {
+    // Blocked page - redirect to that site's home
+    const blockedTarget = blockedRedirect(currentSpec);
+    if (blockedTarget) {
       try {
-        browser.loadURI(getRedlibHome(), {
+        browser.loadURI(blockedTarget, {
           triggeringPrincipal: services?.scriptSecurityManager?.getSystemPrincipal?.(),
         });
       } catch {}

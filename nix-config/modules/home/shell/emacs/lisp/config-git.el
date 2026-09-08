@@ -18,14 +18,14 @@
         "gb" '(magit-blame            :which-key "blame")
         "gl" '(magit-log-buffer-file  :which-key "log")))))
 
-(use-package majutsu
-  :defer t
-  :commands (majutsu majutsu-log)
-  :init
-  (with-eval-after-load 'general
-    (when (fboundp 'my/leader)
-      (my/leader
-        "G" '(majutsu-log :which-key "jujutsu (majutsu)")))))
+;; (use-package majutsu
+;;   :defer t
+;;   :commands (majutsu majutsu-log)
+;;   :init
+;;   (with-eval-after-load 'general
+;;     (when (fboundp 'my/leader)
+;;       (my/leader
+;;         "G" '(majutsu-log :which-key "jujutsu (majutsu)")))))
 
 (provide 'config-git)
 ;;; config-git.el ends here

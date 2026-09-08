@@ -25,7 +25,7 @@
 ;; that one skips during redisplay-vs-input races, this one batches the
 ;; post-edit refontify so fast typing doesn't refontify on every key.
 ;; Free win on big buffers; tiny lag in font-lock catching up.
-(setq jit-lock-defer-time 0.05)
+(setq jit-lock-defer-time nil)
 
 ;; Faster scrolling at the cost of brief font-lock inaccuracy. Same idea.
 (setq fast-but-imprecise-scrolling t)
