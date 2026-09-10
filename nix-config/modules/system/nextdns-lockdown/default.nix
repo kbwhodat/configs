@@ -40,6 +40,17 @@ let
         <dict>
           <key>restrictWeb</key><true/>
           <key>useContentFilter</key><true/>
+          <!-- Screen Time "never allow" list; Apple matches these as substrings. -->
+          <key>filterDenyList</key>
+          <array>
+            <string>https://redlib.catsarch.com/settings</string>
+            <string>https://redlib.catsarch.com/search</string>
+            <string>https://redlib.catsarch.com/u/</string>
+            <string>https://redlib.catsarch.com/user/</string>
+            <string>https://kagi.com/settings</string>
+            <string>https://kagi.com/images</string>
+            <string>https://kagi.com/videos</string>
+          </array>
           <key>PayloadIdentifier</key><string>local.web-filter.payload</string>
           <key>PayloadType</key><string>com.apple.familycontrols.contentfilter</string>
           <key>PayloadUUID</key><string>4D756F0D-ECD5-438D-B41F-BA25D72D6117</string>
