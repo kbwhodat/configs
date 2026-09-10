@@ -77,7 +77,7 @@
     try {
       const url = new URL(spec);
       if (url.hostname === REDLIB_HOST && REDLIB_BLOCKED_PATH.test(url.pathname)) return getRedlibHome();
-      if (url.hostname === "kagi.com" && /^\/(settings|api\/quick_settings)(\/|$)/.test(url.pathname)) return "https://kagi.com/";
+      if (url.hostname === "kagi.com" && /^\/(settings|images|videos|api\/quick_settings)(\/|$)/.test(url.pathname)) return "https://kagi.com/";
     } catch {}
     return null;
   };

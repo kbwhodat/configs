@@ -54,35 +54,41 @@ in
             "||kagi.com/api/quick_settings^"
           ];
           URLBlocklist = [
+            # Chromium URLBlocklist: path is a prefix, no wildcards.
             "https://redlib.catsarch.com/settings"
-            "https://redlib.catsarch.com/settings/*"
-            "https://redlib.catsarch.com/search*"
-            "https://redlib.catsarch.com/r/*/search*"
-            "https://redlib.catsarch.com/u/*"
-            "https://redlib.catsarch.com/user/*"
-            "https://kagi.com/settings*"
+            "https://redlib.catsarch.com/search"
+            "https://redlib.catsarch.com/r/?q=*"   # per-subreddit search
+            "https://redlib.catsarch.com/u/"
+            "https://redlib.catsarch.com/user/"
+            "https://kagi.com/settings"
+            "https://kagi.com/images"
+            "https://kagi.com/videos"
           ];
         };
         CustomUserPreferences."org.chromium.Chromium" = {
           URLBlocklist = [
+            # Chromium URLBlocklist: path is a prefix, no wildcards.
             "https://redlib.catsarch.com/settings"
-            "https://redlib.catsarch.com/settings/*"
-            "https://redlib.catsarch.com/search*"
-            "https://redlib.catsarch.com/r/*/search*"
-            "https://redlib.catsarch.com/u/*"
-            "https://redlib.catsarch.com/user/*"
-            "https://kagi.com/settings*"
+            "https://redlib.catsarch.com/search"
+            "https://redlib.catsarch.com/r/?q=*"   # per-subreddit search
+            "https://redlib.catsarch.com/u/"
+            "https://redlib.catsarch.com/user/"
+            "https://kagi.com/settings"
+            "https://kagi.com/images"
+            "https://kagi.com/videos"
           ];
         };
         CustomUserPreferences."com.google.Chrome" = {
           URLBlocklist = [
+            # Chromium URLBlocklist: path is a prefix, no wildcards.
             "https://redlib.catsarch.com/settings"
-            "https://redlib.catsarch.com/settings/*"
-            "https://redlib.catsarch.com/search*"
-            "https://redlib.catsarch.com/r/*/search*"
-            "https://redlib.catsarch.com/u/*"
-            "https://redlib.catsarch.com/user/*"
-            "https://kagi.com/settings*"
+            "https://redlib.catsarch.com/search"
+            "https://redlib.catsarch.com/r/?q=*"   # per-subreddit search
+            "https://redlib.catsarch.com/u/"
+            "https://redlib.catsarch.com/user/"
+            "https://kagi.com/settings"
+            "https://kagi.com/images"
+            "https://kagi.com/videos"
           ];
         };
       };

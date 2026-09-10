@@ -2,14 +2,16 @@
 
 let
   browserBlockPolicy = {
+    # Chromium URLBlocklist: path is a prefix, no wildcards.
     URLBlocklist = [
       "https://redlib.catsarch.com/settings"
-      "https://redlib.catsarch.com/settings/*"
-      "https://redlib.catsarch.com/search*"
-      "https://redlib.catsarch.com/r/*/search*"
-      "https://redlib.catsarch.com/u/*"
-      "https://redlib.catsarch.com/user/*"
-      "https://kagi.com/settings*"
+      "https://redlib.catsarch.com/search"
+      "https://redlib.catsarch.com/r/?q=*"   # per-subreddit search
+      "https://redlib.catsarch.com/u/"
+      "https://redlib.catsarch.com/user/"
+      "https://kagi.com/settings"
+      "https://kagi.com/images"
+      "https://kagi.com/videos"
     ];
     "3rdparty".extensions."blockjmkbacgjkknlgpkjjiijinjdanf".toOverwrite.filters = [
       "||kagi.com/api/quick_settings^"
