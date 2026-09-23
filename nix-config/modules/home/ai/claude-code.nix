@@ -18,12 +18,12 @@ let
   # NOTE: this pin is why `nix flake update` never moves claude-code —
   # the version is hardcoded here, not taken from the `unstable` input.
   # Bumping requires editing the two bindings below.
-  claudeCodeVersion = "2.1.259";  # 2026-09-02 (npm `latest`); supports Fable 5.1
+  claudeCodeVersion = "2.1.280";  # 2026-09-22 (npm `latest`); min version for Opus 5.5
   claudeCodeChecksums = {
-    "darwin-arm64" = "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898";
-    "darwin-x64"   = "af8741cff0d3fb5c4b893c7cb3613bd21b28fa61cca45469d60b8e5e161eb9d8";
-    "linux-arm64"  = "c6ff03c389ccdeae0f19e9dc32488eeba61fbef4796f531dbfba6c00f45040d0";
-    "linux-x64"    = "f7dd62ae415378018cd21dd950eb3bac174ab085830304d3b8b098146bfd47b6";
+    "darwin-arm64" = "387a5c5dcdbb815085edf0baf79591f9d8894efe922bceaf3d75b1b08055229d";
+    "darwin-x64"   = "c1d32d87630482250633208ab77855429b24010ae3086a7ff7539b57b93168d4";
+    "linux-arm64"  = "92f2b4fd05d0bdcf7b9a0d4e0ecef4a1e4b368b290cd8fd07cff9a50013f45a2";
+    "linux-x64"    = "1e08503dbdf3c2cb0d706d32f3408277388d1c76ef108673e8fe42c1b322925b";
   };
   platformKey = "${pkgs.stdenv.hostPlatform.node.platform}-${pkgs.stdenv.hostPlatform.node.arch}";
   claudeCodePinned = unstable.claude-code.overrideAttrs (_: {
@@ -152,8 +152,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
         # store symlink, so /model "save as default" can never persist —
         # this is the only place it sticks.
         # "opus" is an ALIAS resolving to the latest Opus tier (currently
-        # Opus 5) — more robust than a dated ID and tracks forward on
-        # server-side model releases.
+        # Opus 5.5, `claude-opus-5-5`) — more robust than a dated ID and
+        # tracks forward on server-side model releases. Note the CLI still
+        # gates which models it will offer, so a new tier also needs the
+        # version pin above bumped (Opus 5.5 requires >= 2.1.280).
         model = "opus";
         # Don't silently switch models when a safety classifier flags a
         # message — surface it instead. Key extracted from the CLI binary
