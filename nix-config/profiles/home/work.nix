@@ -20,7 +20,7 @@
   modules.ai.mcp-servers.enable            = false;
   modules.ai.jobdrop.enable                = false;  # job scraper — NEVER on work
   modules.ai.understand-anything.enable    = false;
-  modules.ai.pi-coding-agent.enable        = false;
+  modules.ai.omp.enable                    = false;
   modules.ai.no-hallucination.enable       = false;
   modules.ai.hallucination-detector.enable = false;
 

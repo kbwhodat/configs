@@ -11,13 +11,13 @@ let
 in
 stdenvNoCC.mkDerivation {
   pname = "zenleap";
-  version = "unstable-2026-03-23";
+  version = "3.5.0";
 
   src = fetchFromGitHub {
     owner = "yashas-salankimatt";
     repo = "ZenLeap";
-    rev = "916de28";
-    sha256 = "sha256-AHtuIzkxJr9RR9x46nCKlvOktw+O+BaIN7DXs0JsgAk=";
+    rev = "v3.5.0";
+    sha256 = "sha256-fWwSln6QFdW/203v7jan5xN+E89Ia/1qJsSGkzre9gg=";
   };
 
   dontBuild = true;

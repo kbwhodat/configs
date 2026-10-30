@@ -33,12 +33,11 @@
   inputs.coding-agents.url = "github:kissgyorgy/coding-agents/b393ce8f3bc7d3a780fffb77f6f133d690ef9f21";
   inputs.coding-agents.inputs.nixpkgs.follows = "unstable";
 
-  inputs.everything-claude-code = { url = "github:affaan-m/everything-claude-code";   flake = false; };
-  inputs.wshobson-agents        = { url = "github:wshobson/agents";                   flake = false; };
-  inputs.mattpocock-skills      = { url = "github:mattpocock/skills";                 flake = false; };
-  inputs.superpowers            = { url = "github:obra/superpowers";                  flake = false; };
   inputs.bro-skill              = { url = "github:luchasarie/bro-skill";             flake = false; };
   inputs.understand-anything    = { url = "github:Lum1104/Understand-Anything";       flake = false; };
+  inputs.claude-plugins-official = { url = "github:anthropics/claude-plugins-official"; flake = false; };
+  # No `follows`: omp pins its own nixpkgs, Bun (>= 1.3.14) and Rust toolchain.
+  inputs.omp.url                = "github:can1357/oh-my-pi";
 
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, zen-browser, ... }:
 

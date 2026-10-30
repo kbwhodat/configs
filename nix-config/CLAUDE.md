@@ -76,7 +76,7 @@ let cfg = config.modules.<topic>; in {
 }
 ```
 
-Canonical examples to copy from: `modules/home/ai/jobdrop.nix` (uv-tool install), `modules/home/ai/pi-coding-agent.nix` (flake-sourced package, platform-gated), `modules/home/ai/hermes.nix` (activation script).
+Canonical examples to copy from: `modules/home/ai/jobdrop.nix` (uv-tool install), `modules/home/ai/omp.nix` (flake-sourced package, platform-gated), `modules/home/ai/hermes.nix` (activation script).
 
 ## Adding a flake input
 

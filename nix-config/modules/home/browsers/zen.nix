@@ -162,6 +162,9 @@ in
     "signon.rememberSignons" = true;
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
     "uc.zenleap.settings" = builtins.toJSON {
+      # Nix pins the version, and this pref resets on every start, so the
+      # update prompt can't be dismissed for good. Bump in pkgs/by-name/zenleap.
+      "updates.autoCheck" = false;
       "keys.global.leapMode" = {
         key = ";";
         code = "Semicolon";

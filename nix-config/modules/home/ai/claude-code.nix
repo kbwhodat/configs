@@ -18,12 +18,12 @@ let
   # NOTE: this pin is why `nix flake update` never moves claude-code —
   # the version is hardcoded here, not taken from the `unstable` input.
   # Bumping requires editing the two bindings below.
-  claudeCodeVersion = "2.1.280";  # 2026-09-22 (npm `latest`); min version for Opus 5.5
+  claudeCodeVersion = "2.1.310";  # 2026-10-23 (npm `latest`); offers Sonnet 5.5 / Haiku 5.5
   claudeCodeChecksums = {
-    "darwin-arm64" = "387a5c5dcdbb815085edf0baf79591f9d8894efe922bceaf3d75b1b08055229d";
-    "darwin-x64"   = "c1d32d87630482250633208ab77855429b24010ae3086a7ff7539b57b93168d4";
-    "linux-arm64"  = "92f2b4fd05d0bdcf7b9a0d4e0ecef4a1e4b368b290cd8fd07cff9a50013f45a2";
-    "linux-x64"    = "1e08503dbdf3c2cb0d706d32f3408277388d1c76ef108673e8fe42c1b322925b";
+    "darwin-arm64" = "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd";
+    "darwin-x64"   = "28fdbed5a84ef7d4205b5751c7f021e79151c4e319c4a401e48fe6aae86bbb39";
+    "linux-arm64"  = "9c64d9a7442436b65fcd7cc02c1aa0051bb5a7041e7788576ed3b5f29c447d54";
+    "linux-x64"    = "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56";
   };
   platformKey = "${pkgs.stdenv.hostPlatform.node.platform}-${pkgs.stdenv.hostPlatform.node.arch}";
   claudeCodePinned = unstable.claude-code.overrideAttrs (_: {
@@ -40,18 +40,14 @@ let
   # `flake.lock` pins them, so a push to upstream `main` no longer
   # invalidates a hard-coded sha256 here. Bump deliberately via
   # `nix flake update --update-input <name>`.
-  eccSrc              = inputs.everything-claude-code;
-  wshobsonAgentsSrc   = inputs.wshobson-agents;
-  # Matt Pocock's skill collection — surfaced as a symlinked dir
-  # under ~/.claude/skills/mattpocock so Claude Code can pick them up.
-  mattpocockSkillsSrc = inputs.mattpocock-skills;
-  # obra/superpowers — we only want the `systematic-debugging` skill,
-  # not the whole plugin. Symlinked as a single user skill.
-  superpowersSrc      = inputs.superpowers;
   # luchasarie/bro-skill — `/bro` re-explains the last reply plainly.
   broSkillSrc         = inputs.bro-skill;
+  # anthropics/claude-plugins-official — Anthropic's marketplace; we take
+  # `frontend-design` (distinctive, production-grade UI; avoids the generic
+  # AI look). Skills are inherited by subagents, so lab-site builders get it.
+  officialPluginsSrc  = inputs.claude-plugins-official;
 in {
-  options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code with ECC";
+  options.modules.ai.claude-code.enable = lib.mkEnableOption "Claude Code (declarative plugins, skills and settings)";
 
   config = lib.mkIf cfg.enable {
     # Global ~/.claude/CLAUDE.md — auto-loaded at every Claude Code
@@ -137,12 +133,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
       # ~/.claude.json anyway). Only `jobdrop` is unique to this machine
       # (installed via uv-tool to ~/.local/bin/).
       marketplaces = {
-        ecc = eccSrc;
-        wshobson-agents = wshobsonAgentsSrc;
+        claude-plugins-official = officialPluginsSrc;
       };
       plugins = [
-        eccSrc
-        "${wshobsonAgentsSrc}/plugins/quantitative-trading"
+        "${officialPluginsSrc}/plugins/frontend-design"
       ];
       mcpServers = {
         jobdrop = { command = "${config.home.homeDirectory}/.local/bin/jobdrop-mcp-server"; };
@@ -198,39 +192,37 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
       };
     };
 
-    # Surface mattpocock/skills under ~/.claude/skills/mattpocock.
-    # Out-of-store symlink: upstream updates after a flake-input bump
-    # appear without a full home-manager activation re-run.
-    home.file.".claude/skills/mattpocock" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${mattpocockSkillsSrc}/skills";
-    };
 
-    # Just the `systematic-debugging` skill from obra/superpowers — not
-    # the rest of the plugin's skills/commands/hooks.
-    home.file.".claude/skills/systematic-debugging" = {
-      source = config.lib.file.mkOutOfStoreSymlink
-        "${superpowersSrc}/skills/systematic-debugging";
-    };
 
     home.file.".claude/skills/bro/SKILL.md" = {
       source = config.lib.file.mkOutOfStoreSymlink "${broSkillSrc}/SKILL.md";
     };
 
-    # Kill the slowness: ECC plugin runs 30+ hooks across PreToolUse,
-    # PostToolUse and Stop events. `ECC_HOOK_PROFILE=minimal` skips
-    # every hook whose declared profiles don't include "minimal" —
-    # which is all the reminder/observe/governance/quality-gate ones.
-    #
-    # `ECC_DISABLED_HOOKS` is an explicit kill-list for IDs that are
-    # tagged "minimal" but still annoying — currently both GateGuard
-    # variants ("Fact-Forcing Gate" interruptions before edits/bash).
-    #
-    # `ECC_GATEGUARD=off` is the belt-and-suspenders fallback the
-    # gate's own recovery message documents.
-    home.sessionVariables = {
-      ECC_HOOK_PROFILE = "minimal";
-      ECC_DISABLED_HOOKS = "pre:edit-write:gateguard-fact-force,pre:bash:gateguard-fact-force";
-      ECC_GATEGUARD = "off";
-    };
+    # Site builder for lab customer sites (founder 2026-10-24): Sonnet 5.5
+    # at xhigh effort with the frontend-design skill preloaded (kept on Sonnet
+    # 2026-10-25: measured cheap; the budget lever is agent length). Spawn with
+    # subagent_type "site-builder". The coordinator's brief supplies the
+    # storyline, the page contract and the posting rules; Astra keeps the
+    # final UI judgement.
+    home.file.".claude/agents/site-builder.md".text = ''
+      ---
+      name: site-builder
+      description: Builds a lab's customer-facing site (HTML, CSS, images) from a storyline design doc and page contract, with distinctive, production-grade visual design. Use for Paged Out lab sites and frontend labs.
+      model: sonnet
+      effort: xhigh
+      skills:
+        - frontend-design
+      ---
+      You build the customer-facing site of one lab from the brief you are given.
+      Invoke the frontend-design skill before writing any HTML or CSS and follow it.
+      Rules: the site is unique to its storyline (no templates); real business content
+      (menu, prices, names) as static copy; only the outcome line is live and truthful;
+      no mechanism, cause or repair words anywhere on the site; controls and state copy
+      four words or fewer; theme tokens for light and dark; 44 px targets; reduced motion;
+      no horizontal overflow at 360/390/1366; assets lazy-loaded only for that lab.
+      Never edit the founder's checkout; work in the worktree and branch the brief names;
+      every commit ends with "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>".
+    '';
+
   };
 }

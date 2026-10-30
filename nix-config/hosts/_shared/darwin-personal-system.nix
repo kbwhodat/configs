@@ -20,6 +20,14 @@ in
 
   nix.enable = false;
 
+  # lima 1.2.2 is EOL/insecure but still in nixpkgs; allow it explicitly.
+  # Bump or remove once lima is upgraded upstream.
+  nixpkgs.config.permittedInsecurePackages = [
+    "lima-full-1.2.2"
+    "lima-additional-guestagents-1.2.2"
+    "lima-1.2.2"
+  ];
+
   #services.nix-daemon.enable = true; # auto upgrade nix package and daemon service
     system = {
       defaults = {
@@ -110,8 +118,8 @@ in
     docker-client
     # skhd
     iina
-    # colima
-    # lima
+    colima
+    lima
     darwin.libiconv
     cocoapods
     lightgbm
@@ -191,7 +199,9 @@ in
     onActivation.extraFlags = [ "--force" ];
 
     taps = ["FelixKratz/formulae" "nikitabobko/tap"];
-    brews = [ "container" "chawan" "firefoxpwa" ];
+    # python@3.14: the gcloud-cli cask depends on it, but `cleanup = "zap"`
+    # still removes it (and then aborts activation on its deps) unless listed.
+    brews = [ "container" "chawan" "firefoxpwa" "python@3.14" ];
     casks = [ "spotify" "mitmproxy" "tuna" "sublime-text" "flutter" "karabiner-elements" "google-chrome" "freetube" "hammerspoon" "gcloud-cli"];
   };
 
