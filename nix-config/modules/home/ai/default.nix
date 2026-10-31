@@ -7,7 +7,6 @@ let cfg = config.modules.ai; in {
     ./claude-code.nix
     ./opencode.nix
     ./kimi-cli.nix
-    ./omp.nix
     ./no-hallucination.nix
     ./hallucination-detector.nix
     ./understand-anything.nix
@@ -16,7 +15,7 @@ let cfg = config.modules.ai; in {
   options.modules.ai.enable = lib.mkOption {
     type = lib.types.bool;
     default = true;
-    description = "AI tooling umbrella (Claude Code, opencode, MCP servers, RTK, jobdrop, omp, no-hallucination, hallucination-detector)";
+    description = "AI tooling umbrella (Claude Code, opencode, MCP servers, RTK, jobdrop, no-hallucination, hallucination-detector)";
   };
 
   config = lib.mkIf cfg.enable {
@@ -26,7 +25,6 @@ let cfg = config.modules.ai; in {
     modules.ai.mcp-servers.enable            = lib.mkDefault true;
     modules.ai.rtk.enable                    = lib.mkDefault true;
     modules.ai.jobdrop.enable                = lib.mkDefault true;
-    modules.ai.omp.enable                    = lib.mkDefault true;
     modules.ai.no-hallucination.enable       = lib.mkDefault false;
     modules.ai.hallucination-detector.enable = lib.mkDefault false;
     modules.ai.understand-anything.enable    = lib.mkDefault false;

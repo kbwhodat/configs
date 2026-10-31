@@ -7,7 +7,7 @@ let
   # root and `.claude-plugin/plugin.json` for the plugin manifest — both
   # live at the repo root, so we point both at `src` directly.
 
-  # opencode (and codex/gemini/pi which share ~/.agents/skills) consume
+  # opencode (and codex/gemini which share ~/.agents/skills) consume
   # bare skill folders. They live under `understand-anything-plugin/skills`
   # in the upstream repo. Enumerate at eval time so new upstream skills
   # appear automatically after a flake-input bump.
@@ -23,7 +23,7 @@ in {
     {
       # opencode side: one out-of-store symlink per skill into
       # ~/.agents/skills/<skill>. Matches the per-skill style from
-      # install.sh so opencode/codex/gemini/pi all discover them.
+      # install.sh so opencode/codex/gemini all discover them.
       home.file = lib.listToAttrs (map (name: {
         name = ".agents/skills/${name}";
         value.source = config.lib.file.mkOutOfStoreSymlink "${skillsDir}/${name}";

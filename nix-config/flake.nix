@@ -36,8 +36,6 @@
   inputs.bro-skill              = { url = "github:luchasarie/bro-skill";             flake = false; };
   inputs.understand-anything    = { url = "github:Lum1104/Understand-Anything";       flake = false; };
   inputs.claude-plugins-official = { url = "github:anthropics/claude-plugins-official"; flake = false; };
-  # No `follows`: omp pins its own nixpkgs, Bun (>= 1.3.14) and Rust toolchain.
-  inputs.omp.url                = "github:can1357/oh-my-pi";
 
   outputs = inputs@{ self, unstable, llm-agents, mcp-servers-nix, nixpkgs, nixos-hardware, home-manager, darwin, undetected-chromedriver, nur, sops-nix, zen-browser, ... }:
 
